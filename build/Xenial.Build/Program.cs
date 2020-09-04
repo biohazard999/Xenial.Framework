@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Linq;
-using System.Runtime.InteropServices;
-
-using static SimpleExec.Command;
-using static Bullseye.Targets;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+using static Bullseye.Targets;
+using static SimpleExec.Command;
 
 namespace Xenial.Build
 {
@@ -75,6 +76,20 @@ namespace Xenial.Build
                         ProjectName = $"src/{Path.GetFileNameWithoutExtension(file)}/{Path.GetFileName(file)}",
                         ThirdPartyName = $"src/{Path.GetFileNameWithoutExtension(file)}/THIRD-PARTY-NOTICES.TXT"
                     });
+
+                    // Filter files that are cross platform
+                    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        using var slnFilter = File.OpenRead(sln);
+                        var filter = await JsonDocument.ParseAsync(slnFilter);
+                        var solution = filter.RootElement.GetProperty("solution");
+                        var projects = solution.GetProperty("projects");
+
+                        var items = projects.EnumerateArray();
+                        var srcFilter = items.Select(s => s.GetString()).Where(s => s.StartsWith("src")).ToList();
+
+                        files = files.Where(f => srcFilter.Contains(f.ProjectName));
+                    }
 
                     var tasks = files.Select(proj => RunAsync("dotnet", $"thirdlicense --project {proj.ProjectName} --output {proj.ThirdPartyName}"));
 
