@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   
   <PropertyGroup>
     <Product>Xenial.Framework</Product>
@@ -30,6 +30,12 @@
     <Nullable>enable</Nullable>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeFormatting.ruleset</CodeAnalysisRuleSet>
+    
+    <DxVersion>20.1.7</DxVersion>
+    <XenialVersion>20107.0.1</XenialVersion>
+    <DxPackageVersion>$(DxVersion)</DxPackageVersion>
+    <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>
+    
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">

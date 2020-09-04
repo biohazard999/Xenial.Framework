@@ -1,0 +1,39 @@
+﻿<Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>    
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TargetFrameworks>$(NetCoreVersion);$(FullFrameworkVersion)</TargetFrameworks>
+  </PropertyGroup>
+	
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <TargetFrameworks>$(NetCoreVersion)</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Shouldly" Version="3.0.2" />
+    <PackageReference Include="FakeItEasy" Version="6.2.0" />
+    <PackageReference Include="Xenial.Tasty" Version="0.1.*" />
+  </ItemGroup>
+  
+  <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(TargetFramework)' != ''" >
+        <_Parameter1>TargetFramework</_Parameter1>
+        <_Parameter2>$(TargetFramework)</_Parameter2>
+      </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(Configuration)' != ''" >
+        <_Parameter1>Configuration</_Parameter1>
+        <_Parameter2>$(Configuration)</_Parameter2>
+      </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(MSBuildThisFileDirectory)' != ''" >
+        <_Parameter1>MSBuildThisFileDirectory</_Parameter1>
+        <_Parameter2>$(MSBuildThisFileDirectory)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>    
+  </Target>
+  
+</Project>
