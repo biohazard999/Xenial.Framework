@@ -1,0 +1,8 @@
+﻿{
+  "profiles": {
+    "Xenial.Build": {
+      "commandName": "Project",
+      "commandLineArgs": "release"
+    }
+  }
+}
