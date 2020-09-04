@@ -1,0 +1,61 @@
+<Project>
+  
+  <PropertyGroup>
+    <Product>Xenial.Framework</Product>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <LangVersion>preview</LangVersion>
+    <Copyright>Copyright © Xenial, Manuel Grundner $([System.DateTime]::Today.ToString('yyyy'))</Copyright>
+    <Authors>Xenial, Manuel Grundner</Authors>
+    <FullFrameworkVersion>net462</FullFrameworkVersion>
+    <NetStandardVersion>netstandard2.0</NetStandardVersion>
+    <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
+    <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageProjectUrl>https://framework.xenial.io</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/xenial-io/Xenial.Framework</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageIcon>icon-64x64.png</PackageIcon>
+    <PackageIconUrl>https://blog.delegate.at/img/favicon.ico</PackageIconUrl>
+    <Publish>false</Publish>
+    <IsPackTarget>false</IsPackTarget>
+    <NoWarn>$(NoWarn);NU5105</NoWarn>
+    <Nullable>enable</Nullable>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeFormatting.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <TargetFrameworks>$(NetStandardVersion)</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <DefineConstants>$(DefineConstants);FULL_FRAMEWORK</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)\LICENSE.md" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectCapability Include="DynamicDependentFile" />
+    <ProjectCapability Include="DynamicFileNesting" />
+    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="3.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+
+</Project>

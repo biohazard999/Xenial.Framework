@@ -1,0 +1,25 @@
+{
+  "scripts": {
+    "c": "git-cz"
+  },
+  "author": "Xenial, Manuel Grundner",
+  "devDependencies": {
+    "@commitlint/cli": "^9.1.2",
+    "@commitlint/config-conventional": "^10.0.0",
+    "commitizen": "^4.1.5",
+    "cz-conventional-changelog": "^3.2.0",
+    "dot-prop": "^5.2.0",
+    "husky": "^4.2.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-push": "dotnet run --project build/Xenial.Build/Xenial.Build.csproj"
+    }
+  }
+}
