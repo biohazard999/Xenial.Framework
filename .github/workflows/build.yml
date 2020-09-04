@@ -1,4 +1,4 @@
-name: Xenial.Framework
+﻿name: Xenial.Framework
 
 on:
   schedule:
@@ -30,6 +30,8 @@ jobs:
         dotnet-version: 3.1.x
     - name: Build
       run: dotnet run --project build/Xenial.Build/Xenial.Build.csproj pack
+      env:
+          DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
     - uses: actions/upload-artifact@v2
       if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
       with:
