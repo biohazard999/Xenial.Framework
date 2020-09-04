@@ -19,6 +19,11 @@ namespace Xenial.Build
 
             const string Configuration = "Release";
 
+            var sln = RuntimeInformation
+                .IsOSPlatform(OSPlatform.Windows)
+                ? "Xenial.Framework.sln"
+                : "Xenial.Framework.CrossPlatform.slnf";
+
             Func<string> properties = () => string.Join(" ", new Dictionary<string, string>
             {
                 ["Configuration"] = Configuration,
@@ -43,7 +48,7 @@ namespace Xenial.Build
             );
 
             Target("build", DependsOn("restore"),
-                () => RunAsync("dotnet", $"build --no-restore -c {Configuration} {logOptions("build")} {properties()}")
+                () => RunAsync("dotnet", $"build {sln} --no-restore -c {Configuration} {logOptions("build")} {properties()}")
             );
 
             Target("test", DependsOn("build"), async () =>
@@ -78,7 +83,7 @@ namespace Xenial.Build
             );
 
             Target("pack", DependsOn("lic"),
-                () => RunAsync("dotnet", $"pack Xenial.Framework.sln --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {properties()}")
+                () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {properties()}")
             );
 
             Target("docs",
