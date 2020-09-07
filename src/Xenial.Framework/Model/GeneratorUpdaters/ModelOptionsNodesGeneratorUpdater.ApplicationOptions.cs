@@ -1,4 +1,6 @@
-﻿using DevExpress.ExpressApp;
+﻿using System;
+
+using DevExpress.ExpressApp;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters
 {
@@ -26,10 +28,15 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
         /// <value>The data access mode.</value>
         public CollectionSourceDataAccessMode? DataAccessMode { get; set; }
 
+        private LayoutOptions layout = new LayoutOptions();
         /// <summary>
         /// Gets or sets the layout options.
         /// </summary>
         /// <value>The layout.</value>
-        public LayoutOptions Layout { get; set; } = new LayoutOptions();
+        public LayoutOptions Layout
+        {
+            get => layout;
+            set => layout = value ?? throw new ArgumentNullException(nameof(Layout));
+        }
     }
 }

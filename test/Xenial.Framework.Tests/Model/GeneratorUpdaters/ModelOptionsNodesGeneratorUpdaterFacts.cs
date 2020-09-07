@@ -9,6 +9,11 @@ using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
+using DevExpress.Utils;
+
+using Locations = DevExpress.Persistent.Base.Locations;
+
+using Shouldly;
 
 using Xenial.Framework.Model.GeneratorUpdaters;
 
@@ -45,9 +50,20 @@ namespace Xenial.Framework.Tests.Model.GeneratorUpdaters
 
             bool CreateUpdater(Func<ApplicationOptions, IModelOptions, bool> options)
             {
+                var layout = new Faker<LayoutOptions>()
+                    .RuleFor(f => f.CaptionColon, (f, _) => f.Random.String())
+                    .RuleFor(f => f.EnableCaptionColon, (f, _) => f.Random.Bool())
+                    .RuleFor(f => f.CaptionLocation, (f, _) => f.PickRandom<Locations>())
+                    .RuleFor(f => f.CaptionHorizontalAlignment, (f, _) => f.PickRandom<HorzAlignment>())
+                    .RuleFor(f => f.CaptionVerticalAlignment, (f, _) => f.PickRandom<VertAlignment>())
+                    .RuleFor(f => f.CaptionWordWrap, (f, _) => f.PickRandom<WordWrap>())
+                    .RuleFor(f => f.EnableLayoutGroupImages, (f, _) => f.Random.Bool())
+                    .Generate();
+
                 var faker = new Faker<ApplicationOptions>()
                     .RuleFor(f => f.DataAccessMode, (f, _) => f.PickRandom<CollectionSourceDataAccessMode>())
                     .RuleFor(f => f.LookupSmallCollectionItemCount, (f, _) => f.Random.Int())
+                    .RuleFor(f => f.Layout, (f, _) => layout)
                     .Generate();
 
                 var updater = new ModelOptionsNodesGeneratorUpdater(faker);
@@ -63,6 +79,41 @@ namespace Xenial.Framework.Tests.Model.GeneratorUpdaters
             It($"should assign {nameof(IModelOptions.LookupSmallCollectionItemCount)}",
                 () => CreateUpdater((options, model) => model.LookupSmallCollectionItemCount == options.LookupSmallCollectionItemCount)
             );
+
+            It($"should throw with null {nameof(IModelOptions.LayoutManagerOptions)}",
+                () => Should.Throw<ArgumentNullException>(() => new ApplicationOptions { Layout = null! })
+            );
+
+            Describe($"should assign {nameof(IModelOptions.LayoutManagerOptions)}", () =>
+            {
+                It($"{nameof(IModelLayoutManagerOptions.CaptionColon)}",
+                    () => CreateUpdater((options, model) => model.LayoutManagerOptions.CaptionColon == options.Layout.CaptionColon)
+                );
+
+                It($"{nameof(IModelLayoutManagerOptions.EnableCaptionColon)}",
+                   () => CreateUpdater((options, model) => model.LayoutManagerOptions.EnableCaptionColon == options.Layout.EnableCaptionColon)
+                );
+
+                It($"{nameof(IModelLayoutManagerOptions.CaptionLocation)}",
+                   () => CreateUpdater((options, model) => model.LayoutManagerOptions.CaptionLocation == options.Layout.CaptionLocation)
+                );
+
+                It($"{nameof(IModelLayoutManagerOptions.CaptionHorizontalAlignment)}",
+                    () => CreateUpdater((options, model) => model.LayoutManagerOptions.CaptionHorizontalAlignment == options.Layout.CaptionHorizontalAlignment)
+                );
+
+                It($"{nameof(IModelLayoutManagerOptions.CaptionVerticalAlignment)}",
+                    () => CreateUpdater((options, model) => model.LayoutManagerOptions.CaptionVerticalAlignment == options.Layout.CaptionVerticalAlignment)
+                );
+
+                It($"{nameof(IModelLayoutManagerOptions.CaptionWordWrap)}",
+                    () => CreateUpdater((options, model) => model.LayoutManagerOptions.CaptionWordWrap == options.Layout.CaptionWordWrap)
+                );
+
+                It($"{nameof(IModelLayoutManagerOptions.EnableLayoutGroupImages)}",
+                    () => CreateUpdater((options, model) => model.LayoutManagerOptions.EnableLayoutGroupImages == options.Layout.EnableLayoutGroupImages)
+                );
+            });
         });
     }
 }
