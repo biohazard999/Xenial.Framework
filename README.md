@@ -15,6 +15,14 @@ Platform support: [.NET Standard 2.0 and upwards, including net462](https://docs
 
 You need to have [node v12](https://nodejs.org/en/download/) and [dotnet sdk 3.1](https://dotnet.microsoft.com/download) installed on your local machine.
 
+Set an environment variable to your [DevExpress Nuget Feed](https://nuget.devexpress.com/#feed-url)
+
+```cmd
+SET DEVEXPRESS_NUGET_FEED=https://nuget.devexpress.com/YOUR_API_KEY_HERE/api
+```
+
+For operating system different than Windows the steps may vary.
+
 ### Commitizen
 
 We use node only for linting commit messages and pushes so make sure to install the proper hooks by running:

@@ -57,6 +57,8 @@ jobs:
     # Install with a tool location to trick tool resolution
     - name: Install Wyam.Tool
       run: dotnet tool install --tool-path c:\dotnet-tools Wyam.Tool
+      env:
+        DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
 
     # Run from the installed tool location
     - name: Build
