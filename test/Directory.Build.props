@@ -16,6 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Shouldly" Version="3.0.2" />
     <PackageReference Include="FakeItEasy" Version="6.2.0" />
+    <PackageReference Include="Bogus" Version="29.0.1" />
     <PackageReference Include="Xenial.Tasty" Version="0.1.*" />
   </ItemGroup>
   
