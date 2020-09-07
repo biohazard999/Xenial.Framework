@@ -2,22 +2,16 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-
 using Bogus;
-
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.Utils;
-
-using Locations = DevExpress.Persistent.Base.Locations;
-
 using Shouldly;
-
 using Xenial.Framework.Model.GeneratorUpdaters;
-
 using static Xenial.Tasty;
+using Locations = DevExpress.Persistent.Base.Locations;
 
 namespace Xenial.Framework.Tests.Model.GeneratorUpdaters
 {
