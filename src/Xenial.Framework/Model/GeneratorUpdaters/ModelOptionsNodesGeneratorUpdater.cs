@@ -1,8 +1,8 @@
-﻿using DevExpress.ExpressApp.Model;
+﻿using System;
+
+using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
-
-using System;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters
 {

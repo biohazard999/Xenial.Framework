@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-
-using static Xenial.Tasty;
 using static Xenial.Framework.Tests.Model.Core.NullDiffsStoreFacts;
 using static Xenial.Framework.Tests.Model.GeneratorUpdaters.ModelOptionsNodesGeneratorUpdaterFacts;
+using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests
 {

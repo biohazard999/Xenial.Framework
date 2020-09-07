@@ -1,4 +1,5 @@
-using System.Reflection;
+﻿using System.Reflection;
+
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Model.Core;
 
@@ -10,7 +11,7 @@ namespace Xenial.Framework.Model.Core
     /// <seealso cref="ModelStoreBase" />
     public class NullDiffsStore : ModelStoreBase
     {
-        Assembly assembly;
+        private readonly Assembly assembly;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NullDiffsStore"/> class.
