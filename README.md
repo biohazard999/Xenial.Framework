@@ -3,7 +3,7 @@
 <img src="img/logo.svg" width="100px" />
 
 # Xenial.Framework
-Extentions for the DevExpress ExpressApp Framework - Easy. Flexible. Focused.
+Extensions for the DevExpress ExpressApp Framework - Easy. Flexible. Focused.
 
 Platform support: [.NET Standard 2.0 and upwards, including net462](https://docs.microsoft.com/en-us/dotnet/standard/net-standard).  
 
