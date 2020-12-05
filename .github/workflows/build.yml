@@ -25,9 +25,9 @@ jobs:
         git submodule init
         git submodule update
     - name: Setup .NETCORE3.1
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 3.1.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
     - name: Setup .NET5
       uses: actions/setup-dotnet@v1
       with:
