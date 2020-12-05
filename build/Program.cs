@@ -23,7 +23,7 @@ namespace Xenial.Build
             var sln = RuntimeInformation
                 .IsOSPlatform(OSPlatform.Windows)
                 ? "Xenial.Framework.sln"
-                : "Xenial.Framework.CrossPlatform.slnf";
+                : "Xenial.Framework.sln";
 
             Func<string> properties = () => string.Join(" ", new Dictionary<string, string>
             {
