@@ -9,7 +9,8 @@
     <FullFrameworkVersion>net462</FullFrameworkVersion>
     <NetStandardVersion>netstandard2.0</NetStandardVersion>
     <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
-    <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
+    <Net5Version>net5.0</Net5Version>
+    <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version)</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -31,15 +32,15 @@
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeFormatting.ruleset</CodeAnalysisRuleSet>
     
-    <DxVersion>20.1.7</DxVersion>
-    <XenialVersion>20107.0.1</XenialVersion>
+    <DxVersion>20.2.4</DxVersion>
+    <XenialVersion>20204.0.1</XenialVersion>
     <DxPackageVersion>$(DxVersion)</DxPackageVersion>
     <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>
     
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-    <TargetFrameworks>$(NetStandardVersion)</TargetFrameworks>
+    <TargetFrameworks>$(NetStandardVersion);$(Net5Version)</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">

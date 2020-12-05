@@ -54,12 +54,12 @@ namespace Xenial.Build
 
             Target("test", DependsOn("build"), async () =>
             {
-                var (fullFramework, netcore) = FindTfms();
+                var (fullFramework, netcore, net5) = FindTfms();
 
                 var tfms = RuntimeInformation
                             .IsOSPlatform(OSPlatform.Windows)
-                            ? new[] { fullFramework, netcore }
-                            : new[] { netcore };
+                            ? new[] { fullFramework, netcore, net5 }
+                            : new[] { netcore, net5 };
 
                 var tests = tfms
                     .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Framework.Tests/Xenial.Framework.Tests.csproj --no-build --no-restore --framework {tfm} -c {Configuration} {properties()}"))
@@ -78,18 +78,18 @@ namespace Xenial.Build
                     });
 
                     // Filter files that are cross platform
-                    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        using var slnFilter = File.OpenRead(sln);
-                        var filter = await JsonDocument.ParseAsync(slnFilter);
-                        var solution = filter.RootElement.GetProperty("solution");
-                        var projects = solution.GetProperty("projects");
+                    // if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    // {
+                    //     using var slnFilter = File.OpenRead(sln);
+                    //     var filter = await JsonDocument.ParseAsync(slnFilter);
+                    //     var solution = filter.RootElement.GetProperty("solution");
+                    //     var projects = solution.GetProperty("projects");
 
-                        var items = projects.EnumerateArray();
-                        var srcFilter = items.Select(s => s.GetString()).Where(s => s.StartsWith("src")).ToList();
+                    //     var items = projects.EnumerateArray();
+                    //     var srcFilter = items.Select(s => s.GetString()).Where(s => s.StartsWith("src")).ToList();
 
-                        files = files.Where(f => srcFilter.Contains(f.ProjectName));
-                    }
+                    //     files = files.Where(f => srcFilter.Contains(f.ProjectName));
+                    // }
 
                     var tasks = files.Select(proj => RunAsync("dotnet", $"thirdlicense --project {proj.ProjectName} --output {proj.ThirdPartyName}"));
 
