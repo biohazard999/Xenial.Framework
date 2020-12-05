@@ -1,2 +1,2 @@
 $ErrorActionPreference = "Stop";
-dotnet run --project ".\build\Xenial.Build\Xenial.Build.csproj" -- $args
+dotnet run --project ".\build\build.csproj" -- $args

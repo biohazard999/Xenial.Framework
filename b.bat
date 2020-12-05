@@ -1,3 +1,3 @@
 @pushd %~dp0
-@dotnet run --project ".\build\Xenial.Build\Xenial.Build.csproj" -- %*
+@dotnet run --project ".\build\build.csproj" -- %*
 @popd
