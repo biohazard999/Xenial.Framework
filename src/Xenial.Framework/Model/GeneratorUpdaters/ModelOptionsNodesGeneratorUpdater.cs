@@ -13,6 +13,14 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
     /// <seealso cref="ModelNodesGeneratorUpdater{ModelOptionsNodesGenerator}"/>
     public class ModelOptionsNodesGeneratorUpdater : ModelNodesGeneratorUpdater<ModelOptionsNodesGenerator>
     {
+        //static ModelOptionsNodesGeneratorUpdater()
+        //{
+        //    if (!LicenseCheck.CheckLicense())
+        //    {
+        //        Console.WriteLine("EEEEEEEERRRRRRROOOOOOOORRRRRRR");
+        //    }
+        //}
+
         private readonly ApplicationOptions options;
 
         /// <summary>

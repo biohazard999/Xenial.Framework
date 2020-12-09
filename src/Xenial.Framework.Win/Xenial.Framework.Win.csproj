@@ -12,5 +12,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.LicGen\Xenial.Framework.LicGen.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  
 </Project>

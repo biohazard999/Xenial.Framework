@@ -9,5 +9,4 @@
     <ProjectReference Include="..\..\src\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
   </ItemGroup>
  
-
 </Project>
