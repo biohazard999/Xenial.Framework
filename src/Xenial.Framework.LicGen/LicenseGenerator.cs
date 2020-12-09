@@ -25,7 +25,7 @@ namespace Xenial.Framework.LicGen
 // #endif
             if (context.SyntaxReceiver is SyntaxReceiver syntaxReceiver)
             {
-                foreach (var canidate in syntaxReceiver.Canidates)
+                foreach (var _ in syntaxReceiver.Canidates)
                 {
 
                 }
