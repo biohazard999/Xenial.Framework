@@ -17,12 +17,12 @@ namespace Xenial.Framework.LicGen
         public void Execute(GeneratorExecutionContext context)
         {
             _ = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
-// #if DEBUG
-//             if (!Debugger.IsAttached)
-//             {
-//                 Debugger.Launch();
-//             }
-// #endif
+            // #if DEBUG
+            //             if (!Debugger.IsAttached)
+            //             {
+            //                 Debugger.Launch();
+            //             }
+            // #endif
             if (context.SyntaxReceiver is SyntaxReceiver syntaxReceiver)
             {
                 foreach (var _ in syntaxReceiver.Canidates)
@@ -42,16 +42,16 @@ namespace Xenial.Framework.LicGen
             public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
             {
                 // We grab all assembly level attributes
-                if(syntaxNode is CompilationUnitSyntax cus)
+                if (syntaxNode is CompilationUnitSyntax cus)
                 {
-                    foreach(var attributeList in cus.AttributeLists)
+                    foreach (var attributeList in cus.AttributeLists)
                     {
-                        if(attributeList.Attributes.Count > 0
+                        if (attributeList.Attributes.Count > 0
                             && attributeList.Target is AttributeTargetSpecifierSyntax atss
                             && atss.Identifier.IsKind(SyntaxKind.AssemblyKeyword)
                         )
                         {
-                            foreach(var attribute in attributeList.Attributes)
+                            foreach (var attribute in attributeList.Attributes)
                             {
                                 Canidates.Add(attribute);
                             }
