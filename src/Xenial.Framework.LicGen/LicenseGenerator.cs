@@ -25,9 +25,16 @@ namespace Xenial.Framework.LicGen
             // #endif
             if (context.SyntaxReceiver is SyntaxReceiver syntaxReceiver)
             {
-                foreach (var _ in syntaxReceiver.Canidates)
+                foreach (var canidate in syntaxReceiver.Canidates)
                 {
-
+                    if (context.Compilation is CSharpCompilation csharpCompilation)
+                    {
+                        var model = context.Compilation.GetSemanticModel(canidate.SyntaxTree);
+                        if (!Debugger.IsAttached)
+                        {
+                            Debugger.Break();
+                        }
+                    }
                 }
             }
         }
