@@ -115,14 +115,18 @@ namespace Xenial.Framework.LicGen
             syntaxWriter.WriteLine();
             syntaxWriter.WriteLine("private static readonly Lazy<string> executablePath = new Lazy<string>(() =>");
             syntaxWriter.OpenBrace();
+            syntaxWriter.WriteLine("#if !FULL_FRAMEWORK");
             syntaxWriter.WriteLine("if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))");
             syntaxWriter.OpenBrace();
+            syntaxWriter.WriteLine("#endif");
             syntaxWriter.WriteLine("var sb = new StringBuilder(maxPathLenght);");
             syntaxWriter.WriteLine("GetModuleFileName(IntPtr.Zero, sb, maxPathLenght);");
             syntaxWriter.WriteLine("return sb.ToString();");
+            syntaxWriter.WriteLine("#if !FULL_FRAMEWORK");
             syntaxWriter.CloseBrace();
 
             syntaxWriter.WriteLine("return Process.GetCurrentProcess().MainModule.FileName;");
+            syntaxWriter.WriteLine("#endif");
             syntaxWriter.UnIndent();
 
             syntaxWriter.WriteLine("});");
