@@ -6,7 +6,7 @@ namespace Xenial.Framework.LicGen
     /// <summary>
     /// Takes care of opening and closing curly braces for code generation
     /// </summary>
-    internal class CurlyIndenter : IDisposable
+    internal class CurlyIndenter
     {
         private readonly IndentedTextWriter indentedTextWriter;
 
@@ -15,24 +15,27 @@ namespace Xenial.Framework.LicGen
         /// </summary>
         /// <param name="indentedTextWriter">The writer to use</param>
         /// <param name="openingLine">any line to write before the curly</param>
-        public CurlyIndenter(IndentedTextWriter indentedTextWriter, string openingLine = "")
+        public CurlyIndenter(IndentedTextWriter indentedTextWriter)
+            => this.indentedTextWriter = indentedTextWriter;
+
+        public void Write(string val) => indentedTextWriter.Write(val);
+        public void WriteLine(string val) => indentedTextWriter.WriteLine(val);
+        public void WriteLine() => indentedTextWriter.WriteLine();
+        public void Indent() => indentedTextWriter.Indent++;
+        public void UnIndent() => indentedTextWriter.Indent--;
+
+        public void OpenBrace()
         {
-            this.indentedTextWriter = indentedTextWriter;
-            if (!string.IsNullOrWhiteSpace(openingLine))
-            {
-                indentedTextWriter.WriteLine(openingLine);
-            }
-            indentedTextWriter.WriteLine("{");
-            indentedTextWriter.Indent++;
+            WriteLine("{");
+            Indent();
         }
 
-        /// <summary>
-        /// When the variable goes out of scope the closing brace is injected and indentation reduced.
-        /// </summary>
-        public void Dispose()
+        public void CloseBrace()
         {
-            indentedTextWriter.Indent--;
-            indentedTextWriter.WriteLine("}");
+            WriteLine("}");
+            UnIndent();
         }
+
+        public override string ToString() => indentedTextWriter.InnerWriter.ToString();
     }
 }
