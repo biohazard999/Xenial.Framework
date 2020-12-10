@@ -1,0 +1,15 @@
+﻿<!--
+  This file is automatically imported by NuGet into a user's project
+  when it targets a single framework, or in classic (pre 2017) csproj projects.
+-->
+<Project>
+  <PropertyGroup>
+    <_TaskTfm Condition=" '$(MSBuildRuntimeType)' == 'Core' ">netstandard2.0</_TaskTfm>
+    <_TaskTfm Condition=" '$(MSBuildRuntimeType)' != 'Core' ">net472</_TaskTfm>
+
+    <_TaskAssembly>$(MSBuildThisFileDirectory)..\tools\$(_TaskTfm)\Xenial.Framework.MsBuild.dll</_TaskAssembly>
+  </PropertyGroup>
+  
+  <UsingTask TaskName="Xenial.Framework.MsBuild.XenialLicenseValidation" AssemblyFile="$(_TaskAssembly)" />
+  
+</Project>

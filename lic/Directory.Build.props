@@ -7,8 +7,9 @@
     <IsPackable>true</IsPackable>
     <NoWarn>VSTHRD200;CA1014;$(NoWarn)</NoWarn>
     <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
-    <XenialPublicKey></XenialPublicKey>
-    <XenialModule></XenialModule>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,24 +27,5 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>        
     <PackageReference Include="Standard.Licensing" Version="1.1.5" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.LicGen/Xenial.Framework.LicGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.MsBuild\Xenial.Framework.MsBuild.csproj" >
-      <PrivateAssets>None</PrivateAssets>
-    </ProjectReference>
-  </ItemGroup>
-  
-  <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
-    <ItemGroup>
-      <AssemblyAttribute Include="Xenial.XenialPublicKeyAttribute" Condition="'$(XenialPublicKey)' != ''">
-        <_Parameter1>$(XenialPublicKey)</_Parameter1>
-      </AssemblyAttribute>
-      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(PackageId)' != ''">
-        <_Parameter1>XenialComponent</_Parameter1>
-        <_Parameter2>$(PackageId)</_Parameter2>
-      </AssemblyAttribute>
-    </ItemGroup>
-  </Target>
   
 </Project>

@@ -35,7 +35,8 @@
     <DxVersion>20.2.4</DxVersion>
     <XenialVersion>20204.0.1</XenialVersion>
     <DxPackageVersion>$(DxVersion)</DxPackageVersion>
-    <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>
+    <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>    
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     
   </PropertyGroup>
 
