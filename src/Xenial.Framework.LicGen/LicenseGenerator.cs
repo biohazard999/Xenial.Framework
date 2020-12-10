@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Xenial.Framework.LicGen
 {
@@ -158,16 +159,41 @@ namespace Xenial.Framework.LicGen
             context.AddSource("XenialLicenseCheck.g.cs", source);
         }
 
+        private const string category = "Usage";
+
+#pragma warning disable RS2008 // Enable analyzer release tracking
+#pragma warning disable RS1033 // Define diagnostic description correctly
+        private static readonly DiagnosticDescriptor cannotFindPublicKeyRule = new DiagnosticDescriptor(
+            "XENLIC0001",
+            "Cannot find XenialPublicKey",
+            "Make sure you made XenialPublicKey visible to the compiler",
+            category,
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
+            description: "Make sure you made XenialPublicKey visible to the compiler"
+        );
+
+        private static readonly DiagnosticDescriptor cannotFindProductRule = new DiagnosticDescriptor(
+            "XENLIC0002",
+            "Cannot find PackageId",
+            "Make sure you made PackageId visible to the compiler",
+            category,
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
+            description: "Make sure you made PackageId visible to the compiler"
+        );
+
         private static string GetXenialPublicKey(GeneratorExecutionContext context)
         {
             if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.XenialPublicKey", out var xenialPublicKey))
             {
                 if (string.IsNullOrEmpty(xenialPublicKey))
                 {
-                    //TODO: WARN 
+                    context.ReportDiagnostic(Diagnostic.Create(cannotFindPublicKeyRule, Location.None));
                 }
-                return xenialPublicKey;
+                return xenialPublicKey ?? string.Empty;
             }
+            context.ReportDiagnostic(Diagnostic.Create(cannotFindPublicKeyRule, Location.None));
             return string.Empty;
         }
 
@@ -177,10 +203,11 @@ namespace Xenial.Framework.LicGen
             {
                 if (string.IsNullOrEmpty(xenialProduct))
                 {
-                    //TODO: WARN 
+                    context.ReportDiagnostic(Diagnostic.Create(cannotFindProductRule, Location.None));
                 }
-                return xenialProduct;
+                return xenialProduct ?? string.Empty;
             }
+            context.ReportDiagnostic(Diagnostic.Create(cannotFindProductRule, Location.None));
             return string.Empty;
         }
 

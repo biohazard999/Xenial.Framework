@@ -73,6 +73,11 @@ namespace Xenial
         internal static bool ContainsProduct =>
             !Validations.OfType<ProductMissingValidationFailure>().Any();
 
+        internal static bool IsValid =>
+            !IsTrial
+            && IsSignatureValid
+            && ContainsProduct;
+
         private class ProductMissingValidationFailure : GeneralValidationFailure
         {
             public ProductMissingValidationFailure(string productName)

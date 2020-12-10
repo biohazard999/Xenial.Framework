@@ -15,6 +15,8 @@ namespace Xenial.Build
     {
         internal static async Task Main(string[] args)
         {
+            var PublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3VFauRJrFzuZveL+J/naEs+CrNLBrc/sSDihdkUTo3Np/o4IoM8fxR6kYHIdH/7LXfXltFRREkv2ceTN8gyZuw==";
+
             static string logOptions(string target)
                 => $"/maxcpucount /nologo /verbosity:minimal /bl:./artifacts/logs/xenial.framework.{target}.binlog";
 
@@ -28,6 +30,7 @@ namespace Xenial.Build
             Func<string> properties = () => string.Join(" ", new Dictionary<string, string>
             {
                 ["Configuration"] = Configuration,
+                ["XenialPublicKey"] = PublicKey
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
             Target("ensure-tools", () => EnsureTools());

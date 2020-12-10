@@ -7,7 +7,7 @@
     <IsPackable>true</IsPackable>
     <NoWarn>VSTHRD200;CA1014;$(NoWarn)</NoWarn>
     <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
-    <XenialPublicKey>PLEASE SET BEFORE USE</XenialPublicKey>
+    <XenialPublicKey></XenialPublicKey>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
 
