@@ -4,7 +4,6 @@ using Locations = DevExpress.Persistent.Base.Locations;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters
 {
-
     /// <summary>
     /// Class LayoutOptions.
     /// </summary>

@@ -9,7 +9,8 @@ namespace Xenial.Framework.Model.Core
     /// A empty storage for model differences. Does not store anything.
     /// </summary>
     /// <seealso cref="ModelStoreBase" />
-    public class NullDiffsStore : ModelStoreBase
+    [XenialCheckLicence]
+    public partial class NullDiffsStore : ModelStoreBase
     {
         private readonly Assembly assembly;
 

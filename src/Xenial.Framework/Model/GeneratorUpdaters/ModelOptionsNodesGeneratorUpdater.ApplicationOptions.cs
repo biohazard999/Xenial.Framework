@@ -4,7 +4,6 @@ using DevExpress.ExpressApp;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters
 {
-
     /// <summary>
     /// Class ApplicationOptions.
     /// </summary>
