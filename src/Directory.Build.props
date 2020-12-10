@@ -8,11 +8,13 @@
     <NoWarn>VSTHRD200;CA1014;$(NoWarn)</NoWarn>
     <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
     <XenialPublicKey></XenialPublicKey>
+    <XenialModule></XenialModule>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
 
   <ItemGroup>
     <CompilerVisibleProperty Include="XenialPublicKey" />
+    <CompilerVisibleProperty Include="XenialModule" />
     <CompilerVisibleProperty Include="PackageId" />
   </ItemGroup>
   

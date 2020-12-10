@@ -25,28 +25,23 @@ namespace Xenial.Framework.LicGen
             AddProcessExtentions(context);
             AddLicenseCheck(context);
 
-            if (context.SyntaxReceiver is SyntaxReceiver syntaxReceiver)
-            {
-                foreach (var canidate in syntaxReceiver.Canidates)
-                {
-                    if (context.Compilation is CSharpCompilation csharpCompilation)
-                    {
+            //if (context.SyntaxReceiver is SyntaxReceiver syntaxReceiver)
+            //{
+            //    foreach (var canidate in syntaxReceiver.Canidates)
+            //    {
+            //        if (context.Compilation is CSharpCompilation csharpCompilation)
+            //        {
 
-                        var model = context.Compilation.GetSemanticModel(canidate.SyntaxTree);
-                        var symbol = model.GetSymbolInfo(canidate);
-                        if (symbol.Symbol != null)
-                        {
-                            var attributes = context.Compilation.Assembly.GetAttributes();
-                            //var attributes = symbol.Symbol.GetAttributes();
-                        }
-
-                        // if (!Debugger.IsAttached)
-                        // {
-                        //     Debugger.Launch();
-                        // }
-                    }
-                }
-            }
+            //            var model = context.Compilation.GetSemanticModel(canidate.SyntaxTree);
+            //            var symbol = model.GetSymbolInfo(canidate);
+            //            if (symbol.Symbol != null)
+            //            {
+            //                var attributes = context.Compilation.Assembly.GetAttributes();
+            //                //var attributes = symbol.Symbol.GetAttributes();
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         private static void AddPublicKeyTokenAttribute(GeneratorExecutionContext context)
@@ -72,7 +67,7 @@ namespace Xenial.Framework.LicGen
 
 
             var syntax = syntaxWriter.ToString();
-            var source = Microsoft.CodeAnalysis.Text.SourceText.From(syntax, Encoding.UTF8);
+            var source = SourceText.From(syntax, Encoding.UTF8);
             context.AddSource("XenialPublicKeyAttribute.g.cs", source);
         }
 
@@ -94,7 +89,7 @@ namespace Xenial.Framework.LicGen
             syntaxWriter.CloseBrace();
 
             var syntax = syntaxWriter.ToString();
-            var source = Microsoft.CodeAnalysis.Text.SourceText.From(syntax, Encoding.UTF8);
+            var source = SourceText.From(syntax, Encoding.UTF8);
             context.AddSource("XenialCheckLicenceAttribute.g.cs", source);
         }
 
@@ -138,7 +133,7 @@ namespace Xenial.Framework.LicGen
             syntaxWriter.CloseBrace();
 
             var syntax = syntaxWriter.ToString();
-            var source = Microsoft.CodeAnalysis.Text.SourceText.From(syntax, Encoding.UTF8);
+            var source = SourceText.From(syntax, Encoding.UTF8);
             context.AddSource("XenialProcessExtensions.g.cs", source);
         }
 
@@ -146,16 +141,18 @@ namespace Xenial.Framework.LicGen
         {
             var xenialPublicKey = GetXenialPublicKey(context);
             var xenialProduct = GetXenialProduct(context);
+            var xenialModule = GetXenialModuleName(context);
 
             var manifestResourceStreamName = $"{GetType().Assembly.GetName().Name}.XenialLicenseCheck.template.cs";
             var checkStream = GetType().Assembly.GetManifestResourceStream(manifestResourceStreamName);
             var reader = new StreamReader(checkStream);
             var checkTemplate = reader.ReadToEnd();
             var syntax = checkTemplate
+                .Replace("__XenialModule__", xenialModule)
                 .Replace("%ProductName%", xenialProduct)
                 .Replace("%PulicKeyToken%", xenialPublicKey);
 
-            var source = Microsoft.CodeAnalysis.Text.SourceText.From(syntax, Encoding.UTF8);
+            var source = SourceText.From(syntax, Encoding.UTF8);
             context.AddSource("XenialLicenseCheck.g.cs", source);
         }
 
@@ -163,7 +160,7 @@ namespace Xenial.Framework.LicGen
 
 #pragma warning disable RS2008 // Enable analyzer release tracking
 #pragma warning disable RS1033 // Define diagnostic description correctly
-        private static readonly DiagnosticDescriptor cannotFindPublicKeyRule = new DiagnosticDescriptor(
+        private static readonly DiagnosticDescriptor cannotFindPublicKeyRule = new(
             "XENLIC0001",
             "Cannot find XenialPublicKey",
             "Make sure you made XenialPublicKey visible to the compiler",
@@ -173,7 +170,7 @@ namespace Xenial.Framework.LicGen
             description: "Make sure you made XenialPublicKey visible to the compiler"
         );
 
-        private static readonly DiagnosticDescriptor cannotFindProductRule = new DiagnosticDescriptor(
+        private static readonly DiagnosticDescriptor cannotFindProductRule = new(
             "XENLIC0002",
             "Cannot find PackageId",
             "Make sure you made PackageId visible to the compiler",
@@ -181,6 +178,16 @@ namespace Xenial.Framework.LicGen
             DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
             description: "Make sure you made PackageId visible to the compiler"
+        );
+
+        private static readonly DiagnosticDescriptor cannotFindXenialModule = new(
+            "XENLIC0003",
+            "Cannot find XenialModule",
+            "Make sure you made XenialModule visible to the compiler",
+            category,
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true,
+            description: "Make sure you made XenialModule visible to the compiler"
         );
 
         private static string GetXenialPublicKey(GeneratorExecutionContext context)
@@ -208,6 +215,20 @@ namespace Xenial.Framework.LicGen
                 return xenialProduct ?? string.Empty;
             }
             context.ReportDiagnostic(Diagnostic.Create(cannotFindProductRule, Location.None));
+            return string.Empty;
+        }
+
+        private static string GetXenialModuleName(GeneratorExecutionContext context)
+        {
+            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.XenialModule", out var xenialModule))
+            {
+                if (string.IsNullOrEmpty(xenialModule))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(cannotFindXenialModule, Location.None));
+                }
+                return xenialModule ?? string.Empty;
+            }
+            context.ReportDiagnostic(Diagnostic.Create(cannotFindXenialModule, Location.None));
             return string.Empty;
         }
 
