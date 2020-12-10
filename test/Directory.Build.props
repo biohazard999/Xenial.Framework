@@ -7,6 +7,7 @@
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <TargetFrameworks>$(Net5Version);$(NetCoreVersion);$(FullFrameworkVersion)</TargetFrameworks>
+    <NoWarn>CA1014;$(NoWarn)</NoWarn>
   </PropertyGroup>
 	
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
