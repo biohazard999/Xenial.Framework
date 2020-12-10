@@ -14,56 +14,20 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Xenial.Framework.LicGen
 {
-    //[CompilerGenerated]
-    //[AttributeUsage(AttributeTargets.Assembly)]
-    //public class XenialPublicKeyAttribute : Attribute
-    //{
-    //    public string PublicKey { get; }
-    //    public XenialPublicKeyAttribute(string publicKey)
-    //    {
-
-    //    }
-    //}
     [Generator]
     public class LicenseGenerator : ISourceGenerator
     {
         public void Execute(GeneratorExecutionContext context)
         {
-            var publicKeyAttributeSyntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
-            // #if DEBUG
-            //             if (!Debugger.IsAttached)
-            //             {
-            //                 Debugger.Launch();
-            //             }
-            // #endif
+            AddPublicKeyTokenAttribute(context);
+//#if DEBUG
+//            while (!Debugger.IsAttached)
+//            {
+//                Debugger.Launch();
+//            }
+//#endif
+            AddCheckLicenceAttribute(context);
 
-            publicKeyAttributeSyntaxWriter.WriteLine("using System;");
-            publicKeyAttributeSyntaxWriter.WriteLine("using System.Runtime.CompilerServices;");
-            publicKeyAttributeSyntaxWriter.WriteLine();
-            publicKeyAttributeSyntaxWriter.WriteLine("namespace Xenial;");
-            publicKeyAttributeSyntaxWriter.OpenBrace();
-            publicKeyAttributeSyntaxWriter.WriteLine();
-            publicKeyAttributeSyntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Assembly)]");
-            publicKeyAttributeSyntaxWriter.WriteLine("[CompilerGenerated]");
-            publicKeyAttributeSyntaxWriter.WriteLine("public class XenialPublicKeyAttribute : Attribute");
-            publicKeyAttributeSyntaxWriter.OpenBrace();
-            publicKeyAttributeSyntaxWriter.WriteLine("public string PublicKey { get; }");
-            publicKeyAttributeSyntaxWriter.WriteLine("public XenialPublicKeyAttribute(string publicKey)");
-            publicKeyAttributeSyntaxWriter.Indent();
-            publicKeyAttributeSyntaxWriter.WriteLine("=> PublicKey = publicKey;");
-            publicKeyAttributeSyntaxWriter.UnIndent();
-
-            publicKeyAttributeSyntaxWriter.CloseBrace();
-            publicKeyAttributeSyntaxWriter.CloseBrace();
-
-#if DEBUG
-            while (!Debugger.IsAttached)
-            {
-                Debugger.Launch();
-            }
-#endif
-
-            var syntax = publicKeyAttributeSyntaxWriter.ToString();
 
             if (context.SyntaxReceiver is SyntaxReceiver syntaxReceiver)
             {
@@ -87,6 +51,60 @@ namespace Xenial.Framework.LicGen
                     }
                 }
             }
+        }
+
+        private static void AddPublicKeyTokenAttribute(GeneratorExecutionContext context)
+        {
+            var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
+            syntaxWriter.WriteLine("using System;");
+            syntaxWriter.WriteLine("using System.Runtime.CompilerServices;");
+            syntaxWriter.WriteLine();
+            syntaxWriter.WriteLine("namespace Xenial");
+            syntaxWriter.OpenBrace();
+            syntaxWriter.WriteLine();
+            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Assembly)]");
+            syntaxWriter.WriteLine("[CompilerGenerated]");
+            syntaxWriter.WriteLine("internal class XenialPublicKeyAttribute : Attribute");
+            syntaxWriter.OpenBrace();
+            syntaxWriter.WriteLine("public string PublicKey { get; }");
+            syntaxWriter.WriteLine("public XenialPublicKeyAttribute(string publicKey)");
+            syntaxWriter.Indent();
+            syntaxWriter.WriteLine("=> PublicKey = publicKey;");
+            syntaxWriter.UnIndent();
+            syntaxWriter.UnIndent();
+
+            syntaxWriter.CloseBrace();
+            syntaxWriter.CloseBrace();
+
+
+            var syntax = syntaxWriter.ToString();
+            var source = Microsoft.CodeAnalysis.Text.SourceText.From(syntax, Encoding.UTF8);
+            context.AddSource("XenialPublicKeyAttribute.g.cs", source);
+        }
+
+        private static void AddCheckLicenceAttribute(GeneratorExecutionContext context)
+        {
+            var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
+            syntaxWriter.WriteLine("using System;");
+            syntaxWriter.WriteLine("using System.Runtime.CompilerServices;");
+            syntaxWriter.WriteLine();
+            syntaxWriter.WriteLine("namespace Xenial");
+            syntaxWriter.OpenBrace();
+            syntaxWriter.WriteLine();
+            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class)]");
+            syntaxWriter.WriteLine("[CompilerGenerated]");
+            syntaxWriter.WriteLine("internal class XenialCheckLicenceAttribute : Attribute");
+            syntaxWriter.OpenBrace();
+            syntaxWriter.WriteLine("public XenialCheckLicenceAttribute() { }");
+            syntaxWriter.UnIndent();
+
+            syntaxWriter.CloseBrace();
+            syntaxWriter.CloseBrace();
+
+
+            var syntax = syntaxWriter.ToString();
+            var source = Microsoft.CodeAnalysis.Text.SourceText.From(syntax, Encoding.UTF8);
+            context.AddSource("XenialCheckLicenceAttribute.g.cs", source);
         }
 
         public void Initialize(GeneratorInitializationContext context)

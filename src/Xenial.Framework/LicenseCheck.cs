@@ -5,8 +5,15 @@ using System.Text;
 
 using Standard.Licensing.Validation;
 
+using Xenial;
+
 namespace Xenial.Framework
 {
+    [XenialCheckLicence]
+    internal class Foo
+    {
+
+    }
     //internal static class LicenseCheck
     //{
     //    internal static bool CheckLicense()

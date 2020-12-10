@@ -13,4 +13,16 @@
     <ProjectReference Include="..\Xenial.Framework.LicGen\Xenial.Framework.LicGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
   
+  <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
+    <ItemGroup>
+      <AssemblyAttribute Include="Xenial.XenialPublicKeyAttribute" Condition="'$(XenialPublicKey)' != ''" >
+        <_Parameter1>$(XenialPublicKey)</_Parameter1>
+      </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(PackageId)' != ''" >
+        <_Parameter1>XenialComponent</_Parameter1>
+        <_Parameter2>$(PackageId)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+
 </Project>
