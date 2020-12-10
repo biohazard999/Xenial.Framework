@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSymbols>false</IncludeSymbols>
     <IsPackable>true</IsPackable>
     <NoWarn>VSTHRD200;CA1014;$(NoWarn)</NoWarn>
     <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
@@ -11,12 +11,6 @@
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <CompilerVisibleProperty Include="XenialPublicKey" />
-    <CompilerVisibleProperty Include="XenialModule" />
-    <CompilerVisibleProperty Include="PackageId" />
-  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="MinVer" Version="2.3.1">
