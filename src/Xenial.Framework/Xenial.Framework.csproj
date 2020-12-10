@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <XenialModule>Framework</XenialModule>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
