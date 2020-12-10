@@ -10,6 +10,11 @@
     <XenialPublicKey>PLEASE SET BEFORE USE</XenialPublicKey>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
+
+  <ItemGroup>
+    <CompilerVisibleProperty Include="XenialPublicKey" />
+    <CompilerVisibleProperty Include="PackageId" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="MinVer" Version="2.3.1">

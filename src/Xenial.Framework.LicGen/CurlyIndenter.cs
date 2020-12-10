@@ -32,8 +32,8 @@ namespace Xenial.Framework.LicGen
 
         public void CloseBrace()
         {
-            WriteLine("}");
             UnIndent();
+            WriteLine("}");
         }
 
         public override string ToString() => indentedTextWriter.InnerWriter.ToString();
