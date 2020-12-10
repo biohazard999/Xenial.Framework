@@ -8,7 +8,6 @@
     -->
     <BuildOutputTargetFolder>tools</BuildOutputTargetFolder>
     <!-- For the sake of demoing, put the package output into a parent folder -->
-    <PackageOutputPath>..\artifacts\packages</PackageOutputPath>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <!-- Compiling for .NET Framework on non-Windows systems is not yet supported-->

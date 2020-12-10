@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+THIRD-PARTY-NOTICES.TXT
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

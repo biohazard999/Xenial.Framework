@@ -5,7 +5,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <IsPackable>true</IsPackable>
-    <NoWarn>VSTHRD200;CA1014;$(NoWarn)</NoWarn>
+    <NoWarn>VSTHRD200;CA1014;CA5392;$(NoWarn)</NoWarn>
     <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
     <XenialPublicKey></XenialPublicKey>
     <XenialModule></XenialModule>
@@ -28,8 +28,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.LicGen/Xenial.Framework.LicGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.MsBuild\Xenial.Framework.MsBuild.csproj" >
+    <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.LicGen/Xenial.Framework.LicGen.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.MsBuild\Xenial.Framework.MsBuild.csproj"
+                      ReferenceOutputAssembly="false">
       <PrivateAssets>None</PrivateAssets>
     </ProjectReference>
   </ItemGroup>
