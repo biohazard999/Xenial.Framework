@@ -2,6 +2,8 @@
 using System.Linq.Expressions;
 using System.Text;
 
+using Xenial.Data;
+
 namespace Xenial.Utils
 {
     /// <summary>
@@ -9,6 +11,11 @@ namespace Xenial.Utils
     /// </summary>
     public static class ExpressionHelper
     {
+        /// <summary>
+        /// Static Factory method to create
+        /// </summary>
+        public static ExpressionHelper<TObj> Create<TObj>() => new();
+
         /// <summary>
         /// Gets the member expression.
         /// </summary>

@@ -14,14 +14,7 @@ namespace Xenial.Data
     /// <typeparam name="TObj"></typeparam>
     public class ExpressionHelper<TObj>
     {
-        private ExpressionHelper() { }
-
-#pragma warning disable CA1000 //Factory method for future caching
-        /// <summary>
-        /// Static Factory method to create
-        /// </summary>
-        public static ExpressionHelper<TObj> Create() => new();
-#pragma warning restore CA1000
+        internal ExpressionHelper() { }
 
         /// <summary>
         /// Returns a PropertyPath. Multiple nestings are allowed.
