@@ -1,0 +1,11 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <GenerateXenialLicense>true</GenerateXenialLicense>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <CompilerVisibleProperty Include="GenerateXenialLicense" />
+  </ItemGroup>
+
+</Project>
