@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <_GeneratedValidateXenialLicenseFile>$(IntermediateOutputPath)$(MSBuildProjectName).Xenial.License.xml</_GeneratedValidateXenialLicenseFile>
+    <_XenialGeneratedLicenseFile></_XenialGeneratedLicenseFile>
   </PropertyGroup>
 
   <Target Name="ValidateXenialLicense" BeforeTargets="CoreCompile" DependsOnTargets="PrepareForBuild;_CoreValidateXenialLicense" />
@@ -14,7 +15,7 @@
       <Output TaskParameter="GeneratedLicenseFile" PropertyName="_XenialGeneratedLicenseFile"/>
     </XenialLicenseValidation>
 
-    <Warning Importance="high" Text="My path is $(_GeneratedValidateXenialLicenseFile)"/>
+    <Warning Text="My path is $(_GeneratedValidateXenialLicenseFile)" />
     
     <WriteLinesToFile File="$(_GeneratedValidateXenialLicenseFile)"
                       Overwrite="true"
