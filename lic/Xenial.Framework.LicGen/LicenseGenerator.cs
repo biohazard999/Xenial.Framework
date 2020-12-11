@@ -22,7 +22,6 @@ namespace Xenial.Framework.LicGen
         {
             AddPublicKeyTokenAttribute(context);
             AddCheckLicenceAttribute(context);
-            AddProcessExtentions(context);
             AddLicenseCheck(context);
 
             //if (context.SyntaxReceiver is SyntaxReceiver syntaxReceiver)
@@ -93,66 +92,17 @@ namespace Xenial.Framework.LicGen
             context.AddSource("XenialCheckLicenceAttribute.g.cs", source);
         }
 
-        private static void AddProcessExtentions(GeneratorExecutionContext context)
-        {
-            var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
-            syntaxWriter.WriteLine("using System;");
-            syntaxWriter.WriteLine("using System.Text;");
-            syntaxWriter.WriteLine("using System.Diagnostics;");
-            syntaxWriter.WriteLine("using System.Runtime.CompilerServices;");
-            syntaxWriter.WriteLine("using System.Runtime.InteropServices;");
-            syntaxWriter.WriteLine();
-            syntaxWriter.WriteLine("namespace Xenial");
-            syntaxWriter.OpenBrace();
-            syntaxWriter.WriteLine();
-            syntaxWriter.WriteLine("[CompilerGenerated]");
-            syntaxWriter.WriteLine("internal static class XenialProcessExtensions");
-            syntaxWriter.OpenBrace();
-
-            syntaxWriter.WriteLine("[DllImport(\"kernel32.dll\")]");
-            syntaxWriter.WriteLine("private static extern uint GetModuleFileName(IntPtr hModule, StringBuilder lpFilename, int nSize);");
-            syntaxWriter.WriteLine("private static readonly int maxPathLenght = 255;");
-            syntaxWriter.WriteLine();
-            syntaxWriter.WriteLine("private static readonly Lazy<string> executablePath = new Lazy<string>(() =>");
-            syntaxWriter.OpenBrace();
-            syntaxWriter.WriteLine("#if !FULL_FRAMEWORK");
-            syntaxWriter.WriteLine("if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))");
-            syntaxWriter.OpenBrace();
-            syntaxWriter.WriteLine("#endif");
-            syntaxWriter.WriteLine("var sb = new StringBuilder(maxPathLenght);");
-            syntaxWriter.WriteLine("GetModuleFileName(IntPtr.Zero, sb, maxPathLenght);");
-            syntaxWriter.WriteLine("return sb.ToString();");
-            syntaxWriter.WriteLine("#if !FULL_FRAMEWORK");
-            syntaxWriter.CloseBrace();
-
-            syntaxWriter.WriteLine("return Process.GetCurrentProcess().MainModule.FileName;");
-            syntaxWriter.WriteLine("#endif");
-            syntaxWriter.UnIndent();
-
-            syntaxWriter.WriteLine("});");
-            syntaxWriter.WriteLine();
-            syntaxWriter.WriteLine("internal static string ExecutablePath => executablePath.Value;");
-
-            syntaxWriter.CloseBrace();
-            syntaxWriter.CloseBrace();
-
-            var syntax = syntaxWriter.ToString();
-            var source = SourceText.From(syntax, Encoding.UTF8);
-            context.AddSource("XenialProcessExtensions.g.cs", source);
-        }
-
         private void AddLicenseCheck(GeneratorExecutionContext context)
         {
             var xenialPublicKey = GetXenialPublicKey(context);
             var xenialProduct = GetXenialProduct(context);
-            var xenialModule = GetXenialModuleName(context);
 
             var manifestResourceStreamName = $"{GetType().Assembly.GetName().Name}.XenialLicenseCheck.template.cs";
             var checkStream = GetType().Assembly.GetManifestResourceStream(manifestResourceStreamName);
             var reader = new StreamReader(checkStream);
             var checkTemplate = reader.ReadToEnd();
             var syntax = checkTemplate
-                .Replace("__XenialModule__", xenialModule)
+                .Replace("__NAMESPACE__", context.Compilation.AssemblyName)
                 .Replace("%ProductName%", xenialProduct)
                 .Replace("%PulicKeyToken%", xenialPublicKey);
 
@@ -219,20 +169,6 @@ namespace Xenial.Framework.LicGen
                 return xenialProduct ?? string.Empty;
             }
             context.ReportDiagnostic(Diagnostic.Create(cannotFindProductRule, Location.None));
-            return string.Empty;
-        }
-
-        private static string GetXenialModuleName(GeneratorExecutionContext context)
-        {
-            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.XenialModule", out var xenialModule))
-            {
-                if (string.IsNullOrEmpty(xenialModule))
-                {
-                    context.ReportDiagnostic(Diagnostic.Create(cannotFindXenialModule, Location.None));
-                }
-                return xenialModule ?? string.Empty;
-            }
-            context.ReportDiagnostic(Diagnostic.Create(cannotFindXenialModule, Location.None));
             return string.Empty;
         }
 
