@@ -11,18 +11,18 @@ namespace Xenial.Framework.ModelBuilders
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IModelBuilder<T>
+    /// <typeparam name="TClassType"></typeparam>
+    public interface IModelBuilder<TClassType>
     {
         /// <summary>
         /// Configures the attribute.
         /// </summary>
-        /// <typeparam name="TAttr">The type of the attribute.</typeparam>
+        /// <typeparam name="TAttribute">The type of the attribute.</typeparam>
         /// <param name="action">The action.</param>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        IModelBuilder<T> ConfigureAttribute<TAttr>(Action<TAttr> action, Func<TAttr, bool>? predicate = null)
-            where TAttr : Attribute;
+        IModelBuilder<TClassType> ConfigureAttribute<TAttribute>(Action<TAttribute> action, Func<TAttribute, bool>? predicate = null)
+            where TAttribute : Attribute;
 
         /// <summary>
         /// Finds the attribute.
@@ -36,19 +36,19 @@ namespace Xenial.Framework.ModelBuilders
         /// <summary>
         /// Fors the specified property.
         /// </summary>
-        /// <typeparam name="TProp">The type of the property.</typeparam>
-        /// <param name="property">The property.</param>
+        /// <typeparam name="TPropertyType">The type of the property.</typeparam>
+        /// <param name="propertyExpression">The property.</param>
         /// <returns></returns>
-        PropertyBuilder<TProp, T> For<TProp>(Expression<Func<T, TProp>> property);
+        PropertyBuilder<TPropertyType, TClassType> For<TPropertyType>(Expression<Func<TClassType, TPropertyType>> propertyExpression);
 
         /// <summary>
         /// Nesteds the ListView identifier.
         /// </summary>
-        /// <typeparam name="TRet">The type of the ret.</typeparam>
-        /// <param name="expr">The expr.</param>
+        /// <typeparam name="TListType">The type of the ret.</typeparam>
+        /// <param name="expression">The expression.</param>
         /// <returns></returns>
-        string NestedListViewId<TRet>(Expression<Func<T, TRet>> expr)
-            where TRet : IEnumerable;
+        string NestedListViewId<TListType>(Expression<Func<TClassType, TListType>> expression)
+            where TListType : IEnumerable;
 
         /// <summary>
         /// Removes the attribute.
@@ -56,7 +56,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <typeparam name="TAttr">The type of the attribute.</typeparam>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
-        IModelBuilder<T> RemoveAttribute<TAttr>(Func<TAttr, bool>? predicate = null)
+        IModelBuilder<TClassType> RemoveAttribute<TAttr>(Func<TAttr, bool>? predicate = null)
             where TAttr : Attribute;
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Xenial.Framework.ModelBuilders
         /// </summary>
         /// <param name="attributeType">Type of the attribute.</param>
         /// <returns></returns>
-        IModelBuilder<T> RemoveAttribute(Type attributeType);
+        IModelBuilder<TClassType> RemoveAttribute(Type attributeType);
 
         /// <summary>
         /// Withes the attribute.
@@ -72,7 +72,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <typeparam name="TAttribute">The type of the attribute.</typeparam>
         /// <param name="configureAction">The configure action.</param>
         /// <returns></returns>
-        IModelBuilder<T> WithAttribute<TAttribute>(Action<TAttribute>? configureAction = null)
+        IModelBuilder<TClassType> WithAttribute<TAttribute>(Action<TAttribute>? configureAction = null)
             where TAttribute : Attribute, new();
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Xenial.Framework.ModelBuilders
         /// </summary>
         /// <param name="attribute">The attribute.</param>
         /// <returns></returns>
-        IModelBuilder<T> WithAttribute(Attribute attribute);
+        IModelBuilder<TClassType> WithAttribute(Attribute attribute);
 
         /// <summary>
         /// Withes the attribute.
@@ -89,7 +89,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <param name="attribute">The attribute.</param>
         /// <param name="configureAction">The configure action.</param>
         /// <returns></returns>
-        IModelBuilder<T> WithAttribute<TAttribute>(TAttribute attribute, Action<TAttribute>? configureAction = null)
+        IModelBuilder<TClassType> WithAttribute<TAttribute>(TAttribute attribute, Action<TAttribute>? configureAction = null)
             where TAttribute : Attribute;
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <value>
         /// The exp.
         /// </value>
-        ExpressionHelper<T> Exp { get; }
+        ExpressionHelper<TClassType> ExpressionHelper { get; }
 
         /// <summary>
         /// Gets the type information.

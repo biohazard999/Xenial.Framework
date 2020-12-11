@@ -86,7 +86,7 @@ namespace Xenial.Framework.ModelBuilders
         public static IModelBuilder<T> HasDefaultProperty<T, TProp>(this IModelBuilder<T> builder, Expression<Func<T, TProp>> property)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
-            return builder.HasDefaultProperty(builder.Exp.Property(property));
+            return builder.HasDefaultProperty(builder.ExpressionHelper.Property(property));
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Xenial.Framework.ModelBuilders
         public static IModelBuilder<T> HasObjectCaptionFormat<T, TProp>(this IModelBuilder<T> builder, Expression<Func<T, TProp>> property)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
-            return builder.HasObjectCaptionFormat($"{{0:{builder.Exp.Property(property)}}}");
+            return builder.HasObjectCaptionFormat($"{{0:{builder.ExpressionHelper.Property(property)}}}");
         }
 
         /// <summary>

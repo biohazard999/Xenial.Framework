@@ -7,16 +7,16 @@ namespace Xenial.Framework.ModelBuilders
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TType">The type of the type.</typeparam>
-    public interface IPropertyBuilder<T, TType>
+    /// <typeparam name="TPropertyType"></typeparam>
+    /// <typeparam name="TClassType">The type of the type.</typeparam>
+    public interface IPropertyBuilder<TPropertyType, TClassType>
     {
         /// <summary>
         /// Removes the attribute.
         /// </summary>
         /// <typeparam name="TAttribute">The type of the attribute.</typeparam>
         /// <returns></returns>
-        IPropertyBuilder<T, TType> RemoveAttribute<TAttribute>()
+        IPropertyBuilder<TPropertyType, TClassType> RemoveAttribute<TAttribute>()
             where TAttribute : Attribute;
 
         /// <summary>
@@ -24,14 +24,14 @@ namespace Xenial.Framework.ModelBuilders
         /// </summary>
         /// <param name="attribute">The attribute.</param>
         /// <returns></returns>
-        IPropertyBuilder<T, TType> RemoveAttribute(Attribute attribute);
+        IPropertyBuilder<TPropertyType, TClassType> RemoveAttribute(Attribute attribute);
 
         /// <summary>
         /// Withes the attribute.
         /// </summary>
         /// <typeparam name="TAttribute">The type of the attribute.</typeparam>
         /// <returns></returns>
-        IPropertyBuilder<T, TType> WithAttribute<TAttribute>()
+        IPropertyBuilder<TPropertyType, TClassType> WithAttribute<TAttribute>()
             where TAttribute : Attribute, new();
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Xenial.Framework.ModelBuilders
         /// </summary>
         /// <typeparam name="TAttribute">The type of the attribute.</typeparam>
         /// <returns></returns>
-        IPropertyBuilder<T, TType> WithAttribute<TAttribute>(TAttribute attribute)
+        IPropertyBuilder<TPropertyType, TClassType> WithAttribute<TAttribute>(TAttribute attribute)
             where TAttribute : Attribute;
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <typeparam name="TAttribute">The type of the attribute.</typeparam>
         /// <param name="configureAction">The configure action.</param>
         /// <returns></returns>
-        IPropertyBuilder<T, TType> WithAttribute<TAttribute>(Action<TAttribute> configureAction)
+        IPropertyBuilder<TPropertyType, TClassType> WithAttribute<TAttribute>(Action<TAttribute> configureAction)
             where TAttribute : Attribute, new();
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <param name="attribute">The attribute.</param>
         /// <param name="configureAction">The configure action.</param>
         /// <returns></returns>
-        IPropertyBuilder<T, TType> WithAttribute<TAttribute>(TAttribute attribute, Action<TAttribute>? configureAction = null)
+        IPropertyBuilder<TPropertyType, TClassType> WithAttribute<TAttribute>(TAttribute attribute, Action<TAttribute>? configureAction = null)
             where TAttribute : Attribute;
 
         /// <summary>

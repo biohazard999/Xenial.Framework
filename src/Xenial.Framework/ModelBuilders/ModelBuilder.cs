@@ -63,8 +63,8 @@ namespace Xenial.Framework.ModelBuilders
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class ModelBuilder<T> : BuilderManager, ITypeInfoProvider, IModelBuilder<T>
+    /// <typeparam name="TClassType"></typeparam>
+    public class ModelBuilder<TClassType> : BuilderManager, ITypeInfoProvider, IModelBuilder<TClassType>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelBuilder{T}"/> class.
@@ -86,7 +86,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <value>
         /// The type of the target.
         /// </value>
-        public Type TargetType { get; } = typeof(T);
+        public Type TargetType { get; } = typeof(TClassType);
 
         /// <summary>
         /// Gets the exp.
@@ -95,7 +95,7 @@ namespace Xenial.Framework.ModelBuilders
         /// The exp.
         /// </value>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public ExpressionHelper<T> Exp { get; } = new ExpressionHelper<T>();
+        public ExpressionHelper<TClassType> ExpressionHelper { get; } = new ExpressionHelper<TClassType>();
 
         /// <summary>
         /// Gets the default detail view.
@@ -103,7 +103,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <value>
         /// The default detail view.
         /// </value>
-        public virtual string DefaultDetailView => ModelNodeIdHelper.GetDetailViewId(typeof(T));
+        public virtual string DefaultDetailView => ModelNodeIdHelper.GetDetailViewId(typeof(TClassType));
 
         /// <summary>
         /// Gets the default ListView.
@@ -111,7 +111,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <value>
         /// The default ListView.
         /// </value>
-        public virtual string DefaultListView => ModelNodeIdHelper.GetListViewId(typeof(T));
+        public virtual string DefaultListView => ModelNodeIdHelper.GetListViewId(typeof(TClassType));
 
         /// <summary>
         /// Gets the default lookup ListView.
@@ -119,7 +119,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <value>
         /// The default lookup ListView.
         /// </value>
-        public virtual string DefaultLookupListView => ModelNodeIdHelper.GetLookupListViewId(typeof(T));
+        public virtual string DefaultLookupListView => ModelNodeIdHelper.GetLookupListViewId(typeof(TClassType));
 
         /// <summary>
         /// Nesteds the ListView identifier.
@@ -127,16 +127,16 @@ namespace Xenial.Framework.ModelBuilders
         /// <typeparam name="TRet">The type of the ret.</typeparam>
         /// <param name="expr">The expr.</param>
         /// <returns></returns>
-        public virtual string NestedListViewId<TRet>(Expression<Func<T, TRet>> expr)
+        public virtual string NestedListViewId<TRet>(Expression<Func<TClassType, TRet>> expr)
             where TRet : IEnumerable
-                => ModelNodeIdHelper.GetNestedListViewId(typeof(T), Exp.Property(expr));
+                => ModelNodeIdHelper.GetNestedListViewId(typeof(TClassType), ExpressionHelper.Property(expr));
 
         /// <summary>
         /// Withes the attribute.
         /// </summary>
         /// <param name="attribute">The attribute.</param>
         /// <returns></returns>
-        public IModelBuilder<T> WithAttribute(Attribute attribute)
+        public IModelBuilder<TClassType> WithAttribute(Attribute attribute)
         {
             TypeInfo.AddAttribute(attribute);
             return this;
@@ -149,7 +149,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <param name="attribute">The attribute.</param>
         /// <param name="configureAction">The configure action.</param>
         /// <returns></returns>
-        public IModelBuilder<T> WithAttribute<TAttribute>(TAttribute attribute, Action<TAttribute>? configureAction = null)
+        public IModelBuilder<TClassType> WithAttribute<TAttribute>(TAttribute attribute, Action<TAttribute>? configureAction = null)
             where TAttribute : Attribute
         {
             configureAction?.Invoke(attribute);
@@ -162,7 +162,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <typeparam name="TAttribute">The type of the attribute.</typeparam>
         /// <param name="configureAction">The configure action.</param>
         /// <returns></returns>
-        public IModelBuilder<T> WithAttribute<TAttribute>(Action<TAttribute>? configureAction = null)
+        public IModelBuilder<TClassType> WithAttribute<TAttribute>(Action<TAttribute>? configureAction = null)
             where TAttribute : Attribute, new()
             => WithAttribute(new TAttribute(), configureAction);
 
@@ -172,7 +172,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <param name="attributeType">Type of the attribute.</param>
         /// <returns></returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public IModelBuilder<T> RemoveAttribute(Type attributeType)
+        public IModelBuilder<TClassType> RemoveAttribute(Type attributeType)
         {
             if (TypeInfo is TypeInfo typeInfo)
             {
@@ -194,7 +194,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public IModelBuilder<T> RemoveAttribute<TAttr>(Func<TAttr, bool>? predicate = null)
+        public IModelBuilder<TClassType> RemoveAttribute<TAttr>(Func<TAttr, bool>? predicate = null)
             where TAttr : Attribute
         {
             var attr = FindAttribute(predicate);
@@ -210,24 +210,24 @@ namespace Xenial.Framework.ModelBuilders
         /// <summary>
         /// Finds the attribute.
         /// </summary>
-        /// <typeparam name="TAttr">The type of the attribute.</typeparam>
+        /// <typeparam name="TAttribute">The type of the attribute.</typeparam>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public TAttr? FindAttribute<TAttr>(Func<TAttr, bool>? predicate = null)
-            where TAttr : Attribute
-            => TypeInfo.Attributes.OfType<TAttr>().FirstOrDefault(predicate ?? (attr => true));
+        public TAttribute? FindAttribute<TAttribute>(Func<TAttribute, bool>? predicate = null)
+            where TAttribute : Attribute
+            => TypeInfo.Attributes.OfType<TAttribute>().FirstOrDefault(predicate ?? (attr => true));
 
         /// <summary>
         /// Configures the attribute.
         /// </summary>
-        /// <typeparam name="TAttr">The type of the attribute.</typeparam>
+        /// <typeparam name="TAttribute">The type of the attribute.</typeparam>
         /// <param name="action">The action.</param>
         /// <param name="predicate">The predicate.</param>
         /// <returns></returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public IModelBuilder<T> ConfigureAttribute<TAttr>(Action<TAttr> action, Func<TAttr, bool>? predicate = null)
-            where TAttr : Attribute
+        public IModelBuilder<TClassType> ConfigureAttribute<TAttribute>(Action<TAttribute> action, Func<TAttribute, bool>? predicate = null)
+            where TAttribute : Attribute
         {
             var attr = FindAttribute(predicate);
 
@@ -242,14 +242,14 @@ namespace Xenial.Framework.ModelBuilders
         /// <summary>
         /// Fors the specified property.
         /// </summary>
-        /// <typeparam name="TProp">The type of the property.</typeparam>
+        /// <typeparam name="TPropertyType">The type of the property.</typeparam>
         /// <param name="property">The property.</param>
         /// <returns></returns>
-        public PropertyBuilder<TProp, T> For<TProp>(Expression<Func<T, TProp>> property)
+        public PropertyBuilder<TPropertyType, TClassType> For<TPropertyType>(Expression<Func<TClassType, TPropertyType>> property)
         {
             _ = property ?? throw new ArgumentNullException(nameof(property));
 
-            var builder = PropertyBuilder.PropertyBuilderFor<TProp, T>(TypeInfo.FindMember(Exp.Property(property)));
+            var builder = PropertyBuilder.PropertyBuilderFor<TPropertyType, TClassType>(TypeInfo.FindMember(ExpressionHelper.Property(property)));
 
             Add(builder);
 
