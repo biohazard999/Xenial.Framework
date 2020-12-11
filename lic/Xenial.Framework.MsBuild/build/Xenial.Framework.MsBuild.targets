@@ -14,7 +14,7 @@
       <Output TaskParameter="GeneratedLicenseFile" PropertyName="_XenialGeneratedLicenseFile"/>
     </XenialLicenseValidation>
 
-    <Message Importance="high" Text="My path is $(_GeneratedValidateXenialLicenseFile)"/>
+    <Warning Importance="high" Text="My path is $(_GeneratedValidateXenialLicenseFile)"/>
     
     <WriteLinesToFile File="$(_GeneratedValidateXenialLicenseFile)"
                       Overwrite="true"
