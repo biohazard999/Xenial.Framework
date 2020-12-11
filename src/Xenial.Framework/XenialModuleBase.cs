@@ -21,7 +21,7 @@ namespace Xenial.Framework
         /// <summary>
         /// Initializes a new instance of the <see cref="XenialModuleBase"/> class.
         /// </summary>
-        public XenialModuleBase()
+        protected XenialModuleBase()
             => DiffsStore = new NullDiffsStore(GetType().Assembly);
 
         /// <summary>

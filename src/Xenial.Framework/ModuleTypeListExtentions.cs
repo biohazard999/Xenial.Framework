@@ -15,6 +15,7 @@ namespace DevExpress.ExpressApp
         /// <returns>The original <see cref="ModuleTypeList"/></returns>
         public static ModuleTypeList AndModuleTypes(this ModuleTypeList moduleTypeList, params Type[] types)
         {
+            _ = moduleTypeList ?? throw new ArgumentNullException(nameof(moduleTypeList));
             moduleTypeList.AddRange(types);
             return moduleTypeList;
         }
