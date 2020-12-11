@@ -55,6 +55,13 @@ namespace Xenial.Framework.MsBuild
         public void Initialize(GeneratorInitializationContext context) { }
         public void Execute(GeneratorExecutionContext context)
         {
+            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.CheckXenialLicense", out var checkLicenseStr)
+                && bool.TryParse(checkLicenseStr, out var checkLicense)
+                && !checkLicense)
+            {
+                return;
+            }
+
             var xenialLicense = Environment.GetEnvironmentVariable("XENIAL_LICENSE");
             if (string.IsNullOrEmpty(xenialLicense))
             {
@@ -117,11 +124,6 @@ namespace Xenial.Framework.MsBuild
 
         private static void AddXenialLicence(GeneratorExecutionContext context, string license)
         {
-            //if (!Debugger.IsAttached)
-            //{
-            //    Debugger.Launch();
-            //}
-
             if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.GenerateXenialLicense", out var generateLicenseStr)
                 && bool.TryParse(generateLicenseStr, out var generateLicense)
                 && !generateLicense)

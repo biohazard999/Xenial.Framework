@@ -1,6 +1,7 @@
 ﻿<Project>
 
   <PropertyGroup>
+    <CheckXenialLicense Condition="'$(CheckXenialLicense)' == ''">true</CheckXenialLicense>
     <GenerateXenialLicense Condition="'$(GenerateXenialLicense)' == ''">true</GenerateXenialLicense>
   </PropertyGroup>
 
