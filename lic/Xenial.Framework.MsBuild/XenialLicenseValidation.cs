@@ -102,8 +102,6 @@ namespace Xenial.Framework.MsBuild
 
             var base64 = Base64Encode(xenialLicense);
 
-            AddXenialLicenceAttribute(context);
-            UseXenialLicenceAttribute(context, base64);
             AddXenialLicence(context, base64);
 
             static string Base64Encode(string plainText)
@@ -114,42 +112,6 @@ namespace Xenial.Framework.MsBuild
 
             static string GetProfileDirectory()
                 => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".xenial");
-        }
-
-        private static void AddXenialLicenceAttribute(GeneratorExecutionContext context)
-        {
-            var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
-            syntaxWriter.WriteLine("using System;");
-            syntaxWriter.WriteLine("using System.Runtime.CompilerServices;");
-            syntaxWriter.WriteLine();
-            syntaxWriter.WriteLine("namespace Xenial");
-            syntaxWriter.OpenBrace();
-            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Assembly)]");
-            syntaxWriter.WriteLine("[CompilerGenerated]");
-            syntaxWriter.WriteLine("[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]");
-            syntaxWriter.WriteLine("internal class XenialLicenseAttribute : Attribute");
-            syntaxWriter.OpenBrace();
-            syntaxWriter.WriteLine("public string License { get; }");
-            syntaxWriter.WriteLine("public XenialLicenseAttribute(string license)");
-            syntaxWriter.Indent();
-            syntaxWriter.WriteLine("=> License = license;");
-            syntaxWriter.UnIndent();
-
-            syntaxWriter.CloseBrace();
-            syntaxWriter.CloseBrace();
-
-            var syntax = syntaxWriter.ToString();
-            var source = SourceText.From(syntax, Encoding.UTF8);
-            context.AddSource("XenialLicenseAttribute.g.cs", source);
-        }
-
-        private static void UseXenialLicenceAttribute(GeneratorExecutionContext context, string license)
-        {
-            var syntaxWriter = new StringBuilder();
-            syntaxWriter.AppendLine($"[assembly: Xenial.XenialLicenseAttribute(\"{license}\")]");
-            var syntax = syntaxWriter.ToString();
-            var source = SourceText.From(syntax, Encoding.UTF8);
-            context.AddSource("XenialLicense.g.cs", source);
         }
 
         private static void AddXenialLicence(GeneratorExecutionContext context, string license)
