@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>$(FullFrameworkVersion)</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
-    <GenerateXenialLicense>false</GenerateXenialLicense>
   </PropertyGroup>
 
   <ItemGroup>

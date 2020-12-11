@@ -5,10 +5,11 @@
     <TargetFramework>$(FullFrameworkVersion)</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <OutputType>Exe</OutputType>
+    <GenerateXenialLicense>true</GenerateXenialLicense>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Xenial.FeatureCenter.Module.Win\Xenial.FeatureCenter.Module.Win.csproj" />
   </ItemGroup>
-
+    
 </Project>

@@ -1,7 +1,7 @@
 ﻿<Project>
 
   <PropertyGroup>
-    <GenerateXenialLicense>true</GenerateXenialLicense>
+    <GenerateXenialLicense Condition="'$(GenerateXenialLicense)' == ''">true</GenerateXenialLicense>
   </PropertyGroup>
 
 </Project>
