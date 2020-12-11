@@ -10,9 +10,9 @@
           Inputs="$(MSBuildAllProjects)"
           Outputs="$(_GeneratedValidateXenialLicenseFile)">
 
-    <XenialValidation>
+    <XenialLicenseValidation>
       <Output TaskParameter="GeneratedLicenseFile" PropertyName="_XenialGeneratedLicenseFile"/>
-    </XenialValidation>
+    </XenialLicenseValidation>
 
     <Message Importance="high" Text="My path is $(_GeneratedValidateXenialLicenseFile)"/>
     

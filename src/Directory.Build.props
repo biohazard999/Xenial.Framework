@@ -31,10 +31,9 @@
     <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.LicGen/Xenial.Framework.LicGen.csproj"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false" />
-    <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.MsBuild\Xenial.Framework.MsBuild.csproj"
-                      ReferenceOutputAssembly="false">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.MsBuild\Xenial.Framework.MsBuild.csproj">
       <PrivateAssets>None</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <OutputItemType>Analyzer</OutputItemType>
     </ProjectReference>
   </ItemGroup>
   
