@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers.Text;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -116,6 +117,11 @@ namespace Xenial.Framework.MsBuild
 
         private static void AddXenialLicence(GeneratorExecutionContext context, string license)
         {
+            if (!Debugger.IsAttached)
+            {
+                Debugger.Launch();
+            }
+
             if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.GenerateXenialLicense", out var generateLicenseStr)
                 && bool.TryParse(generateLicenseStr, out var generateLicense)
                 && generateLicense)

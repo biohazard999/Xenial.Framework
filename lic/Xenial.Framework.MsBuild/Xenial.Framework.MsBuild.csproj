@@ -12,7 +12,6 @@
     <IncludeSource>False</IncludeSource>
     <IncludeSymbols>False</IncludeSymbols>
     <SymbolPackageFormat></SymbolPackageFormat>
-    <!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
   </PropertyGroup>
 
   <ItemGroup>
