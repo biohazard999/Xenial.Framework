@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-using Microsoft.Build.Framework;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 
 using Newtonsoft.Json;
 
@@ -11,35 +13,46 @@ using Newtonsoft.Json;
 
 namespace Xenial.Framework.MsBuild
 {
-    public class XenialLicenseValidation : Microsoft.Build.Utilities.Task, ICancelableTask
+    [Generator]
+    public class XenialLicenseValidation : ISourceGenerator
     {
-        private const string prefix = "Xenial:";
+        private const string category = "Usage";
 
-        private bool cancelled;
-        public void Cancel() => cancelled = true;
+#pragma warning disable RS2008 // Enable analyzer release tracking
+#pragma warning disable RS1033 // Define diagnostic description correctly
+        private static readonly DiagnosticDescriptor cannotFindLicenseRule = new(
+            "XENLIC0010",
+            "Could not find Xenial.License or Xenial.PublicKey",
+            "Fall back to trial mode",
+            category,
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
+            description: "Make sure you made Xenial.PublicKey available" //TODO: Better messages and help
+        );
 
-        [Output]
-        public string GeneratedLicenseFile { get; set; }
+        private static readonly DiagnosticDescriptor signitureIsInvalidRule = new(
+            "XENLIC0011",
+            "Xenial.Signature is invalid",
+            "Fall back to trial mode",
+            category,
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
+            description: "Make sure you made Xenial.PublicKey available" //TODO: Better messages and help
+        );
 
-        public override bool Execute()
+        private static readonly DiagnosticDescriptor willBuildInTrialModeRule = new(
+            "XENLIC0012",
+            "Xenial will build in Trial mode",
+            "Fall back to trial mode",
+            category,
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
+            description: "Make sure you made Xenial.PublicKey available" //TODO: Better messages and help
+        );
+
+        public void Initialize(GeneratorInitializationContext context) { }
+        public void Execute(GeneratorExecutionContext context)
         {
-#if DEBUG
-            // In Visual Studio or Visual Studio Code, you can add a breakpoint to this file.
-            // Then, run MSBuild and use the "Attach to Process" feature to attach to the process
-            // ID that this prints to the console.
-
-            // Obviously, remove this when you're finished debugging as it will wait indefinitely
-            // for the debugger to attach.
-            // System.Console.WriteLine("PID = " + System.Diagnostics.Process.GetCurrentProcess().Id);
-            // while (!System.Diagnostics.Debugger.IsAttached && !cancelled)
-            // {
-            // }
-#endif
-            if (cancelled)
-            {
-                return false;
-            }
-
             var xenialLicense = Environment.GetEnvironmentVariable("XENIAL_LICENSE");
             if (string.IsNullOrEmpty(xenialLicense))
             {
@@ -66,8 +79,7 @@ namespace Xenial.Framework.MsBuild
 
             if (string.IsNullOrEmpty(xenialLicense) || string.IsNullOrEmpty(xenialPublicKeys))
             {
-                Log.LogWarning("Could not find Xenial.License or Xenial.PublicKey");
-                Log.LogWarning("Fall back to trial mode");
+                context.ReportDiagnostic(Diagnostic.Create(cannotFindLicenseRule, Location.None));
             }
             else
             {
@@ -76,8 +88,7 @@ namespace Xenial.Framework.MsBuild
                 var isSignitureValid = license.VerifySignature(publicKey);
                 if (!isSignitureValid)
                 {
-                    Log.LogError($"{prefix} Xenial.Signiture is invalid");
-                    return false;
+                    context.ReportDiagnostic(Diagnostic.Create(signitureIsInvalidRule, Location.None));
                 }
 
                 isTrial = license.Type == Standard.Licensing.LicenseType.Trial;
@@ -85,15 +96,57 @@ namespace Xenial.Framework.MsBuild
 
             if (isTrial)
             {
-                Log.LogWarning($"{prefix} will build in trial mode");
+                context.ReportDiagnostic(Diagnostic.Create(willBuildInTrialModeRule, Location.None));
             }
 
-            GeneratedLicenseFile = xenialLicense;
+            var base64 = Base64Encode(xenialLicense);
 
-            return true;
+            AddXenialLicenceAttribute(context);
+            UseXenialLicenceAttribute(context, base64);
+
+            static string Base64Encode(string plainText)
+            {
+                var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+                return System.Convert.ToBase64String(plainTextBytes);
+            }
 
             static string GetProfileDirectory()
                 => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".xenial");
+        }
+
+        private static void AddXenialLicenceAttribute(GeneratorExecutionContext context)
+        {
+            var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
+            syntaxWriter.WriteLine("using System;");
+            syntaxWriter.WriteLine("using System.Runtime.CompilerServices;");
+            syntaxWriter.WriteLine();
+            syntaxWriter.WriteLine("namespace Xenial");
+            syntaxWriter.OpenBrace();
+            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Assembly)]");
+            syntaxWriter.WriteLine("[CompilerGenerated]");
+            syntaxWriter.WriteLine("internal class XenialLicenseAttribute : Attribute");
+            syntaxWriter.OpenBrace();
+            syntaxWriter.WriteLine("public string License { get; }");
+            syntaxWriter.WriteLine("public XenialLicenseAttribute(string license)");
+            syntaxWriter.Indent();
+            syntaxWriter.WriteLine("=> License = license;");
+            syntaxWriter.UnIndent();
+
+            syntaxWriter.CloseBrace();
+            syntaxWriter.CloseBrace();
+
+            var syntax = syntaxWriter.ToString();
+            var source = SourceText.From(syntax, Encoding.UTF8);
+            context.AddSource("XenialLicenseAttribute.g.cs", source);
+        }
+
+        private static void UseXenialLicenceAttribute(GeneratorExecutionContext context, string license)
+        {
+            var syntaxWriter = new StringBuilder();
+            syntaxWriter.AppendLine($"[assembly: Xenial.XenialLicenseAttribute(\"{license}\")]");
+            var syntax = syntaxWriter.ToString();
+            var source = SourceText.From(syntax, Encoding.UTF8);
+            context.AddSource("XenialLicense.g.cs", source);
         }
     }
 }

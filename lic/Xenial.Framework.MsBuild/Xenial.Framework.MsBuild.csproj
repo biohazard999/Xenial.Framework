@@ -1,39 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--
-      This changes the default folder where assemblies will be placed in the package.
-      The default is 'lib', but that is incorrect since these assemblies are mean to be used
-      by MSBuild, and to meant to be referenced as API from the NuGet package.
-    -->
-    <BuildOutputTargetFolder>tools</BuildOutputTargetFolder>
     <!-- For the sake of demoing, put the package output into a parent folder -->
-    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
-    <!-- Compiling for .NET Framework on non-Windows systems is not yet supported-->
-    <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netstandard2.0</TargetFrameworks>
-    <!-- <NoWarn>NU5128;$(NoWarn)</NoWarn> -->
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <!-- forces SDK to copy dependencies into build output to make packing easier -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-
   </PropertyGroup>
 
   <ItemGroup>
-    <!--
-      PrivateAssets="All" is essential. This prevents these build-only dependencies
-      from ending up in the NuGet package's list of dependencies.
-     -->
-    <PackageReference Include="NETStandard.Library" Version="2.0.3" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Build.Framework" Version="16.8.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.8.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.8.0" PrivateAssets="All" />
+    <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" PrivateAssets="All" />
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
     <PackageReference Include="Standard.Licensing" Version="1.1.5" PrivateAssets="All"  />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Content Include="build\**\*" PackagePath="build\" />
   </ItemGroup>
   
   <!--
@@ -41,13 +22,13 @@
   but before NuGet generates a nuspec. See https://github.com/NuGet/Home/issues/4704.
   -->
   <Target Name="PackTaskDependencies" BeforeTargets="GenerateNuspec">
-    <ItemGroup>
+    <!--<ItemGroup>
       <_PackageFiles Include="bin\$(Configuration)\*\Newtonsoft.Json.dll;bin\$(Configuration)\*\Standard.Licensing.dll">
         <PackagePath>tools\%(RecursiveDir)</PackagePath>
         <Visible>false</Visible>
         <BuildAction>Content</BuildAction>
       </_PackageFiles>
-    </ItemGroup>
+    </ItemGroup>-->
   </Target>
   
 </Project>
