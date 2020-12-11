@@ -176,7 +176,6 @@ namespace Xenial.Framework.MsBuild
             var syntax = syntaxWriter.ToString();
             var source = SourceText.From(syntax, Encoding.UTF8);
             context.AddSource("XenialLicenseCheck.g.cs", source);
-            File.WriteAllText(@"c:\F\tmp\1.cs", syntax);
         }
     }
 }
