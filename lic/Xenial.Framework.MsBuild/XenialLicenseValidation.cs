@@ -124,32 +124,34 @@ namespace Xenial.Framework.MsBuild
 
             if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.GenerateXenialLicense", out var generateLicenseStr)
                 && bool.TryParse(generateLicenseStr, out var generateLicense)
-                && generateLicense)
+                && !generateLicense)
             {
-                var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
-                syntaxWriter.WriteLine("using System;");
-                syntaxWriter.WriteLine("using System.Runtime.CompilerServices;");
-                syntaxWriter.WriteLine();
-                syntaxWriter.WriteLine("namespace Xenial");
-                syntaxWriter.OpenBrace();
-
-                syntaxWriter.WriteLine("[CompilerGenerated]");
-                syntaxWriter.WriteLine("internal static class XenialLicense");
-                syntaxWriter.OpenBrace();
-                syntaxWriter.WriteLine("internal static void Register()");
-                syntaxWriter.OpenBrace();
-                foreach (var xenialAssembly in context.Compilation.ReferencedAssemblyNames.Where(i => i.Name.StartsWith("Xenial.Framework")))
-                {
-                    syntaxWriter.WriteLine($"{xenialAssembly.Name}.XenialLicenseCheck.LoadLicense(\"{license}\");");
-                }
-                syntaxWriter.CloseBrace();
-                syntaxWriter.CloseBrace();
-                syntaxWriter.CloseBrace();
-
-                var syntax = syntaxWriter.ToString();
-                var source = SourceText.From(syntax, Encoding.UTF8);
-                context.AddSource($"XenialLicenseCheck{context.Compilation.AssemblyName}.g.cs", source);
+                return;
             }
+
+            var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
+            syntaxWriter.WriteLine("using System;");
+            syntaxWriter.WriteLine("using System.Runtime.CompilerServices;");
+            syntaxWriter.WriteLine();
+            syntaxWriter.WriteLine("namespace Xenial");
+            syntaxWriter.OpenBrace();
+
+            syntaxWriter.WriteLine("[CompilerGenerated]");
+            syntaxWriter.WriteLine("internal static class XenialLicense");
+            syntaxWriter.OpenBrace();
+            syntaxWriter.WriteLine("internal static void Register()");
+            syntaxWriter.OpenBrace();
+            foreach (var xenialAssembly in context.Compilation.ReferencedAssemblyNames.Where(i => i.Name.StartsWith("Xenial.Framework")))
+            {
+                syntaxWriter.WriteLine($"{xenialAssembly.Name}.XenialLicenseCheck.LoadLicense(\"{license}\");");
+            }
+            syntaxWriter.CloseBrace();
+            syntaxWriter.CloseBrace();
+            syntaxWriter.CloseBrace();
+
+            var syntax = syntaxWriter.ToString();
+            var source = SourceText.From(syntax, Encoding.UTF8);
+            context.AddSource($"XenialLicenseCheck{context.Compilation.AssemblyName}.g.cs", source);
         }
     }
 }

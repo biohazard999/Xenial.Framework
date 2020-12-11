@@ -6,6 +6,7 @@
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <NoWarn>CA1014;$(NoWarn)</NoWarn>
+    <GenerateXenialLicense>false</GenerateXenialLicense>
   </PropertyGroup>
 
 </Project>

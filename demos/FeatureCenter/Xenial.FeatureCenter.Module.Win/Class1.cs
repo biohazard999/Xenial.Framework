@@ -7,5 +7,7 @@ namespace Xenial.FeatureCenter.Module.Win
         public Class1()
         {
         }
+
+
     }
 }
