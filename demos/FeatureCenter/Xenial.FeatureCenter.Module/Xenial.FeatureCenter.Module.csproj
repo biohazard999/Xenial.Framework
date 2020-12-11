@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Xenial.Framework" Version="0.0.0-*" />
+    <PackageReference Include="Xenial.Framework.MsBuild" Version="0.0.0-*" />
   </ItemGroup>
 
 </Project>
