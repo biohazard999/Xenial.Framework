@@ -167,7 +167,7 @@ namespace Xenial.Framework.MsBuild
             syntaxWriter.OpenBrace();
             foreach (var xenialAssembly in context.Compilation.ReferencedAssemblyNames.Where(i => i.Name.StartsWith("Xenial.Framework")))
             {
-                syntaxWriter.WriteLine($"{xenialAssembly}.XenialLicenseCheck.LoadLicense(\"{license}\")");
+                syntaxWriter.WriteLine($"{xenialAssembly}.XenialLicenseCheck.LoadLicense(\"{license}\");");
             }
             syntaxWriter.CloseBrace();
             syntaxWriter.CloseBrace();
