@@ -6,7 +6,6 @@ namespace Xenial.FeatureCenter.Module
     {
         public Class1()
         {
-            XenialLicense.Register();
         }
     }
 }

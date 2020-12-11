@@ -10,9 +10,13 @@ namespace Xenial.FeatureCenter.Win
         [STAThread]
         public static void Main(string[] args)
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             XenialLicense.Register();
+            sw.Stop();
+            var elapsed = $"{sw.Elapsed}";
 
-            Console.WriteLine("Hello World");
+            MessageBox.Show(elapsed);
+
             _ = true;
         }
     }
