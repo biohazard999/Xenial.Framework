@@ -126,6 +126,7 @@ namespace Xenial.Framework.MsBuild
             syntaxWriter.OpenBrace();
             syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Assembly)]");
             syntaxWriter.WriteLine("[CompilerGenerated]");
+            syntaxWriter.WriteLine("[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]");
             syntaxWriter.WriteLine("internal class XenialLicenseAttribute : Attribute");
             syntaxWriter.OpenBrace();
             syntaxWriter.WriteLine("public string License { get; }");
@@ -175,7 +176,7 @@ namespace Xenial.Framework.MsBuild
 
             var syntax = syntaxWriter.ToString();
             var source = SourceText.From(syntax, Encoding.UTF8);
-            context.AddSource("XenialLicenseCheck.g.cs", source);
+            context.AddSource($"XenialLicenseCheck{context.Compilation.AssemblyName}.g.cs", source);
         }
     }
 }

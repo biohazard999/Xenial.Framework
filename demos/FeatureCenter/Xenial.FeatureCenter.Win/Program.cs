@@ -10,6 +10,8 @@ namespace Xenial.FeatureCenter.Win
         [STAThread]
         public static void Main(string[] args)
         {
+            XenialLicense.Register();
+
             Console.WriteLine("Hello World");
             _ = true;
         }
