@@ -26,13 +26,13 @@ namespace Xenial.Framework.LicGen
 
             //if (context.SyntaxReceiver is SyntaxReceiver syntaxReceiver)
             //{
-            //    foreach (var canidate in syntaxReceiver.Canidates)
+            //    foreach (var candidate in syntaxReceiver.Candidates)
             //    {
             //        if (context.Compilation is CSharpCompilation csharpCompilation)
             //        {
 
             //            var model = context.Compilation.GetSemanticModel(canidate.SyntaxTree);
-            //            var symbol = model.GetSymbolInfo(canidate);
+            //            var symbol = model.GetSymbolInfo(candidate);
             //            if (symbol.Symbol != null)
             //            {
             //                var attributes = context.Compilation.Assembly.GetAttributes();
@@ -177,7 +177,7 @@ namespace Xenial.Framework.LicGen
 
         private class SyntaxReceiver : ISyntaxReceiver
         {
-            public List<AttributeSyntax> Canidates { get; } = new List<AttributeSyntax>();
+            public List<AttributeSyntax> Candidates { get; } = new List<AttributeSyntax>();
 
             public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
             {
@@ -193,7 +193,7 @@ namespace Xenial.Framework.LicGen
                         {
                             foreach (var attribute in attributeList.Attributes)
                             {
-                                Canidates.Add(attribute);
+                                Candidates.Add(attribute);
                             }
                         }
                     }
