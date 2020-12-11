@@ -5,6 +5,8 @@ using Shouldly;
 
 using static Xenial.Tasty;
 
+#nullable disable
+
 namespace Xenial.Utils.Tests
 {
     public static class ExpressionHelperFacts
@@ -18,6 +20,8 @@ namespace Xenial.Utils.Tests
 
         public static void ExpressionHelperTests() => Describe(nameof(ExpressionHelper), () =>
         {
+            _ = new TargetClass(); //Fix CA1812
+
             static string PropertyName<TRet>(Expression<Func<TargetClass, TRet>> expression)
                 => ExpressionHelper.GetPropertyPath(expression);
 

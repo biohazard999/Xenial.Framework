@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <NoWarn>CA1716;$(NoWarn)</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

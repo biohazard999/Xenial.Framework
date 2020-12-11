@@ -14,11 +14,14 @@ namespace Xenial.Framework.Tests
 {
     public static class ModuleTypeListExtentionsFacts
     {
-        public class TestModule : ModuleBase { }
-        public class TestModule1 : ModuleBase { }
+        private class TestModule : ModuleBase { }
+        private class TestModule1 : ModuleBase { }
 
         public static void ModuleTypeListExtentionsTests() => Describe(nameof(ModuleTypeListExtentions), () =>
         {
+            _ = new TestModule(); //Fix CA1812
+            _ = new TestModule1(); //Fix CA1812
+
             static ModuleTypeList CreateModuleTypeList() => new();
 
             It("should add a single type", () =>
