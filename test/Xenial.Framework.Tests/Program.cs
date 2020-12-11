@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using static Xenial.Framework.Tests.Model.Core.NullDiffsStoreFacts;
-using static Xenial.Framework.Tests.Model.GeneratorUpdaters.ModelOptionsNodesGeneratorUpdaterFacts;
-using static Xenial.Framework.Tests.ModuleTypeListExtentionsFacts;
+
+using Xenial.Framework.Tests.Model.Core;
+using Xenial.Framework.Tests.Model.GeneratorUpdaters;
+using Xenial.Utils.Tests;
+
 using static Xenial.Tasty;
-using static Xenial.Utils.Tests.ExpressionHelperFacts;
 
 namespace Xenial.Framework.Tests
 {
@@ -14,10 +15,10 @@ namespace Xenial.Framework.Tests
         {
             Describe(nameof(Xenial), () =>
             {
-                NullDiffsStoreTests();
-                ModelOptionsNodesGeneratorUpdaterTests();
-                ModuleTypeListExtentionsTests();
-                ExpressionHelperTests();
+                NullDiffsStoreFacts.NullDiffsStoreTests();
+                ModelOptionsNodesGeneratorUpdaterFacts.ModelOptionsNodesGeneratorUpdaterTests();
+                ModuleTypeListExtentionsFacts.ModuleTypeListExtentionsTests();
+                ExpressionHelperFacts.ExpressionHelperTests();
             });
 
             return await Run(args);
