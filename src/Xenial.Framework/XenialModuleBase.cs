@@ -59,9 +59,7 @@ namespace Xenial.Framework
         /// </summary>
         /// <returns></returns>
         protected override ModuleTypeList GetRequiredModuleTypesCore()
-            => new ModuleTypeList(
-                typeof(SystemModule)
-            );
+            => new(typeof(SystemModule));
 
         /// <summary>
         /// Registers the editor descriptors.

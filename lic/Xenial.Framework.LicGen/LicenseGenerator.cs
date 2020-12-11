@@ -134,16 +134,6 @@ namespace Xenial.Framework.LicGen
             description: "Make sure you made PackageId visible to the compiler"
         );
 
-        private static readonly DiagnosticDescriptor cannotFindXenialModule = new(
-            "XENLIC0003",
-            "Cannot find XenialModule",
-            "Make sure you made XenialModule visible to the compiler",
-            category,
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true,
-            description: "Make sure you made XenialModule visible to the compiler"
-        );
-
         private static string GetXenialPublicKey(GeneratorExecutionContext context)
         {
             if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.XenialPublicKey", out var xenialPublicKey))

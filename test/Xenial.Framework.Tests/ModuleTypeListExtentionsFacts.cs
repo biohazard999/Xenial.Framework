@@ -19,7 +19,7 @@ namespace Xenial.Framework.Tests
 
         public static void ModuleTypeListExtentionsTests() => Describe(nameof(ModuleTypeListExtentions), () =>
         {
-            ModuleTypeList CreateModuleTypeList() => new ModuleTypeList();
+            static ModuleTypeList CreateModuleTypeList() => new();
 
             It("should add a single type", () =>
             {
