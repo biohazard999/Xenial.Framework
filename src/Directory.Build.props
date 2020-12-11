@@ -34,6 +34,7 @@
     <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.MsBuild\Xenial.Framework.MsBuild.csproj"
                       ReferenceOutputAssembly="false">
       <PrivateAssets>None</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
   

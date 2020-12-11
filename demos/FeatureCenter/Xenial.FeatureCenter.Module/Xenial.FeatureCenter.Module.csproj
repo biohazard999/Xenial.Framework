@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xenial.Framework" Version="0.0.0-*" />
+  </ItemGroup>
+
+</Project>
