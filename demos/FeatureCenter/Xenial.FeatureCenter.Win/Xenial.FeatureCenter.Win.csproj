@@ -5,6 +5,7 @@
     <TargetFramework>$(FullFrameworkVersion)</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <OutputType>Exe</OutputType>
+    <GenerateXenialLicense>true</GenerateXenialLicense>
   </PropertyGroup>
 
   <ItemGroup>

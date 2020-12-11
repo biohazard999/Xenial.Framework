@@ -16,9 +16,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="build\Xenial.Framework.MsBuild.props" />
+    <None Remove="build\**\*" />
+    <Content Include="build\**\*" PackagePath="build\" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" PrivateAssets="All" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" PrivateAssets="All" />
@@ -27,21 +28,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
     <PackageReference Include="Standard.Licensing" Version="1.1.5" PrivateAssets="All" />
   </ItemGroup>
-  
-  <!--
-  The include needs to happen after output has been copied to build output folder
-  but before NuGet generates a nuspec. See https://github.com/NuGet/Home/issues/4704.
-  -->
-  <!--<Target Name="PackTaskDependencies" BeforeTargets="GenerateNuspec">
-    --><!--<ItemGroup>
-      <_PackageFiles Include="bin\$(Configuration)\*\Newtonsoft.Json.dll;bin\$(Configuration)\*\Standard.Licensing.dll">
-        <PackagePath>tools\%(RecursiveDir)</PackagePath>
-        <Visible>false</Visible>
-        <BuildAction>Content</BuildAction>
-      </_PackageFiles>
-    </ItemGroup>--><!--
-  </Target>-->
-  
+
   <ItemGroup>
     <!-- Package the generator in the analyzer directory of the nuget package -->
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
@@ -50,8 +37,4 @@
     <None Include="$(OutputPath)\Standard.Licensing.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
   
-  <ItemGroup>
-    <Content Include="build\Xenial.Framework.MsBuild.props" />
-  </ItemGroup>
-
 </Project>
