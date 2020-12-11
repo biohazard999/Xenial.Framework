@@ -1,11 +1,9 @@
 ﻿<Project>
-
-  <PropertyGroup>
-    <GenerateXenialLicense>true</GenerateXenialLicense>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <CompilerVisibleProperty Include="GenerateXenialLicense" />
-  </ItemGroup>
-
+  
+  <Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun">
+    <ItemGroup>
+      <CompilerVisibleProperty Include="GenerateXenialLicense" />
+    </ItemGroup>
+  </Target>
+  
 </Project>

@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
+    <GenerateXenialLicense>false</GenerateXenialLicense>
   </PropertyGroup>
 
   <ItemGroup>

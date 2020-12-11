@@ -1,0 +1,7 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <GenerateXenialLicense>true</GenerateXenialLicense>
+  </PropertyGroup>
+
+</Project>
