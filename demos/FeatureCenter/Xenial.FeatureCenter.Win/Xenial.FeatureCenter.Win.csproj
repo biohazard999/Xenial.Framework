@@ -4,7 +4,7 @@
     <TargetFrameworks></TargetFrameworks>
     <TargetFramework>$(FullFrameworkVersion)</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <CheckXenialLicense>true</CheckXenialLicense>
     <GenerateXenialLicense>true</GenerateXenialLicense>
   </PropertyGroup>
@@ -16,5 +16,5 @@
   <ItemGroup>
     <Reference Include="System.Configuration" />
   </ItemGroup>
-    
+      
 </Project>
