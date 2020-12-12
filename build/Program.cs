@@ -100,7 +100,7 @@ namespace Xenial.Build
                 }
             );
 
-            Target("pack", DependsOn("lic"),
+            Target("pack", DependsOn("test"), //TODO: generate lic on deployment
                 () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {properties()}")
             );
 
