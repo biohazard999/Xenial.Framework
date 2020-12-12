@@ -5,12 +5,14 @@ using System.Linq.Expressions;
 using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 
+using Xenial.Framework.Base;
+
 namespace Xenial.Framework.ModelBuilders
 {
     /// <summary>
     /// Class ModelBuilderExtentions.
     /// </summary>
-    public static class ModelBuilderExtentions
+    public static class ModelBuilderExtensions
     {
         /// <summary>
         /// Determines whether the specified caption has caption.
@@ -267,16 +269,19 @@ namespace Xenial.Framework.ModelBuilders
             return builder.WithAttribute(new NavigationItemAttribute(navigationGroupName));
         }
 
-        //TODO: Singleton and Layoutbuilders
-        ///// <summary>
-        ///// Determines whether the specified class is singleton.
-        ///// </summary>
-        ///// <typeparam name="T"></typeparam>
-        ///// <param name="builder">The builder.</param>
-        ///// <returns>IModelBuilder&lt;T&gt;.</returns>
-        //public static IModelBuilder<T> IsSingleton<T>(this IModelBuilder<T> builder)
-        //    => builder.WithAttribute(new SingletonAttribute());
+        /// <summary>
+        /// Determines whether the specified class is singleton.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <returns>IModelBuilder&lt;T&gt;.</returns>
+        public static IModelBuilder<T> IsSingleton<T>(this IModelBuilder<T> builder)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithAttribute(new SingletonAttribute());
+        }
 
+        //TODO: Layoutbuilders
         ///// <summary>
         ///// Withes the default detail view.
         ///// </summary>
