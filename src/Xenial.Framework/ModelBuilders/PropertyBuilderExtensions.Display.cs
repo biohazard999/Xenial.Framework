@@ -23,10 +23,43 @@ namespace Xenial.Framework.ModelBuilders
         /// <typeparam name="TProperty">The type of the property.</typeparam>
         /// <typeparam name="TType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
+        /// <param name="nullText">The tooltip.</param>
+        /// <returns></returns>
+        public static IPropertyBuilder<TProperty, TType> HasNullText<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder, string nullText)
+            => builder.WithModelDefault("NullText", nullText);
+
+        /// <summary>
+        /// Determines whether the specified tooltip has tooltip.
+        /// </summary>
+        /// <typeparam name="TProperty">The type of the property.</typeparam>
+        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <param name="builder">The builder.</param>
         /// <param name="tooltip">The tooltip.</param>
         /// <returns></returns>
         public static IPropertyBuilder<TProperty, TType> HasTooltip<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder, string tooltip)
             => builder.WithModelDefault(ModelDefaults.ToolTip, tooltip);
+
+        /// <summary>
+        /// Determines whether the specified tooltip has tooltip.
+        /// </summary>
+        /// <typeparam name="TProperty">The type of the property.</typeparam>
+        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="tooltipTitle">The tooltip.</param>
+        /// <returns></returns>
+        public static IPropertyBuilder<TProperty, TType> HasTooltipTitle<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder, string tooltipTitle)
+            => builder.WithModelDefault("ToolTipTitle", tooltipTitle);
+
+        /// <summary>
+        /// Determines whether the specified tooltip has tooltip.
+        /// </summary>
+        /// <typeparam name="TProperty">The type of the property.</typeparam>
+        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="toolTipIconType">The tooltip.</param>
+        /// <returns></returns>
+        public static IPropertyBuilder<TProperty, TType> HasTooltipIconType<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder, ToolTipIconType toolTipIconType)
+            => builder.WithModelDefault("ToolTipIconType", toolTipIconType.ToString());
 
         /// <summary>
         /// Determines whether [has display format] [the specified display format].
