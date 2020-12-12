@@ -33,47 +33,8 @@ namespace Xenial.FeatureCenter.Module
 
         public override void Setup(XafApplication application)
         {
-            application.ObjectSpaceCreated -= Application_ObjectSpaceCreated;
-            application.ObjectSpaceCreated += Application_ObjectSpaceCreated;
-            application.Disposed -= Application_Disposed;
-            application.Disposed += Application_Disposed;
-
-            void Application_ObjectSpaceCreated(object sender, ObjectSpaceCreatedEventArgs e)
-            {
-                if (e.ObjectSpace is NonPersistentObjectSpace nos)
-                {
-                    nos.ObjectByKeyGetting -= Nos_ObjectByKeyGetting;
-                    nos.ObjectByKeyGetting += Nos_ObjectByKeyGetting;
-                    nos.Disposed -= Nos_Disposed;
-                    nos.Disposed += Nos_Disposed;
-
-                    void Nos_ObjectByKeyGetting(object _, ObjectByKeyGettingEventArgs e1)
-                    {
-                        var typeInfo = application.TypesInfo.FindTypeInfo(e1.ObjectType);
-
-                        if (typeInfo.IsAttributeDefined<SingletonAttribute>(false))
-                        {
-                            e1.Object = nos.GetSingleton(e1.ObjectType);
-                        }
-                    }
-
-                    void Nos_Disposed(object sender, EventArgs e)
-                    {
-                        nos.Disposed -= Nos_Disposed;
-                        nos.ObjectByKeyGetting -= Nos_ObjectByKeyGetting;
-                    }
-                }
-            }
-
-            void Application_Disposed(object sender, EventArgs e)
-            {
-                application.ObjectSpaceCreated -= Application_ObjectSpaceCreated;
-                application.Disposed -= Application_Disposed;
-            }
-
+            application.UseNonPersistentSingletons();
             base.Setup(application);
         }
-
-
     }
 }
