@@ -31,11 +31,11 @@ namespace Xenial.Framework.ModelBuilders
         /// <summary>
         /// Creates the specified types information.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TClassType"></typeparam>
         /// <param name="typesInfo">The types information.</param>
         /// <returns></returns>
-        public static ModelBuilder<T> Create<T>(ITypesInfo typesInfo)
-            => new(typesInfo.FindTypeInfo<T>());
+        public static ModelBuilder<TClassType> Create<TClassType>(ITypesInfo typesInfo)
+            => new(typesInfo.FindTypeInfo<TClassType>());
 
         /// <summary>
         /// Creates the specified types information.
@@ -124,12 +124,12 @@ namespace Xenial.Framework.ModelBuilders
         /// <summary>
         /// Nesteds the ListView identifier.
         /// </summary>
-        /// <typeparam name="TRet">The type of the ret.</typeparam>
-        /// <param name="expr">The expr.</param>
+        /// <typeparam name="TListType">The type of the ret.</typeparam>
+        /// <param name="listItemExpression">The expr.</param>
         /// <returns></returns>
-        public virtual string NestedListViewId<TRet>(Expression<Func<TClassType, TRet>> expr)
-            where TRet : IEnumerable
-                => ModelNodeIdHelper.GetNestedListViewId(typeof(TClassType), ExpressionHelper.Property(expr));
+        public virtual string GetNestedListViewId<TListType>(Expression<Func<TClassType, TListType>> listItemExpression)
+            where TListType : IEnumerable
+                => ModelNodeIdHelper.GetNestedListViewId(typeof(TClassType), ExpressionHelper.Property(listItemExpression));
 
         /// <summary>
         /// Withes the attribute.
@@ -243,13 +243,13 @@ namespace Xenial.Framework.ModelBuilders
         /// Fors the specified property.
         /// </summary>
         /// <typeparam name="TPropertyType">The type of the property.</typeparam>
-        /// <param name="property">The property.</param>
+        /// <param name="propertyExpression">The property.</param>
         /// <returns></returns>
-        public PropertyBuilder<TPropertyType, TClassType> For<TPropertyType>(Expression<Func<TClassType, TPropertyType>> property)
+        public PropertyBuilder<TPropertyType, TClassType> For<TPropertyType>(Expression<Func<TClassType, TPropertyType>> propertyExpression)
         {
-            _ = property ?? throw new ArgumentNullException(nameof(property));
+            _ = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpression));
 
-            var builder = PropertyBuilder.PropertyBuilderFor<TPropertyType, TClassType>(TypeInfo.FindMember(ExpressionHelper.Property(property)));
+            var builder = PropertyBuilder.PropertyBuilderFor<TPropertyType, TClassType>(TypeInfo.FindMember(ExpressionHelper.Property(propertyExpression)));
 
             Add(builder);
 

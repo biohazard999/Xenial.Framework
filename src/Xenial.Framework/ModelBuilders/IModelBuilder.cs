@@ -45,9 +45,9 @@ namespace Xenial.Framework.ModelBuilders
         /// Nesteds the ListView identifier.
         /// </summary>
         /// <typeparam name="TListType">The type of the ret.</typeparam>
-        /// <param name="expression">The expression.</param>
+        /// <param name="listItemExpression">The expression.</param>
         /// <returns></returns>
-        string NestedListViewId<TListType>(Expression<Func<TClassType, TListType>> expression)
+        string GetNestedListViewId<TListType>(Expression<Func<TClassType, TListType>> listItemExpression)
             where TListType : IEnumerable;
 
         /// <summary>
