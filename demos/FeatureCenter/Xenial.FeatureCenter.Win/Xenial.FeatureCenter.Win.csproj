@@ -12,5 +12,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Xenial.FeatureCenter.Module.Win\Xenial.FeatureCenter.Module.Win.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
     
 </Project>

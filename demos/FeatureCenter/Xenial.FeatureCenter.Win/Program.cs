@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Configuration;
 using System.Windows.Forms;
 
-using DevExpress.ExpressApp.Win;
+using DevExpress.ExpressApp;
+using DevExpress.Persistent.Base;
+using DevExpress.XtraEditors;
 
 namespace Xenial.FeatureCenter.Win
 {
@@ -10,19 +13,48 @@ namespace Xenial.FeatureCenter.Win
         [STAThread]
         public static void Main(string[] args)
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
             XenialLicense.Register();
-            sw.Stop();
-            var elapsed = $"{sw.Elapsed}";
+            DevExpress.ExpressApp.FrameworkSettings.DefaultSettingsCompatibilityMode = DevExpress.ExpressApp.FrameworkSettingsCompatibilityMode.Latest;
+#if EASYTEST
+            DevExpress.ExpressApp.Win.EasyTest.EasyTestRemotingRegistration.Register();
+#endif
+            WindowsFormsSettings.LoadApplicationSettings();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            DevExpress.Utils.ToolTipController.DefaultController.ToolTipType = DevExpress.Utils.ToolTipType.SuperTip;
+            if (Tracing.GetFileLocationFromSettings() == DevExpress.Persistent.Base.FileLocation.CurrentUserApplicationDataFolder)
+            {
+                Tracing.LocalUserAppDataPath = Application.LocalUserAppDataPath;
+            }
+            Tracing.Initialize();
 
-            MessageBox.Show(elapsed);
-
-            _ = true;
+            var winApplication = new FeatureCenterWindowsFromsApplication();
+            if (ConfigurationManager.ConnectionStrings["ConnectionString"] != null)
+            {
+                winApplication.ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            }
+#if EASYTEST
+            if(ConfigurationManager.ConnectionStrings["EasyTestConnectionString"] != null)
+            {
+                winApplication.ConnectionString = ConfigurationManager.ConnectionStrings["EasyTestConnectionString"].ConnectionString;
+            }
+#endif
+#if DEBUG
+            if (System.Diagnostics.Debugger.IsAttached && winApplication.CheckCompatibilityType == CheckCompatibilityType.DatabaseSchema)
+            {
+                winApplication.DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
+            }
+#endif
+            try
+            {
+                winApplication.Setup();
+                winApplication.Start();
+            }
+            catch (Exception e)
+            {
+                winApplication.StopSplash();
+                winApplication.HandleException(e);
+            }
         }
-    }
-
-    public class FeatureCenterWindowsFromsApplication : WinApplication
-    {
-
     }
 }
