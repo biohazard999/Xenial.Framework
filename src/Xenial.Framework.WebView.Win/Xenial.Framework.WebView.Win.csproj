@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(FullFrameworkVersion)</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
+  </ItemGroup>
+  
+</Project>
