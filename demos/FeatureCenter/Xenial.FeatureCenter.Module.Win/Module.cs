@@ -3,6 +3,7 @@
 using DevExpress.ExpressApp;
 
 using Xenial.Framework;
+using Xenial.Framework.WebView.Win;
 
 namespace Xenial.FeatureCenter.Module.Win
 {
@@ -11,7 +12,8 @@ namespace Xenial.FeatureCenter.Module.Win
         protected override ModuleTypeList GetRequiredModuleTypesCore()
             => base.GetRequiredModuleTypesCore()
             .AndModuleTypes(
-                typeof(FeatureCenterModule)
+                typeof(FeatureCenterModule),
+                typeof(XenialWebViewWindowsFormsModule)
             );
     }
 }

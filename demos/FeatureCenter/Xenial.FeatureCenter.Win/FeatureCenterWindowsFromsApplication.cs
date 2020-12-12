@@ -6,6 +6,7 @@ using System;
 
 using Xenial.FeatureCenter.Module;
 using Xenial.FeatureCenter.Module.Win;
+using Xenial.Framework.WebView.Win;
 
 namespace Xenial.FeatureCenter.Win
 {
@@ -14,6 +15,7 @@ namespace Xenial.FeatureCenter.Win
         public FeatureCenterWindowsFromsApplication()
         {
             Modules.Add(new FeatureCenterModule());
+            Modules.Add(new XenialWebViewWindowsFormsModule());
             Modules.Add(new FeatureCenterWindowsFormsModule());
         }
 
