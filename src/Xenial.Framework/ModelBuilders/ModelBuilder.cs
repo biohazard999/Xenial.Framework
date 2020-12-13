@@ -249,11 +249,22 @@ namespace Xenial.Framework.ModelBuilders
         {
             _ = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpression));
 
-            var builder = PropertyBuilder.PropertyBuilderFor<TPropertyType?, TClassType>(TypeInfo.FindMember(ExpressionHelper.Property(propertyExpression)));
+            var propertyName = ExpressionHelper.Property(propertyExpression);
+            if (propertyName is not null)
+            {
+                var memberInfo = TypeInfo.FindMember(propertyName);
+                if (memberInfo is not null)
+                {
+                    var propertyBuilder = PropertyBuilder.PropertyBuilderFor<TPropertyType?, TClassType>(memberInfo);
 
-            Add(builder);
+                    Add(propertyBuilder);
 
-            return builder;
+                    return propertyBuilder;
+                }
+                throw new InvalidOperationException($"Could not create PropertyBuilder for '{TypeInfo}'.{propertyName} ");
+            }
+
+            throw new InvalidOperationException($"Could not create PropertyBuilder for '{TypeInfo}'.{propertyExpression} ");
         }
     }
 }

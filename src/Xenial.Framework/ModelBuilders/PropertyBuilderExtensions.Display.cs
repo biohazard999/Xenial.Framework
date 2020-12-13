@@ -10,77 +10,77 @@ namespace Xenial.Framework.ModelBuilders
         /// Determines whether the specified caption has caption.
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="caption">The caption.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> HasCaption<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder, string caption)
+        public static IPropertyBuilder<TProperty?, TClassType> HasCaption<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder, string caption)
             => builder.WithModelDefault(ModelDefaults.Caption, caption);
 
         /// <summary>
         /// Determines whether the specified tooltip has tooltip.
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="nullText">The tooltip.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> HasNullText<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder, string nullText)
+        public static IPropertyBuilder<TProperty?, TClassType> HasNullText<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder, string nullText)
             => builder.WithModelDefault("NullText", nullText);
 
         /// <summary>
         /// Determines whether the specified tooltip has tooltip.
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="tooltip">The tooltip.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> HasTooltip<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder, string tooltip)
+        public static IPropertyBuilder<TProperty?, TClassType> HasTooltip<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder, string tooltip)
             => builder.WithModelDefault(ModelDefaults.ToolTip, tooltip);
 
         /// <summary>
         /// Determines whether the specified tooltip has tooltip.
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="tooltipTitle">The tooltip.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> HasTooltipTitle<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder, string tooltipTitle)
+        public static IPropertyBuilder<TProperty?, TClassType> HasTooltipTitle<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder, string tooltipTitle)
             => builder.WithModelDefault("ToolTipTitle", tooltipTitle);
 
         /// <summary>
         /// Determines whether the specified tooltip has tooltip.
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="toolTipIconType">The tooltip.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> HasTooltipIconType<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder, ToolTipIconType toolTipIconType)
+        public static IPropertyBuilder<TProperty?, TClassType> HasTooltipIconType<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder, ToolTipIconType toolTipIconType)
             => builder.WithModelDefault("ToolTipIconType", toolTipIconType.ToString());
 
         /// <summary>
         /// Determines whether [has display format] [the specified display format].
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="displayFormat">The display format.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> HasDisplayFormat<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder, string displayFormat)
+        public static IPropertyBuilder<TProperty?, TClassType> HasDisplayFormat<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder, string displayFormat)
             => builder.WithModelDefault(ModelDefaults.DisplayFormat, displayFormat);
 
         /// <summary>
         /// Determines whether the specified index has index.
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> HasIndex<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder, int index)
+        public static IPropertyBuilder<TProperty?, TClassType> HasIndex<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder, int index)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
             return builder.WithAttribute(new IndexAttribute(index));

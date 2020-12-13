@@ -10,10 +10,10 @@ namespace Xenial.Framework.ModelBuilders
         /// Determines whether [is visible in detail view] [the specified builder].
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> IsVisibleInDetailView<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder)
+        public static IPropertyBuilder<TProperty?, TClassType> IsVisibleInDetailView<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
             return builder.WithAttribute(new VisibleInDetailViewAttribute(true));
@@ -23,10 +23,10 @@ namespace Xenial.Framework.ModelBuilders
         /// Determines whether [is not visible in detail view] [the specified builder].
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> IsNotVisibleInDetailView<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder)
+        public static IPropertyBuilder<TProperty?, TClassType> IsNotVisibleInDetailView<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
             return builder.WithAttribute(new VisibleInDetailViewAttribute(false));
@@ -36,10 +36,10 @@ namespace Xenial.Framework.ModelBuilders
         /// Determines whether [is visible in ListView].
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> IsVisibleInListView<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder)
+        public static IPropertyBuilder<TProperty?, TClassType> IsVisibleInListView<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
             return builder.WithAttribute(new VisibleInListViewAttribute(true));
@@ -49,10 +49,10 @@ namespace Xenial.Framework.ModelBuilders
         /// Determines whether [is not visible in ListView].
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> IsNotVisibleInListView<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder)
+        public static IPropertyBuilder<TProperty?, TClassType> IsNotVisibleInListView<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
             return builder.WithAttribute(new VisibleInListViewAttribute(false));
@@ -62,10 +62,10 @@ namespace Xenial.Framework.ModelBuilders
         /// Determines whether [is visible in lookup ListView].
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> IsVisibleInLookupListView<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder)
+        public static IPropertyBuilder<TProperty?, TClassType> IsVisibleInLookupListView<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
             return builder.WithAttribute(new VisibleInLookupListViewAttribute(true));
@@ -75,10 +75,10 @@ namespace Xenial.Framework.ModelBuilders
         /// Determines whether [is not visible in lookup ListView].
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> IsNotVisibleInLookupListView<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder)
+        public static IPropertyBuilder<TProperty?, TClassType> IsNotVisibleInLookupListView<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
             return builder.WithAttribute(new VisibleInLookupListViewAttribute(false));
@@ -88,10 +88,10 @@ namespace Xenial.Framework.ModelBuilders
         /// Determines whether [is visible in any view].
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> IsVisibleInAnyView<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder)
+        public static IPropertyBuilder<TProperty?, TClassType> IsVisibleInAnyView<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder)
             => builder
                 .IsVisibleInDetailView()
                 .IsVisibleInListView()
@@ -101,10 +101,10 @@ namespace Xenial.Framework.ModelBuilders
         /// Determines whether [is not visible in any view].
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <typeparam name="TType">The type of the type.</typeparam>
+        /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <returns></returns>
-        public static IPropertyBuilder<TProperty, TType> IsNotVisibleInAnyView<TProperty, TType>(this IPropertyBuilder<TProperty, TType> builder)
+        public static IPropertyBuilder<TProperty?, TClassType> IsNotVisibleInAnyView<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder)
             => builder
                 .IsNotVisibleInDetailView()
                 .IsNotVisibleInListView()
