@@ -465,6 +465,20 @@ namespace Xenial.Framework.ModelBuilders
             return builder.WithAttribute(new SingletonAttribute());
         }
 
+        /// <summary>
+        /// Determines whether the specified class is singleton.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="autoCommit">if set to <c>true</c> [automatic commit].</param>
+        /// <returns>IModelBuilder&lt;T&gt;.</returns>
+        /// <exception cref="ArgumentNullException">builder</exception>
+        public static IModelBuilder<T> IsSingleton<T>(this IModelBuilder<T> builder, bool autoCommit)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithAttribute(new SingletonAttribute(autoCommit));
+        }
+
         //TODO: Layoutbuilders
         ///// <summary>
         ///// Withes the default detail view.

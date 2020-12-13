@@ -9,9 +9,15 @@
     <ProjectReference Include="..\Xenial.FeatureCenter.Module\Xenial.FeatureCenter.Module.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
     <PackageReference Include="Xenial.Framework.Win" Version="0.0.0-*" />
     <PackageReference Include="Xenial.Framework.WebView.Win" Version="0.0.0-*" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Win/Xenial.Framework.Win.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.WebView.Win/Xenial.Framework.WebView.Win.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors.Win/Xenial.Framework.TokenEditors.Win.csproj" />
   </ItemGroup>
   
 </Project>

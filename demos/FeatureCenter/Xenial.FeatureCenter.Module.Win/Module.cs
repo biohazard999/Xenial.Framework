@@ -3,6 +3,7 @@
 using DevExpress.ExpressApp;
 
 using Xenial.Framework;
+using Xenial.Framework.TokenEditors.Win;
 using Xenial.Framework.WebView.Win;
 
 namespace Xenial.FeatureCenter.Module.Win
@@ -13,7 +14,8 @@ namespace Xenial.FeatureCenter.Module.Win
             => base.GetRequiredModuleTypesCore()
             .AndModuleTypes(
                 typeof(FeatureCenterModule),
-                typeof(XenialWebViewWindowsFormsModule)
+                typeof(XenialWebViewWindowsFormsModule),
+                typeof(XenialTokenEditorsWindowsFormsModule)
             );
     }
 }

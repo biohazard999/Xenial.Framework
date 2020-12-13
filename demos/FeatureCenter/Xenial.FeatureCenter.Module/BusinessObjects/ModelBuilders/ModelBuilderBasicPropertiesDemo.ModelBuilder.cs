@@ -24,11 +24,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
             this.HasCaption("ModelBuilder - ModelClass Properties")
                 .WithDefaultClassOptions()
                 .HasImage("direction1")
-                .IsSingleton()
-                .HasDefaultLookupListViewId("bAZ BAZ")
-                .ForListViewsDefaultMasterDetailMode(DevExpress.ExpressApp.MasterDetailMode.ListViewAndDetailView)
-                .HasDefaultLookupEditorMode(DevExpress.Persistent.Base.LookupEditorMode.AllItemsWithSearch)
-                .HasFriendlyKeyProperty(p => p.DemoCode)
+                .IsSingleton(autoCommit: true)
             ;
         }
     }

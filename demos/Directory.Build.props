@@ -8,6 +8,8 @@
     <NoWarn>CA1014;$(NoWarn)</NoWarn>
     <CheckXenialLicense>false</CheckXenialLicense>
     <GenerateXenialLicense>false</GenerateXenialLicense>
+    <XenialDebug>true</XenialDebug>
+    <SrcDirectory>$(MSBuildThisFileDirectory)..\src\</SrcDirectory>
   </PropertyGroup>
-    
+  
 </Project>

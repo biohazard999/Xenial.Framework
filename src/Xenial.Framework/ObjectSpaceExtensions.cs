@@ -7,6 +7,7 @@ using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 
 using Xenial.Framework.Base;
+using Xenial.Framework.ModelBuilders;
 
 namespace Xenial.Framework
 {
@@ -31,7 +32,19 @@ namespace Xenial.Framework
             {
                 return tObject;
             }
-            return objectSpace.CreateObject<T>();
+
+            obj = objectSpace.CreateObject<T>();
+
+            var typeInfo = objectSpace.TypesInfo.FindTypeInfo<T>();
+            if (typeInfo is not null
+                && typeInfo.IsAttributeDefined<SingletonAttribute>(false)
+                && typeInfo.FindAttribute<SingletonAttribute>()?.AutoCommit == true
+            )
+            {
+                objectSpace.CommitChanges();
+            }
+
+            return obj;
         }
 
         /// <summary>
@@ -49,7 +62,19 @@ namespace Xenial.Framework
             {
                 return obj;
             }
-            return objectSpace.CreateObject(objectType);
+
+            obj = objectSpace.CreateObject(objectType);
+
+            var typeInfo = objectSpace.TypesInfo.FindTypeInfo(objectType);
+            if (typeInfo is not null
+                && typeInfo.IsAttributeDefined<SingletonAttribute>(false)
+                && typeInfo.FindAttribute<SingletonAttribute>()?.AutoCommit == true
+            )
+            {
+                objectSpace.CommitChanges();
+            }
+
+            return obj;
         }
 
         /// <summary>

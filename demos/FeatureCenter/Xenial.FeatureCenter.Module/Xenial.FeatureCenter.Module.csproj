@@ -4,9 +4,19 @@
     <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
     <PackageReference Include="Xenial.Framework" Version="0.0.0-*" />
     <PackageReference Include="Xenial.Framework.WebView" Version="0.0.0-*" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.WebView/Xenial.Framework.WebView.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors/Xenial.Framework.TokenEditors.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bogus" Version="32.0.2" />
   </ItemGroup>
 
 </Project>

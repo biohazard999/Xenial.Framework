@@ -13,7 +13,8 @@ namespace Xenial.FeatureCenter.Win
         [STAThread]
         public static void Main(string[] args)
         {
-            XenialLicense.Register();
+            //XenialLicense.Register();
+
             DevExpress.ExpressApp.FrameworkSettings.DefaultSettingsCompatibilityMode = DevExpress.ExpressApp.FrameworkSettingsCompatibilityMode.Latest;
 #if EASYTEST
             DevExpress.ExpressApp.Win.EasyTest.EasyTestRemotingRegistration.Register();
