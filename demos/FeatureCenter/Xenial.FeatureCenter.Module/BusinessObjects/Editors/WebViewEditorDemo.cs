@@ -19,7 +19,15 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
     {
         private static readonly string[] schemes = new[] { "http://", "https://" };
 
-        private string? urlString = "https://www.xenial.io";
+        private string? urlString;
+        private Uri? uri;
+
+        public override void OnCreated()
+        {
+            UrlString = "https://www.xenial.io";
+            base.OnCreated();
+        }
+
         [ImmediatePostData]
         public string? UrlString
         {
@@ -51,9 +59,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             }
         }
 
-        private Uri? uri = new Uri("about:blank");
         [EditorAlias("WebViewUriPropertyEditor")]
         public Uri? Uri { get => uri; set => SetPropertyValue(ref uri, value); }
-
     }
 }
