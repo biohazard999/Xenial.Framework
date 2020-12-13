@@ -25,9 +25,11 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
                 .WithDefaultClassOptions()
                 .HasImage("direction1")
                 .IsSingleton()
-                .WithAttribute(new ModelDefaultAttribute("DefaultListViewImage", "foo"))
-                .WithAttribute(new ModelDefaultAttribute("DefaultLookupListView", "Bar"))
-                ;
+                .HasDefaultLookupListViewId("bAZ BAZ")
+                .ForListViewsDefaultMasterDetailMode(DevExpress.ExpressApp.MasterDetailMode.ListViewAndDetailView)
+                .HasDefaultLookupEditorMode(DevExpress.Persistent.Base.LookupEditorMode.AllItemsWithSearch)
+                .HasFriendlyKeyProperty(p => p.DemoCode)
+            ;
         }
     }
 }
