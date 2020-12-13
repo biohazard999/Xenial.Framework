@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 
@@ -63,6 +64,161 @@ namespace Xenial.Framework.ModelBuilders
         }
 
         /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> IsCreatableItem<T>(this IModelBuilder<T> builder)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithAttribute(new CreatableItemAttribute(true));
+        }
+
+        /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="imageName">Name of the image.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> HasDefaultDetailViewImage<T>(this IModelBuilder<T> builder, string imageName)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithModelDefault("DefaultDetailViewImage", imageName);
+        }
+
+        /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="imageName">Name of the image.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> HasDefaultListViewImage<T>(this IModelBuilder<T> builder, string imageName)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithModelDefault("DefaultListViewImage", imageName);
+        }
+
+        /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="detailViewId">Name of the image.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> HasDefaultDetailViewId<T>(this IModelBuilder<T> builder, string detailViewId)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithModelDefault("DefaultDetailView", detailViewId);
+        }
+
+        /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="listViewId">Name of the image.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> HasDefaultListViewId<T>(this IModelBuilder<T> builder, string listViewId)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithModelDefault("DefaultListView", listViewId);
+        }
+
+        /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="lookupListViewId">Name of the image.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> HasDefaultLookupListViewId<T>(this IModelBuilder<T> builder, string lookupListViewId)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithModelDefault("DefaultLookupListView", lookupListViewId);
+        }
+
+        /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="allowEdit">Name of the image.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> ForListViewsDefaultAllowEdit<T>(this IModelBuilder<T> builder, bool allowEdit)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithModelDefault("DefaultListViewAllowEdit", allowEdit.ToString());
+        }
+
+        /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="showAutoFilterRow">Name of the image.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> ForListViewsDefaultShowAutoFilterRow<T>(this IModelBuilder<T> builder, bool showAutoFilterRow)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithModelDefault("DefaultListViewShowAutoFilterRow", showAutoFilterRow.ToString());
+        }
+
+        /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="showFindPanel">Name of the image.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> ForListViewsDefaultShowFindPanel<T>(this IModelBuilder<T> builder, bool showFindPanel)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithModelDefault("DefaultListViewShowFindPanel", showFindPanel.ToString());
+        }
+
+        /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="masterDetailMode">Name of the image.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> ForListViewsDefaultMasterDetailMode<T>(this IModelBuilder<T> builder, MasterDetailMode masterDetailMode)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithModelDefault("DefaultListViewMasterDetailMode", masterDetailMode.ToString());
+        }
+
+        /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="lookupEditorMode">Name of the image.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> HasDefaultLookupEditorMode<T>(this IModelBuilder<T> builder, LookupEditorMode lookupEditorMode)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithModelDefault("DefaultLookupEditorMode", lookupEditorMode.ToString());
+        }
+
+        /// <summary>
+        /// Determines whether the specified image name has image.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="newItemRowPosition">Name of the image.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> ForListViewsDefaultNewItemRowPosition<T>(this IModelBuilder<T> builder, NewItemRowPosition newItemRowPosition)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.WithModelDefault("DefaultListViewNewItemRowPosition", newItemRowPosition.ToString());
+        }
+
+        /// <summary>
         /// Determines whether [has default property] [the specified property name].
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -89,6 +245,34 @@ namespace Xenial.Framework.ModelBuilders
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
             return builder.HasDefaultProperty(builder.ExpressionHelper.Property(property));
+        }
+
+        /// <summary>
+        /// Determines whether [has default property] [the specified property name].
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> HasFriendlyKeyProperty<T>(this IModelBuilder<T> builder, string propertyName)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder
+                    .WithAttribute(new FriendlyKeyPropertyAttribute(propertyName));
+        }
+
+        /// <summary>
+        /// Determines whether [has default property] [the specified property].
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TProp">The type of the property.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="property">The property.</param>
+        /// <returns></returns>
+        public static IModelBuilder<T> HasFriendlyKeyProperty<T, TProp>(this IModelBuilder<T> builder, Expression<Func<T, TProp>> property)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            return builder.HasFriendlyKeyProperty(builder.ExpressionHelper.Property(property));
         }
 
         /// <summary>

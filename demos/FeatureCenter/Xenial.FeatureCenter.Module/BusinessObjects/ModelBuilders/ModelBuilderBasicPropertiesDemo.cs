@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
 
-using Xenial.Framework.Base;
-
 namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
 {
     [DomainComponent]
-    [Singleton]
-    [DefaultClassOptions]
-    [ImageName("direction1")]
     public class ModelBuilderBasicPropertiesDemo : NonPersistentBaseObject
     {
         private static readonly string[] schemes = new[] { "http://", "https://" };
