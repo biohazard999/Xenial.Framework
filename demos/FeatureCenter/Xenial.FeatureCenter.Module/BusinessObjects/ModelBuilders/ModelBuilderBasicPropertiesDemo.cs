@@ -44,7 +44,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
             }
         }
 
-        private Uri? demoUri = new Uri("https://www.xenial.io");
+        private Uri? demoUri = new("https://www.xenial.io");
         [EditorAlias("WebViewUriPropertyEditor")]
         public Uri? DemoUri { get => demoUri; set => SetPropertyValue(ref demoUri, value); }
 
