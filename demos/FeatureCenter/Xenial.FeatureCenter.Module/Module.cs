@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model.Core;
@@ -18,7 +18,8 @@ namespace Xenial.FeatureCenter.Module
             => base.GetDeclaredExportedTypes()
             .Concat(new[]
             {
-                typeof(ModelBuilderBasicPropertiesDemo)
+                typeof(ModelBuilderBasicPropertiesDemo),
+                typeof(WebViewEditorDemo)
             });
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()

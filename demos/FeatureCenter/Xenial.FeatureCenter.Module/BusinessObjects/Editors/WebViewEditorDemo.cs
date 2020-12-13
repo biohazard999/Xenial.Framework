@@ -9,30 +9,30 @@ using DevExpress.Persistent.Base;
 
 using Xenial.Framework.Base;
 
-namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
+namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [DomainComponent]
     [Singleton]
     [DefaultClassOptions]
-    [ImageName("direction1")]
-    public class ModelBuilderBasicPropertiesDemo : NonPersistentBaseObject
+    [ImageName("globe")]
+    public class WebViewEditorDemo : NonPersistentBaseObject
     {
         private static readonly string[] schemes = new[] { "http://", "https://" };
 
-        private string? demoCode = "https://www.xenial.io";
+        private string? urlString = "https://www.xenial.io";
         [ImmediatePostData]
-        public string? DemoCode
+        public string? UrlString
         {
-            get => demoCode;
+            get => urlString;
             set
             {
-                if (SetPropertyValue(ref demoCode, value))
+                if (SetPropertyValue(ref urlString, value))
                 {
                     if (Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var absoluteOrRelativeUri))
                     {
                         if (absoluteOrRelativeUri.IsAbsoluteUri)
                         {
-                            DemoUri = absoluteOrRelativeUri;
+                            Uri = absoluteOrRelativeUri;
                             return;
                         }
 
@@ -43,7 +43,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
                             value = $"https://{value}";
                             if (Uri.TryCreate(value, UriKind.Absolute, out var absoluteUri))
                             {
-                                DemoUri = absoluteUri;
+                                Uri = absoluteUri;
                             }
                         }
                     }
@@ -51,9 +51,9 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
             }
         }
 
-        private Uri? demoUri = new Uri("https://www.xenial.io");
+        private Uri? uri = new Uri("about:blank");
         [EditorAlias("WebViewUriPropertyEditor")]
-        public Uri? DemoUri { get => demoUri; set => SetPropertyValue(ref demoUri, value); }
+        public Uri? Uri { get => uri; set => SetPropertyValue(ref uri, value); }
 
     }
 }
