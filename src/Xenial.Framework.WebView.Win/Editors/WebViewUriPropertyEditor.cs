@@ -60,6 +60,7 @@ namespace Xenial.Framework.WebView.Win.Editors
             ControlCreated -= WebViewUriPropertyEditor_ControlCreated;
             if (Control is not null)
             {
+                Control.Visible = false;
                 Control.Parent = null;
                 if (!Control.IsDisposed && !Control.Disposing)
                 {
