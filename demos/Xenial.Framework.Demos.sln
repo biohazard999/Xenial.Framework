@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.WebView.Wi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Win", "..\src\Xenial.Framework.Win\Xenial.Framework.Win.csproj", "{926E4D46-B830-4104-92AD-732B1518562B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Xpo", "..\src\Xenial.Framework.Xpo\Xenial.Framework.Xpo.csproj", "{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,6 +151,18 @@ Global
 		{926E4D46-B830-4104-92AD-732B1518562B}.Release|x64.Build.0 = Release|Any CPU
 		{926E4D46-B830-4104-92AD-732B1518562B}.Release|x86.ActiveCfg = Release|Any CPU
 		{926E4D46-B830-4104-92AD-732B1518562B}.Release|x86.Build.0 = Release|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Debug|x64.Build.0 = Debug|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Debug|x86.Build.0 = Debug|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Release|x64.ActiveCfg = Release|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Release|x64.Build.0 = Release|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Release|x86.ActiveCfg = Release|Any CPU
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,6 +177,7 @@ Global
 		{D5858DF9-466D-4A0A-B9FF-4F783B9D1B6F} = {0C10E816-F485-466A-A168-2098DE482F9A}
 		{F28DBCF9-460D-4C1B-9E1D-5000C40209B9} = {0C10E816-F485-466A-A168-2098DE482F9A}
 		{926E4D46-B830-4104-92AD-732B1518562B} = {0C10E816-F485-466A-A168-2098DE482F9A}
+		{64F29AD4-AF22-467F-9B56-3A99F71AC5CB} = {0C10E816-F485-466A-A168-2098DE482F9A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B01080EB-FEDE-416C-93F3-38426F0D5B96}

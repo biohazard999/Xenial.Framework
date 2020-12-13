@@ -12,21 +12,23 @@ using Xenial.Framework.Base;
 using Xenial.Framework.ModelBuilders;
 using Bogus;
 using System.ComponentModel;
+using Xenial.FeatureCenter.Module.BusinessObjects;
+using Xenial.Framework.TokenEditors;
+using DevExpress.ExpressApp.Editors;
+using DevExpress.Xpo;
 
 namespace Xenial.FeatureCenter.Module
 {
     public class FeatureCenterModule : XenialModuleBase
     {
+        protected override ModuleTypeList GetRequiredModuleTypesCore()
+            => base.GetRequiredModuleTypesCore()
+                .AndModuleTypes(typeof(XenialTokenEditorsModule));
+
         protected override IEnumerable<Type> GetDeclaredExportedTypes()
             => base.GetDeclaredExportedTypes()
-            .Concat(new[]
-            {
-                typeof(ModelBuilderBasicPropertiesDemo),
-
-                typeof(WebViewEditorDemo),
-                typeof(TokenEditorDemo),
-                typeof(TokenEditorDemoTokens)
-            });
+            .Concat(ModelTypeList.NonPersistentTypes)
+            .Concat(ModelTypeList.PersistentTypes);
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
             => base.GetDeclaredControllerTypes()
@@ -36,6 +38,14 @@ namespace Xenial.FeatureCenter.Module
         {
             updaters.UseSingletonNavigationItems();
             base.AddGeneratorUpdaters(updaters);
+        }
+
+        protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
+        {
+            base.RegisterEditorDescriptors(editorDescriptorsFactory);
+
+            editorDescriptorsFactory.UseTokenObjectsPropertyEditors<TokenEditorNonPersistentTokens>();
+            editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForType<XPCollection<TokenEditorPersistentTokens>>();
         }
 
         public override void Setup(XafApplication application)
@@ -59,12 +69,12 @@ namespace Xenial.FeatureCenter.Module
 
                     void Nos_ObjectsGetting(object sender, ObjectsGettingEventArgs e)
                     {
-                        if (e.ObjectType == typeof(TokenEditorDemoTokens))
+                        if (e.ObjectType == typeof(TokenEditorNonPersistentTokens))
                         {
-                            var faker = new Faker<TokenEditorDemoTokens>()
+                            var faker = new Faker<TokenEditorNonPersistentTokens>()
                                 .RuleFor(r => r.Name, f => f.Name.FirstName());
                             var tokens = faker.Generate(100);
-                            var bindingList = new BindingList<TokenEditorDemoTokens>();
+                            var bindingList = new BindingList<TokenEditorNonPersistentTokens>();
                             foreach (var token in tokens)
                             {
                                 bindingList.Add(token);

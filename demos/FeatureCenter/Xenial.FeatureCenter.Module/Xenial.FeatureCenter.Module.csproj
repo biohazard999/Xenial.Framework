@@ -6,11 +6,13 @@
 
   <ItemGroup Condition="'$(XenialDebug)' == 'false'">
     <PackageReference Include="Xenial.Framework" Version="0.0.0-*" />
+    <PackageReference Include="Xenial.Framework.Xpo" Version="0.0.0-*" />
     <PackageReference Include="Xenial.Framework.WebView" Version="0.0.0-*" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Xpo/Xenial.Framework.Xpo.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.WebView/Xenial.Framework.WebView.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors/Xenial.Framework.TokenEditors.csproj" />
   </ItemGroup>
