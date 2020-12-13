@@ -43,7 +43,9 @@ namespace Xenial.FeatureCenter.Module
         {
             base.CustomizeTypesInfo(typesInfo);
 
-            typesInfo.CreateModelBuilder<ModelBuilderBasicPropertiesDemoModelBuilder>().Build();
+            typesInfo
+                .CreateModelBuilder<ModelBuilderBasicPropertiesDemoModelBuilder>()
+                .Build();
         }
     }
 }
