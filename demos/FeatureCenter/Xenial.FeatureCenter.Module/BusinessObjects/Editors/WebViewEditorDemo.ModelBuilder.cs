@@ -5,6 +5,7 @@ using System.Text;
 using DevExpress.ExpressApp.DC;
 
 using Xenial.Framework.ModelBuilders;
+using Xenial.Framework.WebView.ModelBuilders;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
@@ -15,6 +16,9 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         public override void Build()
         {
             base.Build();
+
+            For(m => m.Uri)
+                .UsingWebViewPropertyEditor();
         }
     }
 }

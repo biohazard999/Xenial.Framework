@@ -46,6 +46,10 @@ namespace Xenial.FeatureCenter.Module
             typesInfo
                 .CreateModelBuilder<ModelBuilderBasicPropertiesDemoModelBuilder>()
                 .Build();
+
+            typesInfo
+                .CreateModelBuilder<WebViewEditorDemoModelBuilder>()
+                .Build();
         }
     }
 }

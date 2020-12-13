@@ -59,7 +59,6 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             }
         }
 
-        [EditorAlias("WebViewUriPropertyEditor")]
         public Uri? Uri { get => uri; set => SetPropertyValue(ref uri, value); }
     }
 }
