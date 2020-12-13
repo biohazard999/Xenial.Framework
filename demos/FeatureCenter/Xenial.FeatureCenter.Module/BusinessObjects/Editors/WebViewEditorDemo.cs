@@ -12,9 +12,6 @@ using Xenial.Framework.Base;
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [DomainComponent]
-    [Singleton]
-    [DefaultClassOptions]
-    [ImageName("Business_World")]
     public class WebViewEditorDemo : NonPersistentBaseObject
     {
         private static readonly string[] schemes = new[] { "http://", "https://" };

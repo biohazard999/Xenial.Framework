@@ -245,11 +245,11 @@ namespace Xenial.Framework.ModelBuilders
         /// <typeparam name="TPropertyType">The type of the property.</typeparam>
         /// <param name="propertyExpression">The property.</param>
         /// <returns></returns>
-        public PropertyBuilder<TPropertyType, TClassType> For<TPropertyType>(Expression<Func<TClassType, TPropertyType>> propertyExpression)
+        public PropertyBuilder<TPropertyType?, TClassType> For<TPropertyType>(Expression<Func<TClassType, TPropertyType?>> propertyExpression)
         {
             _ = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpression));
 
-            var builder = PropertyBuilder.PropertyBuilderFor<TPropertyType, TClassType>(TypeInfo.FindMember(ExpressionHelper.Property(propertyExpression)));
+            var builder = PropertyBuilder.PropertyBuilderFor<TPropertyType?, TClassType>(TypeInfo.FindMember(ExpressionHelper.Property(propertyExpression)));
 
             Add(builder);
 

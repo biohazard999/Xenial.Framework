@@ -17,6 +17,11 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         {
             base.Build();
 
+            this.HasCaption("Editors - WebView")
+                .WithDefaultClassOptions()
+                .IsSingleton()
+                .HasImage("Business_World");
+
             For(m => m.Uri)
                 .UsingWebViewPropertyEditor();
         }
