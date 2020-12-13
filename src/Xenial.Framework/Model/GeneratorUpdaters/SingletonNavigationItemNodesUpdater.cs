@@ -39,7 +39,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
             {
                 if (item.View is IModelObjectView modelObjectView && item.View is IModelListView)
                 {
-                    if (modelObjectView.ModelClass.TypeInfo.IsAttributeDefined<SingletonAttribute>(true))
+                    if (modelObjectView.ModelClass.TypeInfo.IsAttributeDefined<SingletonAttribute>(false))
                     {
                         item.View = modelObjectView.ModelClass.DefaultDetailView;
                     }

@@ -16,6 +16,8 @@ using Xenial.FeatureCenter.Module.BusinessObjects;
 using Xenial.Framework.TokenEditors;
 using DevExpress.ExpressApp.Editors;
 using DevExpress.Xpo;
+using DevExpress.ExpressApp.Updating;
+using Xenial.FeatureCenter.Module.Updaters;
 
 namespace Xenial.FeatureCenter.Module
 {
@@ -34,10 +36,17 @@ namespace Xenial.FeatureCenter.Module
             => base.GetDeclaredControllerTypes()
                 .UseSingletonController();
 
+        public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB)
+            => base.GetModuleUpdaters(objectSpace, versionFromDB)
+                .Concat(new ModuleUpdater[]
+                {
+                    new SeedModuleUpdater(objectSpace, versionFromDB)
+                });
+
         public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
         {
-            updaters.UseSingletonNavigationItems();
             base.AddGeneratorUpdaters(updaters);
+            updaters.UseSingletonNavigationItems();
         }
 
         protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)

@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using DevExpress.ExpressApp;
 using DevExpress.Persistent.Base;
+using DevExpress.Xpo.DB;
 using DevExpress.XtraEditors;
 
 namespace Xenial.FeatureCenter.Win

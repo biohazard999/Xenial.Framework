@@ -3,6 +3,7 @@
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Win;
 using DevExpress.ExpressApp.Xpo;
+using DevExpress.Xpo.DB;
 
 using Xenial.FeatureCenter.Module;
 using Xenial.FeatureCenter.Module.Win;
@@ -15,12 +16,12 @@ namespace Xenial.FeatureCenter.Win
     public class FeatureCenterWindowsFromsApplication : WinApplication
     {
         static FeatureCenterWindowsFromsApplication()
-            => InMemoryDataStoreProvider.Register();
+            => SQLiteConnectionProvider.Register();
 
         public FeatureCenterWindowsFromsApplication()
         {
-            ConnectionString = InMemoryDataStoreProvider.ConnectionString;
-            IgnoreUserModelDiffs = true;
+            ConnectionString = SQLiteConnectionProvider.GetConnectionString(nameof(FeatureCenterWindowsFromsApplication));
+            //IgnoreUserModelDiffs = true;
 
             Modules.Add(new XenialTokenEditorsModule());
             Modules.Add(new XenialTokenEditorsWindowsFormsModule());
