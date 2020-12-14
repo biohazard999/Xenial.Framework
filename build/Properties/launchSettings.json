@@ -1,9 +1,9 @@
-{
+﻿{
   "profiles": {
     "Xenial.Build": {
       "commandName": "Project",
-      "commandLineArgs": "",
-      "workingDirectory": "..\\.."
+      "commandLineArgs": "release",
+      "workingDirectory": "..\\"
     }
   }
 }

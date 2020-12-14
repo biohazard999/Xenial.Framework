@@ -7,9 +7,9 @@ using static SimpleExec.Command;
 
 namespace Xenial.Build
 {
-    static partial class Program
+    internal static partial class Program
     {
-        enum VersionIncrement
+        private enum VersionIncrement
         {
             Patch,
             Minor,
@@ -18,7 +18,10 @@ namespace Xenial.Build
 
         public static async Task Release()
         {
-            if (!await ConfirmBranch()) return;
+            if (!await ConfirmBranch())
+            {
+                return;
+            }
 
             await PullChanges();
             await FetchTags();
@@ -69,7 +72,7 @@ namespace Xenial.Build
             return true;
         }
 
-        static async Task<bool> ConfirmBranch()
+        private static async Task<bool> ConfirmBranch()
         {
             var currentBranch = (await ReadAsync("git", "branch --show-current")).Trim();
             if (!currentBranch.Equals("main", StringComparison.InvariantCultureIgnoreCase))
@@ -119,7 +122,7 @@ namespace Xenial.Build
             return tags.Split("\n");
         }
 
-        static Task<IEnumerable<Version>> ParseTags(IEnumerable<string> tags)
+        private static Task<IEnumerable<Version>> ParseTags(IEnumerable<string> tags)
         {
             Header("Parse versions");
             IEnumerable<string> CollectVersion(char versionSelector)
@@ -144,15 +147,16 @@ namespace Xenial.Build
 
             return Task.FromResult(versions.AsEnumerable());
         }
-        static Task<Version> MaxVersion(IEnumerable<Version> versions)
+
+        private static Task<Version> MaxVersion(IEnumerable<Version> versions)
         {
             Header("Maximum version");
-            var version = versions.Max();
-            LogVerbose(version?.ToString());
+            var version = versions.Max() ?? new Version(0, 0, 0);
+            LogVerbose(version.ToString());
             return Task.FromResult(version);
         }
 
-        static Task<VersionIncrement?> AskVersion(Version maxVersion)
+        private static Task<VersionIncrement?> AskVersion(Version maxVersion)
         {
             Header($"Current version is {maxVersion}");
 
@@ -184,7 +188,7 @@ namespace Xenial.Build
             return Task.FromResult(result);
         }
 
-        static async Task TagVersion(Version nextVersion)
+        private static async Task TagVersion(Version nextVersion)
         {
             var tag = $"v{ToSemVer(nextVersion)}";
             Header($"Tagging {tag}");
@@ -192,7 +196,7 @@ namespace Xenial.Build
             await RunAsync("git", $"tag {tag}");
         }
 
-        static async Task PushTags()
+        private static async Task PushTags()
         {
             Header($"Pushing tags");
 

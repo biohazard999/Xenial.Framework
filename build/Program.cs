@@ -27,7 +27,7 @@ namespace Xenial.Build
                 ? "Xenial.Framework.sln"
                 : "Xenial.Framework.CrossPlatform.slnf";
 
-            Func<string> properties = () => string.Join(" ", new Dictionary<string, string>
+            string GetProperties() => string.Join(" ", new Dictionary<string, string>
             {
                 ["Configuration"] = Configuration,
                 ["XenialPublicKey"] = PublicKey
@@ -52,7 +52,7 @@ namespace Xenial.Build
             );
 
             Target("build", DependsOn("restore"),
-                () => RunAsync("dotnet", $"build {sln} --no-restore -c {Configuration} {logOptions("build")} {properties()}")
+                () => RunAsync("dotnet", $"build {sln} --no-restore -c {Configuration} {logOptions("build")} {GetProperties()}")
             );
 
             Target("test", DependsOn("build"), async () =>
@@ -65,7 +65,7 @@ namespace Xenial.Build
                             : new[] { netcore, net5 };
 
                 var tests = tfms
-                    .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Framework.Tests/Xenial.Framework.Tests.csproj --no-build --no-restore --framework {tfm} -c {Configuration} {properties()}"))
+                    .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Framework.Tests/Xenial.Framework.Tests.csproj --no-build --no-restore --framework {tfm} -c {Configuration} {GetProperties()}"))
                     .ToArray();
 
                 await Task.WhenAll(tests);
@@ -101,7 +101,7 @@ namespace Xenial.Build
             );
 
             Target("pack", DependsOn("test"), //TODO: generate lic on deployment
-                () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {properties()}")
+                () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {GetProperties()}")
             );
 
             Target("docs",
