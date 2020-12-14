@@ -10,17 +10,18 @@ Settings[Keys.LinkHideExtensions] = false;
 Settings[Keys.LinkHideIndexPages] = true;
 Settings[DocsKeys.IncludeDateInPostPath] = true;
 Settings[DocsKeys.IncludeGlobalNamespace] = false;
+Settings[DocsKeys.ImplicitInheritDoc] = true;
 
 Settings[Keys.Host] = "framework.xenial.io";
 Settings[DocsKeys.Title] = "Xenial.Framework Documentation";
 Settings[DocsKeys.Logo] = "assets/img/logo.svg";
 
-Settings[DocsKeys.SourceFiles] = new []
+//Settings[DocsKeys.ValidateRelativeLinks] = true;
+//Settings[DocsKeys.ValidateLinksAsError] = true;
+
+Settings[DocsKeys.SourceFiles] = new string []
 {
-    "../../../utils/src/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs",
-    //"../../../devtools/src/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs",
-    "../../../framework/src/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs",
-    //"../../../platform/src/modules/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs"
+    "../../src/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs"
 };
 
 // Add any pipeline customizations here
