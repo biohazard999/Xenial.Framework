@@ -22,6 +22,12 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 
         public TokenEditorPersistentDemo(Session session) : base(session) { }
 
+        public override void AfterConstruction()
+        {
+            base.AfterConstruction();
+            TokenEditorStringTokens = "Xenial.Framework;Xenial.Framework.Win;";
+        }
+
         [Association]
         [TokenObjectsEditor]
         public XPCollection<TokenEditorPersistentTokens> TokenEditorPersistentTokens => GetCollection<TokenEditorPersistentTokens>();
