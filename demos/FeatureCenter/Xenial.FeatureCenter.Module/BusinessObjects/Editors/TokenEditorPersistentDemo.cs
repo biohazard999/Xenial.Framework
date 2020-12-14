@@ -5,6 +5,7 @@ using System.Text;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
+using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 using DevExpress.Xpo;
 
@@ -17,11 +18,17 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
     [Singleton(AutoCommit = true)]
     public class TokenEditorPersistentDemo : FeatureCenterBaseObjectId
     {
+        private string? tokenEditorStringTokens;
+
         public TokenEditorPersistentDemo(Session session) : base(session) { }
 
         [Association]
         [TokenObjectsEditor]
         public XPCollection<TokenEditorPersistentTokens> TokenEditorPersistentTokens => GetCollection<TokenEditorPersistentTokens>();
+
+        [TokenStringEditor]
+        [ModelDefault("PredefinedValues", "Xenial.Framework;Xenial.Framework.Win;Xenial.Framework.TokenEditors;Xenial.Framework.TokenEditors.Win;Xenial.Framework.WebView.Win;Xenial.Framework.WebView")]
+        public string? TokenEditorStringTokens { get => tokenEditorStringTokens; set => SetPropertyValue(ref tokenEditorStringTokens, value); }
     }
 
     [Persistent]

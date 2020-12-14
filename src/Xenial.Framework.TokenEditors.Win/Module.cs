@@ -31,6 +31,7 @@ namespace Xenial.Framework.TokenEditors.Win
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
             editorDescriptorsFactory.UseTokenObjectsPropertyEditorsWin();
+            editorDescriptorsFactory.UseTokenStringPropertyEditorsWin();
         }
     }
 }

@@ -20,8 +20,11 @@ namespace Xenial.FeatureCenter.Win
 
         public FeatureCenterWindowsFromsApplication()
         {
+            IgnoreUserModelDiffs = true;
+
             ConnectionString = SQLiteConnectionProvider.GetConnectionString(nameof(FeatureCenterWindowsFromsApplication));
-            //IgnoreUserModelDiffs = true;
+            DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
+            CheckCompatibilityType = CheckCompatibilityType.DatabaseSchema;
 
             Modules.Add(new XenialTokenEditorsModule());
             Modules.Add(new XenialTokenEditorsWindowsFormsModule());

@@ -21,6 +21,7 @@ namespace Xenial.Framework.TokenEditors
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
             editorDescriptorsFactory.UseTokenObjectsPropertyEditors();
+            editorDescriptorsFactory.UseTokenStringPropertyEditors();
         }
     }
 }

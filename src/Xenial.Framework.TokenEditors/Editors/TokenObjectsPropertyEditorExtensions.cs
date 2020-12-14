@@ -28,13 +28,6 @@ namespace DevExpress.ExpressApp.Editors
                 true
             );
 
-            //editorDescriptorsFactory.RegisterPropertyEditorAlias(
-            //    Xenial.Framework.TokenEditors.EditorAliases.TokenObjectsPropertyEditor,
-            //    typeof(IList<>),
-            //    true,
-            //    mem => true
-            //);
-
             return editorDescriptorsFactory;
         }
 
