@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using System.Windows.Forms;
 
 using DevExpress.Accessibility;
 using DevExpress.ExpressApp;
@@ -498,13 +496,6 @@ namespace DevExpress.ExpressApp.Editors
                 typeof(TokenObjectsPropertyEditor),
                 false
             );
-
-            //editorDescriptorsFactory.RegisterPropertyEditor(
-            //    Xenial.Framework.TokenEditors.EditorAliases.TokenObjectsPropertyEditor,
-            //    typeof(IList<>),
-            //    typeof(TokenObjectsPropertyEditor),
-            //    false
-            //);
 
             return editorDescriptorsFactory;
         }
