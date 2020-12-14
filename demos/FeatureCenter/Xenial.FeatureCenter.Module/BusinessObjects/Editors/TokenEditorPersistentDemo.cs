@@ -30,6 +30,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 
         [Association]
         [TokenObjectsEditor]
+        [ImmediatePostData]
         public XPCollection<TokenEditorPersistentTokens> TokenEditorPersistentTokens => GetCollection<TokenEditorPersistentTokens>();
 
         [TokenStringEditor]
