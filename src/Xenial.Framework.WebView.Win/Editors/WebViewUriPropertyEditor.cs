@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Win;
@@ -42,6 +43,11 @@ namespace Xenial.Framework.WebView.Win.Editors
             try
             {
                 await Control.EnsureCoreWebView2Async();
+            }
+            catch (COMException ex)
+            {
+                Tracing.LogError(new Guid("FF39957F-C7E7-4498-B6B5-79317D53EAB7"), ex);
+                WinApplication.Messaging.ShowException(ex.ToString());
             }
             catch (Exception ex)
             {
