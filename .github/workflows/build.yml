@@ -112,3 +112,4 @@ jobs:
         run: dotnet run --project build/build.csproj deploy.nuget
         env:
           NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
+          DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
