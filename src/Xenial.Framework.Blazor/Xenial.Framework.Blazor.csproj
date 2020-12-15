@@ -9,4 +9,8 @@
     <PackageReference Include="DevExpress.ExpressApp.Blazor" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
+  </ItemGroup>
+
 </Project>
