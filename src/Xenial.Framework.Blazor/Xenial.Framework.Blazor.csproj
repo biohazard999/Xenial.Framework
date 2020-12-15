@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
+    <DxExtendStartupHost>false</DxExtendStartupHost>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp.Blazor" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+</Project>

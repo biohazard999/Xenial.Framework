@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(Net5Version)</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.FeatureCenter.Module.Blazor\Xenial.FeatureCenter.Module.Blazor.csproj" />
+  </ItemGroup>
+
+</Project>

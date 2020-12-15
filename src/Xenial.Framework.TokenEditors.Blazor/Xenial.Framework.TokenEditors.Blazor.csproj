@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
+    <DxExtendStartupHost>false</DxExtendStartupHost>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.Blazor\Xenial.Framework.Blazor.csproj" />
+  </ItemGroup>
+
+</Project>

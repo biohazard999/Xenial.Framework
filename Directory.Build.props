@@ -10,6 +10,9 @@
     <NetStandardVersion>netstandard2.0</NetStandardVersion>
     <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
     <Net5Version>net5.0</Net5Version>
+    <NetBlazorLibVersion>netstandard2.1;$(Net5Version)</NetBlazorLibVersion>
+    <NetBlazorAppVersion>$(Net5Version)</NetBlazorAppVersion>
+    
     <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version)</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
