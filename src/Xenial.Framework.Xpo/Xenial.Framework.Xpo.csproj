@@ -4,4 +4,8 @@
     <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
+  </ItemGroup>
+
 </Project>

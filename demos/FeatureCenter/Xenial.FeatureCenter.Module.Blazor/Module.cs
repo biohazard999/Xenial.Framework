@@ -3,6 +3,7 @@
 using DevExpress.ExpressApp;
 
 using Xenial.Framework;
+using Xenial.Framework.TokenEditors.Blazor;
 
 namespace Xenial.FeatureCenter.Module.Blazor
 {
@@ -10,6 +11,9 @@ namespace Xenial.FeatureCenter.Module.Blazor
     {
         protected override ModuleTypeList GetRequiredModuleTypesCore()
             => base.GetRequiredModuleTypesCore()
-                .AndModuleTypes(typeof(FeatureCenterModule));
+                .AndModuleTypes(
+                    typeof(FeatureCenterModule),
+                    typeof(XenialTokenEditorsBlazorModule)
+                );
     }
 }

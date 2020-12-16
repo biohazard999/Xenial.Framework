@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Framework.Blazor\Xenial.Framework.Blazor.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.TokenEditors\Xenial.Framework.TokenEditors.csproj" />
   </ItemGroup>
 
 </Project>

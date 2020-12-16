@@ -26,7 +26,9 @@ namespace Xenial.FeatureCenter.Module
     {
         protected override ModuleTypeList GetRequiredModuleTypesCore()
             => base.GetRequiredModuleTypesCore()
-                .AndModuleTypes(typeof(XenialTokenEditorsModule));
+                .AndModuleTypes(
+                    typeof(XenialTokenEditorsModule)
+                );
 
         protected override IEnumerable<Type> GetDeclaredExportedTypes()
             => base.GetDeclaredExportedTypes()
