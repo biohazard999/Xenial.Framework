@@ -2,10 +2,14 @@
 
 @if (ComponentModel is not null)
 {
-<input value=@ComponentModel.Value
-       @onchange=@(e => ComponentModel.SetValueFromUI((string)e.Value))
-       readonly=@ComponentModel.ReadOnly
-       @attributes=@ComponentModel.Attributes />
+    <DxTagBox TValue="String"
+              TData="String"
+              Data="@ComponentModel.DataSource"
+              Values="@ComponentModel.Values"
+              ValuesChanged="ValuesChanged"
+              @attributes="@ComponentModel.Attributes"
+              ReadOnly="@ComponentModel.ReadOnly">
+    </DxTagBox>
 }
 
 @code
@@ -13,4 +17,12 @@
     [Parameter]
     public TokenStringInputModel? ComponentModel { get; set; }
     public static RenderFragment Create(TokenStringInputModel componentModel) => @<TokenStringComponent ComponentModel="@componentModel" />;
+
+    void ValuesChanged(System.Collections.Generic.IEnumerable<string> values)
+    {
+        if (ComponentModel is not null)
+        {
+            ComponentModel.SetValueFromUI(values);
+        }
+    }
 }
