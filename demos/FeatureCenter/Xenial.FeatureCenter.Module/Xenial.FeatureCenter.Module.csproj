@@ -8,6 +8,7 @@
     <PackageReference Include="Xenial.Framework" Version="0.0.0-*" />
     <PackageReference Include="Xenial.Framework.Xpo" Version="0.0.0-*" />
     <PackageReference Include="Xenial.Framework.WebView" Version="0.0.0-*" />
+    <PackageReference Include="Xenial.Framework.TokenEditors" Version="0.0.0-*" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">

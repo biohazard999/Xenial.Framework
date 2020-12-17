@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
+    <TargetFramework>$(Net5Version)</TargetFramework>
     <TargetFrameworks>$(Net5Version)</TargetFrameworks>
   </PropertyGroup>
   
