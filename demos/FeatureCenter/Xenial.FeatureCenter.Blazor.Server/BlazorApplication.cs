@@ -23,7 +23,13 @@ namespace Xenial.FeatureCenter.Blazor.Server
 
         public FeatureCenterBlazorApplication()
         {
-            var dbPath = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), $"{nameof(FeatureCenterBlazorApplication)}.db");
+            var dirName = Path.GetDirectoryName(GetType().Assembly.Location);
+            var dbName = $"{nameof(FeatureCenterBlazorApplication)}.db";
+
+            var dbPath = string.IsNullOrEmpty(dirName)
+                ? dbName
+                : Path.Combine(dirName, dbName);
+
             ConnectionString = SQLiteConnectionProvider.GetConnectionString(dbPath);
             DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
             CheckCompatibilityType = CheckCompatibilityType.DatabaseSchema;
@@ -36,6 +42,7 @@ namespace Xenial.FeatureCenter.Blazor.Server
 
         protected override void CreateDefaultObjectSpaceProvider(CreateCustomObjectSpaceProviderEventArgs args)
         {
+            _ = args ?? throw new ArgumentNullException(nameof(args));
             var dataStoreProvider = GetDataStoreProvider(args.ConnectionString, args.Connection);
             args.ObjectSpaceProviders.Add(new XPObjectSpaceProvider(dataStoreProvider, true));
             args.ObjectSpaceProviders.Add(new NonPersistentObjectSpaceProvider(TypesInfo, null));
@@ -56,6 +63,7 @@ namespace Xenial.FeatureCenter.Blazor.Server
 
         protected override void OnDatabaseVersionMismatch(DatabaseVersionMismatchEventArgs args)
         {
+            _ = args ?? throw new ArgumentNullException(nameof(args));
             args.Updater.Update();
             args.Handled = true;
             base.OnDatabaseVersionMismatch(args);
