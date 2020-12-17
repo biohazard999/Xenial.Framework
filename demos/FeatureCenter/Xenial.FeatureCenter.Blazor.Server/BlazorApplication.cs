@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xenial.FeatureCenter.Module;
 using Xenial.FeatureCenter.Module.Blazor;
 using Xenial.FeatureCenter.Blazor.Server.Services;
+using System.IO;
 
 namespace Xenial.FeatureCenter.Blazor.Server
 {
@@ -22,7 +23,8 @@ namespace Xenial.FeatureCenter.Blazor.Server
 
         public FeatureCenterBlazorApplication()
         {
-            ConnectionString = SQLiteConnectionProvider.GetConnectionString(nameof(FeatureCenterBlazorApplication));
+            var dbPath = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), $"{nameof(FeatureCenterBlazorApplication)}.db");
+            ConnectionString = SQLiteConnectionProvider.GetConnectionString(dbPath);
             DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
             CheckCompatibilityType = CheckCompatibilityType.DatabaseSchema;
 

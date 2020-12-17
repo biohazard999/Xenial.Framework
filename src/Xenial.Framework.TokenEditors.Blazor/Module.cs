@@ -33,6 +33,7 @@ namespace Xenial.Framework.TokenEditors.Blazor
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
             editorDescriptorsFactory.UseTokenStringPropertyEditorsBlazor();
+            editorDescriptorsFactory.UseTokenObjectsPropertyEditorsBlazor();
         }
     }
 }

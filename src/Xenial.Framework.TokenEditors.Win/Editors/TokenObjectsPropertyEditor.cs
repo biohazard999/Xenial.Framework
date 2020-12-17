@@ -342,7 +342,7 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
                 var key = e.Token.Value;
 
                 var objectToAdd = objectSpace.GetObjectByKey(MemberInfo.ListElementType, key);
-                if (objectToAdd == null && DataSource is System.Collections.IList dataSource)
+                if (objectToAdd is null && DataSource is System.Collections.IList dataSource)
                 {
                     objectToAdd = dataSource
                         .OfType<object>()

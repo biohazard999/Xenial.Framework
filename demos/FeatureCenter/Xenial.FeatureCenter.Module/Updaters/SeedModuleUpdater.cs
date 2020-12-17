@@ -21,13 +21,16 @@ namespace Xenial.FeatureCenter.Module.Updaters
 
             ObjectSpace.EnsureSingletons();
 
-            var faker = new Faker<TokenEditorPersistentTokens>()
-                .CustomInstantiator(f => ObjectSpace.CreateObject<TokenEditorPersistentTokens>())
-                .RuleFor(r => r.Name, f => f.Name.FirstName());
+            if (ObjectSpace.GetObjectsCount(typeof(TokenEditorPersistentTokens), null) == 0)
+            {
+                var faker = new Faker<TokenEditorPersistentTokens>()
+                    .CustomInstantiator(f => ObjectSpace.CreateObject<TokenEditorPersistentTokens>())
+                    .RuleFor(r => r.Name, f => f.Name.FirstName());
 
-            var tokens = faker.Generate(100);
+                var tokens = faker.Generate(100);
 
-            ObjectSpace.CommitChanges();
+                ObjectSpace.CommitChanges();
+            }
         }
     }
 }
