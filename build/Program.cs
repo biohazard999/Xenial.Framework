@@ -30,7 +30,7 @@ namespace Xenial.Build
                 ? "Xenial.Framework.sln"
                 : "Xenial.Framework.CrossPlatform.slnf";
 
-            var demoBlazor = "./demos/FeatureCenter/Xenial.FeatureCenter.Blazor.Server/Xenial.FeatureCenter.Blazor.Server.csproj";
+            var featureCenterBlazor = "./demos/FeatureCenter/Xenial.FeatureCenter.Blazor.Server/Xenial.FeatureCenter.Blazor.Server.csproj";
 
             string GetProperties() => string.Join(" ", new Dictionary<string, string>
             {
@@ -105,17 +105,17 @@ namespace Xenial.Build
                 }
             );
 
-            Target("pack", DependsOn("test"), //TODO: generate lic on deployment
+            Target("pack", DependsOn("lic"),
                 () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {GetProperties()}")
             );
 
-            BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor", "framework.featurecenter.xenial.io")
+            BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Server", "framework.featurecenter.xenial.io")
             {
-                PathToCsproj = demoBlazor,
+                PathToCsproj = featureCenterBlazor,
                 AssemblyProperties = "/property:XenialDebug=false"
-            }, "Xenial.FeatureCenter.Blazor");
+            }, "framework.featurecenter.xenial.io");
 
-            Target("demos", DependsOn("pack", "publish:Xenial.FeatureCenter.Blazor"));
+            Target("demos", DependsOn("pack", "publish:framework.featurecenter.xenial.io"));
 
             Target("docs",
                 () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs")
