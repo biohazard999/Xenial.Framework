@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(XenialDebug)' == 'false'">
-    <PackageReference Include="Xenial.Framework.TokenEditors.Blazor" Version="$(XenialVersion)" />
+    <PackageReference Include="Xenial.Framework.TokenEditors.Blazor" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">

@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(XenialDebug)' == 'false'">
-    <PackageReference Include="Xenial.Framework" Version="$(XenialVersion)" />
-    <PackageReference Include="Xenial.Framework.Xpo" Version="$(XenialVersion)" />
-    <PackageReference Include="Xenial.Framework.WebView" Version="$(XenialVersion)" />
-    <PackageReference Include="Xenial.Framework.TokenEditors" Version="$(XenialVersion)" />
+    <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.Xpo" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.WebView" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.TokenEditors" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">

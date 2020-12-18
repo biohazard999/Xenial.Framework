@@ -10,7 +10,7 @@
     <GenerateXenialLicense>false</GenerateXenialLicense>
     <XenialDebug>true</XenialDebug>
     <SrcDirectory>$(MSBuildThisFileDirectory)..\src\</SrcDirectory>
-    <XenialVersion Condition="'$(XenialVersion)' == ''">0.0.0-*</XenialVersion>
+    <XenialDemoPackageVersion Condition="'$(XenialDemoPackageVersion)' == ''">0.0.0-*</XenialDemoPackageVersion>
   </PropertyGroup>
   
 </Project>
