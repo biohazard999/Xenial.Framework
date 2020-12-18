@@ -130,6 +130,7 @@ namespace Xenial.Build
 
             BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Server", "framework.featurecenter.xenial.io")
             {
+                DotnetCore = true,
                 PathToCsproj = featureCenterBlazor,
                 AssemblyProperties = "/property:XenialDebug=false",
                 PrepareTask = async () =>
