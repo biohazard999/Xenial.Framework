@@ -185,7 +185,7 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
         {
             if (currentObject is not null)
             {
-                foreach (var item in ComponentModel.Values)
+                foreach (var item in ComponentModel.Values ?? Enumerable.Empty<TokenObjectsDisplayModel>())
                 {
                     var key = item.Id;
                     var objectInList = currentObject
@@ -207,7 +207,8 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
                         currentObject.Add(objectToAdd);
                     }
                 }
-                var keys = ComponentModel.Values.Select(c => c.Id).ToList();
+
+                var keys = (ComponentModel.Values ?? Enumerable.Empty<TokenObjectsDisplayModel>()).Select(c => c.Id).ToList();
 
                 var itemsToRemove = currentObject.OfType<object>().Select(c => new
                 {
