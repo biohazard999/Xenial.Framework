@@ -41,6 +41,20 @@ jobs:
       with:
         name: nuget
         path: artifacts/nuget/
+    - name: publish:publish:framework.featurecenter.xenial.io
+      if: runner.os == 'Windows'
+      run: dotnet run --project build/build.csproj publish:framework.featurecenter.xenial.io
+      env:
+          DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
+          XENIAL_FEATURECENTER_DEFAULTCONNECTIONSTRING: ${{secrets.XENIAL_FEATURECENTER_DEFAULTCONNECTIONSTRING}}
+    - name: deploy:publish:framework.featurecenter.xenial.io
+      if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
+      run: dotnet run --project build/build.csproj deploy:framework.featurecenter.xenial.io -s
+      env:
+          DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
+          WEBDEPLOY_IP: ${{secrets.WEBDEPLOY_IP}}
+          WEBDEPLOY_USER: ${{secrets.WEBDEPLOY_USER}}
+          WEBDEPLOY_PASS: ${{secrets.WEBDEPLOY_PASS}}
   docs:
     runs-on: windows-latest
     steps:

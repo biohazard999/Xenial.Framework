@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Beer.Json;
 using Xenial.Delicious.Beer.Recipes;
 
 using static Bullseye.Targets;
@@ -18,6 +19,7 @@ namespace Xenial.Build
     {
         internal static async Task Main(string[] args)
         {
+            const string PleaseSet = "PLEASE SET BEFORE USE";
             var PublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3VFauRJrFzuZveL+J/naEs+CrNLBrc/sSDihdkUTo3Np/o4IoM8fxR6kYHIdH/7LXfXltFRREkv2ceTN8gyZuw==";
 
             static string logOptions(string target)
@@ -30,7 +32,8 @@ namespace Xenial.Build
                 ? "Xenial.Framework.sln"
                 : "Xenial.Framework.CrossPlatform.slnf";
 
-            var featureCenterBlazor = "./demos/FeatureCenter/Xenial.FeatureCenter.Blazor.Server/Xenial.FeatureCenter.Blazor.Server.csproj";
+            var featureCenterBlazorDir = "./demos/FeatureCenter/Xenial.FeatureCenter.Blazor.Server";
+            var featureCenterBlazor = Path.Combine(featureCenterBlazorDir, "Xenial.FeatureCenter.Blazor.Server.csproj");
 
             string GetProperties() => string.Join(" ", new Dictionary<string, string>
             {
@@ -112,7 +115,22 @@ namespace Xenial.Build
             BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Server", "framework.featurecenter.xenial.io")
             {
                 PathToCsproj = featureCenterBlazor,
-                AssemblyProperties = "/property:XenialDebug=false"
+                AssemblyProperties = "/property:XenialDebug=false",
+                PrepareTask = async () =>
+                {
+                    var settingsPath = Path.Combine(featureCenterBlazorDir, "appsettings.json");
+
+                    var serverSettings = await File.ReadAllTextAsync(settingsPath);
+
+                    serverSettings = serverSettings
+                        .AddOrUpdateJsonValue(
+                            "ConnectionStrings:DefaultConnection",
+                            Environment.GetEnvironmentVariable("XENIAL_FEATURECENTER_DEFAULTCONNECTIONSTRING") ?? PleaseSet
+                        )
+                    ;
+
+                    await File.WriteAllTextAsync(settingsPath, serverSettings);
+                }
             }, "framework.featurecenter.xenial.io");
 
             Target("demos", DependsOn("pack", "publish:framework.featurecenter.xenial.io"));
