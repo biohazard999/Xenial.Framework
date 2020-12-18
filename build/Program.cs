@@ -82,6 +82,22 @@ namespace Xenial.Build
             Target("lic", DependsOn("test"),
                 async () =>
                 {
+                    var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
+                    var isTagged = !string.IsNullOrWhiteSpace(tagName);
+                    if (isTagged)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"This is a tagged commit {tagName}, generating licenses");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("This is not a tagged commit, skip license generation");
+                        Console.ResetColor();
+                        return;
+                    }
+
                     var files = Directory.EnumerateFiles(@"src", "*.csproj", SearchOption.AllDirectories).Select(file => new
                     {
                         ProjectName = $"src/{Path.GetFileNameWithoutExtension(file)}/{Path.GetFileName(file)}",
