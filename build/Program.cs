@@ -19,6 +19,8 @@ namespace Xenial.Build
     {
         internal static async Task Main(string[] args)
         {
+            var version = new Lazy<Task<string>>(async () => (await ReadToolAsync(() => ReadAsync("dotnet", "minver -v e -t v", noEcho: true))).Trim());
+
             const string PleaseSet = "PLEASE SET BEFORE USE";
             var PublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3VFauRJrFzuZveL+J/naEs+CrNLBrc/sSDihdkUTo3Np/o4IoM8fxR6kYHIdH/7LXfXltFRREkv2ceTN8gyZuw==";
 
@@ -128,11 +130,13 @@ namespace Xenial.Build
                 () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {GetProperties()}")
             );
 
+            var v = await version.Value;
+
             BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Server", "framework.featurecenter.xenial.io")
             {
                 DotnetCore = true,
                 PathToCsproj = featureCenterBlazor,
-                AssemblyProperties = "/property:XenialDebug=false",
+                AssemblyProperties = $"/property:XenialDebug=false /property:XenialPackageVersion={v}",
                 PrepareTask = async () =>
                 {
                     var settingsPath = Path.Combine(featureCenterBlazorDir, "appsettings.json");

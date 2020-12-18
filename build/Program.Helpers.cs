@@ -32,6 +32,20 @@ namespace Xenial.Build
             }
         }
 
+        private static async Task<string> ReadToolAsync(Func<Task<string>> action)
+        {
+            try
+            {
+                return await action();
+            }
+            catch (SimpleExec.NonZeroExitCodeException)
+            {
+                Console.WriteLine("Tool seams missing. Try to restore");
+                await RunAsync("dotnet", "tool restore");
+                return await action();
+            }
+        }
+
         private static string Tabify(string s)
             => string.IsNullOrEmpty(s)
                 ? string.Empty

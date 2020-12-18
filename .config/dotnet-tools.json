@@ -37,6 +37,12 @@
       "commands": [
         "thirdlicense"
       ]
+    },
+    "minver-cli": {
+      "version": "2.3.1",
+      "commands": [
+        "minver"
+      ]
     }
   }
 }
