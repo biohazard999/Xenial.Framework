@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Win;
@@ -22,7 +23,14 @@ namespace Xenial.FeatureCenter.Win
         {
             IgnoreUserModelDiffs = true;
 
-            ConnectionString = SQLiteConnectionProvider.GetConnectionString(nameof(FeatureCenterWindowsFromsApplication));
+            var dirName = Path.GetDirectoryName(GetType().Assembly.Location);
+            var dbName = $"{nameof(FeatureCenterWindowsFromsApplication)}.db";
+
+            var dbPath = string.IsNullOrEmpty(dirName)
+                ? dbName
+                : Path.Combine(dirName, dbName);
+
+            ConnectionString = SQLiteConnectionProvider.GetConnectionString(dbPath);
             DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
             CheckCompatibilityType = CheckCompatibilityType.DatabaseSchema;
 
@@ -37,6 +45,7 @@ namespace Xenial.FeatureCenter.Win
 
         protected override void CreateDefaultObjectSpaceProvider(CreateCustomObjectSpaceProviderEventArgs args)
         {
+            _ = args ?? throw new ArgumentNullException(nameof(args));
             args.ObjectSpaceProviders.Add(new XPObjectSpaceProvider(
                 XPObjectSpaceProvider.GetDataStoreProvider(args.ConnectionString, args.Connection, true),
                 true
@@ -46,6 +55,7 @@ namespace Xenial.FeatureCenter.Win
 
         protected override void OnDatabaseVersionMismatch(DatabaseVersionMismatchEventArgs args)
         {
+            _ = args ?? throw new ArgumentNullException(nameof(args));
             args.Updater.Update();
             args.Handled = true;
             base.OnDatabaseVersionMismatch(args);

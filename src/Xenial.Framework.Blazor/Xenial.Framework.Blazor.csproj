@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
+    <DxExtendStartupHost>false</DxExtendStartupHost>
+    <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp.Blazor" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
+  </ItemGroup>
+
+</Project>

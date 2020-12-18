@@ -6,8 +6,12 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Beer.Json;
+using Xenial.Delicious.Beer.Recipes;
+
 using static Bullseye.Targets;
 using static SimpleExec.Command;
+using static Xenial.Delicious.Beer.Recipes.IISRecipe;
 
 namespace Xenial.Build
 {
@@ -15,6 +19,7 @@ namespace Xenial.Build
     {
         internal static async Task Main(string[] args)
         {
+            const string PleaseSet = "PLEASE SET BEFORE USE";
             var PublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3VFauRJrFzuZveL+J/naEs+CrNLBrc/sSDihdkUTo3Np/o4IoM8fxR6kYHIdH/7LXfXltFRREkv2ceTN8gyZuw==";
 
             static string logOptions(string target)
@@ -26,6 +31,9 @@ namespace Xenial.Build
                 .IsOSPlatform(OSPlatform.Windows)
                 ? "Xenial.Framework.sln"
                 : "Xenial.Framework.CrossPlatform.slnf";
+
+            var featureCenterBlazorDir = "./demos/FeatureCenter/Xenial.FeatureCenter.Blazor.Server";
+            var featureCenterBlazor = Path.Combine(featureCenterBlazorDir, "Xenial.FeatureCenter.Blazor.Server.csproj");
 
             string GetProperties() => string.Join(" ", new Dictionary<string, string>
             {
@@ -100,9 +108,32 @@ namespace Xenial.Build
                 }
             );
 
-            Target("pack", DependsOn("test"), //TODO: generate lic on deployment
+            Target("pack", DependsOn("lic"),
                 () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {GetProperties()}")
             );
+
+            BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Server", "framework.featurecenter.xenial.io")
+            {
+                PathToCsproj = featureCenterBlazor,
+                AssemblyProperties = "/property:XenialDebug=false",
+                PrepareTask = async () =>
+                {
+                    var settingsPath = Path.Combine(featureCenterBlazorDir, "appsettings.json");
+
+                    var serverSettings = await File.ReadAllTextAsync(settingsPath);
+
+                    serverSettings = serverSettings
+                        .AddOrUpdateJsonValue(
+                            "ConnectionStrings:DefaultConnection",
+                            Environment.GetEnvironmentVariable("XENIAL_FEATURECENTER_DEFAULTCONNECTIONSTRING") ?? PleaseSet
+                        )
+                    ;
+
+                    await File.WriteAllTextAsync(settingsPath, serverSettings);
+                }
+            }, "framework.featurecenter.xenial.io");
+
+            Target("demos", DependsOn("pack", "publish:framework.featurecenter.xenial.io"));
 
             Target("docs",
                 () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs")

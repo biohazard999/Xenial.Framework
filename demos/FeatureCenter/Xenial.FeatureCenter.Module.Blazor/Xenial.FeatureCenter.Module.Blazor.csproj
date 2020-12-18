@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
+    <DxExtendStartupHost>false</DxExtendStartupHost>
+    <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.FeatureCenter.Module\Xenial.FeatureCenter.Module.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
+    <PackageReference Include="Xenial.Framework.TokenEditors.Blazor" Version="0.0.0-*" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors.Blazor/Xenial.Framework.TokenEditors.Blazor.csproj" />
+  </ItemGroup>
+  
+</Project>

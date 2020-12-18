@@ -1,22 +1,23 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
-using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
+
+using Bogus;
+
+using DevExpress.Xpo;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model.Core;
-
-using Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders;
-using Xenial.Framework;
-using Xenial.Framework.Base;
-using Xenial.Framework.ModelBuilders;
-using Bogus;
-using System.ComponentModel;
-using Xenial.FeatureCenter.Module.BusinessObjects;
-using Xenial.Framework.TokenEditors;
 using DevExpress.ExpressApp.Editors;
-using DevExpress.Xpo;
 using DevExpress.ExpressApp.Updating;
+
+using Xenial.Framework;
+using Xenial.Framework.TokenEditors;
+
+using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
+using Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders;
+using Xenial.FeatureCenter.Module.BusinessObjects;
 using Xenial.FeatureCenter.Module.Updaters;
 
 namespace Xenial.FeatureCenter.Module
@@ -25,7 +26,9 @@ namespace Xenial.FeatureCenter.Module
     {
         protected override ModuleTypeList GetRequiredModuleTypesCore()
             => base.GetRequiredModuleTypesCore()
-                .AndModuleTypes(typeof(XenialTokenEditorsModule));
+                .AndModuleTypes(
+                    typeof(XenialTokenEditorsModule)
+                );
 
         protected override IEnumerable<Type> GetDeclaredExportedTypes()
             => base.GetDeclaredExportedTypes()

@@ -1,0 +1,28 @@
+﻿@if (ComponentModel is not null)
+{
+    <DxTagBox TValue="TokenObjectsDisplayModel"
+              TData="TokenObjectsDisplayModel"
+              TextFieldName="@nameof(TokenObjectsDisplayModel.DisplayName)"
+              Data="@ComponentModel.DataSource"
+              Values="@ComponentModel.Values"
+              ValuesChanged="ValuesChanged"
+              @attributes="@ComponentModel.Attributes"
+              ReadOnly="@ComponentModel.ReadOnly">
+    </DxTagBox>
+}
+
+@code
+{
+    [Parameter]
+    public TokenObjectsInputModel? ComponentModel { get; set; }
+
+    public static RenderFragment Create(TokenObjectsInputModel componentModel) =>@<TokenObjectsComponent ComponentModel="@componentModel" />;
+
+    void ValuesChanged(System.Collections.Generic.IEnumerable<TokenObjectsDisplayModel> values)
+    {
+        if (ComponentModel is not null)
+        {
+            ComponentModel.SetValueFromUI(values);
+        }
+    }
+}

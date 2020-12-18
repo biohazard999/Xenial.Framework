@@ -12,6 +12,7 @@
   <ItemGroup Condition="'$(XenialDebug)' == 'false'">
     <PackageReference Include="Xenial.Framework.Win" Version="0.0.0-*" />
     <PackageReference Include="Xenial.Framework.WebView.Win" Version="0.0.0-*" />
+    <PackageReference Include="Xenial.Framework.TokenEditors.Win" Version="0.0.0-*" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">

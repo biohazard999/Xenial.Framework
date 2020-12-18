@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
+    <DxExtendStartupHost>false</DxExtendStartupHost>
+    <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.Blazor\Xenial.Framework.Blazor.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.TokenEditors\Xenial.Framework.TokenEditors.csproj" />
+  </ItemGroup>
+
+</Project>
