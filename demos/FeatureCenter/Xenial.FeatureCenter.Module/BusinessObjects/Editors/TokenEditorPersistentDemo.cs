@@ -35,6 +35,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 
         [TokenStringEditor]
         [ModelDefault("PredefinedValues", "Xenial.Framework;Xenial.Framework.Win;Xenial.Framework.TokenEditors;Xenial.Framework.TokenEditors.Win;Xenial.Framework.WebView.Win;Xenial.Framework.WebView")]
+        [Size(SizeAttribute.Unlimited)]
         public string? TokenEditorStringTokens { get => tokenEditorStringTokens; set => SetPropertyValue(ref tokenEditorStringTokens, value); }
     }
 
