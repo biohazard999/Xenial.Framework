@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>$(Net5Version)</TargetFramework>
     <TargetFrameworks>$(Net5Version)</TargetFrameworks>
+    <EnableMSDeployAppOffline>true</EnableMSDeployAppOffline>
   </PropertyGroup>
   
   <ItemGroup>
