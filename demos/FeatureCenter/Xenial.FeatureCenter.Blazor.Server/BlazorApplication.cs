@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 using DevExpress.Xpo.DB;
 using DevExpress.ExpressApp;
@@ -7,22 +8,38 @@ using DevExpress.ExpressApp.Blazor.SystemModule;
 using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Xpo;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Xenial.FeatureCenter.Module;
 using Xenial.FeatureCenter.Module.Blazor;
 using Xenial.FeatureCenter.Blazor.Server.Services;
-using System.IO;
 
 namespace Xenial.FeatureCenter.Blazor.Server
 {
     public partial class FeatureCenterBlazorApplication : BlazorApplication
     {
         static FeatureCenterBlazorApplication()
-              => SQLiteConnectionProvider.Register();
+        {
+            SQLiteConnectionProvider.Register();
+            MySqlConnectionProvider.Register();
+        }
 
         public FeatureCenterBlazorApplication()
         {
+            DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
+            CheckCompatibilityType = CheckCompatibilityType.DatabaseSchema;
+
+            Modules.Add(new SystemModule());
+            Modules.Add(new SystemBlazorModule());
+            Modules.Add(new FeatureCenterModule());
+            Modules.Add(new FeatureCenterBlazorModule());
+        }
+
+        protected override void OnSetupStarted()
+        {
+            base.OnSetupStarted();
+#if DEBUG
             var dirName = Path.GetDirectoryName(GetType().Assembly.Location);
             var dbName = $"{nameof(FeatureCenterBlazorApplication)}.db";
 
@@ -31,13 +48,13 @@ namespace Xenial.FeatureCenter.Blazor.Server
                 : Path.Combine(dirName, dbName);
 
             ConnectionString = SQLiteConnectionProvider.GetConnectionString(dbPath);
-            DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
-            CheckCompatibilityType = CheckCompatibilityType.DatabaseSchema;
-
-            Modules.Add(new SystemModule());
-            Modules.Add(new SystemBlazorModule());
-            Modules.Add(new FeatureCenterModule());
-            Modules.Add(new FeatureCenterBlazorModule());
+#else
+            var configuration = ServiceProvider.GetRequiredService<IConfiguration>();
+            if (configuration.GetConnectionString("DefaultConnection") != null)
+            {
+                ConnectionString = configuration.GetConnectionString("DefaultConnection");
+            }
+#endif
         }
 
         protected override void CreateDefaultObjectSpaceProvider(CreateCustomObjectSpaceProviderEventArgs args)

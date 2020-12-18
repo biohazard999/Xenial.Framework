@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using DevExpress.ExpressApp.Blazor.Services;
 using DevExpress.Persistent.Base;
+using DevExpress.Xpo;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
