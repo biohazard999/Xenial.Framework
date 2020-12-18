@@ -40,6 +40,7 @@
     <XenialVersion>$(PackageVersion)</XenialVersion>
     <DxPackageVersion>$(DxVersion)</DxPackageVersion>
     <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>    
+    <XenialDemoPackageVersion></XenialDemoPackageVersion>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <RazorLangVersion>3.0</RazorLangVersion>
   </PropertyGroup>

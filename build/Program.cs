@@ -136,7 +136,7 @@ namespace Xenial.Build
             {
                 DotnetCore = true,
                 PathToCsproj = featureCenterBlazor,
-                AssemblyProperties = $"/property:XenialDebug=false /property:XenialPackageVersion={v}",
+                AssemblyProperties = $"/property:XenialDebug=false /property:XenialDemoPackageVersion={v}",
                 PrepareTask = async () =>
                 {
                     var settingsPath = Path.Combine(featureCenterBlazorDir, "appsettings.json");
