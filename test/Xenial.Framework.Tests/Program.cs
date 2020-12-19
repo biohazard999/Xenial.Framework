@@ -22,6 +22,7 @@ namespace Xenial.Framework.Tests
                 ExpressionHelperFacts.ExpressionHelperTests();
 
                 ModelBuilderFacts.ModelBuilderTests();
+                ModelBuilderExtensionFacts.ModelBuilderExtensionTests();
             });
 
             return await Run(args);
