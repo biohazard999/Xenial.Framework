@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Blazor.Services;
 
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,6 +20,7 @@ namespace Xenial.FeatureCenter.Blazor.Server
         private static bool ContainsArgument(string[] args, string argument)
             => args.Any(arg => arg.TrimStart('/').TrimStart('-').ToUpperInvariant() == argument.ToUpperInvariant());
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public static int Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()

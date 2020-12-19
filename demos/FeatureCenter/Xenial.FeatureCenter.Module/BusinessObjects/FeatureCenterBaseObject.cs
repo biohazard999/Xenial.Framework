@@ -23,7 +23,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns></returns>
-        protected new object GetPropertyValue([CallerMemberName] string propertyName = null)
+        protected new object GetPropertyValue([CallerMemberName] string? propertyName = null)
             => base.GetPropertyValue(propertyName);
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         /// <typeparam name="T"></typeparam>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns></returns>
-        protected new T GetPropertyValue<T>([CallerMemberName] string propertyName = null)
+        protected new T GetPropertyValue<T>([CallerMemberName] string? propertyName = null)
             => base.GetPropertyValue<T>(propertyName);
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         /// <param name="newValue">The new value.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns></returns>
-        protected bool SetPropertyValue<T>(ref T propertyValueHolder, T newValue, [CallerMemberName] string propertyName = null)
+        protected bool SetPropertyValue<T>(ref T propertyValueHolder, T newValue, [CallerMemberName] string? propertyName = null)
             => SetPropertyValue(propertyName, ref propertyValueHolder, newValue);
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         /// <param name="onChanged">A callback that is called if the user changes an value.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns></returns>
-        protected bool SetPropertyValue<T>(ref T propertyValueHolder, T newValue, Action<T> onChanged, [CallerMemberName] string propertyName = null)
+        protected bool SetPropertyValue<T>(ref T propertyValueHolder, T newValue, Action<T> onChanged, [CallerMemberName] string? propertyName = null)
         {
             var changed = SetPropertyValue(propertyName, ref propertyValueHolder, newValue);
 
@@ -73,7 +73,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns></returns>
-        protected new XPCollection GetCollection([CallerMemberName] string propertyName = null)
+        protected new XPCollection GetCollection([CallerMemberName] string? propertyName = null)
             => base.GetCollection(propertyName);
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         /// <typeparam name="T"></typeparam>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns></returns>
-        protected new XPCollection<T> GetCollection<T>([CallerMemberName] string propertyName = null)
+        protected new XPCollection<T> GetCollection<T>([CallerMemberName] string? propertyName = null)
             where T : class => base.GetCollection<T>(propertyName);
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         /// <typeparam name="T"></typeparam>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns></returns>
-        protected new T GetDelayedPropertyValue<T>([CallerMemberName] string propertyName = null)
+        protected new T GetDelayedPropertyValue<T>([CallerMemberName] string? propertyName = null)
             => base.GetDelayedPropertyValue<T>(propertyName);
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         /// <param name="value">The value.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns></returns>
-        protected bool SetDelayedPropertyValue<T>(T value, [CallerMemberName] string propertyName = null)
+        protected bool SetDelayedPropertyValue<T>(T value, [CallerMemberName] string? propertyName = null)
             => SetDelayedPropertyValue(propertyName, value);
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         /// </summary>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns></returns>
-        protected new object EvaluateAlias([CallerMemberName] string propertyName = null)
+        protected new object EvaluateAlias([CallerMemberName] string? propertyName = null)
             => base.EvaluateAlias(propertyName);
 
         /// <summary>

@@ -5,7 +5,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <NoWarn>CA1014;$(NoWarn)</NoWarn>
+    <NoWarn>CA1014;CA1303;CA1716;$(NoWarn)</NoWarn>
     <CheckXenialLicense>false</CheckXenialLicense>
     <GenerateXenialLicense>false</GenerateXenialLicense>
     <XenialDebug>true</XenialDebug>
