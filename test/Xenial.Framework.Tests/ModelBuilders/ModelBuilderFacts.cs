@@ -15,16 +15,6 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.ModelBuilders
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    internal sealed class EmptyCtorLessAttribute : Attribute
-    {
-        public string AttributeProperty { get; set; } = string.Empty;
-    }
-
-    public class ModelBuilderTarget
-    {
-        public IList ListProperty { get; } = Array.Empty<object>();
-    }
 
     public static class ModelBuilderFacts
     {
