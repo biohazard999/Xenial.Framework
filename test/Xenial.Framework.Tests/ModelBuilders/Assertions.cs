@@ -24,7 +24,7 @@ namespace Xenial.Framework.Tests.ModelBuilders
             return builder;
         }
 
-        public static IModelBuilder<TClassType> AssertAttribute<TAttribute, TClassType>(this IModelBuilder<TClassType> builder, Func<TAttribute, bool> assertion)
+        public static IModelBuilder AssertAttribute<TAttribute>(this IModelBuilder builder, Func<TAttribute, bool> assertion)
                where TAttribute : Attribute
         {
             var attr = builder.TypeInfo.FindAttribute<TAttribute>();
@@ -34,6 +34,7 @@ namespace Xenial.Framework.Tests.ModelBuilders
                 () => attr.ShouldNotBeNull(),
                 () => assertion.Invoke(attr).ShouldBe(true)
             );
+
             return builder;
         }
 

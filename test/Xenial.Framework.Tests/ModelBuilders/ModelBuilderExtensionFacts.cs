@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Bogus;
 
 using DevExpress.ExpressApp.DC;
+using DevExpress.Persistent.Base;
 
 using Xenial.Framework.ModelBuilders;
 
@@ -146,6 +147,27 @@ namespace Xenial.Framework.Tests.ModelBuilders
                         .AssertModelDefaultAttribute("AllowNew", false.ToString())
                         .AssertModelDefaultAttribute("AllowEdit", false.ToString())
                         ;
+                });
+            });
+
+            Describe(nameof(VisibleInReportsAttribute), () =>
+            {
+                It("should be true", () =>
+                {
+                    var (builder, _) = CreateBuilder();
+
+                    builder
+                        .IsVisibleInReports()
+                        .AssertAttribute<VisibleInReportsAttribute>(a => a.IsVisible == true);
+                });
+
+                It("shoule be false", () =>
+                {
+                    var (builder, _) = CreateBuilder();
+
+                    builder
+                        .IsVisibleInReports()
+                        .AssertAttribute<VisibleInReportsAttribute>(a => a.IsVisible == true);
                 });
             });
         });
