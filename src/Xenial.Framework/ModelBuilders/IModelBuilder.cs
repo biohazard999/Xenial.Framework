@@ -62,7 +62,7 @@ namespace Xenial.Framework.ModelBuilders
         /// <typeparam name="TPropertyType">The type of the property.</typeparam>
         /// <param name="propertyExpression">The property.</param>
         /// <returns></returns>
-        PropertyBuilder<TPropertyType, TClassType> For<TPropertyType>(Expression<Func<TClassType, TPropertyType>> propertyExpression);
+        PropertyBuilder<TPropertyType?, TClassType> For<TPropertyType>(Expression<Func<TClassType, TPropertyType?>> propertyExpression);
 
         /// <summary>
         /// Nesteds the ListView identifier.
