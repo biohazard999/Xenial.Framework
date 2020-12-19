@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 using Xenial.Framework.Tests.Model.Core;
 using Xenial.Framework.Tests.Model.GeneratorUpdaters;
+using Xenial.Framework.Tests.ModelBuilders;
 using Xenial.Utils.Tests;
 
 using static Xenial.Tasty;
@@ -19,6 +20,8 @@ namespace Xenial.Framework.Tests
                 ModelOptionsNodesGeneratorUpdaterFacts.ModelOptionsNodesGeneratorUpdaterTests();
                 ModuleTypeListExtentionsFacts.ModuleTypeListExtentionsTests();
                 ExpressionHelperFacts.ExpressionHelperTests();
+
+                ModelBuilderFacts.ModelBuilderTests();
             });
 
             return await Run(args);
