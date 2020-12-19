@@ -170,6 +170,95 @@ namespace Xenial.Framework.Tests.ModelBuilders
                         .AssertAttribute<VisibleInReportsAttribute>(a => a.IsVisible == true);
                 });
             });
+
+            Describe(nameof(VisibleInDashboardsAttribute), () =>
+            {
+                It("should be true", () =>
+                {
+                    var (builder, _) = CreateBuilder();
+
+                    builder
+                        .IsVisibleInDashboards()
+                        .AssertAttribute<VisibleInDashboardsAttribute>(a => a.IsVisible == true);
+                });
+
+                It("shoule be false", () =>
+                {
+                    var (builder, _) = CreateBuilder();
+
+                    builder
+                        .IsNotVisibleInDashboards()
+                        .AssertAttribute<VisibleInDashboardsAttribute>(a => a.IsVisible == false);
+                });
+            });
+
+            It(nameof(DefaultClassOptionsAttribute), () =>
+            {
+                var (builder, _) = CreateBuilder();
+                builder
+                    .WithDefaultClassOptions()
+                    .AssertHasAttribute<DefaultClassOptionsAttribute>();
+            });
+
+            It(nameof(ImageNameAttribute), () =>
+            {
+                var (builder, faker) = CreateBuilder();
+                var image = faker.Random.String();
+
+                builder
+                    .HasImage(image)
+                    .AssertAttribute<ImageNameAttribute>(a => a.ImageName == image);
+            });
+
+            Describe("DefaultProperty", () =>
+            {
+                It("string overload", () =>
+                {
+                    var (builder, faker) = CreateBuilder();
+                    var defaultProperty = faker.Random.String();
+
+                    builder
+                        .HasDefaultProperty(defaultProperty)
+                        .AssertAttribute<System.ComponentModel.DefaultPropertyAttribute>(a => a.Name == defaultProperty)
+                        .AssertAttribute<XafDefaultPropertyAttribute>(a => a.Name == defaultProperty)
+                        ;
+                });
+
+                It("expression overload", () =>
+                {
+                    var (builder, _) = CreateBuilder();
+
+                    builder
+                        .HasDefaultProperty(x => x.ListProperty)
+                        .AssertAttribute<System.ComponentModel.DefaultPropertyAttribute>(a => a.Name == nameof(ModelBuilderTarget.ListProperty))
+                        .AssertAttribute<XafDefaultPropertyAttribute>(a => a.Name == nameof(ModelBuilderTarget.ListProperty))
+                        ;
+                });
+            });
+
+            Describe(nameof(ObjectCaptionFormatAttribute), () =>
+            {
+                It("string overload", () =>
+                {
+                    var (builder, faker) = CreateBuilder();
+                    var formatString = faker.Random.String();
+
+                    builder
+                        .HasObjectCaptionFormat(formatString)
+                        .AssertAttribute<ObjectCaptionFormatAttribute>(a => a.FormatString == formatString)
+                        ;
+                });
+
+                It("expression overload", () =>
+                {
+                    var (builder, _) = CreateBuilder();
+
+                    builder
+                        .HasObjectCaptionFormat(x => x.ListProperty)
+                        .AssertAttribute<ObjectCaptionFormatAttribute>(a => a.FormatString == $"{{0:{nameof(ModelBuilderTarget.ListProperty)}}}")
+                        ;
+                });
+            });
         });
     }
 }

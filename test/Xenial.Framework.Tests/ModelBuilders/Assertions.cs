@@ -38,5 +38,14 @@ namespace Xenial.Framework.Tests.ModelBuilders
             return builder;
         }
 
+        public static IModelBuilder AssertHasAttribute<TAttribute>(this IModelBuilder builder)
+               where TAttribute : Attribute
+        {
+            var attr = builder.TypeInfo.FindAttribute<TAttribute>();
+
+            attr.ShouldNotBeNull();
+
+            return builder;
+        }
     }
 }
