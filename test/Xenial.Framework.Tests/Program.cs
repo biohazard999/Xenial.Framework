@@ -23,6 +23,7 @@ namespace Xenial.Framework.Tests
 
                 ModelBuilderFacts.ModelBuilderTests();
                 ModelBuilderExtensionFacts.ModelBuilderExtensionTests();
+                PropertyBuilderFacts.PropertyBuilderTests();
                 PropertyBuilderExtensionsFacts.PropertyBuilderExtensionsTests();
             });
 
