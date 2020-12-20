@@ -205,15 +205,237 @@ namespace Xenial.Framework.Tests.ModelBuilders
                             .AssertModelDefaultAttribute("PropertyEditorType", typeof(FakePropertyEditor).FullName!);
                     });
                 });
+
+                It("Index", () =>
+                {
+                    var (builder, faker) = CreateBuilder();
+
+                    var expectedValue = faker.Random.Int();
+
+                    builder.For(p => p.StringProperty)
+                        .HasIndex(expectedValue)
+                        .AssertAttribute<IndexAttribute, string>(attr => attr.Index == expectedValue);
+                });
+
+                Describe("Visibility", () =>
+                {
+                    Describe("InDetailView", () =>
+                    {
+                        It("visible", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .IsVisibleInDetailView()
+                                .AssertAttribute<VisibleInDetailViewAttribute, string>(a => (bool)a.Value == true);
+                        });
+                        It("not visible", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .IsNotVisibleInDetailView()
+                                .AssertAttribute<VisibleInDetailViewAttribute, string>(a => (bool)a.Value == false);
+                        });
+                    });
+
+                    Describe("InListView", () =>
+                    {
+                        It("visible", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .IsVisibleInListView()
+                                .AssertAttribute<VisibleInListViewAttribute, string>(a => (bool)a.Value == true);
+                        });
+                        It("not visible", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .IsNotVisibleInListView()
+                                .AssertAttribute<VisibleInListViewAttribute, string>(a => (bool)a.Value == false);
+                        });
+                    });
+
+                    Describe("InLookupListView", () =>
+                    {
+                        It("visible", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .IsVisibleInLookupListView()
+                                .AssertAttribute<VisibleInLookupListViewAttribute, string>(a => (bool)a.Value == true);
+                        });
+                        It("not visible", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .IsNotVisibleInLookupListView()
+                                .AssertAttribute<VisibleInLookupListViewAttribute, string>(a => (bool)a.Value == false);
+                        });
+                    });
+
+                    Describe("In any View", () =>
+                    {
+                        It("visible", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .IsVisibleInAnyView()
+                                .AssertAttribute<VisibleInDetailViewAttribute, string>(a => (bool)a.Value == true)
+                                .AssertAttribute<VisibleInListViewAttribute, string>(a => (bool)a.Value == true)
+                                .AssertAttribute<VisibleInLookupListViewAttribute, string>(a => (bool)a.Value == true)
+                                ;
+                        });
+                        It("not visible", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .IsNotVisibleInAnyView()
+                                .AssertAttribute<VisibleInDetailViewAttribute, string>(a => (bool)a.Value == false)
+                                .AssertAttribute<VisibleInListViewAttribute, string>(a => (bool)a.Value == false)
+                                .AssertAttribute<VisibleInLookupListViewAttribute, string>(a => (bool)a.Value == false)
+                                ;
+                        });
+                    });
+
+                    Describe("AllowEdit", () =>
+                    {
+                        It("allowed", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .AllowingEdit()
+                                .AssertModelDefaultAttribute("AllowEdit", true.ToString());
+                        });
+
+                        It("not allowed", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .NotAllowingEdit()
+                                .AssertModelDefaultAttribute("AllowEdit", false.ToString());
+                        });
+                    }); Describe("AllowEdit", () =>
+                    {
+                        It("allowed", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .AllowingEdit()
+                                .AssertModelDefaultAttribute("AllowEdit", true.ToString());
+                        });
+
+                        It("not allowed", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .NotAllowingEdit()
+                                .AssertModelDefaultAttribute("AllowEdit", false.ToString());
+                        });
+                    });
+
+                    Describe("AllowNew", () =>
+                    {
+                        It("allowed", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .AllowingNew()
+                                .AssertModelDefaultAttribute("AllowNew", true.ToString());
+                        });
+
+                        It("not allowed", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .NotAllowingNew()
+                                .AssertModelDefaultAttribute("AllowNew", false.ToString());
+                        });
+                    });
+
+                    Describe("AllowDelete", () =>
+                    {
+                        It("allowed", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .AllowingDelete()
+                                .AssertModelDefaultAttribute("AllowDelete", true.ToString());
+                        });
+
+                        It("not allowed", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .NotAllowingDelete()
+                                .AssertModelDefaultAttribute("AllowDelete", false.ToString());
+                        });
+                    });
+
+                    Describe("AllowEverything", () =>
+                    {
+                        It("allowed", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .AllowingEverything()
+                                .AssertModelDefaultAttribute("AllowEdit", true.ToString())
+                                .AssertModelDefaultAttribute("AllowNew", true.ToString())
+                                .AssertModelDefaultAttribute("AllowDelete", true.ToString())
+                                ;
+                        });
+                        It("not allowed", () =>
+                        {
+                            var (builder, _) = CreateBuilder();
+
+                            builder.For(p => p.StringProperty)
+                                .AllowingNothing()
+                                .AssertModelDefaultAttribute("AllowEdit", false.ToString())
+                                .AssertModelDefaultAttribute("AllowNew", false.ToString())
+                                .AssertModelDefaultAttribute("AllowDelete", false.ToString())
+                                ;
+                        });
+                    });
+
+                    It("EditorAlias", () =>
+                    {
+                        var (builder, faker) = CreateBuilder();
+
+                        var expectedValue = faker.Random.String();
+
+                        builder.For(p => p.StringProperty)
+                            .UsingEditorAlias(expectedValue)
+                            .AssertAttribute<EditorAliasAttribute, string>(a => a.Alias == expectedValue);
+                    });
+
+                    It("ImmediatePostsData", () =>
+                    {
+                        var (builder, faker) = CreateBuilder();
+
+                        var expectedValue = faker.Random.String();
+
+                        builder.For(p => p.StringProperty)
+                            .ImmediatePostsData()
+                            .AssertHasAttribute<ImmediatePostDataAttribute>();
+                    });
+                });
             });
         });
-    }
-
-    public class FakePropertyEditor : PropertyEditor
-    {
-        public FakePropertyEditor(Type objectType, IModelMemberViewItem model) : base(objectType, model) { }
-        protected override object CreateControlCore() => throw new NotImplementedException();
-        protected override object GetControlValueCore() => throw new NotImplementedException();
-        protected override void ReadValueCore() => throw new NotImplementedException();
     }
 }
