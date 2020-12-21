@@ -18,11 +18,13 @@ using Xenial.Framework.ModelBuilders;
 
 using static Xenial.Tasty;
 
+#pragma warning disable CA2000
+
 namespace Xenial.Framework.Tests.ModelBuilders
 {
     public static class PropertyBuilderExtensionsFacts
     {
-        static (IModelBuilder<ModelBuilderTarget>, Faker faker) CreateBuilder()
+        private static (IModelBuilder<ModelBuilderTarget>, Faker faker) CreateBuilder()
                  => (ModelBuilder.Create<ModelBuilderTarget>(new TypesInfo()), new Faker());
 
         public static void PropertyBuilderExtensionsTests() => Describe(nameof(PropertyBuilderExtensions), () =>
