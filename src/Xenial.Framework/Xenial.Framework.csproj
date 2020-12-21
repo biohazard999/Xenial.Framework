@@ -5,6 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Layouts\**" />
+    <EmbeddedResource Remove="Layouts\**" />
+    <None Remove="Layouts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Layouts\Items\Base\LayoutItem.cs" />
+    <Compile Include="Layouts\Items\Base\LayoutItemBase.cs" />
+    <Compile Include="Layouts\Items\Base\LayoutItemLeaf.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
