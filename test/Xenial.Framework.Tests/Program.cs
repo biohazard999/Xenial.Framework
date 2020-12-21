@@ -25,6 +25,9 @@ namespace Xenial.Framework.Tests
                 ModelBuilderExtensionFacts.ModelBuilderExtensionTests();
                 PropertyBuilderFacts.PropertyBuilderTests();
                 PropertyBuilderExtensionsFacts.PropertyBuilderExtensionsTests();
+
+                BuilderManagerFacts.BuilderManagerTests();
+                XafBuilderManagerFacts.XafBuilderManagerTests();
             });
 
             return await Run(args);
