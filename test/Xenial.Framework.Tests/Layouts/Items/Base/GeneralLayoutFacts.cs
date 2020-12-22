@@ -14,7 +14,7 @@ namespace Xenial.Framework.Tests.Layouts.Items.Base
 {
     public static class GeneralLayoutFacts
     {
-        public static void GeneralLayoutTests() => FDescribe(nameof(LayoutItemNode), () =>
+        public static void GeneralLayoutTests() => Describe(nameof(LayoutItemNode), () =>
         {
             It("When adding a child, parent is set", () =>
             {
