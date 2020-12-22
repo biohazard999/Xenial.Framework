@@ -11,8 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Layouts\Items\Base\Layout.cs" />
     <Compile Include="Layouts\Items\Base\LayoutItem.cs" />
-    <Compile Include="Layouts\Items\Base\LayoutItemBase.cs" />
+    <Compile Include="Layouts\Items\Base\LayoutItemNode.cs" />
     <Compile Include="Layouts\Items\Base\LayoutItemLeaf.cs" />
   </ItemGroup>
 

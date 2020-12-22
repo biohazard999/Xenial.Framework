@@ -1,4 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  
+  <PropertyGroup>
+    <NoWarn>IDE0079;$(NoWarn)</NoWarn>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Remove="Layouts\**" />
+    <EmbeddedResource Remove="Layouts\**" />
+    <None Remove="Layouts\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="Layouts\Items\Base\GeneralLayoutFacts.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Xenial.Framework\Xenial.Framework.csproj" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using Xenial.Framework.Tests.Layouts.Items.Base;
 using Xenial.Framework.Tests.Model.Core;
 using Xenial.Framework.Tests.Model.GeneratorUpdaters;
 using Xenial.Framework.Tests.ModelBuilders;
@@ -31,6 +32,8 @@ namespace Xenial.Framework.Tests
                 XafBuilderManagerFacts.XafBuilderManagerTests();
 
                 SlugerFacts.SluggerTests();
+
+                GeneralLayoutFacts.GeneralLayoutTests();
             });
 
             return await Run(args);
