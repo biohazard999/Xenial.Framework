@@ -92,12 +92,11 @@ namespace Xenial.Framework.Layouts.Items.Base
         public void Clear()
         {
             while (ChildNodes.Count > 0
-                && ChildNodes.First is not null
-                && ChildNodes.First.Value is not null
+                && ChildNodes.First?.Value is LayoutItemNode itemNode
             )
             {
-                ChildNodes.First.Value.ParentItem = null;
-                ChildNodes.RemoveFirst();
+                itemNode.ParentItem = null;
+                ChildNodes.Remove(itemNode);
             }
         }
 
