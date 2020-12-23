@@ -25,7 +25,7 @@ namespace Xenial.Framework.MsBuild
         private static readonly DiagnosticDescriptor cannotFindLicenseRule = new(
             "XENLIC0010",
             "Could not find Xenial.License or Xenial.PublicKey",
-            "Fall back to trial mode",
+            "Could not find Xenial.License or Xenial.PublicKey, Build will be in TRIAL mode",
             category,
             DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -35,7 +35,7 @@ namespace Xenial.Framework.MsBuild
         private static readonly DiagnosticDescriptor signitureIsInvalidRule = new(
             "XENLIC0011",
             "Xenial.Signature is invalid",
-            "Fall back to trial mode",
+            "The signature of the license is invalid, Build will be in TRIAL mode",
             category,
             DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -45,7 +45,17 @@ namespace Xenial.Framework.MsBuild
         private static readonly DiagnosticDescriptor willBuildInTrialModeRule = new(
             "XENLIC0012",
             "Xenial will build in Trial mode",
-            "Fall back to trial mode",
+            "Current license is trial only, Build will be in TRIAL mode",
+            category,
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
+            description: "Make sure you made Xenial.PublicKey available" //TODO: Better messages and help
+        );
+
+        private static readonly DiagnosticDescriptor couldNotFindLicenseNoCodeWillBeGeneratedRule = new(
+            "XENLIC0013",
+            "Could not find a license hence no code will be generated",
+            "Could not find a license hence no code will be generated",
             category,
             DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -55,10 +65,10 @@ namespace Xenial.Framework.MsBuild
         public void Initialize(GeneratorInitializationContext context) { }
         public void Execute(GeneratorExecutionContext context)
         {
-            if (!Debugger.IsAttached)
-            {
-                Debugger.Launch();
-            }
+            //if (!Debugger.IsAttached)
+            //{
+            //    Debugger.Launch();
+            //}
 
             if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.CheckXenialLicense", out var checkLicenseStr)
                 && bool.TryParse(checkLicenseStr, out var checkLicense)
@@ -110,7 +120,10 @@ namespace Xenial.Framework.MsBuild
 
             if (isTrial)
             {
-                context.ReportDiagnostic(Diagnostic.Create(willBuildInTrialModeRule, Location.None));
+                if (!string.IsNullOrEmpty(xenialLicense))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(willBuildInTrialModeRule, Location.None));
+                }
             }
 
             if (!string.IsNullOrEmpty(xenialLicense))
@@ -118,6 +131,10 @@ namespace Xenial.Framework.MsBuild
                 var base64 = Base64Encode(xenialLicense);
 
                 AddXenialLicence(context, base64);
+            }
+            else
+            {
+                context.ReportDiagnostic(Diagnostic.Create(couldNotFindLicenseNoCodeWillBeGeneratedRule, Location.None));
             }
 
             static string Base64Encode(string plainText)
