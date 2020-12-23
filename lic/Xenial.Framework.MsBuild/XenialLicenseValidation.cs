@@ -166,7 +166,7 @@ namespace Xenial.Framework.MsBuild
             syntaxWriter.WriteLine("[CompilerGenerated]");
             syntaxWriter.WriteLine("internal static class XenialLicense");
             syntaxWriter.OpenBrace();
-            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.GenerateXenialModuleInitializerPolyfill", out var generateXenialModuleInitializerStr)
+            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.GenerateXenialModuleInitializer", out var generateXenialModuleInitializerStr)
                 && bool.TryParse(generateXenialModuleInitializerStr, out var generateXenialModuleInitializer)
                 && generateXenialModuleInitializer)
             {
