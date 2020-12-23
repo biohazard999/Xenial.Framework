@@ -3,10 +3,8 @@
   <PropertyGroup>
     <CheckXenialLicense Condition="'$(CheckXenialLicense)' == ''">true</CheckXenialLicense>
     <GenerateXenialLicense Condition="'$(GenerateXenialLicense)' == ''">true</GenerateXenialLicense>
+    <GenerateXenialModuleInitializer Condition="'$(GenerateXenialModuleInitializer)' == ''">true</GenerateXenialModuleInitializer>
+    <GenerateXenialModuleInitializerPolyfill Condition="'$(GenerateXenialModuleInitializerPolyfill)' == '' AND !$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net5.0'))">true</GenerateXenialModuleInitializerPolyfill>
   </PropertyGroup>
-  
-  <PropertyGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net5.0'))">
-    <DefineConstants>_INJECT_XENIAL_MODULE_INIT;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  
+    
 </Project>

@@ -4,6 +4,8 @@
     <ItemGroup>
       <CompilerVisibleProperty Include="CheckXenialLicense" />
       <CompilerVisibleProperty Include="GenerateXenialLicense" />
+      <CompilerVisibleProperty Include="GenerateXenialModuleInitializer" />
+      <CompilerVisibleProperty Include="GenerateXenialModuleInitializerPolyfill" />
     </ItemGroup>
   </Target>
   

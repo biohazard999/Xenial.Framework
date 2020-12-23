@@ -164,7 +164,12 @@ namespace Xenial.Framework.MsBuild
             syntaxWriter.OpenBrace();
 
             syntaxWriter.WriteLine("[CompilerGenerated]");
-            syntaxWriter.WriteLine("[System.Runtime.CompilerServices.ModuleInitializer]");
+            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.GenerateXenialModuleInitializerPolyfill", out var generateXenialModuleInitializerStr)
+                && bool.TryParse(generateXenialModuleInitializerStr, out var generateXenialModuleInitializer)
+                && generateXenialModuleInitializer)
+            {
+                syntaxWriter.WriteLine("[System.Runtime.CompilerServices.ModuleInitializer]");
+            }
             syntaxWriter.WriteLine("internal static class XenialLicense");
             syntaxWriter.OpenBrace();
             syntaxWriter.WriteLine("internal static void Register()");
@@ -178,21 +183,23 @@ namespace Xenial.Framework.MsBuild
             syntaxWriter.CloseBrace();
             syntaxWriter.CloseBrace();
 
-            syntaxWriter.WriteLine();
-            syntaxWriter.WriteLine("#if _INJECT_XENIAL_MODULE_INIT");
-            syntaxWriter.WriteLine();
-            syntaxWriter.WriteLine("namespace System.Runtime.CompilerServices");
-            syntaxWriter.OpenBrace();
+            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.GenerateXenialModuleInitializerPolyfill", out var generateXenialModuleInitializerPolyfillStr)
+                && bool.TryParse(generateXenialModuleInitializerPolyfillStr, out var generateXenialModuleInitializerPolyfill)
+                && generateXenialModuleInitializerPolyfill)
+            {
+                syntaxWriter.WriteLine();
+                syntaxWriter.WriteLine("namespace System.Runtime.CompilerServices");
+                syntaxWriter.OpenBrace();
 
-            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Method, Inherited = false)]");
-            syntaxWriter.WriteLine("internal sealed class ModuleInitializerAttribute : Attribute");
-            syntaxWriter.OpenBrace();
-            syntaxWriter.WriteLine("public ModuleInitializerAttribute() { }");
-            syntaxWriter.CloseBrace();
+                syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Method, Inherited = false)]");
+                syntaxWriter.WriteLine("internal sealed class ModuleInitializerAttribute : Attribute");
+                syntaxWriter.OpenBrace();
+                syntaxWriter.WriteLine("public ModuleInitializerAttribute() { }");
+                syntaxWriter.CloseBrace();
 
-            syntaxWriter.CloseBrace();
-            syntaxWriter.WriteLine();
-            syntaxWriter.WriteLine("#endif");
+                syntaxWriter.CloseBrace();
+            }
+
 
             var syntax = syntaxWriter.ToString();
             var source = SourceText.From(syntax, Encoding.UTF8);
