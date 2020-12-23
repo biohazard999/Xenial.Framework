@@ -113,14 +113,17 @@ namespace Xenial.Framework.MsBuild
                 context.ReportDiagnostic(Diagnostic.Create(willBuildInTrialModeRule, Location.None));
             }
 
-            var base64 = Base64Encode(xenialLicense);
+            if (!string.IsNullOrEmpty(xenialLicense))
+            {
+                var base64 = Base64Encode(xenialLicense);
 
-            AddXenialLicence(context, base64);
+                AddXenialLicence(context, base64);
+            }
 
             static string Base64Encode(string plainText)
             {
-                var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-                return System.Convert.ToBase64String(plainTextBytes);
+                var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+                return Convert.ToBase64String(plainTextBytes);
             }
 
             static string GetProfileDirectory()
