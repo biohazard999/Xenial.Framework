@@ -55,6 +55,11 @@ namespace Xenial.Framework.MsBuild
         public void Initialize(GeneratorInitializationContext context) { }
         public void Execute(GeneratorExecutionContext context)
         {
+            if (!Debugger.IsAttached)
+            {
+                Debugger.Launch();
+            }
+
             if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.CheckXenialLicense", out var checkLicenseStr)
                 && bool.TryParse(checkLicenseStr, out var checkLicense)
                 && !checkLicense)
