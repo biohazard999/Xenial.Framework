@@ -168,6 +168,7 @@ namespace Xenial.Framework.MsBuild
             syntaxWriter.OpenBrace();
             syntaxWriter.WriteLine("internal static void Register()");
             syntaxWriter.OpenBrace();
+            syntaxWriter.WriteLine("System.Console.WriteLine(\"INIT XENIAL LICENSE\")");
             foreach (var xenialAssembly in context.Compilation.ReferencedAssemblyNames.Where(i => i.Name.StartsWith("Xenial.Framework")))
             {
                 syntaxWriter.WriteLine($"{xenialAssembly.Name}.XenialLicenseCheck.LoadLicense(\"{license}\");");
@@ -175,6 +176,22 @@ namespace Xenial.Framework.MsBuild
             syntaxWriter.CloseBrace();
             syntaxWriter.CloseBrace();
             syntaxWriter.CloseBrace();
+
+            syntaxWriter.WriteLine();
+            syntaxWriter.WriteLine("#if _INJECT_XENIAL_MODULE_INIT");
+            syntaxWriter.WriteLine();
+            syntaxWriter.WriteLine("namespace System.Runtime.CompilerServices");
+            syntaxWriter.OpenBrace();
+
+            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Method, Inherited = false)]");
+            syntaxWriter.WriteLine("internal sealed class ModuleInitializerAttribute : Attribute");
+            syntaxWriter.OpenBrace();
+            syntaxWriter.WriteLine("public ModuleInitializerAttribute() { }");
+            syntaxWriter.CloseBrace();
+
+            syntaxWriter.CloseBrace();
+            syntaxWriter.WriteLine();
+            syntaxWriter.WriteLine("#endif");
 
             var syntax = syntaxWriter.ToString();
             var source = SourceText.From(syntax, Encoding.UTF8);
