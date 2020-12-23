@@ -164,6 +164,7 @@ namespace Xenial.Framework.MsBuild
             syntaxWriter.OpenBrace();
 
             syntaxWriter.WriteLine("[CompilerGenerated]");
+            syntaxWriter.WriteLine("[System.Runtime.CompilerServices.ModuleInitializer]");
             syntaxWriter.WriteLine("internal static class XenialLicense");
             syntaxWriter.OpenBrace();
             syntaxWriter.WriteLine("internal static void Register()");
