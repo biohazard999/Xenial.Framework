@@ -55,13 +55,6 @@ namespace Xenial.Framework
             => Type.EmptyTypes;
 
         /// <summary>
-        /// Adds the DevExpress.ExpressApp.SystemModule.SystemModule to the collection
-        /// </summary>
-        /// <returns></returns>
-        protected override ModuleTypeList GetRequiredModuleTypesCore()
-            => new(typeof(DevExpress.ExpressApp.SystemModule.SystemModule));
-
-        /// <summary>
         /// Registers the editor descriptors.
         /// </summary>
         /// <param name="editorDescriptorsFactory">The editor descriptors factory.</param>
