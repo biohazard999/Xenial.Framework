@@ -4,6 +4,7 @@ using System.Linq;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
+using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
@@ -11,6 +12,7 @@ using DevExpress.ExpressApp.Model.NodeGenerators;
 using Shouldly;
 
 using Xenial.Framework.Layouts;
+using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Model;
 
 using static Xenial.Tasty;
@@ -24,11 +26,29 @@ namespace Xenial.Framework.Tests.Layouts.Items
     public sealed class SimpleBusinessObject
     {
         public string? StringProperty { get; set; }
+        public bool BoolProperty { get; set; }
+        public bool? NullableBoolProperty { get; set; }
+        public int IntegerProperty { get; set; }
+        public int? NullableIntegerProperty { get; set; }
+        public object? ObjectProperty { get; set; }
     }
 
-    public sealed class SimpleBusinessObjectLayoutBuilder
+    public static class SimpleBusinessObjectLayoutBuilder
     {
+        public static Layout BuildLayout()
+        {
+            var item = LayoutPropertyEditorItem<SimpleBusinessObject>
+                .CreatePropertyEditor(p => p.BoolProperty) with
+            {
+            };
 
+            var layoutPropertyEditor = new LayoutPropertyEditorItem(nameof(SimpleBusinessObject.StringProperty));
+
+            return new()
+            {
+                layoutPropertyEditor
+            };
+        }
     }
 
     public static class BasicLayoutFacts
