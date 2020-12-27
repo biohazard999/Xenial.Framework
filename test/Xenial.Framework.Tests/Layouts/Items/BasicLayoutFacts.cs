@@ -12,6 +12,7 @@ using DevExpress.ExpressApp.Model.NodeGenerators;
 using Shouldly;
 
 using Xenial.Framework.Layouts;
+using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Model;
 

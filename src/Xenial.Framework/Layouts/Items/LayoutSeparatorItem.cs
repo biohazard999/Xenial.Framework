@@ -1,4 +1,6 @@
-﻿namespace Xenial.Framework.Layouts.Items.Base
+﻿using Xenial.Framework.Layouts.Items.Base;
+
+namespace Xenial.Framework.Layouts.Items
 {
     /// <summary>
     /// 

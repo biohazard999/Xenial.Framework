@@ -4,7 +4,9 @@ using System.Text;
 
 using DevExpress.ExpressApp.Model;
 
-namespace Xenial.Framework.Layouts.Items.Base
+using Xenial.Framework.Layouts.Items.Base;
+
+namespace Xenial.Framework.Layouts.Items
 {
     /// <summary>
     /// 
