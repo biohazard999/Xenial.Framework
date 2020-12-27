@@ -9,7 +9,8 @@ namespace Xenial.Framework.Layouts.Items.Base
     /// <summary>
     /// 
     /// </summary>
-    public record Layout : LayoutItem
+    [XenialCheckLicence]
+    public partial record Layout : LayoutItem
     {
 
     }

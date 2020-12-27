@@ -12,10 +12,16 @@
 
   <ItemGroup>
     <Compile Include="Layouts\Items\Base\Layout.cs" />
+    <Compile Include="Layouts\Items\Base\LayoutEmptySpaceItem.cs" />
     <Compile Include="Layouts\Items\Base\LayoutItem.cs" />
     <Compile Include="Layouts\Items\Base\LayoutItemNode.cs" />
     <Compile Include="Layouts\Items\Base\LayoutItemLeaf.cs" />
     <Compile Include="Layouts\DetailViewLayoutBuilderAttribute.cs" />
+    <Compile Include="Layouts\Items\Base\LayoutPropertyEditor.cs" />
+    <Compile Include="Layouts\Items\Base\LayoutSeparatorItem.cs" />
+    <Compile Include="Layouts\Items\Base\LayoutSplitterItem.cs" />
+    <Compile Include="Layouts\Items\Base\LayoutStaticImageItem.cs" />
+    <Compile Include="Layouts\Items\Base\LayoutViewItem.cs" />
   </ItemGroup>
 
   <ItemGroup>
