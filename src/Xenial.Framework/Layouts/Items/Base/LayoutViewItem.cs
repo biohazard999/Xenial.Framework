@@ -1,10 +1,7 @@
 ﻿using System;
 
-using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 using DevExpress.Utils;
-
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable IDE1006 // Naming Styles
