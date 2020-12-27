@@ -10,11 +10,12 @@ using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Shouldly;
 
-using DXSystemModele = DevExpress.ExpressApp.SystemModule.SystemModule;
+using Xenial.Framework.Layouts;
+using Xenial.Framework.Model;
 
 using static Xenial.Tasty;
-using Xenial.Framework.Model;
-using Xenial.Framework.Layouts;
+
+using DXSystemModele = DevExpress.ExpressApp.SystemModule.SystemModule;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
