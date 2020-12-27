@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using Xenial.Framework.Tests.Layouts.Items;
 using Xenial.Framework.Tests.Layouts.Items.Base;
 using Xenial.Framework.Tests.Model.Core;
 using Xenial.Framework.Tests.Model.GeneratorUpdaters;
@@ -34,6 +35,8 @@ namespace Xenial.Framework.Tests
                 SlugerFacts.SluggerTests();
 
                 GeneralLayoutFacts.GeneralLayoutTests();
+
+                BasicLayoutFacts.BasicLayoutTests();
             });
 
             return await Run(args);

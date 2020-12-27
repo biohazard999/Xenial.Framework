@@ -15,6 +15,7 @@
     <Compile Include="Layouts\Items\Base\LayoutItem.cs" />
     <Compile Include="Layouts\Items\Base\LayoutItemNode.cs" />
     <Compile Include="Layouts\Items\Base\LayoutItemLeaf.cs" />
+    <Compile Include="Layouts\DetailViewLayoutBuilderAttribute.cs" />
   </ItemGroup>
 
   <ItemGroup>

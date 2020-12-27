@@ -12,6 +12,7 @@
   
   <ItemGroup>
     <Compile Include="Layouts\Items\Base\GeneralLayoutFacts.cs" />
+    <Compile Include="Layouts\Items\BasicLayoutFacts.cs" />
   </ItemGroup>
 
   <ItemGroup>
