@@ -1,7 +1,9 @@
 ﻿using System;
 
-using DevExpress.Persistent.Base;
 using DevExpress.Utils;
+
+using Locations = DevExpress.Persistent.Base.Locations;
+using ToolTipIconType = DevExpress.Persistent.Base.ToolTipIconType;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable IDE1006 // Naming Styles
