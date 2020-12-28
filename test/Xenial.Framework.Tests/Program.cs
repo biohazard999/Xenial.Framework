@@ -37,6 +37,7 @@ namespace Xenial.Framework.Tests
                 GeneralLayoutFacts.GeneralLayoutTests();
 
                 BasicLayoutFacts.BasicLayoutTests();
+                LayoutPropertyEditorItemFacts.LayoutPropertyEditorItemTests();
             });
 
             return await Run(args);

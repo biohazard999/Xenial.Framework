@@ -30,12 +30,12 @@ namespace Xenial.Framework.Layouts.Items
     /// 
     /// </summary>
     [XenialCheckLicence]
-    public partial record LayoutPropertyEditorItem<TModel>(string ViewItemId) : LayoutPropertyEditorItem(ViewItemId)
-        where TModel : class
+    public partial record LayoutPropertyEditorItem<TModelClass>(string ViewItemId) : LayoutPropertyEditorItem(ViewItemId)
+        where TModelClass : class
     {
-        protected static ExpressionHelper<TModel> ExpressionHelper { get; } = Xenial.Utils.ExpressionHelper.Create<TModel>();
+        protected static ExpressionHelper<TModelClass> ExpressionHelper { get; } = Xenial.Utils.ExpressionHelper.Create<TModelClass>();
 
-        public static LayoutPropertyEditorItem<TModel> CreatePropertyEditor<TProperty>(Expression<Func<TModel, TProperty>> expression)
+        public static LayoutPropertyEditorItem<TModelClass> CreatePropertyEditor<TProperty>(Expression<Func<TModelClass, TProperty>> expression)
             => new(ExpressionHelper.Property(expression));
     }
 }
