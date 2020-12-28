@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -31,9 +32,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
     public sealed class LayoutPropertyEditorItemBusinessObject
     {
         public string? StringProperty { get; set; }
-        public string? StringProperty2 { get; set; }
-        public string? StringProperty3 { get; set; }
-        public string? StringProperty4 { get; set; }
     }
 
     public static class LayoutPropertyEditorItemFacts
@@ -130,13 +128,17 @@ namespace Xenial.Framework.Tests.Layouts.Items
                 },
                 typesInfo =>
                 {
+                    //ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
+                    //    .WithDetailViewLayout(() => new Layout
+                    //    {
+                    //        new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty)),
+                    //    })
+                    //.Build();
+
                     ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
-                        .WithDetailViewLayout(() => new Layout
+                        .WithDetailViewLayout(p => new Layout
                         {
-                            new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty)),
-                            new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty2)),
-                            new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty3)),
-                            new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty4))
+                            p.PropertyEditor(m => m.StringProperty) with { Caption = "My Property" }
                         })
                     .Build();
                 });

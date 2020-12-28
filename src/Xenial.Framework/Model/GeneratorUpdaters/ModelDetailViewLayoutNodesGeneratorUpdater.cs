@@ -58,6 +58,28 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                             {
                                 var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutViewItem>(layoutViewItemNode.Id);
                                 modelLayoutViewItem.ViewItem = modelDetailView.Items.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
+
+                                if (modelLayoutViewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
+                                {
+                                    modelLayoutElementWithCaption.Caption =
+                                        string.IsNullOrEmpty(layoutViewItemNode.Caption)
+                                        ? modelLayoutElementWithCaption.Caption
+                                        : layoutViewItemNode.Caption;
+                                }
+                                else if (modelLayoutViewItem.ViewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption2)
+                                {
+                                    modelLayoutElementWithCaption2.Caption =
+                                        string.IsNullOrEmpty(layoutViewItemNode.Caption)
+                                        ? modelLayoutElementWithCaption2.Caption
+                                        : layoutViewItemNode.Caption;
+                                }
+                                else if (modelLayoutViewItem.ViewItem is not null)
+                                {
+                                    modelLayoutViewItem.ViewItem.Caption =
+                                        string.IsNullOrEmpty(layoutViewItemNode.Caption)
+                                        ? modelLayoutViewItem.ViewItem.Caption
+                                        : layoutViewItemNode.Caption;
+                                }
                             }
                         }
                     }
