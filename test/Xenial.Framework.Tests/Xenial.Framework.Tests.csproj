@@ -7,5 +7,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Xenial.Framework\Xenial.Framework.csproj" />
   </ItemGroup>
-
+  
 </Project>

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
+using DevExpress.ExpressApp.Utils;
 
 using Shouldly;
 
@@ -15,6 +17,7 @@ using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.ModelBuilders;
+using Xenial.Framework.Tests.Assertions.Xml;
 
 using static Xenial.Tasty;
 
@@ -128,19 +131,12 @@ namespace Xenial.Framework.Tests.Layouts.Items
                             new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty))
                         })
                     .Build();
-
-
-                    ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
-                        .WithDetailViewLayout(l => new()
-                        {
-                            l.PropertyEditor(m => m.StringProperty)
-                        })
-                    .Build();
                 });
 
                 var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
 
-                detailView.ShouldNotBeNull();
+                var xml = UserDifferencesHelper.GetUserDifferences(detailView)[""];
+                var prettyXml = new XmlFormatter().Format(xml);
             });
         });
     }
