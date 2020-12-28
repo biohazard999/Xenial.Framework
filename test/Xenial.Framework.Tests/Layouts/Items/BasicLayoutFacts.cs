@@ -90,7 +90,7 @@ namespace Xenial.Framework.Tests.Layouts.Items
             where TModelType : class
                 => model.FindDetailView(typeof(TModelType));
 
-        public static void BasicLayoutTests() => FDescribe("Basic Layouts", () =>
+        public static void BasicLayoutTests() => Describe("Basic Layouts", () =>
         {
             static IModelApplication CreateApplication(params Type[] boModelTypes)
             {

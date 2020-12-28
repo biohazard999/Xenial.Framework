@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -29,6 +31,9 @@ namespace Xenial.Framework.Tests.Layouts.Items
     public sealed class LayoutPropertyEditorItemBusinessObject
     {
         public string? StringProperty { get; set; }
+        public string? StringProperty2 { get; set; }
+        public string? StringProperty3 { get; set; }
+        public string? StringProperty4 { get; set; }
     }
 
     public static class LayoutPropertyEditorItemFacts
@@ -128,7 +133,10 @@ namespace Xenial.Framework.Tests.Layouts.Items
                     ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
                         .WithDetailViewLayout(() => new Layout
                         {
-                            new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty))
+                            new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty)),
+                            new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty2)),
+                            new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty3)),
+                            new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty4))
                         })
                     .Build();
                 });
@@ -137,6 +145,20 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
                 var xml = UserDifferencesHelper.GetUserDifferences(detailView)[""];
                 var prettyXml = new XmlFormatter().Format(xml);
+                var encode = WebUtility.HtmlEncode(prettyXml);
+                File.WriteAllText(@"C:\F\tmp\Xenial\1.html", @$"
+<html>
+    <head>
+        <link href=""https://unpkg.com/prismjs@1.22.0/themes/prism-okaidia.css"" rel=""stylesheet"" />
+    </head>
+    <body style='background-color: #272822; color: #bbb; font-family: sans-serif; margin: 0; padding: 0;'>
+        <h1 style='text-align: center; margin-top: .5rem'>XAF Layout Inspector</h1>
+        <hr style='border: none; border-top: 1px solid #bbb;' />
+        <pre><code class='language-xml'>{encode}</code></pre>
+        <script src=""https://unpkg.com/prismjs@1.22.0/components/prism-core.min.js""></script>
+        <script src=""https://unpkg.com/prismjs@1.22.0/plugins/autoloader/prism-autoloader.min.js""></script>
+    </body>
+</html>");
             });
         });
     }

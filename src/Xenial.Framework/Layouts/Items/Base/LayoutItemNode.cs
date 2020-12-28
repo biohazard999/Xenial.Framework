@@ -17,10 +17,14 @@ namespace Xenial.Framework.Layouts.Items.Base
         {
             CollapseWhiteSpace = true,
             CollapseDashes = true,
+            ForceLowerCase = false,
+            TrimWhitespace = true,
             StringReplacements =
             {
                 ["."] = "-",
-                [" "] = "-"
+                [" "] = "-",
+                ["/"] = "-",
+                ["\\"] = "-",
             }
         };
 
