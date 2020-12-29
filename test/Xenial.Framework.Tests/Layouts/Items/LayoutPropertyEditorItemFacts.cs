@@ -7,6 +7,7 @@ using System.Net;
 using Bogus;
 
 using DevExpress.ExpressApp.DC;
+using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.ExpressApp.Utils;
@@ -94,11 +95,12 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
         public static void LayoutPropertyEditorItemTests() => FDescribe(nameof(LayoutPropertyEditorItem), () =>
         {
+            var faker = new Faker();
+
             Describe("Properties", () =>
             {
                 It(nameof(IModelLayoutElementWithCaptionOptions), () =>
                 {
-                    var faker = new Faker();
                     var showCaption = faker.Random.Bool();
                     var captionLocation = faker.Random.Enum<DevExpress.Persistent.Base.Locations>();
                     var captionHorizontalAlignment = faker.Random.Enum<DevExpress.Utils.HorzAlignment>();
@@ -137,6 +139,38 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         [e.Property(p => p.CaptionWordWrap)] = captionWordWrap,
                     });
                 });
+
+                It(nameof(ISupportControlAlignment), () =>
+                {
+                    var horizontalAlign = faker.Random.Enum<StaticHorizontalAlign>();
+                    var verticalAlign = faker.Random.Enum<StaticVerticalAlign>();
+
+                    var model = CreateApplication(new[]
+                    {
+                        typeof(LayoutPropertyEditorItemBusinessObject)
+                    },
+                    typesInfo =>
+                    {
+                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
+                            .WithDetailViewLayout(b => new Layout
+                            {
+                                b.PropertyEditor(m => m.StringProperty) with
+                                {
+                                    HorizontalAlign = horizontalAlign,
+                                    VerticalAlign = verticalAlign
+                                }
+                            })
+                        .Build();
+                    });
+
+                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
+
+                    detailView.AssertLayoutItemProperties<IModelViewLayoutElement, ISupportControlAlignment>((e) => new()
+                    {
+                        [e.Property(p => p.HorizontalAlign)] = horizontalAlign,
+                        [e.Property(p => p.VerticalAlign)] = verticalAlign,
+                    });
+                });
             });
 
             It("gets created with ModelBuilder", () =>
@@ -152,11 +186,12 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         {
                             p.PropertyEditor(m => m.StringProperty) with
                             {
-                                ShowCaption = true,
+                                ShowCaption = false,
                                 CaptionLocation = DevExpress.Persistent.Base.Locations.Top,
                                 CaptionHorizontalAlignment = DevExpress.Utils.HorzAlignment.Near,
                                 CaptionVerticalAlignment = DevExpress.Utils.VertAlignment.Bottom,
-                                CaptionWordWrap = DevExpress.Utils.WordWrap.NoWrap
+                                CaptionWordWrap = DevExpress.Utils.WordWrap.NoWrap,
+                                HorizontalAlign = DevExpress.ExpressApp.Editors.StaticHorizontalAlign.NotSet
                             }
                         })
                     .Build();

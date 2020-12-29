@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Xenial.Framework.Layouts;
-using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters
@@ -58,6 +56,11 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                             {
                                 var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutViewItem>(layoutViewItemNode.Id);
                                 modelLayoutViewItem.ViewItem = modelDetailView.Items.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
+
+                                if (modelLayoutViewItem is ISupportControlAlignment modelSupportControlAlignment)
+                                {
+                                    MapSupportControlAlignment(modelSupportControlAlignment, layoutViewItemNode);
+                                }
 
                                 if (modelLayoutViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
                                 {
@@ -113,7 +116,10 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 }
             }
 
-            static void MapCaption(IModelLayoutElementWithCaption modelLayoutElementWithCaption, LayoutViewItem layoutViewItemNode)
+            static void MapCaption(
+                IModelLayoutElementWithCaption modelLayoutElementWithCaption,
+                LayoutViewItem layoutViewItemNode
+            )
             {
                 if (layoutViewItemNode.Caption is not null)
                 {
@@ -155,6 +161,24 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 {
                     modelLayoutElementWithCaption.CaptionWordWrap =
                         layoutViewItemNode.CaptionWordWrap ?? modelLayoutElementWithCaption.CaptionWordWrap;
+                }
+            }
+
+            static void MapSupportControlAlignment(
+                ISupportControlAlignment modelSupportControlAlignment,
+                LayoutViewItem layoutViewItemNode
+            )
+            {
+                if (layoutViewItemNode.HorizontalAlign is not null)
+                {
+                    modelSupportControlAlignment.HorizontalAlign =
+                        layoutViewItemNode.HorizontalAlign ?? modelSupportControlAlignment.HorizontalAlign;
+                }
+
+                if (layoutViewItemNode.VerticalAlign is not null)
+                {
+                    modelSupportControlAlignment.VerticalAlign =
+                        layoutViewItemNode.VerticalAlign ?? modelSupportControlAlignment.VerticalAlign;
                 }
             }
         }
