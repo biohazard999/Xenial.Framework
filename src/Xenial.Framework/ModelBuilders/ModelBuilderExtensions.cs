@@ -462,7 +462,10 @@ namespace Xenial.Framework.ModelBuilders
         public static IModelBuilder<T> IsSingleton<T>(this IModelBuilder<T> builder)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
-            return builder.WithAttribute(new SingletonAttribute());
+            return builder
+                .WithAttribute(new SingletonAttribute())
+                .NotAllowingDelete()
+                .NotAllowingNew();
         }
 
         /// <summary>
@@ -476,7 +479,10 @@ namespace Xenial.Framework.ModelBuilders
         public static IModelBuilder<T> IsSingleton<T>(this IModelBuilder<T> builder, bool autoCommit)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
-            return builder.WithAttribute(new SingletonAttribute(autoCommit));
+            return builder
+                .WithAttribute(new SingletonAttribute(autoCommit))
+                .NotAllowingDelete()
+                .NotAllowingNew();
         }
 
         //TODO: Layoutbuilders
