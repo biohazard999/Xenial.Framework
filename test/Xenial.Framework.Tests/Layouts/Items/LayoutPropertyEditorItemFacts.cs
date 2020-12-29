@@ -1,29 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 
-using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
-using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Utils;
 
-using Shouldly;
-
-using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.ModelBuilders;
 using Xenial.Framework.Tests.Assertions.Xml;
 
-using static Xenial.Tasty;
 using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
+using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
-using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
-using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Shouldly;
@@ -16,8 +12,8 @@ using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Model;
 
-using static Xenial.Tasty;
 using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
+using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
