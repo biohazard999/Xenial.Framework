@@ -74,14 +74,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                             {
                                 var modelViewItemNode = possibleModelDetailView.Items.FirstOrDefault(m => m.Id == layoutViewItemNode.Id);
 
-                                if (modelViewItemNode is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
-                                {
-                                    modelLayoutElementWithCaption.Caption =
-                                        string.IsNullOrEmpty(layoutViewItemNode.Caption)
-                                        ? modelLayoutElementWithCaption.Caption
-                                        : layoutViewItemNode.Caption;
-                                }
-                                else if (modelViewItemNode is not null)
+                                if (modelViewItemNode is not null)
                                 {
                                     modelViewItemNode.Caption =
                                         string.IsNullOrEmpty(layoutViewItemNode.Caption)

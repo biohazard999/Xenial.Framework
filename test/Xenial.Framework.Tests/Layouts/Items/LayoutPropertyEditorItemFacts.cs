@@ -23,8 +23,7 @@ using Xenial.Framework.ModelBuilders;
 using Xenial.Framework.Tests.Assertions.Xml;
 
 using static Xenial.Tasty;
-
-using DXSystemModele = DevExpress.ExpressApp.SystemModule.SystemModule;
+using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
@@ -36,90 +35,8 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
     public static class LayoutPropertyEditorItemFacts
     {
-        internal sealed class TestModule : XenialModuleBase
-        {
-            private readonly IEnumerable<Type> boModelTypes;
-            private readonly Action<ITypesInfo>? customizeTypesInfo;
-
-            public TestModule(IEnumerable<Type> boModelTypes, Action<ITypesInfo>? customizeTypesInfo)
-            {
-                this.boModelTypes = boModelTypes;
-                this.customizeTypesInfo = customizeTypesInfo;
-            }
-
-            protected override IEnumerable<Type> GetDeclaredExportedTypes()
-                => base.GetDeclaredExportedTypes()
-                    .Concat(boModelTypes);
-
-            protected override IEnumerable<Type> GetRegularTypes()
-                => base.GetRegularTypes()
-                    .UseDetailViewLayoutBuildersRegularTypes();
-
-            public override void CustomizeTypesInfo(ITypesInfo typesInfo)
-            {
-                base.CustomizeTypesInfo(typesInfo);
-
-                customizeTypesInfo?.Invoke(typesInfo);
-            }
-
-            public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
-            {
-                base.AddGeneratorUpdaters(updaters);
-                updaters.UseDetailViewLayoutBuilders();
-            }
-
-            public override void ExtendModelInterfaces(ModelInterfaceExtenders extenders)
-            {
-                base.ExtendModelInterfaces(extenders);
-                extenders.UseDetailViewLayoutBuilders();
-            }
-        }
-
         public static void LayoutPropertyEditorItemTests() => FDescribe(nameof(LayoutPropertyEditorItem), () =>
         {
-            static IModelApplication CreateApplication(Type[] boModelTypes, Action<ITypesInfo>? customizeTypesInfo = null)
-            {
-                XafTypesInfo.HardReset();
-
-                if (XafTypesInfo.Instance is TypesInfo typesInfo)
-                {
-                    var store = typesInfo.FindEntityStore(typeof(NonPersistentTypeInfoSource));
-                    if (store is not null)
-                    {
-                        foreach (var type in boModelTypes)
-                        {
-                            store.RegisterEntity(type);
-                        }
-                    }
-                }
-
-                var modelManager = new ApplicationModelManager(null, true);
-
-                var modules = new ModuleBase[]
-                {
-                    new DXSystemModele(),
-                    new TestModule(boModelTypes, customizeTypesInfo)
-                };
-
-                foreach (var module in modules)
-                {
-                    module.CustomizeTypesInfo(XafTypesInfo.Instance);
-                }
-
-                modelManager.Setup(
-                    XafTypesInfo.Instance,
-                    boModelTypes,
-                    modules,
-                    Enumerable.Empty<Controller>(),
-                    Enumerable.Empty<Type>(),
-                    Enumerable.Empty<string>(),
-                    null,
-                    null
-                );
-
-                return (IModelApplication)modelManager.CreateModelApplication(Enumerable.Empty<ModelApplicationBase>());
-            }
-
             It("gets created with ModelBuilder", () =>
             {
                 var model = CreateApplication(new[]
@@ -128,17 +45,17 @@ namespace Xenial.Framework.Tests.Layouts.Items
                 },
                 typesInfo =>
                 {
-                    //ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
-                    //    .WithDetailViewLayout(() => new Layout
-                    //    {
-                    //        new LayoutPropertyEditorItem(nameof(LayoutPropertyEditorItemBusinessObject.StringProperty)),
-                    //    })
-                    //.Build();
-
                     ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
                         .WithDetailViewLayout(p => new Layout
                         {
-                            p.PropertyEditor(m => m.StringProperty) with { Caption = "My Property" }
+                            p.PropertyEditor(m => m.StringProperty) with
+                            {
+                                ShowCaption = true,
+                                CaptionLocation = DevExpress.Persistent.Base.Locations.Top,
+                                CaptionHorizontalAlignment = DevExpress.Utils.HorzAlignment.Near,
+                                CaptionVerticalAlignment = DevExpress.Utils.VertAlignment.Bottom,
+                                CaptionWordWrap = DevExpress.Utils.WordWrap.NoWrap
+                            }
                         })
                     .Build();
                 });
@@ -148,7 +65,7 @@ namespace Xenial.Framework.Tests.Layouts.Items
                 var xml = UserDifferencesHelper.GetUserDifferences(detailView)[""];
                 var prettyXml = new XmlFormatter().Format(xml);
                 var encode = WebUtility.HtmlEncode(prettyXml);
-                File.WriteAllText(@"C:\F\tmp\Xenial\1.html", @$"
+                var html = @$"
 <html>
     <head>
         <link href=""https://unpkg.com/prismjs@1.22.0/themes/prism-okaidia.css"" rel=""stylesheet"" />
@@ -160,7 +77,11 @@ namespace Xenial.Framework.Tests.Layouts.Items
         <script src=""https://unpkg.com/prismjs@1.22.0/components/prism-core.min.js""></script>
         <script src=""https://unpkg.com/prismjs@1.22.0/plugins/autoloader/prism-autoloader.min.js""></script>
     </body>
-</html>");
+</html>";
+
+#if DEBUG
+                File.WriteAllText(@"C:\F\tmp\Xenial\1.html", html);
+#endif
             });
         });
     }

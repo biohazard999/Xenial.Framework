@@ -17,8 +17,7 @@ using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Model;
 
 using static Xenial.Tasty;
-
-using DXSystemModele = DevExpress.ExpressApp.SystemModule.SystemModule;
+using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
@@ -54,32 +53,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
     public static class BasicLayoutFacts
     {
-        internal sealed class TestModule : XenialModuleBase
-        {
-            private readonly IEnumerable<Type> boModelTypes;
-            public TestModule(IEnumerable<Type> boModelTypes)
-                => this.boModelTypes = boModelTypes;
-            protected override IEnumerable<Type> GetDeclaredExportedTypes()
-                => base.GetDeclaredExportedTypes()
-                    .Concat(boModelTypes);
-
-            protected override IEnumerable<Type> GetRegularTypes()
-                => base.GetRegularTypes()
-                    .UseDetailViewLayoutBuildersRegularTypes();
-
-            public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
-            {
-                base.AddGeneratorUpdaters(updaters);
-                updaters.UseDetailViewLayoutBuilders();
-            }
-
-            public override void ExtendModelInterfaces(ModelInterfaceExtenders extenders)
-            {
-                base.ExtendModelInterfaces(extenders);
-                extenders.UseDetailViewLayoutBuilders();
-            }
-        }
-
         internal static IModelDetailView? FindDetailView(this IModelApplication model, Type boType)
             => model
                 .Views
@@ -92,59 +65,16 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
         public static void BasicLayoutTests() => Describe("Basic Layouts", () =>
         {
-            static IModelApplication CreateApplication(params Type[] boModelTypes)
-            {
-                XafTypesInfo.HardReset();
-
-                if (XafTypesInfo.Instance is TypesInfo typesInfo)
-                {
-                    var store = typesInfo.FindEntityStore(typeof(NonPersistentTypeInfoSource));
-                    if (store is not null)
-                    {
-                        foreach (var type in boModelTypes)
-                        {
-                            store.RegisterEntity(type);
-                        }
-                    }
-                }
-
-                var modelManager = new ApplicationModelManager(null, true);
-
-                var modules = new ModuleBase[]
-                {
-                    new DXSystemModele(),
-                    new TestModule(boModelTypes)
-                };
-
-                foreach (var module in modules)
-                {
-                    module.CustomizeTypesInfo(XafTypesInfo.Instance);
-                }
-
-                modelManager.Setup(
-                    XafTypesInfo.Instance,
-                    boModelTypes,
-                    modules,
-                    Enumerable.Empty<Controller>(),
-                    Enumerable.Empty<Type>(),
-                    Enumerable.Empty<string>(),
-                    null,
-                    null
-                );
-
-                return (IModelApplication)modelManager.CreateModelApplication(Enumerable.Empty<ModelApplicationBase>());
-            }
-
             It($"creates {nameof(IModelApplication)}", () =>
             {
-                var model = CreateApplication(typeof(SimpleBusinessObject));
+                var model = CreateApplication(new[] { typeof(SimpleBusinessObject) });
 
                 model.ShouldBeAssignableTo<IModelApplication>();
             });
 
             Describe("use generator buddy type logic", () =>
             {
-                var model = CreateApplication(typeof(SimpleBusinessObject));
+                var model = CreateApplication(new[] { typeof(SimpleBusinessObject) });
 
                 It($"Finds {typeof(SimpleBusinessObject)} DetailView", () =>
                 {

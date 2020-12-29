@@ -59,26 +59,29 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                 var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutViewItem>(layoutViewItemNode.Id);
                                 modelLayoutViewItem.ViewItem = modelDetailView.Items.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
 
+                                if (modelLayoutViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
+                                {
+                                    MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, layoutViewItemNode);
+                                }
+                                else if (modelLayoutViewItem.ViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions2)
+                                {
+                                    MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions2, layoutViewItemNode);
+                                }
+
                                 if (modelLayoutViewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
                                 {
-                                    modelLayoutElementWithCaption.Caption =
-                                        string.IsNullOrEmpty(layoutViewItemNode.Caption)
-                                        ? modelLayoutElementWithCaption.Caption
-                                        : layoutViewItemNode.Caption;
+                                    MapCaption(modelLayoutElementWithCaption, layoutViewItemNode);
                                 }
                                 else if (modelLayoutViewItem.ViewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption2)
                                 {
-                                    modelLayoutElementWithCaption2.Caption =
-                                        string.IsNullOrEmpty(layoutViewItemNode.Caption)
-                                        ? modelLayoutElementWithCaption2.Caption
-                                        : layoutViewItemNode.Caption;
+                                    MapCaption(modelLayoutElementWithCaption2, layoutViewItemNode);
                                 }
                                 else if (modelLayoutViewItem.ViewItem is not null)
                                 {
-                                    modelLayoutViewItem.ViewItem.Caption =
-                                        string.IsNullOrEmpty(layoutViewItemNode.Caption)
-                                        ? modelLayoutViewItem.ViewItem.Caption
-                                        : layoutViewItemNode.Caption;
+                                    if (layoutViewItemNode.Caption is not null)
+                                    {
+                                        modelLayoutViewItem.ViewItem.Caption = layoutViewItemNode.Caption;
+                                    }
                                 }
                             }
                         }
@@ -107,6 +110,51 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                             yield return nestedItem;
                         }
                     }
+                }
+            }
+
+            static void MapCaption(IModelLayoutElementWithCaption modelLayoutElementWithCaption, LayoutViewItem layoutViewItemNode)
+            {
+                if (layoutViewItemNode.Caption is not null)
+                {
+                    modelLayoutElementWithCaption.Caption =
+                        layoutViewItemNode.Caption ?? modelLayoutElementWithCaption.Caption;
+                }
+            }
+
+            static void MapLayoutElementWithCaptionOptions(
+                IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaption,
+                LayoutViewItem layoutViewItemNode
+            )
+            {
+                if (layoutViewItemNode.ShowCaption is not null)
+                {
+                    modelLayoutElementWithCaption.ShowCaption =
+                        layoutViewItemNode.ShowCaption ?? modelLayoutElementWithCaption.ShowCaption;
+                }
+
+                if (layoutViewItemNode.CaptionLocation is not null)
+                {
+                    modelLayoutElementWithCaption.CaptionLocation =
+                        layoutViewItemNode.CaptionLocation ?? modelLayoutElementWithCaption.CaptionLocation;
+                }
+
+                if (layoutViewItemNode.CaptionHorizontalAlignment is not null)
+                {
+                    modelLayoutElementWithCaption.CaptionHorizontalAlignment =
+                        layoutViewItemNode.CaptionHorizontalAlignment ?? modelLayoutElementWithCaption.CaptionHorizontalAlignment;
+                }
+
+                if (layoutViewItemNode.CaptionVerticalAlignment is not null)
+                {
+                    modelLayoutElementWithCaption.CaptionVerticalAlignment =
+                        layoutViewItemNode.CaptionVerticalAlignment ?? modelLayoutElementWithCaption.CaptionVerticalAlignment;
+                }
+
+                if (layoutViewItemNode.CaptionWordWrap is not null)
+                {
+                    modelLayoutElementWithCaption.CaptionWordWrap =
+                        layoutViewItemNode.CaptionWordWrap ?? modelLayoutElementWithCaption.CaptionWordWrap;
                 }
             }
         }
