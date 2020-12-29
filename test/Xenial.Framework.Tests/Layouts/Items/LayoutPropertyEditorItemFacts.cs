@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
+
+using Bogus;
 
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
+using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.ExpressApp.Utils;
 
 using Shouldly;
 
 using Xenial.Data;
-using Xenial.Utils;
 using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.ModelBuilders;
 using Xenial.Framework.Tests.Assertions.Xml;
+using Xenial.Utils;
 
 using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
 using static Xenial.Tasty;
-using DevExpress.ExpressApp.Model.NodeGenerators;
-using System.Linq;
-using Bogus;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
@@ -32,6 +33,29 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
     public static class LayoutPropertyEditorItemFacts
     {
+        internal static void VisualizeModelNode(this IModelNode? modelNode)
+        {
+            _ = modelNode ?? throw new ArgumentNullException(nameof(modelNode));
+            var xml = UserDifferencesHelper.GetUserDifferences(modelNode)[""];
+            var prettyXml = new XmlFormatter().Format(xml);
+            var encode = WebUtility.HtmlEncode(prettyXml);
+            var html = @$"
+<html>
+    <head>
+        <link href='https://unpkg.com/prismjs@1.22.0/themes/prism-okaidia.css' rel='stylesheet' />
+    </head>
+    <body style='background-color: #272822; color: #bbb; font-family: sans-serif; margin: 0; padding: 0;'>
+        <h1 style='text-align: center; margin-top: .5rem'>XAF Layout Inspector</h1>
+        <hr style='border: none; border-top: 1px solid #bbb;' />
+        <pre><code class='language-xml'>{encode}</code></pre>
+        <script src='https://unpkg.com/prismjs@1.22.0/components/prism-core.min.js'></script>
+        <script src='https://unpkg.com/prismjs@1.22.0/plugins/autoloader/prism-autoloader.min.js'></script>
+    </body>
+</html>";
+
+            File.WriteAllText(@"C:\F\tmp\Xenial\1.html", html);
+        }
+
         internal static void AssertLayoutItemProperties<TModelType, TTargetModelType>(this IModelDetailView? modelDetailView, Func<ExpressionHelper<TTargetModelType>, Dictionary<string, object>> asserter)
             where TModelType : IModelViewLayoutElement
         {
@@ -140,26 +164,7 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
                 var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
 
-                var xml = UserDifferencesHelper.GetUserDifferences(detailView)[""];
-                var prettyXml = new XmlFormatter().Format(xml);
-                var encode = WebUtility.HtmlEncode(prettyXml);
-                var html = @$"
-<html>
-    <head>
-        <link href=""https://unpkg.com/prismjs@1.22.0/themes/prism-okaidia.css"" rel=""stylesheet"" />
-    </head>
-    <body style='background-color: #272822; color: #bbb; font-family: sans-serif; margin: 0; padding: 0;'>
-        <h1 style='text-align: center; margin-top: .5rem'>XAF Layout Inspector</h1>
-        <hr style='border: none; border-top: 1px solid #bbb;' />
-        <pre><code class='language-xml'>{encode}</code></pre>
-        <script src=""https://unpkg.com/prismjs@1.22.0/components/prism-core.min.js""></script>
-        <script src=""https://unpkg.com/prismjs@1.22.0/plugins/autoloader/prism-autoloader.min.js""></script>
-    </body>
-</html>";
-
-#if DEBUG
-                File.WriteAllText(@"C:\F\tmp\Xenial\1.html", html);
-#endif
+                detailView.VisualizeModelNode();
             });
         });
     }
