@@ -53,8 +53,9 @@ namespace Xenial.Framework.Tests.Layouts.Items
         <script src='https://unpkg.com/prismjs@1.22.0/plugins/autoloader/prism-autoloader.min.js'></script>
     </body>
 </html>";
-
+#if DEBUG
             File.WriteAllText(@"C:\F\tmp\Xenial\1.html", html);
+#endif
         }
 
         internal static void AssertLayoutItemProperties<TModelType, TTargetModelType>(this IModelDetailView? modelDetailView, Func<ExpressionHelper<TTargetModelType>, Dictionary<string, object>> asserter)
