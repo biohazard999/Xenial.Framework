@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -174,7 +175,7 @@ namespace Xenial.Framework.Tests.Assertions.Xml
                                 sb.Append(string.Concat(space.ToString(), "/>"));
                                 return;
                             }
-                            sb.AppendFormat(string.Concat("></", node.Name, ">"), Array.Empty<object>());
+                            sb.AppendFormat(CultureInfo.InvariantCulture, string.Concat("></", node.Name, ">"), Array.Empty<object>());
                         }
                         else
                         {
@@ -225,7 +226,7 @@ namespace Xenial.Framework.Tests.Assertions.Xml
                     {
                         var str6 = xmlNodeType == XmlNodeType.Text ? string.Empty : Environment.NewLine;
                         var str7 = xmlNodeType == XmlNodeType.Text ? string.Empty : new string(XmlFormatterConstants.Space, currentStartLength);
-                        sb.Append(string.Concat(new string?[] { str6, str7, "<![CDATA[", node.Value, "]]>" }));
+                        sb.Append(string.Concat(new string?[] { str6, str7, XmlFormatterConstants.CDataStart, node.Value, XmlFormatterConstants.CDataEnd }));
                         return;
                     }
                 case XmlNodeType.EntityReference:
@@ -266,7 +267,7 @@ namespace Xenial.Framework.Tests.Assertions.Xml
                 case XmlNodeType.DocumentType:
                     {
                         space = XmlFormatterConstants.Space;
-                        sb.Append(string.Concat("<!DOCTYPE", space.ToString(), XmlFormatterConstants.DocTypeEnd(node.Value)));
+                        sb.Append(string.Concat(XmlFormatterConstants.DocTypeStart, space.ToString(), XmlFormatterConstants.DocTypeEnd(node.Value)));
                         return;
                     }
                 case XmlNodeType.Whitespace:
