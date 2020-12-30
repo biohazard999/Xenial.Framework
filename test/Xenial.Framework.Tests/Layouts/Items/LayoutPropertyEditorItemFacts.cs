@@ -271,6 +271,35 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         [e.Property(p => p.ToolTipIconType)] = toolTipIconType
                     });
                 });
+
+                It(nameof(IModelNode), () =>
+                {
+                    var index = faker.Random.Int();
+
+                    var model = CreateApplication(new[]
+                    {
+                        typeof(LayoutPropertyEditorItemBusinessObject)
+                    },
+                    typesInfo =>
+                    {
+                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
+                            .WithDetailViewLayout(b => new Layout
+                            {
+                                b.PropertyEditor(m => m.StringProperty) with
+                                {
+                                    Index = index,
+                                }
+                            })
+                        .Build();
+                    });
+
+                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
+
+                    detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelNode>((e) => new()
+                    {
+                        [e.Property(p => p.Index)] = index
+                    });
+                });
             });
 
             It("gets created with ModelBuilder", () =>

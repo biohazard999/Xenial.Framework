@@ -57,6 +57,11 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                 var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutViewItem>(layoutViewItemNode.Id);
                                 modelLayoutViewItem.ViewItem = modelDetailView.Items.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
 
+                                if (modelLayoutViewItem is IModelNode genericModelNode)
+                                {
+                                    MapModelNode(genericModelNode, layoutViewItemNode);
+                                }
+
                                 if (modelLayoutViewItem is ISupportControlAlignment modelSupportControlAlignment)
                                 {
                                     MapSupportControlAlignment(modelSupportControlAlignment, layoutViewItemNode);
@@ -176,6 +181,18 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 {
                     modelLayoutElementWithCaption.CaptionWordWrap =
                         layoutViewItemNode.CaptionWordWrap ?? modelLayoutElementWithCaption.CaptionWordWrap;
+                }
+            }
+
+            static void MapModelNode(
+                IModelNode genericModelNode,
+                LayoutViewItem layoutViewItemNode
+            )
+            {
+                if (layoutViewItemNode.Index is not null)
+                {
+                    genericModelNode.Index =
+                        layoutViewItemNode.Index ?? genericModelNode.Index;
                 }
             }
 
