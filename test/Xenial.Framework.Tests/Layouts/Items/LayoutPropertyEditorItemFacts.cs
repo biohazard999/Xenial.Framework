@@ -288,6 +288,22 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
                     A.CallTo(optionsCallback).MustHaveHappenedOnceExactly();
                 });
+
+                It($"{nameof(LayoutPropertyEditorItem.ViewItemOptions)} get called", () =>
+                {
+                    var optionsCallback = A.Fake<Action<IModelViewItem>>();
+                    var detailView = CreateDetailViewWithLayout(b => new Layout
+                    {
+                        b.PropertyEditor(m => m.StringProperty) with
+                        {
+                            ViewItemOptions = optionsCallback
+                        }
+                    });
+
+                    var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
+
+                    A.CallTo(optionsCallback).MustHaveHappenedOnceExactly();
+                });
             });
 
             It("gets created with ModelBuilder", () =>

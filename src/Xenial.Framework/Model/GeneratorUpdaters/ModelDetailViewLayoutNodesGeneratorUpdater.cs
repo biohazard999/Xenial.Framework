@@ -108,6 +108,17 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                     }
                                 }
 
+                                if (layoutViewItemNode.ViewItemOptions is not null)
+                                {
+                                    var modelViewItem = modelDetailView
+                                        .Items[layoutViewItemNode.ViewItemId];
+
+                                    if (modelViewItem is not null)
+                                    {
+                                        layoutViewItemNode.ViewItemOptions(modelViewItem);
+                                    }
+                                }
+
                                 if (layoutViewItemNode is LayoutPropertyEditorItem layoutPropertyEditorItem
                                     && layoutPropertyEditorItem.PropertyEditorOptions is not null)
                                 {
