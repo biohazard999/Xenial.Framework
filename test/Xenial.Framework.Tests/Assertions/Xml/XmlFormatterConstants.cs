@@ -14,7 +14,7 @@ namespace Xenial.Framework.Tests.Assertions.Xml
 
         public const string InlineEndTag = "/>";
 
-        public static readonly char Space;
+        public static readonly char Space = ' ';
 
         public const string CommentTagStart = "<!--";
 
@@ -34,13 +34,7 @@ namespace Xenial.Framework.Tests.Assertions.Xml
 
         public const string DocTypeStart = "<!DOCTYPE";
 
-        public static readonly string Newline;
-
-        static XmlFormatterConstants()
-        {
-            Space = ' ';
-            Newline = Environment.NewLine;
-        }
+        public static readonly string Newline = Environment.NewLine;
 
         public static string DocTypeEnd(string? val)
             => $"[{val}]";

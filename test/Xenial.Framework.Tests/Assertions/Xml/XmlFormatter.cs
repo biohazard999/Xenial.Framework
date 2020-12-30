@@ -157,14 +157,14 @@ namespace Xenial.Framework.Tests.Assertions.Xml
                                     }
                                     else if (node.HasChildNodes)
                                     {
-                                        sb.Append(">");
+                                        sb.Append('>');
                                     }
                                 }
                             }
                         }
                         else if (node.HasChildNodes)
                         {
-                            sb.Append(">");
+                            sb.Append('>');
                         }
                         if (!node.HasChildNodes)
                         {
