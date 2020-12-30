@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,7 @@ using Bogus;
 
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Editors;
+using DevExpress.ExpressApp.Layout;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.ExpressApp.Utils;
@@ -170,6 +172,41 @@ namespace Xenial.Framework.Tests.Layouts.Items
                     {
                         [e.Property(p => p.HorizontalAlign)] = horizontalAlign,
                         [e.Property(p => p.VerticalAlign)] = verticalAlign,
+                    });
+                });
+
+                It(nameof(IModelLayoutItem), () =>
+                {
+                    var sizeConstraintsType = faker.Random.Enum<XafSizeConstraintsType>();
+                    var minSize = new Size(faker.Random.Int(), faker.Random.Int());
+                    var maxSize = new Size(faker.Random.Int(), faker.Random.Int());
+
+                    var model = CreateApplication(new[]
+                    {
+                        typeof(LayoutPropertyEditorItemBusinessObject)
+                    },
+                    typesInfo =>
+                    {
+                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
+                            .WithDetailViewLayout(b => new Layout
+                            {
+                                b.PropertyEditor(m => m.StringProperty) with
+                                {
+                                    SizeConstraintsType = sizeConstraintsType,
+                                    MinSize = minSize,
+                                    MaxSize = maxSize,
+                                }
+                            })
+                        .Build();
+                    });
+
+                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
+
+                    detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelLayoutItem>((e) => new()
+                    {
+                        [e.Property(p => p.SizeConstraintsType)] = sizeConstraintsType,
+                        [e.Property(p => p.MinSize)] = minSize,
+                        [e.Property(p => p.MaxSize)] = maxSize,
                     });
                 });
             });
