@@ -7,6 +7,7 @@ using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Xenial.Framework.Layouts;
+using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters
@@ -104,6 +105,18 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                     if (layoutViewItemNode.Caption is not null)
                                     {
                                         modelLayoutViewItem.ViewItem.Caption = layoutViewItemNode.Caption;
+                                    }
+                                }
+
+                                if (layoutViewItemNode is LayoutPropertyEditorItem layoutPropertyEditorItem
+                                    && layoutPropertyEditorItem.PropertyEditorOptions is not null)
+                                {
+                                    var modelViewItem = modelDetailView
+                                        .Items[layoutPropertyEditorItem.PropertyEditorId];
+
+                                    if (modelViewItem is IModelPropertyEditor modelPropertyEditor)
+                                    {
+                                        layoutPropertyEditorItem.PropertyEditorOptions(modelPropertyEditor);
                                     }
                                 }
                             }

@@ -15,9 +15,12 @@ using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.ExpressApp.Utils;
 using DevExpress.Persistent.Base;
 
+using FakeItEasy;
+
 using Shouldly;
 
 using Xenial.Data;
+using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.ModelBuilders;
@@ -103,6 +106,23 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
             Describe("Properties", () =>
             {
+                IModelDetailView? CreateDetailViewWithLayout(Func<LayoutBuilder<LayoutPropertyEditorItemBusinessObject>, Layout> layoutFunctor)
+                {
+                    var model = CreateApplication(new[]
+                    {
+                        typeof(LayoutPropertyEditorItemBusinessObject)
+                    },
+                    typesInfo =>
+                    {
+                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
+                            .WithDetailViewLayout(layoutFunctor)
+                        .Build();
+                    });
+
+                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
+                    return detailView;
+                }
+
                 It(nameof(IModelLayoutElementWithCaptionOptions), () =>
                 {
                     var showCaption = faker.Random.Bool();
@@ -111,28 +131,17 @@ namespace Xenial.Framework.Tests.Layouts.Items
                     var captionVerticalAlignment = faker.Random.Enum<DevExpress.Utils.VertAlignment>();
                     var captionWordWrap = faker.Random.Enum<DevExpress.Utils.WordWrap>();
 
-                    var model = CreateApplication(new[]
+                    var detailView = CreateDetailViewWithLayout(b => new Layout
                     {
-                        typeof(LayoutPropertyEditorItemBusinessObject)
-                    },
-                    typesInfo =>
-                    {
-                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
-                            .WithDetailViewLayout(b => new Layout
-                            {
-                                b.PropertyEditor(m => m.StringProperty) with
-                                {
-                                    ShowCaption = showCaption,
-                                    CaptionLocation = captionLocation,
-                                    CaptionHorizontalAlignment = captionHorizontalAlignment,
-                                    CaptionVerticalAlignment = captionVerticalAlignment,
-                                    CaptionWordWrap = captionWordWrap
-                                }
-                            })
-                        .Build();
+                        b.PropertyEditor(m => m.StringProperty) with
+                        {
+                            ShowCaption = showCaption,
+                            CaptionLocation = captionLocation,
+                            CaptionHorizontalAlignment = captionHorizontalAlignment,
+                            CaptionVerticalAlignment = captionVerticalAlignment,
+                            CaptionWordWrap = captionWordWrap
+                        }
                     });
-
-                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
 
                     detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelLayoutElementWithCaptionOptions>((e) => new()
                     {
@@ -149,25 +158,14 @@ namespace Xenial.Framework.Tests.Layouts.Items
                     var horizontalAlign = faker.Random.Enum<StaticHorizontalAlign>();
                     var verticalAlign = faker.Random.Enum<StaticVerticalAlign>();
 
-                    var model = CreateApplication(new[]
+                    var detailView = CreateDetailViewWithLayout(b => new Layout
                     {
-                        typeof(LayoutPropertyEditorItemBusinessObject)
-                    },
-                    typesInfo =>
-                    {
-                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
-                            .WithDetailViewLayout(b => new Layout
-                            {
-                                b.PropertyEditor(m => m.StringProperty) with
-                                {
-                                    HorizontalAlign = horizontalAlign,
-                                    VerticalAlign = verticalAlign
-                                }
-                            })
-                        .Build();
+                        b.PropertyEditor(m => m.StringProperty) with
+                        {
+                            HorizontalAlign = horizontalAlign,
+                            VerticalAlign = verticalAlign
+                        }
                     });
-
-                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
 
                     detailView.AssertLayoutItemProperties<IModelViewLayoutElement, ISupportControlAlignment>((e) => new()
                     {
@@ -182,26 +180,15 @@ namespace Xenial.Framework.Tests.Layouts.Items
                     var minSize = new Size(faker.Random.Int(), faker.Random.Int());
                     var maxSize = new Size(faker.Random.Int(), faker.Random.Int());
 
-                    var model = CreateApplication(new[]
+                    var detailView = CreateDetailViewWithLayout(b => new Layout
                     {
-                        typeof(LayoutPropertyEditorItemBusinessObject)
-                    },
-                    typesInfo =>
-                    {
-                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
-                            .WithDetailViewLayout(b => new Layout
-                            {
-                                b.PropertyEditor(m => m.StringProperty) with
-                                {
-                                    SizeConstraintsType = sizeConstraintsType,
-                                    MinSize = minSize,
-                                    MaxSize = maxSize,
-                                }
-                            })
-                        .Build();
+                        b.PropertyEditor(m => m.StringProperty) with
+                        {
+                            SizeConstraintsType = sizeConstraintsType,
+                            MinSize = minSize,
+                            MaxSize = maxSize,
+                        }
                     });
-
-                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
 
                     detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelLayoutItem>((e) => new()
                     {
@@ -215,24 +202,13 @@ namespace Xenial.Framework.Tests.Layouts.Items
                 {
                     var toolTip = faker.Random.String();
 
-                    var model = CreateApplication(new[]
+                    var detailView = CreateDetailViewWithLayout(b => new Layout
                     {
-                        typeof(LayoutPropertyEditorItemBusinessObject)
-                    },
-                    typesInfo =>
-                    {
-                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
-                            .WithDetailViewLayout(b => new Layout
-                            {
-                                b.PropertyEditor(m => m.StringProperty) with
-                                {
-                                    ToolTip = toolTip
-                                }
-                            })
-                        .Build();
+                        b.PropertyEditor(m => m.StringProperty) with
+                        {
+                            ToolTip = toolTip
+                        }
                     });
-
-                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
 
                     detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelToolTip>((e) => new()
                     {
@@ -245,25 +221,14 @@ namespace Xenial.Framework.Tests.Layouts.Items
                     var toolTipTitle = faker.Random.String();
                     var toolTipIconType = faker.Random.Enum<ToolTipIconType>();
 
-                    var model = CreateApplication(new[]
+                    var detailView = CreateDetailViewWithLayout(b => new Layout
                     {
-                        typeof(LayoutPropertyEditorItemBusinessObject)
-                    },
-                    typesInfo =>
-                    {
-                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
-                            .WithDetailViewLayout(b => new Layout
-                            {
-                                b.PropertyEditor(m => m.StringProperty) with
-                                {
-                                    ToolTipTitle = toolTipTitle,
-                                    ToolTipIconType = toolTipIconType,
-                                }
-                            })
-                        .Build();
+                        b.PropertyEditor(m => m.StringProperty) with
+                        {
+                            ToolTipTitle = toolTipTitle,
+                            ToolTipIconType = toolTipIconType,
+                        }
                     });
-
-                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
 
                     detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelToolTipOptions>((e) => new()
                     {
@@ -276,29 +241,52 @@ namespace Xenial.Framework.Tests.Layouts.Items
                 {
                     var index = faker.Random.Int();
 
-                    var model = CreateApplication(new[]
+                    var detailView = CreateDetailViewWithLayout(b => new Layout
                     {
-                        typeof(LayoutPropertyEditorItemBusinessObject)
-                    },
-                    typesInfo =>
-                    {
-                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
-                            .WithDetailViewLayout(b => new Layout
-                            {
-                                b.PropertyEditor(m => m.StringProperty) with
-                                {
-                                    Index = index,
-                                }
-                            })
-                        .Build();
+                        b.PropertyEditor(m => m.StringProperty) with
+                        {
+                            Index = index,
+                        }
                     });
-
-                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
 
                     detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelNode>((e) => new()
                     {
                         [e.Property(p => p.Index)] = index
                     });
+                });
+
+                It(nameof(IModelViewLayoutElement), () =>
+                {
+                    var id = faker.Random.String();
+
+                    var detailView = CreateDetailViewWithLayout(b => new Layout
+                    {
+                        b.PropertyEditor(m => m.StringProperty) with
+                        {
+                            Id = id,
+                        }
+                    });
+
+                    detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelViewLayoutElement>((e) => new()
+                    {
+                        [e.Property(p => p.Id)] = id
+                    });
+                });
+
+                It($"{nameof(LayoutPropertyEditorItem.PropertyEditorOptions)} get called", () =>
+                {
+                    var optionsCallback = A.Fake<Action<IModelPropertyEditor>>();
+                    var detailView = CreateDetailViewWithLayout(b => new Layout
+                    {
+                        b.PropertyEditor(m => m.StringProperty) with
+                        {
+                            PropertyEditorOptions = optionsCallback
+                        }
+                    });
+
+                    var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
+
+                    A.CallTo(optionsCallback).MustHaveHappenedOnceExactly();
                 });
             });
 
