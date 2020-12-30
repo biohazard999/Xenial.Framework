@@ -209,6 +209,35 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         [e.Property(p => p.MaxSize)] = maxSize,
                     });
                 });
+
+                It(nameof(IModelToolTip), () =>
+                {
+                    var toolTip = faker.Random.String();
+
+                    var model = CreateApplication(new[]
+                    {
+                        typeof(LayoutPropertyEditorItemBusinessObject)
+                    },
+                    typesInfo =>
+                    {
+                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
+                            .WithDetailViewLayout(b => new Layout
+                            {
+                                b.PropertyEditor(m => m.StringProperty) with
+                                {
+                                    ToolTip = toolTip
+                                }
+                            })
+                        .Build();
+                    });
+
+                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
+
+                    detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelToolTip>((e) => new()
+                    {
+                        [e.Property(p => p.ToolTip)] = toolTip
+                    });
+                });
             });
 
             It("gets created with ModelBuilder", () =>
@@ -229,7 +258,8 @@ namespace Xenial.Framework.Tests.Layouts.Items
                                 CaptionHorizontalAlignment = DevExpress.Utils.HorzAlignment.Near,
                                 CaptionVerticalAlignment = DevExpress.Utils.VertAlignment.Bottom,
                                 CaptionWordWrap = DevExpress.Utils.WordWrap.NoWrap,
-                                HorizontalAlign = DevExpress.ExpressApp.Editors.StaticHorizontalAlign.NotSet
+                                HorizontalAlign = DevExpress.ExpressApp.Editors.StaticHorizontalAlign.NotSet,
+                                ToolTip = "My Tooltip"
                             }
                         })
                     .Build();

@@ -62,6 +62,16 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                     MapSupportControlAlignment(modelSupportControlAlignment, layoutViewItemNode);
                                 }
 
+                                if (modelLayoutViewItem is IModelToolTip modelToolTip)
+                                {
+                                    MapModelToolTip(modelToolTip, layoutViewItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelLayoutItem modelLayoutItem)
+                                {
+                                    MapModelLayoutItem(modelLayoutItem, layoutViewItemNode);
+                                }
+
                                 if (modelLayoutViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
                                 {
                                     MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, layoutViewItemNode);
@@ -179,6 +189,42 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 {
                     modelSupportControlAlignment.VerticalAlign =
                         layoutViewItemNode.VerticalAlign ?? modelSupportControlAlignment.VerticalAlign;
+                }
+            }
+
+            static void MapModelLayoutItem(
+                IModelLayoutItem modelLayoutItem,
+                LayoutViewItem layoutViewItemNode
+            )
+            {
+                if (layoutViewItemNode.SizeConstraintsType is not null)
+                {
+                    modelLayoutItem.SizeConstraintsType =
+                        layoutViewItemNode.SizeConstraintsType ?? modelLayoutItem.SizeConstraintsType;
+                }
+
+                if (layoutViewItemNode.MinSize is not null)
+                {
+                    modelLayoutItem.MinSize =
+                        layoutViewItemNode.MinSize ?? modelLayoutItem.MinSize;
+                }
+
+                if (layoutViewItemNode.MaxSize is not null)
+                {
+                    modelLayoutItem.MaxSize =
+                        layoutViewItemNode.MaxSize ?? modelLayoutItem.MaxSize;
+                }
+            }
+
+            static void MapModelToolTip(
+                IModelToolTip modelToolTip,
+                LayoutViewItem layoutViewItemNode
+            )
+            {
+                if (layoutViewItemNode.ToolTip is not null)
+                {
+                    modelToolTip.ToolTip =
+                        layoutViewItemNode.ToolTip ?? modelToolTip.ToolTip;
                 }
             }
         }
