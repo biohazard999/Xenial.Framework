@@ -67,6 +67,11 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                     MapModelToolTip(modelToolTip, layoutViewItemNode);
                                 }
 
+                                if (modelLayoutViewItem is IModelToolTipOptions modelToolTipOptions)
+                                {
+                                    MapModelToolTipOptions(modelToolTipOptions, layoutViewItemNode);
+                                }
+
                                 if (modelLayoutViewItem is IModelLayoutItem modelLayoutItem)
                                 {
                                     MapModelLayoutItem(modelLayoutItem, layoutViewItemNode);
@@ -225,6 +230,24 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 {
                     modelToolTip.ToolTip =
                         layoutViewItemNode.ToolTip ?? modelToolTip.ToolTip;
+                }
+            }
+
+            static void MapModelToolTipOptions(
+                IModelToolTipOptions modelToolTipOptions,
+                LayoutViewItem layoutViewItemNode
+            )
+            {
+                if (layoutViewItemNode.ToolTipTitle is not null)
+                {
+                    modelToolTipOptions.ToolTipTitle =
+                        layoutViewItemNode.ToolTipTitle ?? modelToolTipOptions.ToolTipTitle;
+                }
+
+                if (layoutViewItemNode.ToolTipIconType is not null)
+                {
+                    modelToolTipOptions.ToolTipIconType =
+                        layoutViewItemNode.ToolTipIconType ?? modelToolTipOptions.ToolTipIconType;
                 }
             }
         }

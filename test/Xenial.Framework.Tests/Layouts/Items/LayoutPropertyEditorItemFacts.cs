@@ -13,6 +13,7 @@ using DevExpress.ExpressApp.Layout;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.ExpressApp.Utils;
+using DevExpress.Persistent.Base;
 
 using Shouldly;
 
@@ -236,6 +237,38 @@ namespace Xenial.Framework.Tests.Layouts.Items
                     detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelToolTip>((e) => new()
                     {
                         [e.Property(p => p.ToolTip)] = toolTip
+                    });
+                });
+
+                It(nameof(IModelToolTipOptions), () =>
+                {
+                    var toolTipTitle = faker.Random.String();
+                    var toolTipIconType = faker.Random.Enum<ToolTipIconType>();
+
+                    var model = CreateApplication(new[]
+                    {
+                        typeof(LayoutPropertyEditorItemBusinessObject)
+                    },
+                    typesInfo =>
+                    {
+                        ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
+                            .WithDetailViewLayout(b => new Layout
+                            {
+                                b.PropertyEditor(m => m.StringProperty) with
+                                {
+                                    ToolTipTitle = toolTipTitle,
+                                    ToolTipIconType = toolTipIconType,
+                                }
+                            })
+                        .Build();
+                    });
+
+                    var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
+
+                    detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelToolTipOptions>((e) => new()
+                    {
+                        [e.Property(p => p.ToolTipTitle)] = toolTipTitle,
+                        [e.Property(p => p.ToolTipIconType)] = toolTipIconType
                     });
                 });
             });
