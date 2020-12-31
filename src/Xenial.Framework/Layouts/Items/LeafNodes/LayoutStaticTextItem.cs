@@ -4,7 +4,7 @@ using DevExpress.ExpressApp.Model;
 
 using Xenial.Framework.Layouts.Items.Base;
 
-namespace Xenial.Framework.Layouts.Items
+namespace Xenial.Framework.Layouts.Items.LeafNodes
 {
     /// <summary>
     /// 

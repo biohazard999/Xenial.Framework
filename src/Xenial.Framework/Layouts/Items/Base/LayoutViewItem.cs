@@ -2,6 +2,8 @@
 
 using DevExpress.Utils;
 
+using Xenial.Framework.Layouts.Items.LeafNodes;
+
 using Locations = DevExpress.Persistent.Base.Locations;
 using ToolTipIconType = DevExpress.Persistent.Base.ToolTipIconType;
 

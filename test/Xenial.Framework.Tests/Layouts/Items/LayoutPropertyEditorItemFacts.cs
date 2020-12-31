@@ -12,8 +12,8 @@ using DevExpress.Persistent.Base;
 
 using FakeItEasy;
 
-using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
+using Xenial.Framework.Layouts.Items.LeafNodes;
 
 using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
 using static Xenial.Tasty;

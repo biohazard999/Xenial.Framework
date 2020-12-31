@@ -10,7 +10,7 @@ using DevExpress.ExpressApp.Model;
 using Xenial.Data;
 using Xenial.Framework.Layouts.Items.Base;
 
-namespace Xenial.Framework.Layouts.Items
+namespace Xenial.Framework.Layouts.Items.LeafNodes
 {
     /// <summary>
     /// 

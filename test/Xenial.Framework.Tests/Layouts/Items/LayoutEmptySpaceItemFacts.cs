@@ -6,8 +6,8 @@ using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Layout;
 using DevExpress.ExpressApp.Model;
 
-using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
+using Xenial.Framework.Layouts.Items.LeafNodes;
 
 using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
 using static Xenial.Tasty;
