@@ -38,6 +38,7 @@ namespace Xenial.Framework.Tests
 
                 BasicLayoutFacts.BasicLayoutTests();
                 LayoutPropertyEditorItemFacts.LayoutPropertyEditorItemTests();
+                LayoutEmptySpaceItemFacts.LayoutEmptySpaceItemTests();
             });
 
             return await Run(args);

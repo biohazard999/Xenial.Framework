@@ -53,6 +53,30 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                 .AddNode<IModelLayoutGroup>(ModelDetailViewLayoutNodesGenerator.MainLayoutGroupName)
                                 ?? throw new InvalidOperationException($"Cannot generate 'Main' node on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}'");
 
+                            foreach (var emptySpaceItemNode in VisitNodes<LayoutEmptySpaceItem>(layout))
+                            {
+                                var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutViewItem>(emptySpaceItemNode.Id);
+                                if (modelLayoutViewItem is IModelNode genericModelNode)
+                                {
+                                    MapModelNode(genericModelNode, emptySpaceItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelLayoutItem modelLayoutItem)
+                                {
+                                    MapModelLayoutItem(modelLayoutItem, emptySpaceItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelViewLayoutElement modelViewLayoutElement)
+                                {
+                                    MapModelViewLayoutElement(modelViewLayoutElement, emptySpaceItemNode);
+                                }
+
+                                if (modelLayoutViewItem is ISupportControlAlignment modelSupportControlAlignment)
+                                {
+                                    MapSupportControlAlignment(modelSupportControlAlignment, emptySpaceItemNode);
+                                }
+                            }
+
                             foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
                             {
                                 var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutViewItem>(layoutViewItemNode.Id);
@@ -61,6 +85,16 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                 if (modelLayoutViewItem is IModelNode genericModelNode)
                                 {
                                     MapModelNode(genericModelNode, layoutViewItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelLayoutItem modelLayoutItem)
+                                {
+                                    MapModelLayoutItem(modelLayoutItem, layoutViewItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelViewLayoutElement modelViewLayoutElement)
+                                {
+                                    MapModelViewLayoutElement(modelViewLayoutElement, layoutViewItemNode);
                                 }
 
                                 if (modelLayoutViewItem is ISupportControlAlignment modelSupportControlAlignment)
@@ -76,11 +110,6 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                 if (modelLayoutViewItem is IModelToolTipOptions modelToolTipOptions)
                                 {
                                     MapModelToolTipOptions(modelToolTipOptions, layoutViewItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelLayoutItem modelLayoutItem)
-                                {
-                                    MapModelLayoutItem(modelLayoutItem, layoutViewItemNode);
                                 }
 
                                 if (modelLayoutViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
@@ -172,6 +201,24 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 }
             }
 
+            static void MapModelViewLayoutElement(
+                IModelViewLayoutElement modelModelViewLayoutElement,
+                LayoutItemNode layoutViewItemNode
+            )
+            {
+                if (layoutViewItemNode.Id is not null)
+                {
+                    modelModelViewLayoutElement.Id =
+                        layoutViewItemNode.Id ?? modelModelViewLayoutElement.Id;
+                }
+
+                if (layoutViewItemNode.RelativeSize is not null)
+                {
+                    modelModelViewLayoutElement.RelativeSize =
+                        layoutViewItemNode.RelativeSize ?? modelModelViewLayoutElement.RelativeSize;
+                }
+            }
+
             static void MapLayoutElementWithCaptionOptions(
                 IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaption,
                 LayoutViewItem layoutViewItemNode
@@ -210,55 +257,55 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
             static void MapModelNode(
                 IModelNode genericModelNode,
-                LayoutViewItem layoutViewItemNode
+                LayoutItemNode genericLayoutItemNode
             )
             {
-                if (layoutViewItemNode.Index is not null)
+                if (genericLayoutItemNode.Index is not null)
                 {
                     genericModelNode.Index =
-                        layoutViewItemNode.Index ?? genericModelNode.Index;
+                        genericLayoutItemNode.Index ?? genericModelNode.Index;
                 }
             }
 
             static void MapSupportControlAlignment(
                 ISupportControlAlignment modelSupportControlAlignment,
-                LayoutViewItem layoutViewItemNode
+                LayoutItemLeaf layoutItemLeaf
             )
             {
-                if (layoutViewItemNode.HorizontalAlign is not null)
+                if (layoutItemLeaf.HorizontalAlign is not null)
                 {
                     modelSupportControlAlignment.HorizontalAlign =
-                        layoutViewItemNode.HorizontalAlign ?? modelSupportControlAlignment.HorizontalAlign;
+                        layoutItemLeaf.HorizontalAlign ?? modelSupportControlAlignment.HorizontalAlign;
                 }
 
-                if (layoutViewItemNode.VerticalAlign is not null)
+                if (layoutItemLeaf.VerticalAlign is not null)
                 {
                     modelSupportControlAlignment.VerticalAlign =
-                        layoutViewItemNode.VerticalAlign ?? modelSupportControlAlignment.VerticalAlign;
+                        layoutItemLeaf.VerticalAlign ?? modelSupportControlAlignment.VerticalAlign;
                 }
             }
 
             static void MapModelLayoutItem(
                 IModelLayoutItem modelLayoutItem,
-                LayoutViewItem layoutViewItemNode
+                LayoutItemLeaf layoutItemLeaf
             )
             {
-                if (layoutViewItemNode.SizeConstraintsType is not null)
+                if (layoutItemLeaf.SizeConstraintsType is not null)
                 {
                     modelLayoutItem.SizeConstraintsType =
-                        layoutViewItemNode.SizeConstraintsType ?? modelLayoutItem.SizeConstraintsType;
+                        layoutItemLeaf.SizeConstraintsType ?? modelLayoutItem.SizeConstraintsType;
                 }
 
-                if (layoutViewItemNode.MinSize is not null)
+                if (layoutItemLeaf.MinSize is not null)
                 {
                     modelLayoutItem.MinSize =
-                        layoutViewItemNode.MinSize ?? modelLayoutItem.MinSize;
+                        layoutItemLeaf.MinSize ?? modelLayoutItem.MinSize;
                 }
 
-                if (layoutViewItemNode.MaxSize is not null)
+                if (layoutItemLeaf.MaxSize is not null)
                 {
                     modelLayoutItem.MaxSize =
-                        layoutViewItemNode.MaxSize ?? modelLayoutItem.MaxSize;
+                        layoutItemLeaf.MaxSize ?? modelLayoutItem.MaxSize;
                 }
             }
 
