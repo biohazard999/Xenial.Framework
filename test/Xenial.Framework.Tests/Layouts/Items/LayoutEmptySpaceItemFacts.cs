@@ -30,7 +30,26 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         b.EmptySpaceItem() with
                         {
                             Id = id,
-                            RelativeSize = relativeSize
+                            RelativeSize = relativeSize,
+                        }
+                    });
+
+                    detailView.AssertLayoutItemProperties<IModelViewLayoutElement, IModelViewLayoutElement>((e) => new()
+                    {
+                        [e.Property(m => m.Id)] = id,
+                        [e.Property(m => m.RelativeSize)] = relativeSize,
+                    });
+                });
+
+                It($"{nameof(IModelViewLayoutElement)}2", () =>
+                {
+                    var id = faker.Random.String2(100);
+                    var relativeSize = faker.Random.Double();
+                    var detailView = CreateDetailViewWithLayout(b => new Layout
+                    {
+                        b.EmptySpaceItem(id) with
+                        {
+                            RelativeSize = relativeSize,
                         }
                     });
 
