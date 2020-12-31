@@ -9,7 +9,7 @@ namespace Xenial.Framework.Layouts.Items.Base
     /// 
     /// </summary>
     [XenialCheckLicence]
-    public partial record LayoutItemLeaf : LayoutItemNode
+    public partial record LayoutItemLeaf : LayoutItemNodeWithAlign
     {
         /// <summary>
         /// Gets or sets the maximum size.
