@@ -34,7 +34,7 @@ namespace Xenial.Framework.Tests.Layouts.Items
         public static Layout BuildLayout()
         {
             var item = LayoutPropertyEditorItem<SimpleBusinessObject>
-                .CreatePropertyEditor(p => p.BoolProperty) with
+                .Create(p => p.BoolProperty) with
             {
             };
 
