@@ -7,8 +7,10 @@ using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Xenial.Framework.Layouts;
+using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Layouts.Items.LeafNodes;
+using Xenial.Framework.Layouts.Items.PubTernal;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters
 {
@@ -52,6 +54,48 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                             var modelMainNode = modelViewLayout
                                 .AddNode<IModelLayoutGroup>(ModelDetailViewLayoutNodesGenerator.MainLayoutGroupName)
                                 ?? throw new InvalidOperationException($"Cannot generate 'Main' node on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}'");
+
+                            foreach (var groupItemNode in VisitNodes<LayoutGroupItem>(layout))
+                            {
+                                var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutGroup>(groupItemNode.Id);
+
+                                if (modelLayoutViewItem is IModelNode genericModelNode)
+                                {
+                                    MapModelNode(genericModelNode, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelViewLayoutElement modelViewLayoutElement)
+                                {
+                                    MapModelViewLayoutElement(modelViewLayoutElement, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
+                                {
+                                    MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
+                                {
+                                    MapCaption(modelLayoutElementWithCaption, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is ISupportControlAlignment modelSupportControlAlignment)
+                                {
+                                    MapSupportControlAlignment(modelSupportControlAlignment, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelToolTip modelToolTip)
+                                {
+                                    MapModelToolTip(modelToolTip, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelToolTipOptions modelToolTipOptions)
+                                {
+                                    MapModelToolTipOptions(modelToolTipOptions, groupItemNode);
+                                }
+
+                                MapLayoutGroup(modelLayoutViewItem, groupItemNode);
+                            }
 
                             foreach (var emptySpaceItemNode in VisitNodes<LayoutEmptySpaceItem>(layout))
                             {
@@ -191,7 +235,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
             static void MapCaption(
                 IModelLayoutElementWithCaption modelLayoutElementWithCaption,
-                LayoutViewItem layoutViewItemNode
+                ILayoutElementWithCaption layoutViewItemNode
             )
             {
                 if (layoutViewItemNode.Caption is not null)
@@ -221,7 +265,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
             static void MapLayoutElementWithCaptionOptions(
                 IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaption,
-                LayoutViewItem layoutViewItemNode
+                ILayoutElementWithCaptionOptions layoutViewItemNode
             )
             {
                 if (layoutViewItemNode.ShowCaption is not null)
@@ -269,7 +313,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
             static void MapSupportControlAlignment(
                 ISupportControlAlignment modelSupportControlAlignment,
-                LayoutItemLeaf layoutItemLeaf
+                LayoutItemNodeWithAlign layoutItemLeaf
             )
             {
                 if (layoutItemLeaf.HorizontalAlign is not null)
@@ -311,7 +355,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
             static void MapModelToolTip(
                 IModelToolTip modelToolTip,
-                LayoutViewItem layoutViewItemNode
+                ILayoutToolTip layoutViewItemNode
             )
             {
                 if (layoutViewItemNode.ToolTip is not null)
@@ -323,7 +367,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
             static void MapModelToolTipOptions(
                 IModelToolTipOptions modelToolTipOptions,
-                LayoutViewItem layoutViewItemNode
+                ILayoutToolTipOptions layoutViewItemNode
             )
             {
                 if (layoutViewItemNode.ToolTipTitle is not null)
@@ -338,6 +382,24 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                         layoutViewItemNode.ToolTipIconType ?? modelToolTipOptions.ToolTipIconType;
                 }
             }
+
+            void MapLayoutGroup(IModelLayoutGroup modelLayoutGroup, LayoutGroupItem groupItemNode)
+            {
+                modelLayoutGroup.Direction = groupItemNode.Direction;
+
+                if (groupItemNode.ImageName is not null)
+                {
+                    modelLayoutGroup.ImageName =
+                        groupItemNode.ImageName ?? modelLayoutGroup.ImageName;
+                }
+
+                if (groupItemNode.IsCollapsibleGroup is not null)
+                {
+                    modelLayoutGroup.IsCollapsibleGroup =
+                        groupItemNode.IsCollapsibleGroup ?? modelLayoutGroup.IsCollapsibleGroup;
+                }
+            }
         }
+
     }
 }

@@ -34,11 +34,16 @@ namespace Xenial.Framework.Tests
 
                 SlugerFacts.SluggerTests();
 
-                GeneralLayoutFacts.GeneralLayoutTests();
+                FDescribe("Layouts", () =>
+                {
+                    GeneralLayoutFacts.GeneralLayoutTests();
 
-                BasicLayoutFacts.BasicLayoutTests();
-                LayoutPropertyEditorItemFacts.LayoutPropertyEditorItemTests();
-                LayoutEmptySpaceItemFacts.LayoutEmptySpaceItemTests();
+                    BasicLayoutFacts.BasicLayoutTests();
+                    LayoutPropertyEditorItemFacts.LayoutPropertyEditorItemTests();
+                    LayoutEmptySpaceItemFacts.LayoutEmptySpaceItemTests();
+
+                    LayoutGroupItemFacts.LayoutGroupItemTests();
+                });
             });
 
             return await Run(args);

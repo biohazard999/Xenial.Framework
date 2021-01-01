@@ -3,6 +3,7 @@
 using DevExpress.Utils;
 
 using Xenial.Framework.Layouts.Items.LeafNodes;
+using Xenial.Framework.Layouts.Items.PubTernal;
 
 using Locations = DevExpress.Persistent.Base.Locations;
 using ToolTipIconType = DevExpress.Persistent.Base.ToolTipIconType;
@@ -16,7 +17,12 @@ namespace Xenial.Framework.Layouts.Items.Base
     /// 
     /// </summary>
     [XenialCheckLicence]
-    public partial record LayoutViewItem : LayoutViewItemNode
+    public partial record LayoutViewItem
+        : LayoutViewItemNode,
+        ILayoutElementWithCaptionOptions,
+        ILayoutElementWithCaption,
+        ILayoutToolTip,
+        ILayoutToolTipOptions
     {
         /// <summary>
         /// Creates the specified view item identifier.
