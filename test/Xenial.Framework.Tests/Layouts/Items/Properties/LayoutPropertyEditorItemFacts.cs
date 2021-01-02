@@ -18,14 +18,8 @@ using Xenial.Framework.Layouts.Items.LeafNodes;
 using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
 using static Xenial.Tasty;
 
-namespace Xenial.Framework.Tests.Layouts.Items
+namespace Xenial.Framework.Tests.Layouts.Items.Properties
 {
-    [DomainComponent]
-    public sealed class LayoutPropertyEditorItemBusinessObject
-    {
-        public string? StringProperty { get; set; }
-    }
-
     public static class LayoutPropertyEditorItemFacts
     {
         public static void LayoutPropertyEditorItemTests() => Describe(nameof(LayoutPropertyEditorItem), () =>

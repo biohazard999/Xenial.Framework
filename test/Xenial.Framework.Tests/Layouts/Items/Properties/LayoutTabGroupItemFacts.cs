@@ -15,7 +15,7 @@ using Xenial.Framework.Layouts.Items;
 using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
 using static Xenial.Tasty;
 
-namespace Xenial.Framework.Tests.Layouts.Items
+namespace Xenial.Framework.Tests.Layouts.Items.Properties
 {
     public static class LayoutTabGroupItemFacts
     {

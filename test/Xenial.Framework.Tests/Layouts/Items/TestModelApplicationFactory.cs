@@ -23,6 +23,12 @@ using DXSystemModele = DevExpress.ExpressApp.SystemModule.SystemModule;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
+    [DomainComponent]
+    public sealed class LayoutPropertyEditorItemBusinessObject
+    {
+        public string? StringProperty { get; set; }
+    }
+
     internal static class TestModelApplicationFactory
     {
         internal static IModelApplication CreateApplication(Type[] boModelTypes, Action<ITypesInfo>? customizeTypesInfo = null)
