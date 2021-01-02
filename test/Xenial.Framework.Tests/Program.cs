@@ -44,6 +44,7 @@ namespace Xenial.Framework.Tests
 
                     LayoutGroupItemFacts.LayoutGroupItemTests();
                     LayoutTabGroupItemFacts.LayoutTabGroupItemTests();
+                    LayoutTabbedGroupItemFacts.LayoutTabbedGroupItemTests();
                 });
             });
 

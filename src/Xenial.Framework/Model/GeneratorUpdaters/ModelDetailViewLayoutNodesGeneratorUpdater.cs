@@ -97,46 +97,73 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                 MapLayoutGroup(modelLayoutViewItem, groupItemNode);
                             }
 
-                            foreach (var groupItemNode in VisitNodes<LayoutTabGroupItem>(layout))
+                            foreach (var tabGroupItemNode in VisitNodes<LayoutTabGroupItem>(layout))
                             {
-                                var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutGroup>(groupItemNode.Id);
+                                var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutGroup>(tabGroupItemNode.Id);
 
                                 if (modelLayoutViewItem is IModelNode genericModelNode)
                                 {
-                                    MapModelNode(genericModelNode, groupItemNode);
+                                    MapModelNode(genericModelNode, tabGroupItemNode);
                                 }
 
                                 if (modelLayoutViewItem is IModelViewLayoutElement modelViewLayoutElement)
                                 {
-                                    MapModelViewLayoutElement(modelViewLayoutElement, groupItemNode);
+                                    MapModelViewLayoutElement(modelViewLayoutElement, tabGroupItemNode);
                                 }
 
                                 if (modelLayoutViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
                                 {
-                                    MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, groupItemNode);
+                                    MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, tabGroupItemNode);
                                 }
 
                                 if (modelLayoutViewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
                                 {
-                                    MapCaption(modelLayoutElementWithCaption, groupItemNode);
+                                    MapCaption(modelLayoutElementWithCaption, tabGroupItemNode);
                                 }
 
                                 if (modelLayoutViewItem is ISupportControlAlignment modelSupportControlAlignment)
                                 {
-                                    MapSupportControlAlignment(modelSupportControlAlignment, groupItemNode);
+                                    MapSupportControlAlignment(modelSupportControlAlignment, tabGroupItemNode);
                                 }
 
                                 if (modelLayoutViewItem is IModelToolTip modelToolTip)
                                 {
-                                    MapModelToolTip(modelToolTip, groupItemNode);
+                                    MapModelToolTip(modelToolTip, tabGroupItemNode);
                                 }
 
                                 if (modelLayoutViewItem is IModelToolTipOptions modelToolTipOptions)
                                 {
-                                    MapModelToolTipOptions(modelToolTipOptions, groupItemNode);
+                                    MapModelToolTipOptions(modelToolTipOptions, tabGroupItemNode);
                                 }
 
-                                MapLayoutGroup(modelLayoutViewItem, groupItemNode);
+                                MapLayoutGroup(modelLayoutViewItem, tabGroupItemNode);
+                            }
+
+                            foreach (var tabbedGroupItemNode in VisitNodes<LayoutTabbedGroupItem>(layout))
+                            {
+                                var modelTabbedGroup = modelMainNode.AddNode<IModelTabbedGroup>(tabbedGroupItemNode.Id);
+
+                                if (modelTabbedGroup is IModelNode genericModelNode)
+                                {
+                                    MapModelNode(genericModelNode, tabbedGroupItemNode);
+                                }
+
+                                if (modelTabbedGroup is IModelViewLayoutElement modelViewLayoutElement)
+                                {
+                                    MapModelViewLayoutElement(modelViewLayoutElement, tabbedGroupItemNode);
+                                }
+
+                                if (modelTabbedGroup is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
+                                {
+                                    MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, tabbedGroupItemNode);
+                                }
+
+                                if (modelTabbedGroup is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
+                                {
+                                    MapCaption(modelLayoutElementWithCaption, tabbedGroupItemNode);
+                                }
+
+                                MapTabbedLayoutGroup(modelTabbedGroup, tabbedGroupItemNode);
                             }
 
                             foreach (var emptySpaceItemNode in VisitNodes<LayoutEmptySpaceItem>(layout))
@@ -439,6 +466,17 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 {
                     modelLayoutGroup.IsCollapsibleGroup =
                         groupItemNode.IsCollapsibleGroup ?? modelLayoutGroup.IsCollapsibleGroup;
+                }
+            }
+
+            void MapTabbedLayoutGroup(IModelTabbedGroup modelTabbedGroup, LayoutTabbedGroupItem tabbedGroupItemNode)
+            {
+                modelTabbedGroup.Direction = tabbedGroupItemNode.Direction;
+
+                if (tabbedGroupItemNode.MultiLine is not null)
+                {
+                    modelTabbedGroup.MultiLine =
+                        tabbedGroupItemNode.MultiLine ?? modelTabbedGroup.MultiLine;
                 }
             }
         }
