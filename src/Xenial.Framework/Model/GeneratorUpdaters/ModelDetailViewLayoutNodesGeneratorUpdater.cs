@@ -57,44 +57,49 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
                             foreach (var groupItemNode in VisitNodes<LayoutGroupItem>(layout))
                             {
-                                var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutGroup>(groupItemNode.Id);
+                                var modelLayoutGroup = modelMainNode.AddNode<IModelLayoutGroup>(groupItemNode.Id);
 
-                                if (modelLayoutViewItem is IModelNode genericModelNode)
+                                if (modelLayoutGroup is IModelNode genericModelNode)
                                 {
                                     MapModelNode(genericModelNode, groupItemNode);
                                 }
 
-                                if (modelLayoutViewItem is IModelViewLayoutElement modelViewLayoutElement)
+                                if (modelLayoutGroup is IModelViewLayoutElement modelViewLayoutElement)
                                 {
                                     MapModelViewLayoutElement(modelViewLayoutElement, groupItemNode);
                                 }
 
-                                if (modelLayoutViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
+                                if (modelLayoutGroup is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
                                 {
                                     MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, groupItemNode);
                                 }
 
-                                if (modelLayoutViewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
+                                if (modelLayoutGroup is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
                                 {
                                     MapCaption(modelLayoutElementWithCaption, groupItemNode);
                                 }
 
-                                if (modelLayoutViewItem is ISupportControlAlignment modelSupportControlAlignment)
+                                if (modelLayoutGroup is ISupportControlAlignment modelSupportControlAlignment)
                                 {
                                     MapSupportControlAlignment(modelSupportControlAlignment, groupItemNode);
                                 }
 
-                                if (modelLayoutViewItem is IModelToolTip modelToolTip)
+                                if (modelLayoutGroup is IModelToolTip modelToolTip)
                                 {
                                     MapModelToolTip(modelToolTip, groupItemNode);
                                 }
 
-                                if (modelLayoutViewItem is IModelToolTipOptions modelToolTipOptions)
+                                if (modelLayoutGroup is IModelToolTipOptions modelToolTipOptions)
                                 {
                                     MapModelToolTipOptions(modelToolTipOptions, groupItemNode);
                                 }
 
-                                MapLayoutGroup(modelLayoutViewItem, groupItemNode);
+                                MapLayoutGroup(modelLayoutGroup, groupItemNode);
+
+                                if (groupItemNode.LayoutGroupOptions is not null)
+                                {
+                                    groupItemNode.LayoutGroupOptions(modelLayoutGroup);
+                                }
                             }
 
                             foreach (var tabGroupItemNode in VisitNodes<LayoutTabGroupItem>(layout))
@@ -137,6 +142,11 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                 }
 
                                 MapLayoutGroup(modelLayoutViewItem, tabGroupItemNode);
+
+                                if (tabGroupItemNode.LayoutGroupOptions is not null)
+                                {
+                                    tabGroupItemNode.LayoutGroupOptions(modelLayoutViewItem);
+                                }
                             }
 
                             foreach (var tabbedGroupItemNode in VisitNodes<LayoutTabbedGroupItem>(layout))
@@ -164,6 +174,11 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                 }
 
                                 MapTabbedLayoutGroup(modelTabbedGroup, tabbedGroupItemNode);
+
+                                if (tabbedGroupItemNode.TabbedGroupOptions is not null)
+                                {
+                                    tabbedGroupItemNode.TabbedGroupOptions(modelTabbedGroup);
+                                }
                             }
 
                             foreach (var emptySpaceItemNode in VisitNodes<LayoutEmptySpaceItem>(layout))

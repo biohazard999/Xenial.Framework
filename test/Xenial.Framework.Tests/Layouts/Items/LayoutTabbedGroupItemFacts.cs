@@ -1,7 +1,12 @@
-﻿using Bogus;
+﻿using System;
+using System.Linq;
+
+using Bogus;
 
 using DevExpress.ExpressApp.Layout;
 using DevExpress.ExpressApp.Model;
+
+using FakeItEasy;
 
 using Xenial.Framework.Layouts.Items;
 
@@ -123,6 +128,23 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         [e.Property(p => p.MultiLine)] = multiLine,
                     });
                 });
+            });
+
+
+            It($"{nameof(LayoutTabbedGroupItem.TabbedGroupOptions)} is called", () =>
+            {
+                var optionsCallback = A.Fake<Action<IModelTabbedGroup>>();
+                var detailView = CreateDetailViewWithLayout(b => new()
+                {
+                    b.TabbedGroup() with
+                    {
+                        TabbedGroupOptions = optionsCallback
+                    }
+                });
+
+                var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
+
+                A.CallTo(optionsCallback).MustHaveHappenedOnceExactly();
             });
         });
     }
