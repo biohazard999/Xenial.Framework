@@ -97,6 +97,48 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                 MapLayoutGroup(modelLayoutViewItem, groupItemNode);
                             }
 
+                            foreach (var groupItemNode in VisitNodes<LayoutTabGroupItem>(layout))
+                            {
+                                var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutGroup>(groupItemNode.Id);
+
+                                if (modelLayoutViewItem is IModelNode genericModelNode)
+                                {
+                                    MapModelNode(genericModelNode, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelViewLayoutElement modelViewLayoutElement)
+                                {
+                                    MapModelViewLayoutElement(modelViewLayoutElement, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
+                                {
+                                    MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
+                                {
+                                    MapCaption(modelLayoutElementWithCaption, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is ISupportControlAlignment modelSupportControlAlignment)
+                                {
+                                    MapSupportControlAlignment(modelSupportControlAlignment, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelToolTip modelToolTip)
+                                {
+                                    MapModelToolTip(modelToolTip, groupItemNode);
+                                }
+
+                                if (modelLayoutViewItem is IModelToolTipOptions modelToolTipOptions)
+                                {
+                                    MapModelToolTipOptions(modelToolTipOptions, groupItemNode);
+                                }
+
+                                MapLayoutGroup(modelLayoutViewItem, groupItemNode);
+                            }
+
                             foreach (var emptySpaceItemNode in VisitNodes<LayoutEmptySpaceItem>(layout))
                             {
                                 var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutViewItem>(emptySpaceItemNode.Id);
@@ -383,7 +425,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 }
             }
 
-            void MapLayoutGroup(IModelLayoutGroup modelLayoutGroup, LayoutGroupItem groupItemNode)
+            void MapLayoutGroup(IModelLayoutGroup modelLayoutGroup, ILayoutGroupItem groupItemNode)
             {
                 modelLayoutGroup.Direction = groupItemNode.Direction;
 

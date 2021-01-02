@@ -21,7 +21,8 @@ namespace Xenial.Framework.Layouts.Items
         ILayoutElementWithCaptionOptions,
         ILayoutElementWithCaption,
         ILayoutToolTip,
-        ILayoutToolTipOptions
+        ILayoutToolTipOptions,
+        ILayoutGroupItem
     {
         /// <summary>
         /// Creates this instance.

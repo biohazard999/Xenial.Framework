@@ -43,6 +43,7 @@ namespace Xenial.Framework.Tests
                     LayoutEmptySpaceItemFacts.LayoutEmptySpaceItemTests();
 
                     LayoutGroupItemFacts.LayoutGroupItemTests();
+                    LayoutTabGroupItemFacts.LayoutTabGroupItemTests();
                 });
             });
 

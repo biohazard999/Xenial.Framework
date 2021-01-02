@@ -1,4 +1,6 @@
-﻿namespace Xenial.Framework.Layouts.Items.PubTernal
+﻿using DevExpress.ExpressApp.Layout;
+
+namespace Xenial.Framework.Layouts.Items.PubTernal
 {
     /// <summary>
     /// Interface ILayoutToolTip
