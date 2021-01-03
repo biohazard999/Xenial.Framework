@@ -91,6 +91,23 @@ namespace Xenial.Framework.Tests.Layouts.Items
             return detailView;
         }
 
+        internal static IModelDetailView? CreateComplexDetailViewWithLayout(Func<LayoutBuilder<SimpleBusinessObject>, Layout> layoutFunctor)
+        {
+            var model = CreateApplication(new[]
+            {
+                typeof(SimpleBusinessObject)
+            },
+            typesInfo =>
+            {
+                ModelBuilder.Create<SimpleBusinessObject>(typesInfo)
+                    .WithDetailViewLayout(layoutFunctor)
+                .Build();
+            });
+
+            var detailView = model.FindDetailView<SimpleBusinessObject>();
+            return detailView;
+        }
+
         internal static void VisualizeModelNode(this IModelNode? modelNode)
         {
             _ = modelNode ?? throw new ArgumentNullException(nameof(modelNode));
@@ -176,7 +193,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
             public override void CustomizeTypesInfo(ITypesInfo typesInfo)
             {
                 base.CustomizeTypesInfo(typesInfo);
-
                 customizeTypesInfo?.Invoke(typesInfo);
             }
 

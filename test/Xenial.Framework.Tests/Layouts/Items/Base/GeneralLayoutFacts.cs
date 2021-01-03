@@ -1,4 +1,6 @@
-﻿using Shouldly;
+﻿using System.Linq;
+
+using Shouldly;
 
 using Xenial.Framework.Layouts.Items.Base;
 
@@ -120,6 +122,152 @@ namespace Xenial.Framework.Tests.Layouts.Items.Base
                     () => childNode2.Parent.ShouldBeNull(),
                     () => childNode3.Parent.ShouldBeNull(),
                     () => childNode4.Parent.ShouldBeNull()
+                );
+            });
+
+            It("when using with expression sets parent", () =>
+            {
+                var rootNode = new LayoutItem();
+                var childNode1 = new LayoutItem();
+                var childNode2 = new LayoutItem();
+
+                rootNode = rootNode with
+                {
+                    Children = new()
+                    {
+                        childNode1,
+                        childNode2,
+                        new LayoutItem()
+                    }
+                };
+
+                rootNode.ShouldSatisfyAllConditions(
+                    () => childNode1.Parent.ShouldBe(rootNode),
+                    () => childNode2.Parent.ShouldBe(rootNode),
+                    () => rootNode.Count().ShouldBe(3)
+                );
+            });
+
+            It("when using short with expression sets parent", () =>
+            {
+                var rootNode = new LayoutItem();
+                var childNode1 = new LayoutItem();
+                var childNode2 = new LayoutItem();
+
+                rootNode = rootNode with
+                {
+                    Children = new(
+                        childNode1,
+                        childNode2,
+                        new LayoutItem()
+                    )
+                };
+
+                rootNode.ShouldSatisfyAllConditions(
+                    () => childNode1.Parent.ShouldBe(rootNode),
+                    () => childNode2.Parent.ShouldBe(rootNode),
+                    () => rootNode.Count().ShouldBe(3)
+                );
+            });
+
+            It("when using short initializer expression sets parent", () =>
+            {
+                var childNode1 = new LayoutItem();
+                var childNode2 = new LayoutItem();
+
+                var rootNode = new LayoutItem
+                {
+                    childNode1,
+                    childNode2,
+                    new LayoutItem()
+                };
+
+                rootNode.ShouldSatisfyAllConditions(
+                    () => childNode1.Parent.ShouldBe(rootNode),
+                    () => childNode2.Parent.ShouldBe(rootNode),
+                    () => rootNode.Count().ShouldBe(3)
+                );
+            });
+
+            It("when using long initializer expression sets parent", () =>
+            {
+                var childNode1 = new LayoutItem();
+                var childNode2 = new LayoutItem();
+
+                var rootNode = new LayoutItem
+                {
+                    Children = new()
+                    {
+                        childNode1,
+                        childNode2,
+                        new LayoutItem()
+                    }
+                };
+
+                rootNode.ShouldSatisfyAllConditions(
+                    () => childNode1.Parent.ShouldBe(rootNode),
+                    () => childNode2.Parent.ShouldBe(rootNode),
+                    () => rootNode.Count().ShouldBe(3)
+                );
+            });
+
+            It("when using copy initializer expression sets parent", () =>
+            {
+                var childNode1 = new LayoutItem();
+                var childNode2 = new LayoutItem();
+
+                var nodes = new[] { childNode1, childNode2 };
+
+                var rootNode = new LayoutItem
+                {
+                    Children = new(nodes)
+                    {
+                        new LayoutItem()
+                    }
+                };
+
+                rootNode.ShouldSatisfyAllConditions(
+                    () => childNode1.Parent.ShouldBe(rootNode),
+                    () => childNode2.Parent.ShouldBe(rootNode),
+                    () => rootNode.Count().ShouldBe(3)
+                );
+            });
+
+            It("when using short copy initializer expression sets parent", () =>
+            {
+                var childNode1 = new LayoutItem();
+                var childNode2 = new LayoutItem();
+
+                var rootNode = new LayoutItem
+                {
+                    Children = new(new[] { childNode1, childNode2, new LayoutItem() })
+                };
+
+                rootNode.ShouldSatisfyAllConditions(
+                    () => childNode1.Parent.ShouldBe(rootNode),
+                    () => childNode2.Parent.ShouldBe(rootNode),
+                    () => rootNode.Count().ShouldBe(3)
+                );
+            });
+
+            It("when using ultra short copy initializer expression sets parent", () =>
+            {
+                var childNode1 = new LayoutItem();
+                var childNode2 = new LayoutItem();
+
+                var rootNode = new LayoutItem
+                {
+                    Children = new(
+                        childNode1,
+                        childNode2,
+                        new LayoutItem()
+                    )
+                };
+
+                rootNode.ShouldSatisfyAllConditions(
+                    () => childNode1.Parent.ShouldBe(rootNode),
+                    () => childNode2.Parent.ShouldBe(rootNode),
+                    () => rootNode.Count().ShouldBe(3)
                 );
             });
         });
