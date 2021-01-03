@@ -17,7 +17,7 @@ namespace Xenial.Framework.Layouts.Items
     /// </summary>
     [XenialCheckLicence]
     public partial record LayoutGroupItem
-        : LayoutItemNodeWithAlign,
+        : LayoutItem,
         ILayoutElementWithCaptionOptions,
         ILayoutElementWithCaption,
         ILayoutToolTip,

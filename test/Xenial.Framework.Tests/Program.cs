@@ -42,6 +42,7 @@ namespace Xenial.Framework.Tests
                     LayoutEmptySpaceItemFacts.LayoutEmptySpaceItemTests();
 
                     LayoutGroupItemFacts.LayoutGroupItemTests();
+                    LayoutGroupItemFacts.LayoutGroupItemChildrenTests();
                     LayoutTabGroupItemFacts.LayoutTabGroupItemTests();
                     LayoutTabbedGroupItemFacts.LayoutTabbedGroupItemTests();
                     LayoutTabbedGroupItemFacts.LayoutTabbedGroupItemChildTests();

@@ -17,7 +17,7 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
-    public static class LayoutGroupItemFacts
+    public static partial class LayoutGroupItemFacts
     {
         public static void LayoutGroupItemTests() => Describe(nameof(LayoutGroupItem), () =>
         {
