@@ -51,8 +51,8 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
             var modules = new ModuleBase[]
             {
-                    new DXSystemModele(),
-                    new TestModule(boModelTypes, customizeTypesInfo)
+                new DXSystemModele(),
+                new TestModule(boModelTypes, customizeTypesInfo)
             };
 
             foreach (var module in modules)
@@ -83,6 +83,7 @@ namespace Xenial.Framework.Tests.Layouts.Items
             typesInfo =>
             {
                 ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
+                    .RemoveAttribute(typeof(DetailViewLayoutBuilderAttribute))
                     .WithDetailViewLayout(layoutFunctor)
                 .Build();
             });
@@ -100,6 +101,7 @@ namespace Xenial.Framework.Tests.Layouts.Items
             typesInfo =>
             {
                 ModelBuilder.Create<SimpleBusinessObject>(typesInfo)
+                    .RemoveAttribute(typeof(DetailViewLayoutBuilderAttribute))
                     .WithDetailViewLayout(layoutFunctor)
                 .Build();
             });
