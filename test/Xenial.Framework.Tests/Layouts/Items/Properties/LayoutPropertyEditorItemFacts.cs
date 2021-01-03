@@ -18,7 +18,7 @@ using Xenial.Framework.Layouts.Items.LeafNodes;
 using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
 using static Xenial.Tasty;
 
-namespace Xenial.Framework.Tests.Layouts.Items.Properties
+namespace Xenial.Framework.Tests.Layouts.Items
 {
     public static class LayoutPropertyEditorItemFacts
     {

@@ -397,19 +397,19 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
             static void MapSupportControlAlignment(
                 ISupportControlAlignment modelSupportControlAlignment,
-                LayoutItemNodeWithAlign layoutItemLeaf
+                ILayoutItemNodeWithAlign layoutItemNodeWithAlign
             )
             {
-                if (layoutItemLeaf.HorizontalAlign is not null)
+                if (layoutItemNodeWithAlign.HorizontalAlign is not null)
                 {
                     modelSupportControlAlignment.HorizontalAlign =
-                        layoutItemLeaf.HorizontalAlign ?? modelSupportControlAlignment.HorizontalAlign;
+                        layoutItemNodeWithAlign.HorizontalAlign ?? modelSupportControlAlignment.HorizontalAlign;
                 }
 
-                if (layoutItemLeaf.VerticalAlign is not null)
+                if (layoutItemNodeWithAlign.VerticalAlign is not null)
                 {
                     modelSupportControlAlignment.VerticalAlign =
-                        layoutItemLeaf.VerticalAlign ?? modelSupportControlAlignment.VerticalAlign;
+                        layoutItemNodeWithAlign.VerticalAlign ?? modelSupportControlAlignment.VerticalAlign;
                 }
             }
 

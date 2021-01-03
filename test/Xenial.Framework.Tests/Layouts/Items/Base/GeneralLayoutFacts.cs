@@ -6,7 +6,7 @@ using Xenial.Framework.Layouts.Items.Base;
 
 using static Xenial.Tasty;
 
-namespace Xenial.Framework.Tests.Layouts.Items.Base
+namespace Xenial.Framework.Tests.Layouts.Items
 {
     public static class GeneralLayoutFacts
     {

@@ -2,7 +2,6 @@
 
 using DevExpress.ExpressApp.Layout;
 using DevExpress.ExpressApp.Model;
-using DevExpress.Persistent.Base;
 using DevExpress.Utils;
 
 using Xenial.Framework.Layouts.Items.Base;
@@ -21,7 +20,7 @@ namespace Xenial.Framework.Layouts.Items
     /// </summary>
     [XenialCheckLicence]
     public partial record LayoutTabGroupItem
-        : LayoutItemNodeWithAlign,
+        : LayoutItem,
         ILayoutElementWithCaptionOptions,
         ILayoutElementWithCaption,
         ILayoutToolTip,

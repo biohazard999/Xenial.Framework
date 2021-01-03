@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
+using Xenial.Framework.Layouts.Items.PubTernal;
 using Xenial.Framework.Utils.Slugger;
 
 namespace Xenial.Framework.Layouts.Items.Base
@@ -83,14 +84,14 @@ namespace Xenial.Framework.Layouts.Items.Base
             get => ParentItem;
             set
             {
-                if (ParentItem is LayoutItem oldParentItem)
+                if (ParentItem is IEnumerableLayoutItemNode oldParentItem)
                 {
                     oldParentItem.Remove(this);
                 }
 
                 ParentItem = value;
 
-                if (ParentItem is LayoutItem newParentItem)
+                if (ParentItem is IEnumerableLayoutItemNode newParentItem)
                 {
                     newParentItem.Add(this);
                 }
