@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using DevExpress.ExpressApp.Model;
@@ -59,6 +60,11 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
             {
                 if (AutoGenerateMissingDetailViewItems)
                 {
+                    if (!Debugger.IsAttached)
+                    {
+                        Debugger.Launch();
+                    }
+
                     foreach (var possibleModelDetailView in modelViews.OfType<IModelDetailView>())
                     {
                         //May be null in designer code
