@@ -30,6 +30,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 .Register<LayoutTabGroupItem, LayoutTabGroupItemBuilder>(() => new LayoutTabGroupItemBuilder())
                 .Register<LayoutTabbedGroupItem, TabbedGroupItemBuilder>(() => new TabbedGroupItemBuilder())
                 .Register<LayoutEmptySpaceItem, EmptySpaceItemBuilder>(() => new EmptySpaceItemBuilder())
+                .Register<LayoutViewItem, LayoutViewItemBuilder>(() => new LayoutViewItemBuilder())
             ;
 
         /// <summary>
@@ -88,74 +89,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
                             foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
                             {
-                                var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutViewItem>(layoutViewItemNode.Id);
-                                modelLayoutViewItem.ViewItem = modelDetailView.Items.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
-
-                                if (modelLayoutViewItem is IModelNode genericModelNode)
-                                {
-                                    MapModelNode(genericModelNode, layoutViewItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelLayoutItem modelLayoutItem)
-                                {
-                                    MapModelLayoutItem(modelLayoutItem, layoutViewItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelViewLayoutElement modelViewLayoutElement)
-                                {
-                                    MapModelViewLayoutElement(modelViewLayoutElement, layoutViewItemNode);
-                                }
-
-                                if (modelLayoutViewItem is ISupportControlAlignment modelSupportControlAlignment)
-                                {
-                                    MapSupportControlAlignment(modelSupportControlAlignment, layoutViewItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelToolTip modelToolTip)
-                                {
-                                    MapModelToolTip(modelToolTip, layoutViewItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelToolTipOptions modelToolTipOptions)
-                                {
-                                    MapModelToolTipOptions(modelToolTipOptions, layoutViewItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
-                                {
-                                    MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, layoutViewItemNode);
-                                }
-                                else if (modelLayoutViewItem.ViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions2)
-                                {
-                                    MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions2, layoutViewItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
-                                {
-                                    MapCaption(modelLayoutElementWithCaption, layoutViewItemNode);
-                                }
-                                else if (modelLayoutViewItem.ViewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption2)
-                                {
-                                    MapCaption(modelLayoutElementWithCaption2, layoutViewItemNode);
-                                }
-                                else if (modelLayoutViewItem.ViewItem is not null)
-                                {
-                                    if (layoutViewItemNode.Caption is not null)
-                                    {
-                                        modelLayoutViewItem.ViewItem.Caption = layoutViewItemNode.Caption;
-                                    }
-                                }
-
-                                if (layoutViewItemNode.ViewItemOptions is not null)
-                                {
-                                    var modelViewItem = modelDetailView
-                                        .Items[layoutViewItemNode.ViewItemId];
-
-                                    if (modelViewItem is not null)
-                                    {
-                                        layoutViewItemNode.ViewItemOptions(modelViewItem);
-                                    }
-                                }
+                                nodeBuilderFactory.CreateViewLayoutElement(modelMainNode, layoutViewItemNode);
 
                                 if (layoutViewItemNode is LayoutPropertyEditorItem layoutPropertyEditorItem
                                     && layoutPropertyEditorItem.PropertyEditorOptions is not null)
