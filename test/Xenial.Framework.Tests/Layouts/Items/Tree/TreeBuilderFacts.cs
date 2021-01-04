@@ -28,6 +28,20 @@ namespace Xenial.Framework.Tests.Layouts.Items
                                 Children = new()
                                 {
                                     l.PropertyEditor(p => p.BoolProperty),
+                                    l.TabbedGroup() with
+                                    {
+                                        Children = new()
+                                        {
+                                            l.Tab() with
+                                            {
+                                                Children = new()
+                                                {
+                                                    l.PropertyEditor(p => p.ObjectProperty),
+                                                    l.PropertyEditor(p => p.NullableIntegerProperty),
+                                                }
+                                            }
+                                        }
+                                    },
                                     l.PropertyEditor(p => p.NullableBoolProperty),
                                 }
                             }

@@ -33,7 +33,7 @@ namespace Xenial.Framework.Tests
 
                 SlugerFacts.SluggerTests();
 
-                FDescribe("Layouts", () =>
+                Describe("Layouts", () =>
                 {
                     GeneralLayoutFacts.GeneralLayoutTests();
 

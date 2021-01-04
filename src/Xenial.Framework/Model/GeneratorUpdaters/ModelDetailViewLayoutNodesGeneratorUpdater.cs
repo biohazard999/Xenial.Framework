@@ -67,20 +67,34 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                 .AddNode<IModelLayoutGroup>(ModelDetailViewLayoutNodesGenerator.MainLayoutGroupName)
                                 ?? throw new InvalidOperationException($"Cannot generate 'Main' node on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}'");
 
-                            foreach (var layoutItemNode in VisitNodes<LayoutItemNode>(layout))
+                            var currentIndex = 0;
+                            foreach (var layoutItemNode in layout)
                             {
-                                nodeBuilderFactory.CreateViewLayoutElement(modelMainNode, layoutItemNode);
+                                var (_, newIndex) = FactorNodes(currentIndex, modelMainNode, layoutItemNode);
+                                currentIndex = newIndex + 1;
 
-                                if (layoutItemNode is LayoutPropertyEditorItem layoutPropertyEditorItem
-                                   && layoutPropertyEditorItem.PropertyEditorOptions is not null)
+                                (IModelViewLayoutElement? el, int index) FactorNodes(int index, IModelNode parentNode, LayoutItemNode layoutItemNode)
                                 {
-                                    var modelViewItem = modelDetailView
-                                        .Items[layoutPropertyEditorItem.PropertyEditorId];
-
-                                    if (modelViewItem is IModelPropertyEditor modelPropertyEditor)
+                                    var node = nodeBuilderFactory.CreateViewLayoutElement(parentNode, layoutItemNode);
+                                    if (node is not null && node.Index is null)
                                     {
-                                        layoutPropertyEditorItem.PropertyEditorOptions(modelPropertyEditor);
+                                        node.Index = index;
                                     }
+                                    if (layoutItemNode is IEnumerable<LayoutItemNode> layoutNodeWithChildren
+                                        && node is not null)
+                                    {
+                                        var xIndex = 0;
+                                        foreach (var childNode in layoutNodeWithChildren)
+                                        {
+                                            var (n, cI) = FactorNodes(xIndex, node, childNode);
+                                            if (n is not null && n.Index is null)
+                                            {
+                                                n.Index = cI;
+                                            }
+                                            xIndex = cI + 1;
+                                        }
+                                    }
+                                    return (node, node?.Index ?? 0);
                                 }
                             }
                         }

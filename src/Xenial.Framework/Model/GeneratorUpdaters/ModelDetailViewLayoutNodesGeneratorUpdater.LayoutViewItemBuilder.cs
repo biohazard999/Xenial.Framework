@@ -6,6 +6,7 @@ using System.Text;
 using DevExpress.ExpressApp.Model;
 
 using Xenial.Framework.Layouts.Items.Base;
+using Xenial.Framework.Layouts.Items.LeafNodes;
 
 using static Xenial.Framework.Model.GeneratorUpdaters.ModelDetailViewLayoutNodesGeneratorUpdaterMappers;
 
@@ -101,6 +102,15 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                     if (modelLayoutViewItem.ViewItem is not null)
                     {
                         layoutViewItemNode.ViewItemOptions(modelLayoutViewItem.ViewItem);
+                    }
+                }
+
+                if (layoutViewItemNode is LayoutPropertyEditorItem layoutPropertyEditorItem
+                                   && layoutPropertyEditorItem.PropertyEditorOptions is not null)
+                {
+                    if (modelLayoutViewItem.ViewItem is IModelPropertyEditor modelPropertyEditor)
+                    {
+                        layoutPropertyEditorItem.PropertyEditorOptions(modelPropertyEditor);
                     }
                 }
 
