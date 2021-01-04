@@ -13,7 +13,7 @@ namespace Xenial.Framework.Tests.Layouts.Items
     {
         public static void TreeBuilderTests() => Describe("layout tree", () =>
         {
-            FIt("builds simple tree structure with record syntax", () =>
+            It("builds simple tree structure with record syntax", () =>
             {
                 var detailView = CreateComplexDetailViewWithLayout(l => new()
                 {
