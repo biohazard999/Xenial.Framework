@@ -63,7 +63,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                     {
                         var attribute = possibleModelDetailView.ModelClass.TypeInfo.FindAttribute<DetailViewLayoutBuilderAttribute>();
                         //TODO: Factory
-                        if (attribute.BuildLayoutDelegate is not null)
+                        if (attribute is not null && attribute.BuildLayoutDelegate is not null)
                         {
                             var builder = attribute.BuildLayoutDelegate;
                             var layout = builder.Invoke()
