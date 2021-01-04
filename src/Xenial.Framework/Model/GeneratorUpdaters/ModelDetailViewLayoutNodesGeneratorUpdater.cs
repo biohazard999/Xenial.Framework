@@ -67,32 +67,12 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                 .AddNode<IModelLayoutGroup>(ModelDetailViewLayoutNodesGenerator.MainLayoutGroupName)
                                 ?? throw new InvalidOperationException($"Cannot generate 'Main' node on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}'");
 
-                            foreach (var groupItemNode in VisitNodes<LayoutGroupItem>(layout))
+                            foreach (var layoutItemNode in VisitNodes<LayoutItemNode>(layout))
                             {
-                                nodeBuilderFactory.CreateViewLayoutElement(modelMainNode, groupItemNode);
-                            }
+                                nodeBuilderFactory.CreateViewLayoutElement(modelMainNode, layoutItemNode);
 
-                            foreach (var tabGroupItemNode in VisitNodes<LayoutTabGroupItem>(layout))
-                            {
-                                nodeBuilderFactory.CreateViewLayoutElement(modelMainNode, tabGroupItemNode);
-                            }
-
-                            foreach (var tabbedGroupItemNode in VisitNodes<LayoutTabbedGroupItem>(layout))
-                            {
-                                nodeBuilderFactory.CreateViewLayoutElement(modelMainNode, tabbedGroupItemNode);
-                            }
-
-                            foreach (var emptySpaceItemNode in VisitNodes<LayoutEmptySpaceItem>(layout))
-                            {
-                                nodeBuilderFactory.CreateViewLayoutElement(modelMainNode, emptySpaceItemNode);
-                            }
-
-                            foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
-                            {
-                                nodeBuilderFactory.CreateViewLayoutElement(modelMainNode, layoutViewItemNode);
-
-                                if (layoutViewItemNode is LayoutPropertyEditorItem layoutPropertyEditorItem
-                                    && layoutPropertyEditorItem.PropertyEditorOptions is not null)
+                                if (layoutItemNode is LayoutPropertyEditorItem layoutPropertyEditorItem
+                                   && layoutPropertyEditorItem.PropertyEditorOptions is not null)
                                 {
                                     var modelViewItem = modelDetailView
                                         .Items[layoutPropertyEditorItem.PropertyEditorId];
