@@ -55,7 +55,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                         //TODO: multiple views and attributes
                         var attribute = modelDetailView.ModelClass.TypeInfo.FindAttribute<DetailViewLayoutBuilderAttribute>();
                         //TODO: Factory
-                        if (attribute.BuildLayoutDelegate is not null)
+                        if (attribute is not null && attribute.BuildLayoutDelegate is not null)
                         {
                             var builder = attribute.BuildLayoutDelegate;
                             var layout = builder.Invoke()
