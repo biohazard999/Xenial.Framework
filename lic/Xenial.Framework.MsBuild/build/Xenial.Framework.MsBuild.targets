@@ -3,12 +3,14 @@
   <Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun">
     
     <PropertyGroup>
-      <XenialIsNet5 Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))">true</XenialIsNet5>
-      <XenialIsNet5Compatible Condition="'$(XenialIsNet5Compatible)' == '' AND '$(XenialIsNet5)' == 'true'">true</XenialIsNet5Compatible>
-      <GenerateXenialModuleInitializerPolyfill Condition="'$(GenerateXenialModuleInitializerPolyfill)' == '' AND '$(XenialIsNet5Compatible)' != 'true'">true</GenerateXenialModuleInitializerPolyfill>
+      <_XenialIsNet5 Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))">true</_XenialIsNet5>
+      <_XenialIsNet5Compatible Condition="'$(_XenialIsNet5Compatible)' == '' AND '$(_XenialIsNet5)' == 'true'">true</_XenialIsNet5Compatible>
+      <GenerateXenialModuleInitializerPolyfill Condition="'$(GenerateXenialModuleInitializerPolyfill)' == '' AND '$(_XenialIsNet5Compatible)' != 'true'">true</GenerateXenialModuleInitializerPolyfill>
     </PropertyGroup>
     
     <ItemGroup>
+      <CompilerVisibleProperty Include="_XenialIsNet5" />
+      <CompilerVisibleProperty Include="_XenialIsNet5Compatible" />
       <CompilerVisibleProperty Include="CheckXenialLicense" />
       <CompilerVisibleProperty Include="GenerateXenialLicense" />
       <CompilerVisibleProperty Include="GenerateXenialModuleInitializer" />
