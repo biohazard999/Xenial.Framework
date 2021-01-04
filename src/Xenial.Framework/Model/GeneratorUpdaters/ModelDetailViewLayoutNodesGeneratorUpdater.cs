@@ -27,6 +27,9 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
         private readonly NodeBuilderFactory nodeBuilderFactory
             = new NodeBuilderFactory()
                 .Register<LayoutGroupItem, LayoutGroupItemBuilder>(() => new LayoutGroupItemBuilder())
+                .Register<LayoutTabGroupItem, LayoutTabGroupItemBuilder>(() => new LayoutTabGroupItemBuilder())
+                .Register<LayoutTabbedGroupItem, TabbedGroupItemBuilder>(() => new TabbedGroupItemBuilder())
+                .Register<LayoutEmptySpaceItem, EmptySpaceItemBuilder>(() => new EmptySpaceItemBuilder())
             ;
 
         /// <summary>
@@ -70,105 +73,17 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
                             foreach (var tabGroupItemNode in VisitNodes<LayoutTabGroupItem>(layout))
                             {
-                                var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutGroup>(tabGroupItemNode.Id);
-
-                                if (modelLayoutViewItem is IModelNode genericModelNode)
-                                {
-                                    MapModelNode(genericModelNode, tabGroupItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelViewLayoutElement modelViewLayoutElement)
-                                {
-                                    MapModelViewLayoutElement(modelViewLayoutElement, tabGroupItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
-                                {
-                                    MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, tabGroupItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
-                                {
-                                    MapCaption(modelLayoutElementWithCaption, tabGroupItemNode);
-                                }
-
-                                if (modelLayoutViewItem is ISupportControlAlignment modelSupportControlAlignment)
-                                {
-                                    MapSupportControlAlignment(modelSupportControlAlignment, tabGroupItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelToolTip modelToolTip)
-                                {
-                                    MapModelToolTip(modelToolTip, tabGroupItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelToolTipOptions modelToolTipOptions)
-                                {
-                                    MapModelToolTipOptions(modelToolTipOptions, tabGroupItemNode);
-                                }
-
-                                MapLayoutGroup(modelLayoutViewItem, tabGroupItemNode);
-
-                                if (tabGroupItemNode.LayoutGroupOptions is not null)
-                                {
-                                    tabGroupItemNode.LayoutGroupOptions(modelLayoutViewItem);
-                                }
+                                nodeBuilderFactory.CreateViewLayoutElement(modelMainNode, tabGroupItemNode);
                             }
 
                             foreach (var tabbedGroupItemNode in VisitNodes<LayoutTabbedGroupItem>(layout))
                             {
-                                var modelTabbedGroup = modelMainNode.AddNode<IModelTabbedGroup>(tabbedGroupItemNode.Id);
-
-                                if (modelTabbedGroup is IModelNode genericModelNode)
-                                {
-                                    MapModelNode(genericModelNode, tabbedGroupItemNode);
-                                }
-
-                                if (modelTabbedGroup is IModelViewLayoutElement modelViewLayoutElement)
-                                {
-                                    MapModelViewLayoutElement(modelViewLayoutElement, tabbedGroupItemNode);
-                                }
-
-                                if (modelTabbedGroup is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
-                                {
-                                    MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, tabbedGroupItemNode);
-                                }
-
-                                if (modelTabbedGroup is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
-                                {
-                                    MapCaption(modelLayoutElementWithCaption, tabbedGroupItemNode);
-                                }
-
-                                MapTabbedLayoutGroup(modelTabbedGroup, tabbedGroupItemNode);
-
-                                if (tabbedGroupItemNode.TabbedGroupOptions is not null)
-                                {
-                                    tabbedGroupItemNode.TabbedGroupOptions(modelTabbedGroup);
-                                }
+                                nodeBuilderFactory.CreateViewLayoutElement(modelMainNode, tabbedGroupItemNode);
                             }
 
                             foreach (var emptySpaceItemNode in VisitNodes<LayoutEmptySpaceItem>(layout))
                             {
-                                var modelLayoutViewItem = modelMainNode.AddNode<IModelLayoutViewItem>(emptySpaceItemNode.Id);
-                                if (modelLayoutViewItem is IModelNode genericModelNode)
-                                {
-                                    MapModelNode(genericModelNode, emptySpaceItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelLayoutItem modelLayoutItem)
-                                {
-                                    MapModelLayoutItem(modelLayoutItem, emptySpaceItemNode);
-                                }
-
-                                if (modelLayoutViewItem is IModelViewLayoutElement modelViewLayoutElement)
-                                {
-                                    MapModelViewLayoutElement(modelViewLayoutElement, emptySpaceItemNode);
-                                }
-
-                                if (modelLayoutViewItem is ISupportControlAlignment modelSupportControlAlignment)
-                                {
-                                    MapSupportControlAlignment(modelSupportControlAlignment, emptySpaceItemNode);
-                                }
+                                nodeBuilderFactory.CreateViewLayoutElement(modelMainNode, emptySpaceItemNode);
                             }
 
                             foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
