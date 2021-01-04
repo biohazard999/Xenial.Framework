@@ -61,6 +61,12 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 {
                     foreach (var possibleModelDetailView in modelViews.OfType<IModelDetailView>())
                     {
+                        //May be null in designer code
+                        if (possibleModelDetailView.ModelClass is null || possibleModelDetailView.ModelClass.TypeInfo is null)
+                        {
+                            continue;
+                        }
+
                         var attribute = possibleModelDetailView.ModelClass.TypeInfo.FindAttribute<DetailViewLayoutBuilderAttribute>();
                         //TODO: Factory
                         if (attribute is not null && attribute.BuildLayoutDelegate is not null)
