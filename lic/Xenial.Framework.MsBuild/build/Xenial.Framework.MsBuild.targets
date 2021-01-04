@@ -1,6 +1,13 @@
 ﻿<Project>
 
   <Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun">
+    
+    <PropertyGroup>
+      <XenialIsNet5 Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))">true</XenialIsNet5>
+      <XenialIsNet5Compatible Condition="'$(XenialIsNet5Compatible1)' == '' AND '$(XenialIsNet5)' == 'false'">true</XenialIsNet5Compatible>
+      <GenerateXenialModuleInitializerPolyfill Condition="'$(GenerateXenialModuleInitializerPolyfill)' == '' AND '$(XenialIsNet5Compatible1)' == 'false'">true</GenerateXenialModuleInitializerPolyfill>
+    </PropertyGroup>
+    
     <ItemGroup>
       <CompilerVisibleProperty Include="CheckXenialLicense" />
       <CompilerVisibleProperty Include="GenerateXenialLicense" />

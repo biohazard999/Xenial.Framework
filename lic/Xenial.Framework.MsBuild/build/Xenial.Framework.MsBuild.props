@@ -4,9 +4,6 @@
     <CheckXenialLicense Condition="'$(CheckXenialLicense)' == ''">true</CheckXenialLicense>
     <GenerateXenialLicense Condition="'$(GenerateXenialLicense)' == ''">true</GenerateXenialLicense>
     <GenerateXenialModuleInitializer Condition="'$(GenerateXenialModuleInitializer)' == ''">true</GenerateXenialModuleInitializer>
-
-    <XenialIsNet5Compatible>$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))</XenialIsNet5Compatible>
-    <GenerateXenialModuleInitializerPolyfill Condition="$(GenerateXenialModuleInitializerPolyfill) == '' And '$(XenialIsNet5Compatible)' == 'false'">true</GenerateXenialModuleInitializerPolyfill>
   </PropertyGroup>
     
 </Project>
