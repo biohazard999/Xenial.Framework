@@ -27,8 +27,6 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
         private readonly NodeBuilderFactory nodeBuilderFactory
             = new NodeBuilderFactory()
                 .Register<LayoutGroupItem, LayoutGroupItemBuilder>(() => new LayoutGroupItemBuilder())
-                .Register<VerticalLayoutGroupItem, LayoutGroupItemBuilder>(() => new LayoutGroupItemBuilder())
-                .Register<HorizontalLayoutGroupItem, LayoutGroupItemBuilder>(() => new LayoutGroupItemBuilder())
             ;
 
         /// <summary>

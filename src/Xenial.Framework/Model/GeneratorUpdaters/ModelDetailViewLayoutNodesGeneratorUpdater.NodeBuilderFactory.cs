@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Text;
 
 using DevExpress.ExpressApp.Model;
+using DevExpress.Utils;
 
 using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
@@ -26,12 +27,34 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 return this;
             }
 
+            bool IModelViewLayoutElementFactory.Handles(LayoutItemNode layoutItemNode) => true;
             public IModelViewLayoutElement? CreateViewLayoutElement(IModelNode parentNode, LayoutItemNode layoutItemNode)
             {
-                var builder = modelViewLayoutElementFactories[layoutItemNode.GetType()].Value;
+                IModelViewLayoutElementFactory? FindFactory(Type? type)
+                {
+                    if (type is null)
+                    {
+                        return null;
+                    }
+                    if (modelViewLayoutElementFactories.ContainsKey(type))
+                    {
+                        return modelViewLayoutElementFactories[type].Value;
+                    }
+                    return FindFactory(type.GetBaseType());
+                }
 
-                return builder.CreateViewLayoutElement(parentNode, layoutItemNode);
+                var builder = FindFactory(layoutItemNode.GetType());
+                if (builder is not null)
+                {
+                    if (builder.Handles(layoutItemNode))
+                    {
+                        return builder.CreateViewLayoutElement(parentNode, layoutItemNode);
+                    }
+                }
+
+                return null;
             }
+
         }
 
         internal interface IViewItemFactory
@@ -54,6 +77,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
         internal interface IModelViewLayoutElementFactory
         {
+            bool Handles(LayoutItemNode layoutItemNode);
             IModelViewLayoutElement? CreateViewLayoutElement(IModelNode parentNode, LayoutItemNode layoutItemNode);
         }
 
@@ -61,6 +85,8 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
             where TModelViewLayoutElement : IModelViewLayoutElement
             where TLayoutItemNode : LayoutItemNode
         {
+            bool IModelViewLayoutElementFactory.Handles(LayoutItemNode layoutItemNode) => layoutItemNode is TLayoutItemNode;
+
             IModelViewLayoutElement? IModelViewLayoutElementFactory.CreateViewLayoutElement(IModelNode parentNode, LayoutItemNode layoutItemNode)
             {
                 if (layoutItemNode is TLayoutItemNode tLayoutItemNode)
