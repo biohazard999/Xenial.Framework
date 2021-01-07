@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
+﻿
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
+
 using DevExpress.Persistent.Base;
 using DevExpress.Xpo;
+
+using System;
+using System.ComponentModel;
 
 using Xenial.Framework.Base;
 

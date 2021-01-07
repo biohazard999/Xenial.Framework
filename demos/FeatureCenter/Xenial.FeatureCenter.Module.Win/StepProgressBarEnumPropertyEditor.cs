@@ -21,12 +21,12 @@ namespace Xenial.FeatureCenter.Module.Win
 
         public override bool IsCaptionVisible => false;
 
-        protected override object CreateControlCore() => new XenialStepProgressBar(MemberInfo, NullText);
+        protected override object CreateControlCore() => new XenialEnumStepProgressBar(MemberInfo, NullText);
 
-        public new XenialStepProgressBar Control => (XenialStepProgressBar)base.Control;
+        public new XenialEnumStepProgressBar Control => (XenialEnumStepProgressBar)base.Control;
     }
 
-    public class XenialStepProgressBar : StepProgressBar
+    public class XenialEnumStepProgressBar : StepProgressBar
     {
         private object? editValue;
         public object? EditValue
@@ -50,7 +50,7 @@ namespace Xenial.FeatureCenter.Module.Win
 
         public IMemberInfo MemberInfo { get; }
 
-        public XenialStepProgressBar(IMemberInfo memberInfo, string? nullText)
+        public XenialEnumStepProgressBar(IMemberInfo memberInfo, string? nullText)
         {
             _ = memberInfo ?? throw new ArgumentNullException(nameof(memberInfo));
             MemberInfo = memberInfo;
