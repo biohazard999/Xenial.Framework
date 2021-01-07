@@ -17,7 +17,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
             typeof(TokenEditorPersistentDemo),
             typeof(TokenEditorPersistentTokens),
 
-            typeof(StepProgressBarEnumEditorDemo)
+            typeof(StepProgressBarEnumEditorPersistentDemo)
         };
 
         internal static readonly Type[] NonPersistentTypes = new[]
@@ -27,7 +27,9 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
             typeof(WebViewEditorDemo),
 
             typeof(TokenEditorNonPersistentDemo),
-            typeof(TokenEditorNonPersistentTokens)
+            typeof(TokenEditorNonPersistentTokens),
+
+            typeof(StepProgressBarEnumEditorDemo)
         };
     }
 }

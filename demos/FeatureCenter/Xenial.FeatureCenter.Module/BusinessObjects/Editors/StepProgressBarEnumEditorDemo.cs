@@ -5,6 +5,7 @@ using System.Text;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
+using DevExpress.Xpo;
 
 using Xenial.Framework.Base;
 
@@ -15,6 +16,38 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
     [Singleton(AutoCommit = true)]
     public partial class StepProgressBarEnumEditorDemo : NonPersistentBaseObject
     {
+        public override void OnCreated()
+        {
+            base.OnCreated();
+            Steps = StepsEnum.ShippingOptions;
+        }
+        protected override void OnObjectSpaceChanged()
+        {
+            base.OnObjectSpaceChanged();
+            if (ObjectSpace is NonPersistentObjectSpace nos)
+            {
+                nos.AutoSetModifiedOnObjectChange = true;
+            }
+        }
+
+        private StepsEnum steps = StepsEnum.ShippingOptions;
+        [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]
+        public StepsEnum Steps { get => steps; set => SetPropertyValue(ref steps, value); }
+
+    }
+
+    [Persistent]
+    [DefaultClassOptions]
+    [Singleton(AutoCommit = true)]
+    public class StepProgressBarEnumEditorPersistentDemo : FeatureCenterBaseObjectId
+    {
+        public StepProgressBarEnumEditorPersistentDemo(Session session) : base(session) { }
+        public override void AfterConstruction()
+        {
+            base.AfterConstruction();
+            Steps = StepsEnum.ShippingOptions;
+        }
+
         private StepsEnum steps = StepsEnum.ShippingOptions;
         [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]
         public StepsEnum Steps { get => steps; set => SetPropertyValue(ref steps, value); }
