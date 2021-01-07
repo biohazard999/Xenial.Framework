@@ -32,6 +32,7 @@ namespace Xenial.FeatureCenter.Module.Win
             editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForTypeWin<XPCollection<TokenEditorPersistentTokens>>();
 
             editorDescriptorsFactory.RegisterPropertyEditor("Xenial.StepProgressBarEnumPropertyEditor", typeof(Enum), typeof(StepProgressBarEnumPropertyEditor), false);
+            editorDescriptorsFactory.RegisterPropertyEditor("Xenial.StepProgressBarEnumPropertyEditor", typeof(StepsEnum?), typeof(StepProgressBarEnumPropertyEditor), false);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 using DevExpress.ExpressApp;
@@ -34,6 +35,10 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]
         public StepsEnum Steps { get => steps; set => SetPropertyValue(ref steps, value); }
 
+        private StepsEnum? nullableSteps;
+        [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]
+        [DevExpress.ExpressApp.Model.ModelDefault("NullText", "Not Started")]
+        public StepsEnum? NullableSteps { get => nullableSteps; set => SetPropertyValue(ref nullableSteps, value); }
     }
 
     [Persistent]
@@ -45,19 +50,40 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         public override void AfterConstruction()
         {
             base.AfterConstruction();
+            NormalSteps = StepsEnum.PaymentDetails;
             Steps = StepsEnum.ShippingOptions;
         }
+
+        private StepsEnum normalSteps = StepsEnum.ShippingOptions;
+        public StepsEnum NormalSteps { get => normalSteps; set => SetPropertyValue(ref normalSteps, value); }
+
 
         private StepsEnum steps = StepsEnum.ShippingOptions;
         [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]
         public StepsEnum Steps { get => steps; set => SetPropertyValue(ref steps, value); }
+
+        private StepsEnum? nullableSteps;
+        [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]
+        public StepsEnum? NullableSteps { get => nullableSteps; set => SetPropertyValue(ref nullableSteps, value); }
     }
 
     public enum StepsEnum
     {
+        [ImageName("Actions_User")]
+        [XafDisplayName("Personal Info")]
+        [DXDescription("Your name and email")]
         PersonalInfo = 0,
+        [ImageName("Shipment")]
+        [XafDisplayName("Shipping Options")]
+        [DXDescription("Shipping method and address")]
         ShippingOptions = 1,
+        [ImageName("Business_CreditCard")]
+        [XafDisplayName("Payment Details")]
+        [DXDescription("Credit card or PayPal")]
         PaymentDetails = 2,
+        [ImageName("Actions_Check")]
+        [XafDisplayName("Confirmation")]
+        [DXDescription("Confirm and pay")]
         Confirmation = 3
     }
 }
