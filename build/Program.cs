@@ -41,7 +41,8 @@ namespace Xenial.Build
             string GetProperties(string configuration = null) => string.Join(" ", new Dictionary<string, string>
             {
                 ["Configuration"] = configuration ?? Configuration,
-                ["XenialPublicKey"] = PublicKey
+                ["XenialPublicKey"] = PublicKey,
+                ["XenialLicGenVersion"] = $"[{version.Value}]"
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
             Target("ensure-tools", () => EnsureTools());
