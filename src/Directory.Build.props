@@ -28,9 +28,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.LicGen/Xenial.Framework.LicGen.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false" />
+    
+    <PackageReference Include="Xenial.Framework.LicGen" Version="0.0.21-alpha.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    
     <ProjectReference Include="$(MSBuildThisFileDirectory)../lic/Xenial.Framework.MsBuild\Xenial.Framework.MsBuild.csproj">
       <PrivateAssets>None</PrivateAssets>
       <OutputItemType>Analyzer</OutputItemType>

@@ -5,6 +5,10 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <IsPackable>true</IsPackable>
     <PackageOutputPath>../../artifacts/internal/nuget</PackageOutputPath>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <IncludeSource>False</IncludeSource>
+    <IncludeSymbols>False</IncludeSymbols>
+    <SymbolPackageFormat></SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
