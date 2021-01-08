@@ -7,14 +7,12 @@
     <IsPackable>true</IsPackable>
     <NoWarn>VSTHRD200;CA1014;CA5392;CA1200;CS1658;CS1584;CA1200;IDE0079;$(NoWarn)</NoWarn>
     <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
-    <XenialPublicKey></XenialPublicKey>
-    <XenialModule></XenialModule>
+    <XenialPublicKey Condition="$(XenialPublicKey) == ''"></XenialPublicKey>
     <CheckXenialLicense>false</CheckXenialLicense>
   </PropertyGroup>
 
   <ItemGroup>
     <CompilerVisibleProperty Include="XenialPublicKey" />
-    <CompilerVisibleProperty Include="XenialModule" />
     <CompilerVisibleProperty Include="PackageId" />
   </ItemGroup>
 
