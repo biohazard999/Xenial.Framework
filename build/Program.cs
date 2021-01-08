@@ -44,7 +44,7 @@ namespace Xenial.Build
             {
                 ["Configuration"] = configuration ?? Configuration,
                 ["XenialPublicKey"] = PublicKey,
-                ["XenialLicGenVersion"] = v
+                ["XenialLicGenVersion"] = $"(,{v}]"
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
             Target("ensure-tools", () => EnsureTools());

@@ -27,8 +27,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <XenialLicGenVersion Condition="'$(XenialLicGenVersion)' != ''">(,$(XenialLicGenVersion)]</XenialLicGenVersion>
-    <XenialLicGenVersion Condition="'$(XenialLicGenVersion)' == ''">*-*</XenialLicGenVersion>
+    <XenialLicGenVersion Condition="$(XenialLicGenVersion) == ''">*-*</XenialLicGenVersion>
   </PropertyGroup>
 
   <ItemGroup>
