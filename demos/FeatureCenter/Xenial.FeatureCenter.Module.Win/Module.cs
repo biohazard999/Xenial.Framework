@@ -12,6 +12,10 @@ using Xenial.Framework.WebView.Win;
 
 namespace Xenial.FeatureCenter.Module.Win
 {
+    public class GeneratorUpdater : ModelNodesGeneratorUpdater<ModelDetailViewLayoutNodesGenerator>
+    {
+
+    }
     public class FeatureCenterWindowsFormsModule : XenialModuleBase
     {
         protected override ModuleTypeList GetRequiredModuleTypesCore()
