@@ -44,7 +44,7 @@
 
   <Target Name="FixLicensePackageVersion" AfterTargets="MinVer">
     <PropertyGroup>
-      <XenialLicGenVersion>$(MinVerVersion)</XenialLicGenVersion>
+      <XenialLicGenVersion>[$(MinVerVersion)]</XenialLicGenVersion>
     </PropertyGroup>
 
     <ItemGroup>
