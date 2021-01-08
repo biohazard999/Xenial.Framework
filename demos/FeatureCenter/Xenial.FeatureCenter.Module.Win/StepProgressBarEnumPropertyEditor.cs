@@ -36,7 +36,7 @@ namespace Xenial.FeatureCenter.Module.Win
             {
                 editValue = value;
 
-                var selectedItem = Items.FirstOrDefault(item => (item.Tag == null && editValue == null) ? true : item.Tag?.Equals(editValue) == true);
+                var selectedItem = Items.FirstOrDefault(item => (item.Tag == null && editValue == null) || item.Tag?.Equals(editValue) == true);
                 if (selectedItem is not null)
                 {
                     SelectedItemIndex = Items.IndexOf(selectedItem);
