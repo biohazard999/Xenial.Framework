@@ -48,7 +48,6 @@
     <PropertyGroup>
       <XenialLicGenVersion>$(MinVerVersion)</XenialLicGenVersion>
     </PropertyGroup>
-    <Error Text="FixLicensePackageVersion - $(XenialLicGenVersion)" />
 
     <ItemGroup>
       <PackageReference Remove="Xenial.Framework.LicGen" />
