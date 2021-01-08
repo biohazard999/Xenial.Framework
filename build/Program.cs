@@ -21,6 +21,8 @@ namespace Xenial.Build
         {
             var version = new Lazy<Task<string>>(async () => (await ReadToolAsync(() => ReadAsync("dotnet", "minver -v e -t v", noEcho: true))).Trim());
 
+            var v = await version.Value;
+
             const string PleaseSet = "PLEASE SET BEFORE USE";
             var PublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3VFauRJrFzuZveL+J/naEs+CrNLBrc/sSDihdkUTo3Np/o4IoM8fxR6kYHIdH/7LXfXltFRREkv2ceTN8gyZuw==";
 
@@ -42,7 +44,7 @@ namespace Xenial.Build
             {
                 ["Configuration"] = configuration ?? Configuration,
                 ["XenialPublicKey"] = PublicKey,
-                ["XenialLicGenVersion"] = $"[{version.Value}]"
+                ["XenialLicGenVersion"] = $"[{v}]"
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
             Target("ensure-tools", () => EnsureTools());
@@ -139,8 +141,6 @@ namespace Xenial.Build
             Target("pack", DependsOn("lic"),
                 () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {GetProperties()}")
             );
-
-            var v = await version.Value;
 
             BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Server", "framework.featurecenter.xenial.io")
             {
