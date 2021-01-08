@@ -47,7 +47,7 @@ namespace Xenial.Build
             Target("ensure-tools", () => EnsureTools());
 
             Target("clean", DependsOn("ensure-tools"),
-                () => RunAsync("dotnet", $"rimraf . -i **/bin/**/*.* -i **/obj/**/*.* -i artifacts/**/*.* -e node_modules/**/*.* -e build/**/*.* -q")
+                () => RunAsync("dotnet", $"rimraf . -i **/bin/**/*.* -i **/obj/**/*.* -i artifacts/**/*.* -e node_modules/**/*.* -e build/**/*.* -e artifacts/**/.gitkeep -q")
             );
 
             Target("lint", DependsOn("ensure-tools"),
@@ -58,7 +58,11 @@ namespace Xenial.Build
                 () => RunAsync("dotnet", $"format --exclude ext")
             );
 
-            Target("restore", DependsOn("lint"),
+            Target("pack.lic", DependsOn("lint"),
+                () => RunAsync("dotnet", $"pack .lic/Xenial.Framework.Licensing.sln  -c {Configuration} {logOptions("pack.lic")} {GetProperties()}")
+            );
+
+            Target("restore", DependsOn("lint", "pack.lic"),
                 () => RunAsync("dotnet", $"restore {logOptions("restore")}")
             );
 
