@@ -62,7 +62,7 @@ namespace Xenial.Build
             );
 
             Target("restore", DependsOn("pack.lic", "lint"),
-                () => RunAsync("dotnet", $"restore {logOptions("restore")}")
+                () => RunAsync("dotnet", $"restore {logOptions("restore")} {GetProperties()}")
             );
 
             Target("format", DependsOn("ensure-tools", "restore"),
