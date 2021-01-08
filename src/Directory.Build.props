@@ -45,10 +45,11 @@
   </ItemGroup>
 
   <Target Name="FixLicensePackageVersion" AfterTargets="MinVer">
-    <Error Text="FixLicensePackageVersion - $(MinVerVersion)" />
     <PropertyGroup>
       <XenialLicGenVersion>$(MinVerVersion)</XenialLicGenVersion>
     </PropertyGroup>
+    <Error Text="FixLicensePackageVersion - $(XenialLicGenVersion)" />
+
     <ItemGroup>
       <PackageReference Remove="Xenial.Framework.LicGen" />
       <PackageReference Remove="Xenial.Framework.MsBuild" />
