@@ -32,10 +32,6 @@
     <XenialLicGenVersion>*-*</XenialLicGenVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(MinVerVersion) != ''">
-    <XenialLicGenVersion>$(MinVerVersion)</XenialLicGenVersion>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Xenial.Framework.LicGen" Version="$(XenialLicGenVersion)">
       <PrivateAssets>all</PrivateAssets>
@@ -47,6 +43,27 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
+  <Target Name="FixLicensePackageVersion" AfterTargets="MinVer">
+    <Error Text="FixLicensePackageVersion - $(MinVerVersion)" />
+    <PropertyGroup>
+      <XenialLicGenVersion>$(MinVerVersion)</XenialLicGenVersion>
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Remove="Xenial.Framework.LicGen" />
+      <PackageReference Remove="Xenial.Framework.MsBuild" />
+
+      <PackageReference Include="Xenial.Framework.LicGen" Version="$(XenialLicGenVersion)">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+
+      <PackageReference Include="Xenial.Framework.MsBuild" Version="$(XenialLicGenVersion)">
+        <PrivateAssets>None</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+  </Target>
 
   <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
     <ItemGroup>
