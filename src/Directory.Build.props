@@ -26,7 +26,7 @@
     <PackageReference Include="Standard.Licensing" Version="1.1.5" />
   </ItemGroup>
 
-  <PropertyGroup>
+  <!-- <PropertyGroup>
     <XenialLicGenVersion>*-*</XenialLicGenVersion>
   </PropertyGroup>
 
@@ -40,7 +40,7 @@
       <PrivateAssets>None</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
+  </ItemGroup> -->
 
   <Target Name="FixLicensePackageVersion" AfterTargets="MinVer">
     <PropertyGroup>
