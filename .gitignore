@@ -11,6 +11,8 @@
 *.sln.docstates
 THIRD-PARTY-NOTICES.TXT
 
+.cr/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
