@@ -28,6 +28,7 @@ namespace Xenial.Build
                 => $"/maxcpucount /nologo /verbosity:minimal /bl:./artifacts/logs/xenial.framework.{target}.binlog";
 
             const string Configuration = "Release";
+            const string ConfigurationDebug = "Debug";
 
             var sln = RuntimeInformation
                 .IsOSPlatform(OSPlatform.Windows)
@@ -37,9 +38,9 @@ namespace Xenial.Build
             var featureCenterBlazorDir = "./demos/FeatureCenter/Xenial.FeatureCenter.Blazor.Server";
             var featureCenterBlazor = Path.Combine(featureCenterBlazorDir, "Xenial.FeatureCenter.Blazor.Server.csproj");
 
-            string GetProperties() => string.Join(" ", new Dictionary<string, string>
+            string GetProperties(string configuration = null) => string.Join(" ", new Dictionary<string, string>
             {
-                ["Configuration"] = Configuration,
+                ["Configuration"] = configuration ?? Configuration,
                 ["XenialPublicKey"] = PublicKey
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
@@ -63,6 +64,10 @@ namespace Xenial.Build
 
             Target("build", DependsOn("restore"),
                 () => RunAsync("dotnet", $"build {sln} --no-restore -c {Configuration} {logOptions("build")} {GetProperties()}")
+            );
+
+            Target("build:debug", DependsOn("restore"),
+                () => RunAsync("dotnet", $"build {sln} --no-restore -c {ConfigurationDebug} {logOptions("build.debug")} {GetProperties(ConfigurationDebug)}")
             );
 
             Target("test", DependsOn("build"), async () =>
