@@ -43,6 +43,7 @@
   </ItemGroup>
 
   <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
+    <Error Text="XenialLicGenVersion = $(XenialLicGenVersion)"/>
     <ItemGroup>
       <AssemblyAttribute Include="Xenial.XenialPublicKeyAttribute" Condition="'$(XenialPublicKey)' != ''">
         <_Parameter1>$(XenialPublicKey)</_Parameter1>
