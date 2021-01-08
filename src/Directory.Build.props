@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <XenialLicGenVersion Condition="$(XenialLicGenVersion) != ''">(,$(XenialLicGenVersion)]</XenialLicGenVersion>
     <XenialLicGenVersion Condition="$(XenialLicGenVersion) == ''">*-*</XenialLicGenVersion>
   </PropertyGroup>
 
@@ -43,7 +44,7 @@
   </ItemGroup>
 
   <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
-    <Error Text="XenialLicGenVersion = $(XenialLicGenVersion)"/>
+    <Warning Text="XenialLicGenVersion = $(XenialLicGenVersion)"/>
     <ItemGroup>
       <AssemblyAttribute Include="Xenial.XenialPublicKeyAttribute" Condition="'$(XenialPublicKey)' != ''">
         <_Parameter1>$(XenialPublicKey)</_Parameter1>
