@@ -9,6 +9,9 @@
     <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
     <XenialPublicKey Condition="$(XenialPublicKey) == ''"></XenialPublicKey>
     <CheckXenialLicense>false</CheckXenialLicense>
+    <_XenialLicGenVersion Condition="$(XenialLicGenVersion) != ''">[$(XenialLicGenVersion)]</_XenialLicGenVersion>
+    <XenialLicGenVersion Condition="$(XenialLicGenVersion) == ''">*-*</XenialLicGenVersion>
+    <_XenialLicGenVersion Condition="$(XenialLicGenVersion) == '*-*'">*.*</_XenialLicGenVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,24 +29,19 @@
     <PackageReference Include="Standard.Licensing" Version="1.1.5" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <XenialLicGenVersion Condition="$(XenialLicGenVersion) == ''">*-*</XenialLicGenVersion>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Xenial.Framework.LicGen" Version="$(XenialLicGenVersion)">
+    <PackageReference Include="Xenial.Framework.LicGen" Version="$(_XenialLicGenVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
-    <PackageReference Include="Xenial.Framework.MsBuild" Version="$(XenialLicGenVersion)">
+    <PackageReference Include="Xenial.Framework.MsBuild" Version="$(_XenialLicGenVersion)">
       <PrivateAssets>None</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
   <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
-    <Warning Text="XenialLicGenVersion = $(XenialLicGenVersion)"/>
     <ItemGroup>
       <AssemblyAttribute Include="Xenial.XenialPublicKeyAttribute" Condition="'$(XenialPublicKey)' != ''">
         <_Parameter1>$(XenialPublicKey)</_Parameter1>
