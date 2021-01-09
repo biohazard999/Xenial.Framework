@@ -1,46 +1,14 @@
 ﻿using System.ComponentModel;
 
-using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 
 using DevExpress.Persistent.Base;
 using DevExpress.Xpo;
 
-
 using Xenial.Framework.Base;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
-    [DomainComponent]
-    [DevExpress.Persistent.Base.DefaultClassOptions]
-    [Singleton(AutoCommit = true)]
-    public partial class StepProgressBarEnumEditorDemo : NonPersistentBaseObject
-    {
-        public override void OnCreated()
-        {
-            base.OnCreated();
-            Steps = StepsEnum.ShippingOptions;
-        }
-
-        protected override void OnObjectSpaceChanged()
-        {
-            base.OnObjectSpaceChanged();
-            if (ObjectSpace is NonPersistentObjectSpace nos)
-            {
-                nos.AutoSetModifiedOnObjectChange = true;
-            }
-        }
-
-        private StepsEnum steps = StepsEnum.ShippingOptions;
-        [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]
-        public StepsEnum Steps { get => steps; set => SetPropertyValue(ref steps, value); }
-
-        private StepsEnum? nullableSteps;
-        [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]
-        [DevExpress.ExpressApp.Model.ModelDefault("NullText", "Not Started")]
-        public StepsEnum? NullableSteps { get => nullableSteps; set => SetPropertyValue(ref nullableSteps, value); }
-    }
-
     [Persistent]
     [DefaultClassOptions]
     [Singleton(AutoCommit = true)]
@@ -69,7 +37,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         }
 
         private StepsEnum steps = StepsEnum.ShippingOptions;
-        [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]
+        [StepProgressEnumEditor]
         public StepsEnum Steps
         {
             get => steps;
@@ -83,7 +51,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         }
 
         private StepsEnum? nullableSteps;
-        [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]
+        [StepProgressEnumEditor]
         public StepsEnum? NullableSteps { get => nullableSteps; set => SetPropertyValue(ref nullableSteps, value); }
     }
 

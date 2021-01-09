@@ -26,8 +26,6 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 
             typeof(TokenEditorNonPersistentDemo),
             typeof(TokenEditorNonPersistentTokens),
-
-            typeof(StepProgressBarEnumEditorDemo)
         };
     }
 }
