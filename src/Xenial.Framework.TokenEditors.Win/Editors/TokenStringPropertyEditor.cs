@@ -14,7 +14,8 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
     /// Implements the <see cref="DevExpress.ExpressApp.Win.Editors.DXPropertyEditor" />
     /// </summary>
     /// <seealso cref="DevExpress.ExpressApp.Win.Editors.DXPropertyEditor" />
-    public class TokenStringPropertyEditor : DXPropertyEditor
+    [XenialCheckLicence]
+    public sealed partial class TokenStringPropertyEditor : DXPropertyEditor
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenStringPropertyEditor"/> class.

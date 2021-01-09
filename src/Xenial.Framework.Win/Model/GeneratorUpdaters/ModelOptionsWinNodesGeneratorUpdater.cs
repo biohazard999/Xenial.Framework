@@ -10,13 +10,14 @@ namespace Xenial.Framework.Win.Model.GeneratorUpdaters
     /// Implements the <see cref="Xenial.Framework.Model.GeneratorUpdaters.ModelOptionsNodesGeneratorUpdater" />
     /// </summary>
     /// <seealso cref="Xenial.Framework.Model.GeneratorUpdaters.ModelOptionsNodesGeneratorUpdater" />
-    public class ModelOptionsWinNodesGeneratorUpdater : ModelOptionsNodesGeneratorUpdater
+    [XenialCheckLicence]
+    public sealed partial class ModelOptionsWinNodesGeneratorUpdater : ModelOptionsNodesGeneratorUpdater
     {
         /// <summary>
         /// Gets the options.
         /// </summary>
         /// <value>The options.</value>
-        protected new ApplicationWinOptions Options => (ApplicationWinOptions)base.Options;
+        private new ApplicationWinOptions Options => (ApplicationWinOptions)base.Options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelOptionsWinNodesGeneratorUpdater"/> class.
