@@ -6,6 +6,8 @@ using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.Persistent.Base;
 
+using Xenial.Framework.StepProgressEditors.PubTernal;
+
 namespace Xenial.Framework.StepProgressEditors.Model.GeneratorUpdaters
 {
     /// <summary>
@@ -39,7 +41,7 @@ namespace Xenial.Framework.StepProgressEditors.Model.GeneratorUpdaters
                     })
                     .Where(info =>
                     {
-                        var result = info.attr is not null && info.attr.Alias == EditorAliases.StepProgressEnumPropertyEditor;
+                        var result = info.attr is not null && info.attr.Alias == StepProgressEditorAliases.StepProgressEnumPropertyEditor;
                         if (result)
                         {
                             var underlyingType = Nullable.GetUnderlyingType(info.memberInfo.Type);
@@ -63,7 +65,7 @@ namespace Xenial.Framework.StepProgressEditors.Model.GeneratorUpdaters
                     {
                         foreach (var typeRegistration in editorDescriptors.PropertyEditorRegistrations)
                         {
-                            if (typeRegistration.Alias == EditorAliases.StepProgressEnumPropertyEditor)
+                            if (typeRegistration.Alias == StepProgressEditorAliases.StepProgressEnumPropertyEditor)
                             {
                                 return typeRegistration.EditorType;
                             }

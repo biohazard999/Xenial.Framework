@@ -491,7 +491,7 @@ namespace DevExpress.ExpressApp.Editors
             _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
 
             editorDescriptorsFactory.RegisterPropertyEditor(
-                Xenial.Framework.TokenEditors.EditorAliases.TokenObjectsPropertyEditor,
+                Xenial.Framework.TokenEditors.PubTernal.TokenEditorAliases.TokenObjectsPropertyEditor,
                 typeof(IList<>),
                 typeof(TokenObjectsPropertyEditor),
                 false
@@ -512,14 +512,14 @@ namespace DevExpress.ExpressApp.Editors
             _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
 
             editorDescriptorsFactory.RegisterPropertyEditor(
-                Xenial.Framework.TokenEditors.EditorAliases.TokenObjectsPropertyEditor,
+                Xenial.Framework.TokenEditors.PubTernal.TokenEditorAliases.TokenObjectsPropertyEditor,
                 typeof(IList<T>),
                 typeof(TokenObjectsPropertyEditor),
                 false
             );
 
             editorDescriptorsFactory.RegisterPropertyEditor(
-                Xenial.Framework.TokenEditors.EditorAliases.TokenObjectsPropertyEditor,
+                Xenial.Framework.TokenEditors.PubTernal.TokenEditorAliases.TokenObjectsPropertyEditor,
                 typeof(BindingList<T>),
                 typeof(TokenObjectsPropertyEditor),
                 false
@@ -540,7 +540,7 @@ namespace DevExpress.ExpressApp.Editors
             _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
 
             editorDescriptorsFactory.RegisterPropertyEditor(
-                Xenial.Framework.TokenEditors.EditorAliases.TokenObjectsPropertyEditor,
+                Xenial.Framework.TokenEditors.PubTernal.TokenEditorAliases.TokenObjectsPropertyEditor,
                 typeof(T),
                 typeof(TokenObjectsPropertyEditor),
                 false

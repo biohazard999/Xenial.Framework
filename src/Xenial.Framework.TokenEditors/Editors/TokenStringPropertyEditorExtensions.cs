@@ -20,7 +20,7 @@ namespace DevExpress.ExpressApp.Editors
             _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
 
             editorDescriptorsFactory.RegisterPropertyEditorAlias(
-                Xenial.Framework.TokenEditors.EditorAliases.TokenStringPropertyEditor,
+                Xenial.Framework.TokenEditors.PubTernal.TokenEditorAliases.TokenStringPropertyEditor,
                 typeof(string),
                 true
             );

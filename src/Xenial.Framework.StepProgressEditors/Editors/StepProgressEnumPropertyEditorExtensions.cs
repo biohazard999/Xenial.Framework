@@ -21,7 +21,7 @@ namespace DevExpress.ExpressApp.Editors
             _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
 
             editorDescriptorsFactory.RegisterPropertyEditorAlias(
-                Xenial.Framework.StepProgressEditors.EditorAliases.StepProgressEnumPropertyEditor,
+                Xenial.Framework.StepProgressEditors.PubTernal.StepProgressEditorAliases.StepProgressEnumPropertyEditor,
                 typeof(Enum),
                 true
             );
@@ -43,7 +43,7 @@ namespace DevExpress.ExpressApp.Editors
             _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
 
             editorDescriptorsFactory.RegisterPropertyEditorAlias(
-                Xenial.Framework.StepProgressEditors.EditorAliases.StepProgressEnumPropertyEditor,
+                Xenial.Framework.StepProgressEditors.PubTernal.StepProgressEditorAliases.StepProgressEnumPropertyEditor,
                 typeof(TPropertyType),
                 true
             );

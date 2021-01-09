@@ -232,7 +232,7 @@ namespace DevExpress.ExpressApp.Editors
             _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
 
             editorDescriptorsFactory.RegisterPropertyEditor(
-                Xenial.Framework.StepProgressEditors.EditorAliases.StepProgressEnumPropertyEditor,
+                Xenial.Framework.StepProgressEditors.PubTernal.StepProgressEditorAliases.StepProgressEnumPropertyEditor,
                 typeof(Enum),
                 typeof(StepProgressBarEnumPropertyEditor),
                 false
