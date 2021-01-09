@@ -11,7 +11,7 @@
     <CheckXenialLicense>false</CheckXenialLicense>
     <_XenialLicGenVersion Condition="$(XenialLicGenVersion) != ''">[$(XenialLicGenVersion)]</_XenialLicGenVersion>
     <XenialLicGenVersion Condition="$(XenialLicGenVersion) == ''">*-*</XenialLicGenVersion>
-    <_XenialLicGenVersion Condition="$(XenialLicGenVersion) == '*-*'">*.*</_XenialLicGenVersion>
+    <_XenialLicGenVersion Condition="$(XenialLicGenVersion) == '*-*'">*-*</_XenialLicGenVersion>
   </PropertyGroup>
 
   <ItemGroup>

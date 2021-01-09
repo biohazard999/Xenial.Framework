@@ -55,12 +55,32 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         }
 
         private StepsEnum normalSteps = StepsEnum.ShippingOptions;
-        public StepsEnum NormalSteps { get => normalSteps; set => SetPropertyValue(ref normalSteps, value); }
-
+        [ImmediatePostData]
+        public StepsEnum NormalSteps
+        {
+            get => normalSteps;
+            set
+            {
+                if (SetPropertyValue(ref normalSteps, value) && IsSaveForBusinessLogic)
+                {
+                    Steps = value;
+                }
+            }
+        }
 
         private StepsEnum steps = StepsEnum.ShippingOptions;
         [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]
-        public StepsEnum Steps { get => steps; set => SetPropertyValue(ref steps, value); }
+        public StepsEnum Steps
+        {
+            get => steps;
+            set
+            {
+                if (SetPropertyValue(ref steps, value) && IsSaveForBusinessLogic)
+                {
+                    NormalSteps = value;
+                }
+            }
+        }
 
         private StepsEnum? nullableSteps;
         [EditorAlias("Xenial.StepProgressBarEnumPropertyEditor")]

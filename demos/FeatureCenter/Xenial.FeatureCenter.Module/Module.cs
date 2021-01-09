@@ -58,8 +58,7 @@ namespace Xenial.FeatureCenter.Module
 
             editorDescriptorsFactory.UseTokenObjectsPropertyEditors<TokenEditorNonPersistentTokens>();
             editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForType<XPCollection<TokenEditorPersistentTokens>>();
-            editorDescriptorsFactory.RegisterPropertyEditorAlias("Xenial.StepProgressBarEnumPropertyEditor", typeof(Enum), true);
-            editorDescriptorsFactory.RegisterPropertyEditorAlias("Xenial.StepProgressBarEnumPropertyEditor", typeof(StepsEnum?), true);
+            editorDescriptorsFactory.RegisterPropertyEditorAlias("Xenial.StepProgressBarEnumPropertyEditor", typeof(Enum), false);
         }
 
         public override void Setup(XafApplication application)
