@@ -1,8 +1,6 @@
 ﻿using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Editors;
 
-using Xenial.Framework.TokenEditors;
-
 namespace Xenial.Framework.StepProgressEditors.Win
 {
     /// <summary>
