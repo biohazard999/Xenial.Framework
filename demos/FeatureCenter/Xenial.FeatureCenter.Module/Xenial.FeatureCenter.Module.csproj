@@ -24,8 +24,4 @@
     <PackageReference Include="Bogus" Version="32.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Xenial.Framework.WebView\Xenial.Framework.WebView.csproj" />
-  </ItemGroup>
-
 </Project>
