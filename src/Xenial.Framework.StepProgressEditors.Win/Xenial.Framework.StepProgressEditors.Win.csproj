@@ -7,11 +7,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
-    <ProjectReference Include="..\Xenial.Framework.TokenEditors\Xenial.Framework.TokenEditors.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.StepProgressEditors\Xenial.Framework.StepProgressEditors.csproj" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
-  
+    
 </Project>

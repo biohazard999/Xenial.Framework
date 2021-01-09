@@ -13,12 +13,14 @@
     <PackageReference Include="Xenial.Framework.Win" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.WebView.Win" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.TokenEditors.Win" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.StepProgressEditors.Win" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Win/Xenial.Framework.Win.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.WebView.Win/Xenial.Framework.WebView.Win.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors.Win/Xenial.Framework.TokenEditors.Win.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.StepProgressEditors.Win/Xenial.Framework.StepProgressEditors.Win.csproj" />
   </ItemGroup>
   
 </Project>

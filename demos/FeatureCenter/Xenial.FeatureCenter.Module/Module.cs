@@ -14,6 +14,7 @@ using DevExpress.ExpressApp.Updating;
 
 using Xenial.Framework;
 using Xenial.Framework.TokenEditors;
+using Xenial.Framework.StepProgressEditors;
 
 using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
 using Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders;
@@ -27,7 +28,8 @@ namespace Xenial.FeatureCenter.Module
         protected override ModuleTypeList GetRequiredModuleTypesCore()
             => base.GetRequiredModuleTypesCore()
                 .AndModuleTypes(
-                    typeof(XenialTokenEditorsModule)
+                    typeof(XenialTokenEditorsModule),
+                    typeof(XenialStepProgressEditorsModule)
                 );
 
         protected override IEnumerable<Type> GetDeclaredExportedTypes()
@@ -49,7 +51,9 @@ namespace Xenial.FeatureCenter.Module
         public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
         {
             base.AddGeneratorUpdaters(updaters);
+
             updaters.UseSingletonNavigationItems();
+            updaters.UseStepProgressEnumPropertyEditors();
         }
 
         protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
@@ -58,7 +62,7 @@ namespace Xenial.FeatureCenter.Module
 
             editorDescriptorsFactory.UseTokenObjectsPropertyEditors<TokenEditorNonPersistentTokens>();
             editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForType<XPCollection<TokenEditorPersistentTokens>>();
-            editorDescriptorsFactory.RegisterPropertyEditorAlias("Xenial.StepProgressBarEnumPropertyEditor", typeof(Enum), false);
+            editorDescriptorsFactory.UseStepProgressEnumPropertyEditors();
         }
 
         public override void Setup(XafApplication application)
