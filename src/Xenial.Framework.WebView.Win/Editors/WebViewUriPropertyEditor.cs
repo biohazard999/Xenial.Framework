@@ -109,8 +109,13 @@ namespace DevExpress.ExpressApp.Editors
         public static EditorDescriptorsFactory UseWebViewUriPropertyEditorWin(this EditorDescriptorsFactory editorDescriptorsFactory)
         {
             _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
-            editorDescriptorsFactory.RegisterPropertyEditorAlias(Xenial.Framework.WebView.PubTernal.WebViewEditorAliases.WebViewUriPropertyEditor, typeof(Uri), true);
-            editorDescriptorsFactory.RegisterPropertyEditor(typeof(Uri), typeof(WebViewUriPropertyEditor), false);
+
+            editorDescriptorsFactory.RegisterPropertyEditor(
+                typeof(Uri),
+                typeof(WebViewUriPropertyEditor),
+                false
+            );
+
             return editorDescriptorsFactory;
         }
     }

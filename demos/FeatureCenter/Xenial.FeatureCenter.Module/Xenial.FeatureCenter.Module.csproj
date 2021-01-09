@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Xenial.Framework.WebView\Xenial.Framework.WebView.csproj" />
   </ItemGroup>
 
 </Project>
