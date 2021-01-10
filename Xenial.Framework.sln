@@ -54,9 +54,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TokenEditors", "TokenEditor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebView", "WebView", "{792C8FAC-BEE4-4C60-8080-AF8FEAD8753C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Framework.StepProgressEditors", "src\Xenial.Framework.StepProgressEditors\Xenial.Framework.StepProgressEditors.csproj", "{2A5C5FF7-D961-4E2F-B830-078E827340DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.StepProgressEditors", "src\Xenial.Framework.StepProgressEditors\Xenial.Framework.StepProgressEditors.csproj", "{2A5C5FF7-D961-4E2F-B830-078E827340DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Framework.StepProgressEditors.Win", "src\Xenial.Framework.StepProgressEditors.Win\Xenial.Framework.StepProgressEditors.Win.csproj", "{9E1699E0-1D32-4935-BFCF-982EE2581DBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.StepProgressEditors.Win", "src\Xenial.Framework.StepProgressEditors.Win\Xenial.Framework.StepProgressEditors.Win.csproj", "{9E1699E0-1D32-4935-BFCF-982EE2581DBB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StepProgressEditors", "StepProgressEditors", "{22679A92-BDFE-4FDC-8B0B-B797E723B63C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -244,8 +246,9 @@ Global
 		{CA6B535E-6371-411B-9EE6-E8D165F11339} = {6C888352-2A09-44CF-9067-F9D9E73AB6A5}
 		{6C888352-2A09-44CF-9067-F9D9E73AB6A5} = {4E58D432-9D7F-4719-B15B-4E334A478D14}
 		{792C8FAC-BEE4-4C60-8080-AF8FEAD8753C} = {4E58D432-9D7F-4719-B15B-4E334A478D14}
-		{2A5C5FF7-D961-4E2F-B830-078E827340DA} = {BBC9F78B-FCA3-4E8B-BE69-DFF8533377E7}
-		{9E1699E0-1D32-4935-BFCF-982EE2581DBB} = {BBC9F78B-FCA3-4E8B-BE69-DFF8533377E7}
+		{2A5C5FF7-D961-4E2F-B830-078E827340DA} = {22679A92-BDFE-4FDC-8B0B-B797E723B63C}
+		{9E1699E0-1D32-4935-BFCF-982EE2581DBB} = {22679A92-BDFE-4FDC-8B0B-B797E723B63C}
+		{22679A92-BDFE-4FDC-8B0B-B797E723B63C} = {4E58D432-9D7F-4719-B15B-4E334A478D14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C7E850AC-B423-49A9-8D5E-6B21CA22F615}

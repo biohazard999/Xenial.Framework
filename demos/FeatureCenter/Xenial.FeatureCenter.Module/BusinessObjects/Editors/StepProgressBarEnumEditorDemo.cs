@@ -17,6 +17,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
     public class StepProgressBarEnumEditorPersistentDemo : FeatureCenterBaseObjectId
     {
         public StepProgressBarEnumEditorPersistentDemo(Session session) : base(session) { }
+
         public override void AfterConstruction()
         {
             base.AfterConstruction();
