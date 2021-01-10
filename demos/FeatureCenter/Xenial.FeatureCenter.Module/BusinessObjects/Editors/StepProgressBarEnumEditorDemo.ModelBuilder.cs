@@ -20,6 +20,23 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         {
             base.Build();
 
+            this.WithDetailViewLayout(l => new()
+            {
+                l.TabbedGroup
+                (
+                    l.Tab("Demo", "") with
+                    {
+                        Children = new()
+                        {
+                            l.PropertyEditor(m => m.NormalSteps)
+                        }
+                    },
+                    l.Tab("Installation", "") with
+                    {
+
+                    }
+                )
+            });
         }
     }
 }

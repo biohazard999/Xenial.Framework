@@ -128,6 +128,10 @@ namespace Xenial.FeatureCenter.Module
             typesInfo
                 .CreateModelBuilder<WebViewEditorDemoModelBuilder>()
                 .Build();
+
+            typesInfo
+                .CreateModelBuilder<StepProgressBarEnumEditorDemoModelBuilder>()
+                .Build();
         }
     }
 }
