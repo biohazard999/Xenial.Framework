@@ -1,4 +1,5 @@
 ﻿using DevExpress.ExpressApp.DC;
+using DevExpress.Persistent.Base;
 
 using System;
 using System.Collections.Generic;
@@ -24,14 +25,44 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             {
                 l.TabbedGroup
                 (
-                    l.Tab("Demo", "") with
+                    l.Tab("Demo", "Weather_Lightning") with
                     {
                         Children = new()
                         {
-                            l.PropertyEditor(m => m.NormalSteps)
+                            l.TabbedGroup
+                            (
+                                l.Tab("Basic",
+                                    l.PropertyEditor(m => m.NormalSteps) with { CaptionLocation = Locations.Top },
+                                    l.LayoutGroup("Normal Enumeration", l.PropertyEditor(m => m.Steps)) with { RelativeSize = 33 },
+                                    l.LayoutGroup("Nullable Enumeration", l.PropertyEditor(m => m.NullableSteps)) with { RelativeSize = 33 },
+                                    l.EmptySpaceItem() with { RelativeSize = 33 }
+                                ),
+                                l.Tab("Display Styles",
+                                    l.LayoutGroup("Without Description", l.PropertyEditor(m => m.WithoutDescription)) with { RelativeSize = 33 },
+                                    l.LayoutGroup("Without Images", l.PropertyEditor(m => m.WithoutImages)) with { RelativeSize = 33 },
+                                    l.LayoutGroup("Caption Only", l.PropertyEditor(m => m.CaptionOnly)) with { RelativeSize = 33 },
+                                    l.EmptySpaceItem() with { RelativeSize = 1 }
+                                )
+                            )
                         }
                     },
-                    l.Tab("Installation", "") with
+                    l.Tab("Installation", "ShipmentReceived") with
+                    {
+
+                    },
+                    l.Tab("Usage", "Actions_Settings") with
+                    {
+
+                    },
+                    l.Tab("Remarks", "Actions_Info") with
+                    {
+
+                    },
+                    l.Tab("Documentation", "DocumentStatistics") with
+                    {
+
+                    },
+                    l.Tab("Supported Platforms", "Bool") with
                     {
 
                     }

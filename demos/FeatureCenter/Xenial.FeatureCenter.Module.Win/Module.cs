@@ -37,5 +37,11 @@ namespace Xenial.FeatureCenter.Module.Win
             editorDescriptorsFactory.UseTokenObjectsPropertyEditorsWin<TokenEditorNonPersistentTokens>();
             editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForTypeWin<XPCollection<TokenEditorPersistentTokens>>();
         }
+
+        public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
+        {
+            base.AddGeneratorUpdaters(updaters);
+            updaters.UseStepProgressEnumPropertyEditors();
+        }
     }
 }

@@ -55,6 +55,7 @@ namespace Xenial.FeatureCenter.Module
             base.AddGeneratorUpdaters(updaters);
 
             updaters.UseSingletonNavigationItems();
+            updaters.UseDetailViewLayoutBuilders();
         }
 
         protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
