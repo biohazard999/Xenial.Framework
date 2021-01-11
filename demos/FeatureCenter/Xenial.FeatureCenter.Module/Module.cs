@@ -64,6 +64,12 @@ namespace Xenial.FeatureCenter.Module
 
             editorDescriptorsFactory.UseTokenObjectsPropertyEditors<TokenEditorNonPersistentTokens>();
             editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForType<XPCollection<TokenEditorPersistentTokens>>();
+
+            editorDescriptorsFactory.RegisterPropertyEditorAlias(
+                "Xenial.WebViewStringPropertyEditor",
+                typeof(string),
+                true
+            );
         }
 
         public override void Setup(XafApplication application)

@@ -48,11 +48,17 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                     },
                     l.Tab("Installation", "ShipmentReceived") with
                     {
-
+                        Children = new()
+                        {
+                            l.PropertyEditor(m => m.InstallationHtml),
+                        }
                     },
                     l.Tab("Usage", "Actions_Settings") with
                     {
-
+                        Children = new()
+                        {
+                            l.PropertyEditor(m => m.InstallationMarkdown),
+                        }
                     },
                     l.Tab("Remarks", "Actions_Info") with
                     {
@@ -67,7 +73,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 
                     }
                 )
-            });
+            }); ;
         }
     }
 }

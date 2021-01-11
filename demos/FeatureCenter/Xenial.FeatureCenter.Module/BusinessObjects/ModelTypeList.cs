@@ -11,6 +11,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         {
             typeof(FeatureCenterBaseObject),
             typeof(FeatureCenterBaseObjectId),
+            typeof(FeatureCenterDemoBaseObjectId),
 
             typeof(TokenEditorPersistentDemo),
             typeof(TokenEditorPersistentTokens),

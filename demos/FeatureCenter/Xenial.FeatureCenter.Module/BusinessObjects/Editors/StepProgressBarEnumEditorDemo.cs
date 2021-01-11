@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 using Bogus;
 
@@ -14,7 +15,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
     [Persistent]
     [DefaultClassOptions]
     [Singleton(AutoCommit = true)]
-    public class StepProgressBarEnumEditorPersistentDemo : FeatureCenterBaseObjectId
+    public class StepProgressBarEnumEditorPersistentDemo : FeatureCenterDemoBaseObjectId
     {
         public StepProgressBarEnumEditorPersistentDemo(Session session) : base(session) { }
 
@@ -71,6 +72,12 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         private StepsEnumCaptionOnly captionOnly;
         [StepProgressEnumEditor]
         public StepsEnumCaptionOnly CaptionOnly { get => captionOnly; set => SetPropertyValue(ref captionOnly, value); }
+
+        protected override IEnumerable<RequiredNuget> GetRequiredModules() => new[]
+        {
+            new RequiredNuget("StepProgressEditors"),
+            new RequiredNuget("StepProgressEditors", AvailablePlatform.Win),
+        };
     }
 
     public enum StepsEnum

@@ -36,6 +36,13 @@ namespace Xenial.FeatureCenter.Module.Win
 
             editorDescriptorsFactory.UseTokenObjectsPropertyEditorsWin<TokenEditorNonPersistentTokens>();
             editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForTypeWin<XPCollection<TokenEditorPersistentTokens>>();
+
+            editorDescriptorsFactory.RegisterPropertyEditor(
+                "Xenial.WebViewStringPropertyEditor",
+                typeof(string),
+                typeof(WebViewStringPropertyEditor),
+                false
+            );
         }
 
         public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
