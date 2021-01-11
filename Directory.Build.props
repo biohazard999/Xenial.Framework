@@ -4,7 +4,8 @@
     <Product>Xenial.Framework</Product>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <LangVersion>preview</LangVersion>
-    <Copyright>Copyright © Xenial, Manuel Grundner $([System.DateTime]::Today.ToString('yyyy'))</Copyright>
+    <!-- If encoding may fail for some reason, 169 is the copyright symbol -->
+    <Copyright>Copyright $([System.Char]::ConvertFromUtf32(169)) Xenial, Manuel Grundner 2019-$([System.DateTime]::Today.ToString('yyyy'))</Copyright>
     <Authors>Xenial, Manuel Grundner</Authors>
     <FullFrameworkVersion>net462</FullFrameworkVersion>
     <NetStandardVersion>netstandard2.0</NetStandardVersion>
