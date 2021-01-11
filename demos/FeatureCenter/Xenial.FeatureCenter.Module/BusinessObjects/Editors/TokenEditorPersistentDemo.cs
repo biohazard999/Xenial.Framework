@@ -3,6 +3,7 @@ using DevExpress.Persistent.Base;
 using DevExpress.Xpo;
 
 using System;
+using System.Collections.Generic;
 
 using Xenial.Framework.Base;
 
@@ -11,7 +12,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
     [Persistent]
     [DefaultClassOptions]
     [Singleton(AutoCommit = true)]
-    public class TokenEditorPersistentDemo : FeatureCenterBaseObjectId
+    public class TokenEditorPersistentDemo : FeatureCenterDemoBaseObjectId
     {
         private string? tokenEditorStringTokens;
 
@@ -32,6 +33,13 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         [ModelDefault("PredefinedValues", "Xenial.Framework;Xenial.Framework.Win;Xenial.Framework.TokenEditors;Xenial.Framework.TokenEditors.Win;Xenial.Framework.WebView.Win;Xenial.Framework.WebView")]
         [Size(SizeAttribute.Unlimited)]
         public string? TokenEditorStringTokens { get => tokenEditorStringTokens; set => SetPropertyValue(ref tokenEditorStringTokens, value); }
+
+        protected override IEnumerable<RequiredNuget> GetRequiredModules() => new[]
+        {
+            new RequiredNuget("TokenEditors"),
+            new RequiredNuget("TokenEditors", AvailablePlatform.Win),
+            new RequiredNuget("TokenEditors", AvailablePlatform.Blazor),
+        };
     }
 
     [Persistent]
