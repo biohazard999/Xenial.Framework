@@ -32,22 +32,6 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
     [NonPersistent]
     public abstract class FeatureCenterDemoBaseObjectId : FeatureCenterBaseObjectId
     {
-        private static string? xenialVersion;
-        private static string XenialVersion
-        {
-            get
-            {
-                if (xenialVersion == null)
-                {
-                    var version = typeof(FeatureCenterBaseObjectId).Assembly.GetCustomAttributes(true).OfType<System.Reflection.AssemblyProductAttribute>()
-                        .FirstOrDefault()?.Product;
-
-                    xenialVersion = version;
-                }
-                return xenialVersion ?? "UNDEFINED";
-            }
-        }
-
         protected FeatureCenterDemoBaseObjectId(Session session) : base(session) { }
 
         protected virtual IEnumerable<RequiredNuget> GetRequiredModules() => Array.Empty<RequiredNuget>();
@@ -61,7 +45,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 
             foreach (var type in types)
             {
-                sb.AppendLine($"dotnet add package {type.Nuget} --version {XenialVersion}");
+                sb.AppendLine($"dotnet add package {type.Nuget} --version {XenialVersion.Version}");
             }
 
             sb.AppendLine("```");
@@ -87,7 +71,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
   <link href='https://unpkg.com/prismjs@1.23.0/plugins/toolbar/prism-toolbar.css' rel='stylesheet' />
 </head>
 
-<body style='background-color: #272822; color: #bbb; font-family: sans-serif; margin: 0; padding: 0;'>
+<body style='background-color: #272822; color: #bbb; font-family: sans-serif; margin: 0; padding: 0; font-size: 14px;'>
   <h1 style='text-align: center; margin-top: .5rem'>Installation</h1>
   <hr style='border: none; border-top: 1px solid #bbb;' />
   {Markdown.ToHtml(markdown, pipeline)}

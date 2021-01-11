@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
-    <Product>$(XenialDemoPackageVersion)</Product>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(XenialDebug)' == 'false'">
