@@ -11,6 +11,7 @@
     <ItemGroup>
       <CompilerVisibleProperty Include="_XenialIsNet5" />
       <CompilerVisibleProperty Include="_XenialIsNet5Compatible" />
+      <CompilerVisibleProperty Include="GenerateXenialVersionInfo" />
       <CompilerVisibleProperty Include="CheckXenialLicense" />
       <CompilerVisibleProperty Include="GenerateXenialLicense" />
       <CompilerVisibleProperty Include="GenerateXenialModuleInitializer" />

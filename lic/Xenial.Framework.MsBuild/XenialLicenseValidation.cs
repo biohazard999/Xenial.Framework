@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using Microsoft.CodeAnalysis;
@@ -69,6 +70,34 @@ namespace Xenial.Framework.MsBuild
             //{
             //    Debugger.Launch();
             //}
+
+            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.GenerateXenialVersionInfo", out var generateXenialVersionInfoStr)
+               && bool.TryParse(generateXenialVersionInfoStr, out var generateXenialVersionInfo)
+               && generateXenialVersionInfo)
+            {
+                var xenialVersion = GetType().Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                    .FirstOrDefault(m => m.Key == "XenialPackageVersion")?.Value;
+                if (!string.IsNullOrEmpty(xenialVersion))
+                {
+                    var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
+                    syntaxWriter.WriteLine("using System;");
+                    syntaxWriter.WriteLine("using System.Runtime.CompilerServices;");
+                    syntaxWriter.WriteLine();
+                    syntaxWriter.WriteLine("namespace Xenial");
+                    syntaxWriter.OpenBrace();
+
+                    syntaxWriter.WriteLine("[CompilerGenerated]");
+                    syntaxWriter.WriteLine("internal static class XenialVersion");
+                    syntaxWriter.OpenBrace();
+                    syntaxWriter.WriteLine($"internal const string Version = \"{xenialVersion}\";");
+                    syntaxWriter.CloseBrace();
+                    syntaxWriter.CloseBrace();
+
+                    var syntax = syntaxWriter.ToString();
+                    var source = SourceText.From(syntax, Encoding.UTF8);
+                    context.AddSource($"XenialVersion{context.Compilation.AssemblyName}.g.cs", source);
+                }
+            }
 
             if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.CheckXenialLicense", out var checkLicenseStr)
                 && bool.TryParse(checkLicenseStr, out var checkLicense)

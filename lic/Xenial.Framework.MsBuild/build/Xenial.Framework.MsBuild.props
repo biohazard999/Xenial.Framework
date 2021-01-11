@@ -1,6 +1,7 @@
 ﻿<Project>
 
   <PropertyGroup>
+    <GenerateXenialVersionInfo Condition="'$(GenerateXenialVersionInfo)' == ''">true</GenerateXenialVersionInfo>
     <CheckXenialLicense Condition="'$(CheckXenialLicense)' == ''">true</CheckXenialLicense>
     <GenerateXenialLicense Condition="'$(GenerateXenialLicense)' == ''">true</GenerateXenialLicense>
     <GenerateXenialModuleInitializer Condition="'$(GenerateXenialModuleInitializer)' == ''">true</GenerateXenialModuleInitializer>
