@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 
-using DevExpress.Persistent.Base;
 using DevExpress.Xpo;
-
-using Markdig;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects
 {

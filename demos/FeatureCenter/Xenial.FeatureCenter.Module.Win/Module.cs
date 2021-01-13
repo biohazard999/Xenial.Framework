@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Editors;
-using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
-using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.Xpo;
-using DevExpress.XtraBars.Ribbon;
 
 using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
 using Xenial.Framework;
-using Xenial.Framework.TokenEditors.Win;
 using Xenial.Framework.StepProgressEditors.Win;
+using Xenial.Framework.TokenEditors.Win;
 using Xenial.Framework.WebView.Win;
 
 namespace Xenial.FeatureCenter.Module.Win
