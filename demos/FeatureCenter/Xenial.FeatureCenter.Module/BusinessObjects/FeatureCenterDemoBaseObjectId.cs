@@ -26,50 +26,36 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 
             var types = GetRequiredModules();
 
-            var installers = new[]
+            sb.AppendLine(new TabGroup
             {
-                ("dotnet-cli", ".NET CLI", "shell", types.Select(t => $"dotnet add package {t.Nuget} --version {XenialVersion.Version}")),
-                ("package-reference", "PackageReference", "xml", types.Select(t => $"<PackageReference Include=\"{t.Nuget}\" Version=\"{XenialVersion.Version}\" />")),
-                ("package-manager", "Package Manager", "powershell", types.Select(t => $"Install-Package {t.Nuget} -Version {XenialVersion.Version}")),
-                ("paket-cli", "Paket CLI", "shell", types.Select(t => $"paket add {t.Nuget} --version {XenialVersion.Version}")),
-            };
-
-
-            sb.AppendLine("<div class='tabs-wrapper'>");
-            sb.AppendLine("<div class='tabs'>");
-            sb.AppendLine("<ul>");
-
-            foreach (var (id, caption, _, _) in installers)
-            {
-                var active = installers.First().Item1 == id ? "is-active" : string.Empty;
-                sb.AppendLine($"<li class='{active}'>");
-                sb.AppendLine($"<a>{caption}</a>");
-                sb.AppendLine("</li>");
-            }
-
-            sb.AppendLine("</ul>");
-            sb.AppendLine("</div>");
-
-            sb.AppendLine("<div class='tabs-content'>");
-            sb.AppendLine("<ul>");
-
-            foreach (var (id, _, type, content) in installers)
-            {
-                var active = installers.First().Item1 == id ? "is-active" : string.Empty;
-                sb.AppendLine($"<li class='{active}'>");
-
-                var subSb = new StringBuilder();
-                subSb.AppendLine($"```{type}");
-                subSb.AppendLine(string.Join(Environment.NewLine, content));
-                subSb.AppendLine("```");
-
-                sb.AppendLine(Markdown.ToHtml(subSb.ToString(), pipeline));
-                sb.AppendLine("</li>");
-            }
-
-            sb.AppendLine("</ul>");
-            sb.AppendLine("</div>");
-            sb.AppendLine("</div>");
+                Tabs = new()
+                {
+                    new(".NET CLI", "fas fa-terminal")
+                    {
+                        MarkDown = $@"```shell
+{string.Join(Environment.NewLine, types.Select(t => $"dotnet add package {t.Nuget} --version {XenialVersion.Version}"))}
+```"
+                    },
+                    new("PackageReference", "fas fa-code")
+                    {
+                        MarkDown = $@"```xml
+{string.Join(Environment.NewLine, types.Select(t => $"<PackageReference Include=\"{t.Nuget}\" Version=\"{XenialVersion.Version}\" />"))}
+```"
+                    },
+                    new("Package Manager", "fas fa-terminal")
+                    {
+                        MarkDown = $@"```powershell
+{string.Join(Environment.NewLine, types.Select(t => $"Install-Package {t.Nuget} -Version {XenialVersion.Version}"))}
+```"
+                    },
+                    new("Paket CLI", "fas fa-terminal")
+                    {
+                        MarkDown = $@"```shell
+{string.Join(Environment.NewLine, types.Select(t => $"paket add {t.Nuget} --version {XenialVersion.Version}"))}
+```"
+                    }
+                }
+            }.ToString());
 
             AddInstallationSection(sb);
 
@@ -78,7 +64,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 
         protected virtual void AddInstallationSection(StringBuilder sb) { }
 
-        internal record Tab(string Id, string Caption)
+        internal record Tab(string Caption, string? Image)
         {
             public string MarkDown { get; set; } = string.Empty;
 
@@ -86,7 +72,15 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
             {
                 var active = isFirst ? "is-active" : string.Empty;
                 sb.AppendLine($"<li class='{active}'>");
-                sb.AppendLine($"<a>{Caption}</a>");
+
+                if (string.IsNullOrEmpty(Image))
+                {
+                    sb.AppendLine($"<a>{Caption}</a>");
+                }
+                else
+                {
+                    sb.AppendLine($"<a><span class='icon is-small'><i class='{Image}' aria-hidden='true'></i></span><span>{Caption}</span></a>");
+                }
                 sb.AppendLine("</li>");
             }
 

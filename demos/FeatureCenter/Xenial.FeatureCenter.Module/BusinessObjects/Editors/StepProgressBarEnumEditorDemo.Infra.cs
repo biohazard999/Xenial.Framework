@@ -28,7 +28,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             {
                 Tabs = new()
                 {
-                    new("module", "By Module")
+                    new("By Module", "fas fa-code")
                     {
                         MarkDown = @"
 
@@ -65,6 +65,10 @@ public class MyProjectWindowsFormsModule : ModuleBase
 ```
 
 "
+                    },
+                    new("Feature Slice", "fas fa-pizza-slice")
+                    {
+                        MarkDown = ""
                     }
                 }
             }.ToString());
