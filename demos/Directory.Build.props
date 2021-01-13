@@ -11,6 +11,7 @@
     <XenialDebug>false</XenialDebug>
     <SrcDirectory>$(MSBuildThisFileDirectory)..\src\</SrcDirectory>
     <XenialDemoPackageVersion Condition="'$(XenialDemoPackageVersion)' == ''">*-*</XenialDemoPackageVersion>
+    <DxVersionPart>v20.2</DxVersionPart>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

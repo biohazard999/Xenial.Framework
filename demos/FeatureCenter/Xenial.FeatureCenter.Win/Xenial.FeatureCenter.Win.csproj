@@ -21,5 +21,9 @@
   <ItemGroup>
     <Reference Include="System.Configuration" />
   </ItemGroup>
-    
+  
+  <Target Name="DeleteFiles" AfterTargets="Publish">
+    <Delete Files="$(PublishDir)DevExpress.BonusSkins.$(DxVersionPart).dll" />
+  </Target>
+  
 </Project>

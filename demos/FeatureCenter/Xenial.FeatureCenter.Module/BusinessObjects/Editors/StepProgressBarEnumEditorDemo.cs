@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 using Bogus;
 
@@ -8,14 +7,10 @@ using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
 using DevExpress.Xpo;
 
-using Xenial.Framework.Base;
-
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [Persistent]
-    [DefaultClassOptions]
-    [Singleton(AutoCommit = true)]
-    public class StepProgressBarEnumEditorPersistentDemo : FeatureCenterDemoBaseObjectId
+    public partial class StepProgressBarEnumEditorPersistentDemo : FeatureCenterDemoBaseObjectId
     {
         public StepProgressBarEnumEditorPersistentDemo(Session session) : base(session) { }
 
@@ -24,6 +19,8 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             base.AfterConstruction();
             NormalSteps = StepsEnum.PaymentDetails;
             Steps = StepsEnum.ShippingOptions;
+
+            //Generate Random Values for the Demo
             WithoutDescription = new Faker().Random.Enum<StepsEnumWithoutDescription>();
             WithoutImages = new Faker().Random.Enum<StepsEnumWithoutImages>();
             CaptionOnly = new Faker().Random.Enum<StepsEnumCaptionOnly>();
@@ -45,6 +42,9 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 
         private StepsEnum steps = StepsEnum.ShippingOptions;
         [StepProgressEnumEditor]
+        //Link NormalSteps and Steps together. When you change one value, the other will also change.
+        //Demonstrates the interactive editor. You can provide additional business logic
+        //when the step changes
         public StepsEnum Steps
         {
             get => steps;
@@ -72,12 +72,6 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         private StepsEnumCaptionOnly captionOnly;
         [StepProgressEnumEditor]
         public StepsEnumCaptionOnly CaptionOnly { get => captionOnly; set => SetPropertyValue(ref captionOnly, value); }
-
-        protected override IEnumerable<RequiredNuget> GetRequiredModules() => new[]
-        {
-            new RequiredNuget("StepProgressEditors"),
-            new RequiredNuget("StepProgressEditors", AvailablePlatform.Win),
-        };
     }
 
     public enum StepsEnum
