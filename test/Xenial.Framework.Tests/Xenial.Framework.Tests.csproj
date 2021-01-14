@@ -3,6 +3,10 @@
   <PropertyGroup>
     <NoWarn>IDE0079;$(NoWarn)</NoWarn>
   </PropertyGroup>
+    
+  <ItemGroup>
+    <EmbeddedResource Include="Utils\TestResources\TestEmbeddedResource.txt" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Xenial.Framework\Xenial.Framework.csproj" />

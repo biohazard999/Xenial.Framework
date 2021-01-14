@@ -5,6 +5,7 @@ using Xenial.Framework.Tests.Layouts.Items;
 using Xenial.Framework.Tests.Model.Core;
 using Xenial.Framework.Tests.Model.GeneratorUpdaters;
 using Xenial.Framework.Tests.ModelBuilders;
+using Xenial.Framework.Tests.Utils;
 using Xenial.Framework.Tests.Utils.Slugger;
 using Xenial.Utils.Tests;
 
@@ -32,6 +33,7 @@ namespace Xenial.Framework.Tests
                 XafBuilderManagerFacts.XafBuilderManagerTests();
 
                 SlugerFacts.SluggerTests();
+                ResourceUtilFacts.ResourceExtentionsTests();
 
                 Describe("Layouts", () =>
                 {
