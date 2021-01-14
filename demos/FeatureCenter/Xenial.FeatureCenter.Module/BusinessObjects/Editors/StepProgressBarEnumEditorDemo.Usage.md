@@ -8,9 +8,69 @@
     </div>
     <div class="tabs-content">
         <ul>
-            <li class="is-active">Attributes Content</li>
-            <li>Model-Builders Content</li>
-            <li>Model-Editor Content</li>
-        </ul>
+            <li class="is-active">
+
+```cs
+public class StepProgressBarEnumEditorDemo
+{
+     [StepProgressEnumEditor]
+     public StepsEnum Steps { get; set; }
+}
+
+public enum StepsEnum
+{
+    [ImageName("Actions_User")]
+    [XafDisplayName("Personal Info")]
+    [DXDescription("Your name and email")]
+    PersonalInfo,
+
+    [ImageName("Shipment")]
+    [XafDisplayName("Shipping Options")]
+    [DXDescription("Shipping method and address")]
+    ShippingOptions
+}
+```
+
+</li>
+<li>
+
+```cs
+public class StepProgressBarEnumEditorDemo
+{
+     public StepsEnum Steps { get; set; }
+}
+
+public enum StepsEnum
+{
+    [ImageName("Actions_User")]
+    [XafDisplayName("Personal Info")]
+    [DXDescription("Your name and email")]
+    PersonalInfo,
+
+    [ImageName("Shipment")]
+    [XafDisplayName("Shipping Options")]
+    [DXDescription("Shipping method and address")]
+    ShippingOptions
+}
+
+public class StepProgressBarEnumEditorDemoModelBuilder 
+    : ModelBuilder<StepProgressBarEnumEditorDemo>
+{
+    public StepProgressBarEnumEditorDemoModelBuilder(ITypeInfo typeInfo) 
+        : base(typeInfo) { }
+
+    public override void Build()
+    {
+        base.Build();
+
+        For(m => m.Steps)
+            .UseStepProgressEnumPropertyEditor();
+    }
+}
+```            
+
+</li>
+    <li>Model-Editor Content</li>
+</ul>
     </div>
 </div>

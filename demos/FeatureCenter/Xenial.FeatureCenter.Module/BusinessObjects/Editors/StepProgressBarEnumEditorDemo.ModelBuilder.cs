@@ -1,25 +1,24 @@
-﻿using DevExpress.ExpressApp.DC;
-using DevExpress.Persistent.Base;
+﻿using System;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using DevExpress.ExpressApp.DC;
+using DevExpress.Persistent.Base;
 
 using Xenial.Framework.ModelBuilders;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
-    public class StepProgressBarEnumEditorDemoModelBuilder : ModelBuilder<StepProgressBarEnumEditorPersistentDemo>
+    public class StepProgressBarEnumEditorDemoModelBuilder : ModelBuilder<StepProgressBarEnumEditorDemo>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StepProgressBarEnumEditorDemoModelBuilder`1"/> class.
-        /// </summary>
-        /// <param name="typeInfo">The type information.</param>
         public StepProgressBarEnumEditorDemoModelBuilder(ITypeInfo typeInfo) : base(typeInfo) { }
 
         public override void Build()
         {
             base.Build();
+
+            this.HasCaption("Editors - StepProgressBarEnum")
+                .WithDefaultClassOptions()
+                .HasImage("GaugeStyleLinearHorizontal")
+                .IsSingleton(autoCommit: true);
 
             this.WithDetailViewLayout(l => new()
             {
@@ -64,7 +63,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                     {
 
                     },
-                    l.Tab("Documentation", "DocumentStatistics") with
+                    l.Tab("API-Docs", "DocumentStatistics") with
                     {
 
                     },

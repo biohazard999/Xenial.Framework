@@ -8,9 +8,7 @@ using Xenial.Framework.Base;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
-    [DefaultClassOptions]
-    [Singleton(AutoCommit = true)]
-    public partial class StepProgressBarEnumEditorPersistentDemo
+    public partial class StepProgressBarEnumEditorDemo
     {
         protected override string UsagePath => "BusinessObjects/Editors/StepProgressBarEnumEditorDemo.Usage.md";
 
