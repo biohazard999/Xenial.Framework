@@ -8,6 +8,8 @@ using DevExpress.Xpo;
 
 using Markdig;
 
+using Xenial.Framework.Utils;
+
 namespace Xenial.FeatureCenter.Module.BusinessObjects
 {
     [NonPersistent]
@@ -18,7 +20,6 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         protected FeatureCenterDemoBaseObjectId(Session session) : base(session) { }
 
         protected virtual IEnumerable<RequiredNuget> GetRequiredModules() => Array.Empty<RequiredNuget>();
-
 
         private string BuildInstallationMarkDown()
         {
@@ -130,8 +131,25 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 
         private string BuildInstallationHtml()
         {
-            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
             var markdown = BuildInstallationMarkDown();
+            return BuildHtml("Installation", markdown);
+        }
+
+        protected virtual string UsagePath { get; } = string.Empty;
+
+        private string BuildUsageHtml()
+        {
+            if (!string.IsNullOrEmpty(UsagePath))
+            {
+                var markdown = ResourceUtil.GetResourceString(GetType(), UsagePath);
+                return BuildHtml("Usage", markdown);
+            }
+            return string.Empty;
+        }
+
+        protected string BuildHtml(string title, string markdown)
+        {
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
 
             var html = $@"<!doctype html>
 
@@ -210,7 +228,7 @@ pre code .tag:not(body) {{
 <body>
   <section class='section'>
     <div class='container'>
-    <h1 class='title'>Installation</h1>
+    <h1 class='title'>{ title }</h1>
     { Markdown.ToHtml(markdown, pipeline)}
     </div>
   </section>
@@ -248,6 +266,11 @@ pre code .tag:not(body) {{
         [Size(SizeAttribute.Unlimited)]
         [EditorAlias("Xenial.WebViewStringPropertyEditor")]
         public string InstallationHtml => BuildInstallationHtml();
+
+        [NonPersistent]
+        [Size(SizeAttribute.Unlimited)]
+        [EditorAlias("Xenial.WebViewStringPropertyEditor")]
+        public string UsageHtml => BuildUsageHtml();
 
         protected virtual string PersistentClassFileName => string.Empty;
     }

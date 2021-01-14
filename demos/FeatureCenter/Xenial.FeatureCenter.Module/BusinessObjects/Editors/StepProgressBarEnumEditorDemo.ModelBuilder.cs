@@ -57,7 +57,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                     {
                         Children = new()
                         {
-                            l.PropertyEditor(m => m.InstallationMarkdown),
+                            l.PropertyEditor(m => m.UsageHtml),
                         }
                     },
                     l.Tab("Remarks", "Actions_Info") with

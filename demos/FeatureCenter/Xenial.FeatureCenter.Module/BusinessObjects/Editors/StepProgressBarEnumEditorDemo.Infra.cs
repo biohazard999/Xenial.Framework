@@ -12,6 +12,8 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
     [Singleton(AutoCommit = true)]
     public partial class StepProgressBarEnumEditorPersistentDemo
     {
+        protected override string UsagePath => "BusinessObjects/Editors/StepProgressBarEnumEditorDemo.Usage.md";
+
         protected override IEnumerable<RequiredNuget> GetRequiredModules() => new[]
         {
             new RequiredNuget("StepProgressEditors"),
@@ -100,7 +102,7 @@ public class MyProjectWindowsFormsModule : ModuleBase
     {
         base.AddGeneratorUpdaters(updaters);
         
-        //This is optional. You need this only for nullable enumeration properties in combination with the EditorAliasAttribute, StepProgressEnumEditorAttribute or ModelBuilders
+        //This is optional. You need this only for nullable enumeration properties in combination with the EditorAliasAttribute, StepProgressEnumEditorAttribute or ModelBuilders when using DevExpress version <= 20.2.4
         //See: https://supportcenter.devexpress.com/ticket/details/t962834/registering-an-editor-alias-for-nullable-types for more information
         updaters.UseStepProgressEnumPropertyEditors();
     }
