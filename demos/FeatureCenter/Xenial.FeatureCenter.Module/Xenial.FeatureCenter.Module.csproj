@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="**\*.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Bogus" Version="32.0.2" />
     <PackageReference Include="Markdig" Version="0.22.1" />
   </ItemGroup>
