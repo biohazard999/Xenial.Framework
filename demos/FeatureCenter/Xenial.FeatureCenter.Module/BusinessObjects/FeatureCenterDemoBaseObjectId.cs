@@ -400,6 +400,11 @@ pre code .tag:not(body) {{
         [EditorAlias("Xenial.WebViewStringPropertyEditor")]
         public string Usage => BuildUsageHtml();
 
+        [NonPersistent]
+        [Size(SizeAttribute.Unlimited)]
+        [WebViewUriEditor]
+        public Uri DemoCode => new Uri($"https://github.com/xenial-io/Xenial.Framework/blob/{XenialVersion.Branch}/{PersistentClassFileName}");
+
         protected virtual string PersistentClassFileName => string.Empty;
     }
 

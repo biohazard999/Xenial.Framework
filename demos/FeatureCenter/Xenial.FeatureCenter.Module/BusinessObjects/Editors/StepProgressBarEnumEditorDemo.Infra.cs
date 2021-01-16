@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-using DevExpress.Persistent.Base;
-
-using Xenial.Framework.Base;
-
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     public partial class StepProgressBarEnumEditorDemo
     {
+        protected override string PersistentClassFileName => "demos/FeatureCenter/Xenial.FeatureCenter.Module/BusinessObjects/Editors/StepProgressBarEnumEditorDemo.cs";
+
         protected override string UsageHtml => new Section()
         {
             Content = new()

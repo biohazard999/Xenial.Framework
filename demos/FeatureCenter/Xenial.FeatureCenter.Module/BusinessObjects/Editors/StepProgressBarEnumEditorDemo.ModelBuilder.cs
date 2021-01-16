@@ -67,6 +67,13 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                     {
 
                     },
+                    l.Tab("Demo-Code", "ToggleFieldCodes") with
+                    {
+                        Children = new()
+                        {
+                            l.PropertyEditor(m => m.DemoCode),
+                        }
+                    },
                     l.Tab("Supported Platforms", "Bool") with
                     {
 
