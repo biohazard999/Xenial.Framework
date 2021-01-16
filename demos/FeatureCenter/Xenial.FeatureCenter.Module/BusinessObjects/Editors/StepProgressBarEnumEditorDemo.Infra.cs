@@ -10,7 +10,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     public partial class StepProgressBarEnumEditorDemo
     {
-        protected override string UsagePath => "BusinessObjects/Editors/StepProgressBarEnumEditorDemo.Usage.md";
+        protected override string UsageHtml => "BusinessObjects/Editors/StepProgressBarEnumEditorDemo.Usage.md";
 
         protected override IEnumerable<RequiredNuget> GetRequiredModules() => new[]
         {

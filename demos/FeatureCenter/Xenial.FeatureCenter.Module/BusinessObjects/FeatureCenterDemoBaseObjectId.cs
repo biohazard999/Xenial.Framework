@@ -95,7 +95,55 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
             }
         }
 
-        internal record TabGroup
+        internal record Section(string Header)
+        {
+            public List<IHtmlAble> Content { get; set; } = new List<IHtmlAble>();
+
+            public override string ToString()
+            {
+                var sb = new StringBuilder();
+
+                sb.AppendLine("<div class='block'>");
+                sb.AppendLine($"<h2 class='subtitle'>{Header}</h2>");
+
+                foreach (var item in Content)
+                {
+                    sb.AppendLine(item.ToString());
+                }
+
+                sb.AppendLine("</div>");
+
+                return sb.ToString();
+            }
+        }
+
+        internal interface IHtmlAble
+        {
+            string ToString();
+        }
+
+        internal record HtmlBlock(string Html) : IHtmlAble
+        {
+            internal static HtmlBlock Create(string html)
+                => new HtmlBlock(html);
+
+            public override string ToString()
+                => Html;
+        }
+
+        internal record MarkDownBlock(string MarkDown) : IHtmlAble
+        {
+            internal static MarkDownBlock FromResourceString(string path)
+            {
+                var markdown = ResourceUtil.GetResourceString(typeof(MarkDownBlock), path);
+                return new MarkDownBlock(markdown);
+            }
+
+            public override string ToString()
+                => Markdown.ToHtml(MarkDown, pipeline);
+        }
+
+        internal record TabGroup : IHtmlAble
         {
             public List<Tab> Tabs { get; set; } = new List<Tab>();
 
@@ -135,14 +183,13 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
             return BuildHtml("Installation", markdown);
         }
 
-        protected virtual string UsagePath { get; } = string.Empty;
+        protected virtual string UsageHtml { get; } = string.Empty;
 
         private string BuildUsageHtml()
         {
-            if (!string.IsNullOrEmpty(UsagePath))
+            if (!string.IsNullOrEmpty(UsageHtml))
             {
-                var markdown = ResourceUtil.GetResourceString(GetType(), UsagePath);
-                return BuildHtml("Usage", markdown);
+                return BuildHtml("Usage", UsageHtml);
             }
             return string.Empty;
         }
@@ -265,12 +312,12 @@ pre code .tag:not(body) {{
         [NonPersistent]
         [Size(SizeAttribute.Unlimited)]
         [EditorAlias("Xenial.WebViewStringPropertyEditor")]
-        public string InstallationHtml => BuildInstallationHtml();
+        public string Installation => BuildInstallationHtml();
 
         [NonPersistent]
         [Size(SizeAttribute.Unlimited)]
         [EditorAlias("Xenial.WebViewStringPropertyEditor")]
-        public string UsageHtml => BuildUsageHtml();
+        public string Usage => BuildUsageHtml();
 
         protected virtual string PersistentClassFileName => string.Empty;
     }
