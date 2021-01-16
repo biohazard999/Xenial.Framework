@@ -25,6 +25,7 @@
     <RepositoryUrl>https://github.com/xenial-io/Xenial.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RepositoryBranch>main</RepositoryBranch>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageIcon>icon-64x64.png</PackageIcon>

@@ -19,9 +19,11 @@ namespace Xenial.Build
     {
         internal static async Task Main(string[] args)
         {
-            var version = new Lazy<Task<string>>(async () => (await ReadToolAsync(() => ReadAsync("dotnet", "minver -v e -t v", noEcho: true))).Trim());
+            var versionTask = new Lazy<Task<string>>(async () => (await ReadToolAsync(() => ReadAsync("dotnet", "minver -v e -t v", noEcho: true))).Trim());
+            var branchTask = new Lazy<Task<string>>(async () => (await ReadToolAsync(() => ReadAsync("git", "branch --show-current", noEcho: true))).Trim());
 
-            var v = await version.Value;
+            var version = await versionTask.Value;
+            var branch = await branchTask.Value;
 
             const string PleaseSet = "PLEASE SET BEFORE USE";
             var PublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3VFauRJrFzuZveL+J/naEs+CrNLBrc/sSDihdkUTo3Np/o4IoM8fxR6kYHIdH/7LXfXltFRREkv2ceTN8gyZuw==";
@@ -44,7 +46,8 @@ namespace Xenial.Build
             {
                 ["Configuration"] = configuration ?? Configuration,
                 ["XenialPublicKey"] = PublicKey,
-                ["XenialLicGenVersion"] = $"{v}"
+                ["XenialLicGenVersion"] = $"{version}",
+                ["RepositoryBranch"] = $"{branch}",
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
             Target("ensure-tools", () => EnsureTools());
@@ -146,7 +149,7 @@ namespace Xenial.Build
             {
                 DotnetCore = true,
                 PathToCsproj = featureCenterBlazor,
-                AssemblyProperties = $"/property:XenialDebug=false /property:XenialDemoPackageVersion={v}",
+                AssemblyProperties = $"/property:XenialDebug=false /property:XenialDemoPackageVersion={version}",
                 PrepareTask = async () =>
                 {
                     var settingsPath = Path.Combine(featureCenterBlazorDir, "appsettings.json");

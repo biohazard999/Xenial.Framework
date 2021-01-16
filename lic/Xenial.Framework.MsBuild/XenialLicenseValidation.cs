@@ -77,6 +77,10 @@ namespace Xenial.Framework.MsBuild
             {
                 var xenialVersion = GetType().Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
                     .FirstOrDefault(m => m.Key == "XenialPackageVersion")?.Value;
+
+                var xenialPackageBranch = GetType().Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                    .FirstOrDefault(m => m.Key == "XenialPackageBranch")?.Value;
+
                 if (!string.IsNullOrEmpty(xenialVersion))
                 {
                     var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
@@ -90,6 +94,8 @@ namespace Xenial.Framework.MsBuild
                     syntaxWriter.WriteLine("internal static class XenialVersion");
                     syntaxWriter.OpenBrace();
                     syntaxWriter.WriteLine($"internal const string Version = \"{xenialVersion}\";");
+                    syntaxWriter.WriteLine($"internal const string Branch = \"{xenialPackageBranch}\";");
+
                     syntaxWriter.CloseBrace();
                     syntaxWriter.CloseBrace();
 
