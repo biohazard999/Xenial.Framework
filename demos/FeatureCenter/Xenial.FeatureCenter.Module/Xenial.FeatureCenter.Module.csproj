@@ -22,11 +22,27 @@
 
   <ItemGroup>
     <EmbeddedResource Include="**\*.md" />
+    <EmbeddedResource Include="**\*.gif" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="32.0.2" />
     <PackageReference Include="Markdig" Version="0.22.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="BusinessObjects\Editors\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="BusinessObjects\Editors\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   
 </Project>

@@ -10,7 +10,30 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     public partial class StepProgressBarEnumEditorDemo
     {
-        protected override string UsageHtml => "BusinessObjects/Editors/StepProgressBarEnumEditorDemo.Usage.md";
+        protected override string UsageHtml => new Section()
+        {
+            Content = new()
+            {
+                new TabGroup()
+                {
+                    Tabs = new()
+                    {
+                        new Tab("Attributes", "fas fa-code")
+                        {
+                            HtmlAble = MarkDownBlock.FromResourceString("BusinessObjects/Editors/StepProgressBarEnumEditorDemo.Usage.Attributes.md")
+                        },
+                        new Tab("ModelBuilders", "fas fa-project-diagram")
+                        {
+                            HtmlAble = MarkDownBlock.FromResourceString("BusinessObjects/Editors/StepProgressBarEnumEditorDemo.Usage.ModelBuilders.md")
+                        },
+                        new Tab("Model-Editor", "fas fa-tools")
+                        {
+                            HtmlAble = ImageBlock.Create("is-4by3", Resources.StepProgressBarEnumEditorDemo_Usage_ModelEditor)
+                        },
+                    }
+                }
+            }
+        }.ToString();
 
         protected override IEnumerable<RequiredNuget> GetRequiredModules() => new[]
         {
@@ -27,18 +50,17 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         {
             base.AddInstallationSection(sb);
 
-            sb.AppendLine(new TabGroup
+            var tabGroup = Section.Create(string.Empty, new TabGroup
             {
                 Tabs = new()
                 {
                     new("Using Modules", "fas fa-code")
                     {
-                        MarkDown = @"
-
-#### Common Module
-
-```cs
-public class MyProjectModule : ModuleBase
+                        HtmlAble = new Section()
+                        {
+                            Content = new()
+                            {
+                                Section.Create("Common Module", CodeBlock.Create("cs", @"public class MyProjectModule : ModuleBase
 {
     protected override ModuleTypeList GetRequiredModuleTypesCore()
     {
@@ -48,13 +70,8 @@ public class MyProjectModule : ModuleBase
         
         return moduleTypes;
     }
-}
-```
-
-#### Windows Forms Module
-
-```cs
-public class MyProjectWindowsFormsModule : ModuleBase
+}")),
+                                Section.Create("Windows Forms Module", CodeBlock.Create("cs", @"public class MyProjectWindowsFormsModule : ModuleBase
 {
     protected override ModuleTypeList GetRequiredModuleTypesCore()
     {
@@ -64,31 +81,25 @@ public class MyProjectWindowsFormsModule : ModuleBase
         
         return moduleTypes;
     }
-}
-```
-
-"
+}"))
+                            }
+                        }
                     },
                     new("Using Feature Slices", "fas fa-pizza-slice")
                     {
-                        MarkDown = @"
-#### Common Module
-
-```cs
-public class MyProjectModule : ModuleBase
+                        HtmlAble = new Section()
+                        {
+                            Content = new()
+                            {
+                                Section.Create("Common Module", CodeBlock.Create("cs", @"public class MyProjectModule : ModuleBase
 {
     protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
     {
         base.RegisterEditorDescriptors(editorDescriptorsFactory);
         editorDescriptorsFactory.UseStepProgressEnumPropertyEditors();
     }
-}
-```
-
-#### Windows Forms Module
-
-```cs
-public class MyProjectWindowsFormsModule : ModuleBase
+}")),
+                                Section.Create("Windows Forms Module", CodeBlock.Create("cs", @"public class MyProjectWindowsFormsModule : ModuleBase
 {
     protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
     {
@@ -104,14 +115,15 @@ public class MyProjectWindowsFormsModule : ModuleBase
         //See: https://supportcenter.devexpress.com/ticket/details/t962834/registering-an-editor-alias-for-nullable-types for more information
         updaters.UseStepProgressEnumPropertyEditors();
     }
-}
-```
-
-"
-
+}"))
+                            }
+                        }
                     }
                 }
-            }.ToString());
+            });
+
+            sb.AppendLine(tabGroup.ToString());
+
         }
     }
 }

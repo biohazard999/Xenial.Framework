@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -27,36 +28,40 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 
             var types = GetRequiredModules();
 
-            sb.AppendLine(new TabGroup
+            sb.AppendLine(Section.Create(string.Empty, new TabGroup
             {
                 Tabs = new()
                 {
                     new(".NET CLI", "fas fa-terminal")
                     {
-                        MarkDown = $@"```shell
-{string.Join(Environment.NewLine, types.Select(t => $"dotnet add package {t.Nuget} --version {XenialVersion.Version}"))}
-```"
+                        HtmlAble = CodeBlock.Create(
+                            "shell",
+                            string.Join(Environment.NewLine, types.Select(t => $"dotnet add package {t.Nuget} --version {XenialVersion.Version}"))
+                        )
                     },
                     new("PackageReference", "fas fa-code")
                     {
-                        MarkDown = $@"```xml
-{string.Join(Environment.NewLine, types.Select(t => $"<PackageReference Include=\"{t.Nuget}\" Version=\"{XenialVersion.Version}\" />"))}
-```"
+                        HtmlAble = CodeBlock.Create(
+                            "xml",
+                            string.Join(Environment.NewLine, types.Select(t => $"<PackageReference Include=\"{t.Nuget}\" Version=\"{XenialVersion.Version}\" />"))
+                        )
                     },
                     new("Package Manager", "fas fa-terminal")
                     {
-                        MarkDown = $@"```powershell
-{string.Join(Environment.NewLine, types.Select(t => $"Install-Package {t.Nuget} -Version {XenialVersion.Version}"))}
-```"
+                        HtmlAble = CodeBlock.Create(
+                            "powershell",
+                            string.Join(Environment.NewLine, types.Select(t => $"Install-Package {t.Nuget} -Version {XenialVersion.Version}"))
+                        )
                     },
                     new("Paket CLI", "fas fa-terminal")
                     {
-                        MarkDown = $@"```shell
-{string.Join(Environment.NewLine, types.Select(t => $"paket add {t.Nuget} --version {XenialVersion.Version}"))}
-```"
+                        HtmlAble = CodeBlock.Create(
+                            "shell",
+                            string.Join(Environment.NewLine, types.Select(t => $"paket add {t.Nuget} --version {XenialVersion.Version}"))
+                        )
                     }
                 }
-            }.ToString());
+            }).ToString());
 
             AddInstallationSection(sb);
 
@@ -67,7 +72,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 
         internal record Tab(string Caption, string? Image)
         {
-            public string MarkDown { get; set; } = string.Empty;
+            public IHtmlAble HtmlAble { get; set; } = HtmlBlock.Create(string.Empty);
 
             public void ToPill(StringBuilder sb, bool isFirst)
             {
@@ -89,14 +94,22 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
             {
                 var active = isFirst ? "is-active" : string.Empty;
                 sb.AppendLine($"<li class='{active}'>");
-                var html = Markdown.ToHtml(MarkDown, pipeline);
-                sb.AppendLine(html);
+                sb.AppendLine(HtmlAble.ToString());
                 sb.AppendLine("</li>");
             }
         }
 
-        internal record Section(string Header)
+        internal record Section(string? Header = null) : IHtmlAble
         {
+            public static Section Create(string header, IHtmlAble htmlAble)
+                => new(header)
+                {
+                    Content = new()
+                    {
+                        htmlAble
+                    }
+                };
+
             public List<IHtmlAble> Content { get; set; } = new List<IHtmlAble>();
 
             public override string ToString()
@@ -104,7 +117,10 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
                 var sb = new StringBuilder();
 
                 sb.AppendLine("<div class='block'>");
-                sb.AppendLine($"<h2 class='subtitle'>{Header}</h2>");
+                if (!string.IsNullOrEmpty(Header))
+                {
+                    sb.AppendLine($"<h2 class='subtitle'>{Header}</h2>");
+                }
 
                 foreach (var item in Content)
                 {
@@ -141,6 +157,71 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 
             public override string ToString()
                 => Markdown.ToHtml(MarkDown, pipeline);
+        }
+
+        internal record CodeBlock(string Type, string Code) : IHtmlAble
+        {
+            public static CodeBlock Create(string type, string code)
+                => new(type, code);
+
+            public override string ToString()
+            {
+                var code = $@"```{Type}
+{Code}
+```";
+                return Markdown.ToHtml(code, pipeline);
+            }
+        }
+
+        internal record ImageBlock(string Size, Stream Stream) : IHtmlAble
+        {
+            public string MimeType { get; set; } = "image/gif";
+
+            public static ImageBlock Create(string size, string path)
+            {
+                var stream = ResourceUtil.GetResourceStream(typeof(ImageBlock), path);
+                return new ImageBlock(size, stream);
+            }
+
+            public static ImageBlock Create(string size, byte[] bytes)
+            {
+                var stream = new MemoryStream(bytes);
+                return new ImageBlock(size, stream);
+            }
+
+            public override string ToString()
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"<div class='is-flex is-justify-content-center'>");
+                using (Stream)
+                {
+                    byte[] bytes;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        Stream.CopyTo(memoryStream);
+                        bytes = memoryStream.ToArray();
+                    }
+
+                    (int width, int height) GetSize()
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            Stream.Position = 0;
+                            Stream.CopyTo(memoryStream);
+                            using var image = System.Drawing.Image.FromStream(memoryStream);
+                            return (image.Width, image.Height);
+                        }
+                    }
+
+
+                    var base64 = Convert.ToBase64String(bytes);
+                    var (width, height) = GetSize();
+                    sb.AppendLine($"<img src='data:{MimeType};base64,{base64}' width='{width}' height='{height}' />");
+                }
+                sb.AppendLine("</div>");
+
+                return sb.ToString();
+            }
         }
 
         internal record TabGroup : IHtmlAble
@@ -325,7 +406,7 @@ pre code .tag:not(body) {{
 
     public record RequiredNuget(string ModuleName, AvailablePlatform? Platform = null)
     {
-        private string nugetPostFix = Platform.HasValue ? $".{Platform.Value}" : string.Empty;
+        private readonly string nugetPostFix = Platform.HasValue ? $".{Platform.Value}" : string.Empty;
         public string Nuget => $"Xenial.Framework.{ModuleName}{nugetPostFix}";
     }
 

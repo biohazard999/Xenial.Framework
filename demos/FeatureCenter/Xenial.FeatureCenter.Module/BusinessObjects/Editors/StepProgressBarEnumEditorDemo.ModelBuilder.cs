@@ -49,14 +49,14 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                     {
                         Children = new()
                         {
-                            l.PropertyEditor(m => m.InstallationHtml),
+                            l.PropertyEditor(m => m.Installation),
                         }
                     },
                     l.Tab("Usage", "Actions_Settings") with
                     {
                         Children = new()
                         {
-                            l.PropertyEditor(m => m.UsageHtml),
+                            l.PropertyEditor(m => m.Usage),
                         }
                     },
                     l.Tab("Remarks", "Actions_Info") with
