@@ -403,9 +403,9 @@ pre code .tag:not(body) {{
         [NonPersistent]
         [Size(SizeAttribute.Unlimited)]
         [WebViewUriEditor]
-        public Uri DemoCode => new Uri($"https://github.com/xenial-io/Xenial.Framework/blob/{XenialVersion.Branch}/{PersistentClassFileName}");
+        public Uri DemoCode => new Uri($"https://github.com/xenial-io/Xenial.Framework/blob/{XenialVersion.Branch}/{DemoCodeFileName}");
 
-        protected virtual string PersistentClassFileName => string.Empty;
+        protected virtual string DemoCodeFileName => string.Empty;
     }
 
 

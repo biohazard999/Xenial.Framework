@@ -6,7 +6,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     public partial class StepProgressBarEnumEditorDemo
     {
-        protected override string PersistentClassFileName => "demos/FeatureCenter/Xenial.FeatureCenter.Module/BusinessObjects/Editors/StepProgressBarEnumEditorDemo.cs";
+        protected override string DemoCodeFileName => "demos/FeatureCenter/Xenial.FeatureCenter.Module/BusinessObjects/Editors/StepProgressBarEnumEditorDemo.cs";
 
         protected override string UsageHtml => new Section()
         {

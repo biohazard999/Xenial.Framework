@@ -63,10 +63,6 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                     {
 
                     },
-                    l.Tab("API-Docs", "DocumentStatistics") with
-                    {
-
-                    },
                     l.Tab("Demo-Code", "ToggleFieldCodes") with
                     {
                         Children = new()
@@ -75,6 +71,10 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                         }
                     },
                     l.Tab("Supported Platforms", "Bool") with
+                    {
+
+                    },
+                    l.Tab("Documentation", "DocumentStatistics") with
                     {
 
                     }
