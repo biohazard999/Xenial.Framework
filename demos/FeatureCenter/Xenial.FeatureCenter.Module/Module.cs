@@ -54,6 +54,7 @@ namespace Xenial.FeatureCenter.Module
         {
             base.AddGeneratorUpdaters(updaters);
 
+            updaters.UseNoViewsGeneratorUpdater();
             updaters.UseSingletonNavigationItems();
             updaters.UseDetailViewLayoutBuilders();
         }

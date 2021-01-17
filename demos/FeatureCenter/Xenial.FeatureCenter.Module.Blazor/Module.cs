@@ -24,7 +24,7 @@ namespace Xenial.FeatureCenter.Module.Blazor
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
 
             editorDescriptorsFactory.UseTokenObjectsPropertyEditorsBlazor<TokenEditorNonPersistentTokens>();
-            editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForTypeBlazor<XPCollection<TokenEditorPersistentTokens>>();
+            //editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForTypeBlazor<XPCollection<TokenEditorPersistentTokens>>();
         }
     }
 }

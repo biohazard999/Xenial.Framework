@@ -19,6 +19,13 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         /// <param name="typeInfo">The type information.</param>
         public FeatureCenterDemoBaseObjectIdModelBuilder(ITypeInfo typeInfo) : base(typeInfo) { }
 
+        public override void Build()
+        {
+            base.Build();
+            this.GenerateNoListView();
+            this.GenerateNoLookupListView();
+        }
+
         protected LayoutTabbedGroupItem BuildDemoLayout(LayoutBuilder<TClassType> l, Func<LayoutBuilder<TClassType>, IEnumerable<LayoutItemNode>> demoPage)
             => l.TabbedGroup
             (
