@@ -15,7 +15,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         {
             base.Build();
 
-            this.HasCaption("Editors - StepProgressBarEnum")
+            this.HasCaption("Editors - StepProgressEnumEditor")
                 .WithDefaultClassOptions()
                 .HasImage("GaugeStyleLinearHorizontal")
                 .IsSingleton(autoCommit: true);
@@ -61,7 +61,10 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                     },
                     l.Tab("Remarks", "Actions_Info") with
                     {
-
+                        Children = new()
+                        {
+                            l.PropertyEditor(m => m.Remarks),
+                        }
                     },
                     l.Tab("Demo-Code", "ToggleFieldCodes") with
                     {
@@ -72,11 +75,17 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                     },
                     l.Tab("Supported Platforms", "Bool") with
                     {
-
+                        Children = new()
+                        {
+                            l.PropertyEditor(m => m.SupportedPlatforms),
+                        }
                     },
                     l.Tab("Documentation", "DocumentStatistics") with
                     {
-
+                        Children = new()
+                        {
+                            l.PropertyEditor(m => m.Documentation),
+                        }
                     }
                 )
             }); ;

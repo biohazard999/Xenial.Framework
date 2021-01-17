@@ -402,10 +402,28 @@ pre code .tag:not(body) {{
 
         [NonPersistent]
         [Size(SizeAttribute.Unlimited)]
+        [EditorAlias("Xenial.WebViewStringPropertyEditor")]
+        public string Remarks => BuildHtml("Remarks", RemarksHtml());
+
+        [NonPersistent]
+        [Size(SizeAttribute.Unlimited)]
+        [EditorAlias("Xenial.WebViewStringPropertyEditor")]
+        public string SupportedPlatforms => BuildHtml("Supported Platforms", SupportedPlatformsHtml());
+
+        [NonPersistent]
+        [Size(SizeAttribute.Unlimited)]
         [WebViewUriEditor]
         public Uri DemoCode => new Uri($"https://github.com/xenial-io/Xenial.Framework/blob/{XenialVersion.Branch}/{DemoCodeFileName}");
 
+        [NonPersistent]
+        [Size(SizeAttribute.Unlimited)]
+        [WebViewUriEditor]
+        public Uri Documentation => new Uri($"https://docs.xenial.io/{DocsUrlFragment}");
+
         protected virtual string DemoCodeFileName => string.Empty;
+        protected virtual string DocsUrlFragment => string.Empty;
+        protected virtual string RemarksHtml() => string.Empty;
+        protected virtual string SupportedPlatformsHtml() => string.Empty;
     }
 
 
