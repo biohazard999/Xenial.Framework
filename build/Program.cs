@@ -151,7 +151,7 @@ namespace Xenial.Build
             {
                 await RunAsync("dotnet", "zip install");
 
-                await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:PackageName=Xenial.FeatureCenter.Win.{version}.AnyCpu /p:PackageDir={artifactsDirectors}");
+                await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:PackageName=Xenial.FeatureCenter.Win.v{version}.AnyCpu /p:PackageDir={artifactsDirectors}");
             });
 
             BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Server", "framework.featurecenter.xenial.io")
