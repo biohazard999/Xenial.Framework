@@ -13,8 +13,8 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
             typeof(FeatureCenterBaseObjectId),
             typeof(FeatureCenterDemoBaseObjectId),
 
-            typeof(TokenEditorPersistentDemo),
-            typeof(TokenEditorPersistentTokens),
+            typeof(TokenStringEditorDemo),
+            //typeof(TokenEditorPersistentTokens),
 
             typeof(StepProgressBarEnumEditorDemo)
         };

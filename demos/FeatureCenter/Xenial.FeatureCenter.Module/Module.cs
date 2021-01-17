@@ -63,7 +63,7 @@ namespace Xenial.FeatureCenter.Module
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
 
             editorDescriptorsFactory.UseTokenObjectsPropertyEditors<TokenEditorNonPersistentTokens>();
-            editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForType<XPCollection<TokenEditorPersistentTokens>>();
+            //editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForType<XPCollection<TokenEditorPersistentTokens>>();
 
             editorDescriptorsFactory.RegisterPropertyEditorAlias(
                 "Xenial.WebViewStringPropertyEditor",
@@ -138,6 +138,10 @@ namespace Xenial.FeatureCenter.Module
 
             typesInfo
                 .CreateModelBuilder<StepProgressBarEnumEditorDemoModelBuilder>()
+                .Build();
+
+            typesInfo
+                .CreateModelBuilder<TokenStringEditorDemoModelBuilder>()
                 .Build();
         }
     }
