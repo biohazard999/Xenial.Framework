@@ -151,6 +151,8 @@ namespace Xenial.Build
             {
                 await RunAsync("dotnet", "zip install");
 
+                await Task.Delay(1000); //For what ever reason it seams that a delay helps to pick up the target
+
                 await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.AnyCpu /p:PackageDir={artifactsDirectors}");
             });
 
