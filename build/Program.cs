@@ -153,7 +153,7 @@ namespace Xenial.Build
 
                 await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false");
 
-                await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.AnyCpu /p:PackageDir={artifactsDirectors}");
+                await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.AnyCPU /p:PackageDir={artifactsDirectors}");
             });
 
             BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Server", "framework.featurecenter.xenial.io")
