@@ -176,7 +176,7 @@ namespace Xenial.Build
                 }
             }, "framework.featurecenter.xenial.io");
 
-            Target("demos", DependsOn("pack", "publish:framework.featurecenter.xenial.io"));
+            Target("demos", DependsOn("pack", "publish:framework.featurecenter.xenial.io", "publish:Xenial.FeatureCenter.Win"));
 
             Target("docs",
                 () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs")
