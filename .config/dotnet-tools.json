@@ -43,6 +43,12 @@
       "commands": [
         "minver"
       ]
+    },
+    "dotnet-zip": {
+      "version": "0.1.189",
+      "commands": [
+        "dotnet-zip"
+      ]
     }
   }
 }

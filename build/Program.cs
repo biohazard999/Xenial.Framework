@@ -24,6 +24,7 @@ namespace Xenial.Build
 
             var version = await versionTask.Value;
             var branch = await branchTask.Value;
+            var artifactsDirectors = Path.GetFullPath("./artifacts");
 
             const string PleaseSet = "PLEASE SET BEFORE USE";
             var PublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3VFauRJrFzuZveL+J/naEs+CrNLBrc/sSDihdkUTo3Np/o4IoM8fxR6kYHIdH/7LXfXltFRREkv2ceTN8gyZuw==";
@@ -48,6 +49,7 @@ namespace Xenial.Build
                 ["XenialPublicKey"] = PublicKey,
                 ["XenialLicGenVersion"] = $"{version}",
                 ["RepositoryBranch"] = $"{branch}",
+                ["XenialDebug"] = false.ToString()
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
             Target("ensure-tools", () => EnsureTools());
@@ -144,6 +146,13 @@ namespace Xenial.Build
             Target("pack", DependsOn("lic"),
                 () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {GetProperties()}")
             );
+
+            Target("publish:Xenial.FeatureCenter.Win", DependsOn("pack"), async () =>
+            {
+                await RunAsync("dotnet", "zip install");
+
+                await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:PackageName=Xenial.FeatureCenter.Win.{version}.AnyCpu /p:PackageDir={artifactsDirectors}");
+            });
 
             BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Server", "framework.featurecenter.xenial.io")
             {
