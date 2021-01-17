@@ -13,7 +13,7 @@ namespace Xenial.Framework.ModelBuilders
     /// <summary>
     /// Class ModelBuilderExtentions.
     /// </summary>
-    public static class ModelBuilderExtensions
+    public static partial class ModelBuilderExtensions
     {
         /// <summary>
         /// Determines whether the specified caption has caption.
