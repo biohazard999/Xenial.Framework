@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using Xenial.Framework.Layouts.Items.Base;
-using Xenial.Framework.Layouts.Items.PubTernal;
 
 #pragma warning disable CA1710 //Rename Type to end in Collection -> By Design
 #pragma warning disable CA2227 //Collection fields should not have a setter: By Design
@@ -42,14 +42,14 @@ namespace Xenial.Framework.Layouts.Items
             get => owner;
             set
             {
-                foreach (var child in this)
+                foreach (var child in this.ToArray())
                 {
                     child.Parent = null;
                 }
 
                 owner = value;
 
-                foreach (var child in this)
+                foreach (var child in this.ToArray())
                 {
                     child.Parent = owner;
                 }

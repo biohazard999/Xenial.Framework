@@ -140,16 +140,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         {
                             childNode1,
                             childNode2,
-                            new LayoutTabGroupItem()
-                        }
-                    };
-
-                    rootNode = rootNode with
-                    {
-                        Children = new()
-                        {
-                            childNode1,
-                            childNode2,
                             new()
                         }
                     };
@@ -158,6 +148,31 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         () => childNode1.Parent.ShouldBe(rootNode),
                         () => childNode2.Parent.ShouldBe(rootNode),
                         () => rootNode.Count().ShouldBe(3)
+                    );
+                });
+
+                It("when using with expression resets parent and does not throw 'Collection was modified after the enumerator was instantiated'", () =>
+                {
+                    var rootNode = new LayoutTabbedGroupItem();
+
+                    rootNode = rootNode with
+                    {
+                        Children = new()
+                        {
+                            new()
+                        }
+                    };
+
+                    rootNode = rootNode with
+                    {
+                        Children = new()
+                        {
+                            new()
+                        }
+                    };
+
+                    rootNode.ShouldSatisfyAllConditions(
+                        () => rootNode.Count().ShouldBe(1)
                     );
                 });
 
