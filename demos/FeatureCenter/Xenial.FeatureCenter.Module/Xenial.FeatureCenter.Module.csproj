@@ -27,6 +27,10 @@
 
   <ItemGroup>
     <None Remove="BusinessObjects\Editors\StepProgressBarEnumEditorDemo.Remarks.md" />
+    <None Remove="BusinessObjects\Editors\TokenStringEditorDemo.Remarks.md" />
+    <None Remove="BusinessObjects\Editors\TokenStringEditorDemo.Usage.Attributes.md" />
+    <None Remove="BusinessObjects\Editors\TokenStringEditorDemo.Usage.ModelBuilders.md" />
+    <None Remove="BusinessObjects\Editors\TokenStringEditorDemo.Usage.ModelEditor.gif" />
   </ItemGroup>
 
   <ItemGroup>

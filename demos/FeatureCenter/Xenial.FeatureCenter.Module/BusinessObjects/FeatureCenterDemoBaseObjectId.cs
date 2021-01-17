@@ -26,7 +26,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         {
             var sb = new StringBuilder();
 
-            var types = GetRequiredModules();
+            var types = GetRequiredModules().Where(m => !m.Platform.HasValue || (m.Platform == FeatureCenterModule.CurrentPlatform));
 
             sb.AppendLine(Section.Create(string.Empty, new TabGroup
             {

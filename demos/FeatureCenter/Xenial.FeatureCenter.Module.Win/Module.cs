@@ -14,8 +14,10 @@ using Xenial.Framework.WebView.Win;
 
 namespace Xenial.FeatureCenter.Module.Win
 {
-    public class FeatureCenterWindowsFormsModule : XenialModuleBase
+    public sealed class FeatureCenterWindowsFormsModule : XenialModuleBase
     {
+        public FeatureCenterWindowsFormsModule() => FeatureCenterModule.CurrentPlatform = BusinessObjects.AvailablePlatform.Win;
+
         protected override ModuleTypeList GetRequiredModuleTypesCore()
             => base.GetRequiredModuleTypesCore()
             .AndModuleTypes(

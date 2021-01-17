@@ -10,8 +10,10 @@ using Xenial.Framework.TokenEditors.Blazor;
 
 namespace Xenial.FeatureCenter.Module.Blazor
 {
-    public class FeatureCenterBlazorModule : XenialModuleBase
+    public sealed class FeatureCenterBlazorModule : XenialModuleBase
     {
+        public FeatureCenterBlazorModule() => FeatureCenterModule.CurrentPlatform = BusinessObjects.AvailablePlatform.Blazor;
+
         protected override ModuleTypeList GetRequiredModuleTypesCore()
             => base.GetRequiredModuleTypesCore()
                 .AndModuleTypes(

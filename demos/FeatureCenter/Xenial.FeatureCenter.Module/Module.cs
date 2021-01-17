@@ -23,8 +23,10 @@ using Xenial.Framework.WebView;
 
 namespace Xenial.FeatureCenter.Module
 {
-    public class FeatureCenterModule : XenialModuleBase
+    public sealed class FeatureCenterModule : XenialModuleBase
     {
+        public static AvailablePlatform? CurrentPlatform { get; set; }
+
         protected override ModuleTypeList GetRequiredModuleTypesCore()
             => base.GetRequiredModuleTypesCore()
                 .AndModuleTypes(
