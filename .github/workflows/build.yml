@@ -24,6 +24,10 @@ jobs:
         git fetch --prune --unshallow
         git submodule init
         git submodule update
+    - name: Setup .NETCORE2.1
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.1.x
     - name: Setup .NETCORE3.1
       uses: actions/setup-dotnet@v1
       with:
