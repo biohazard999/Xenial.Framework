@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 
+using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
+using DevExpress.ExpressApp.SystemModule;
 
 using Xenial.Framework.Base;
 
@@ -30,6 +32,13 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
         {
             if (node is IModelViews views)
             {
+                //Make sure we generate navigation item nodes before we remove the views
+                //Otherwise we have no idea what View/ModelClass the navigation item belonged to
+                if (views.Application is IModelApplicationNavigationItems modelApplicationNavigationItems)
+                {
+                    _ = modelApplicationNavigationItems.NavigationItems.Items;
+                }
+
                 foreach (var view in views.OfType<IModelObjectView>())
                 {
                     foreach (var attribute in view.ModelClass.TypeInfo.FindAttributes<GenerateNoViewAttribute>())
@@ -40,9 +49,9 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                         }
                     }
 
-                    if (view.ModelClass.TypeInfo.FindAttribute<GenerateNoDetailViewAttribute>() != null)
+                    if (view is IModelDetailView)
                     {
-                        if (view is IModelDetailView)
+                        if (view.ModelClass.TypeInfo.IsAttributeDefined<GenerateNoDetailViewAttribute>(false))
                         {
                             if (ModelNodeIdHelper.GetDetailViewId(view.ModelClass.TypeInfo.Type).Equals(view.Id))
                             {
@@ -51,20 +60,17 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                         }
                     }
 
-                    if (view.ModelClass.TypeInfo.FindAttribute<GenerateNoListViewAttribute>() != null)
+                    if (view is IModelListView)
                     {
-                        if (view is IModelListView)
+                        if (view.ModelClass.TypeInfo.IsAttributeDefined<GenerateNoListViewAttribute>(false))
                         {
                             if (ModelNodeIdHelper.GetListViewId(view.ModelClass.TypeInfo.Type).Equals(view.Id))
                             {
                                 view.Remove();
                             }
                         }
-                    }
 
-                    if (view.ModelClass.TypeInfo.FindAttribute<GenerateNoLookupListViewAttribute>() != null)
-                    {
-                        if (view is IModelListView)
+                        if (view.ModelClass.TypeInfo.IsAttributeDefined<GenerateNoLookupListViewAttribute>(false))
                         {
                             if (ModelNodeIdHelper.GetLookupListViewId(view.ModelClass.TypeInfo.Type).Equals(view.Id))
                             {

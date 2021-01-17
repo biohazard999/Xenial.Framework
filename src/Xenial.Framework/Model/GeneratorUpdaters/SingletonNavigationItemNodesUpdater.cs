@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
@@ -8,7 +6,6 @@ using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.SystemModule;
 
 using Xenial.Framework.Base;
-using Xenial.Framework.Model.GeneratorUpdaters;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters
 {
