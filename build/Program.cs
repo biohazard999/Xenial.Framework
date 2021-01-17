@@ -24,6 +24,14 @@ namespace Xenial.Build
 
             var version = await versionTask.Value;
             var branch = await branchTask.Value;
+
+            //On Github actions, for whatever reason, there is no branch name
+            //TODO: use GithubActions Environment variable name
+            if (string.IsNullOrEmpty(branch))
+            {
+                branch = "main";
+            }
+
             var artifactsDirectors = Path.GetFullPath("./artifacts");
 
             const string PleaseSet = "PLEASE SET BEFORE USE";
