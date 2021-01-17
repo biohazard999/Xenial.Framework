@@ -149,7 +149,7 @@ namespace Xenial.Build
 
             Target("publish:Xenial.FeatureCenter.Win", DependsOn("pack"), async () =>
             {
-                await RunAsync("dotnet", "zip install", workingDirectory: "demos/FeatureCenter");
+                await RunAsync("dotnet", "zip install");
 
                 await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.AnyCpu /p:PackageDir={artifactsDirectors}");
             });
