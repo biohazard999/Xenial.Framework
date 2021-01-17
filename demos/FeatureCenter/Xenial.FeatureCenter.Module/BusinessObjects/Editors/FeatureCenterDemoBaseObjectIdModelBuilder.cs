@@ -26,16 +26,10 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             this.GenerateNoLookupListView();
         }
 
-        protected LayoutTabbedGroupItem BuildDemoLayout(LayoutBuilder<TClassType> l, Func<LayoutBuilder<TClassType>, IEnumerable<LayoutItemNode>> demoPage)
+        protected LayoutTabbedGroupItem BuildDemoLayout(LayoutBuilder<TClassType> l, Func<LayoutBuilder<TClassType>, LayoutTabGroupItem, LayoutTabGroupItem> demoPage)
             => l.TabbedGroup
             (
-                l.Tab("Demo", "Weather_Lightning") with
-                {
-                    Children = new()
-                    {
-                        demoPage(l)
-                    }
-                },
+                demoPage(l, l.Tab("Demo", "Weather_Lightning")),
                 l.Tab("Installation", "ShipmentReceived") with
                 {
                     Children = new()

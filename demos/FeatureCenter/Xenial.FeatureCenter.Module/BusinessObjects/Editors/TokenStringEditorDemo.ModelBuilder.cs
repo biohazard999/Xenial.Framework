@@ -22,15 +22,18 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 
             this.WithDetailViewLayout(l => new()
             {
-                BuildDemoLayout(l, l => new[]
+                BuildDemoLayout(l, (l, tab) => tab with
                 {
-                    l.TabbedGroup
-                    (
-                        l.Tab("Basic",
-                            l.PropertyEditor(m => m.StringTokens) with { CaptionLocation = Locations.Top },
-                            l.EmptySpaceItem() with { RelativeSize = 90 }
+                    Children = new(tab.Children)
+                    {
+                        l.TabbedGroup
+                        (
+                            l.Tab("Basic",
+                                l.PropertyEditor(m => m.StringTokens) with { CaptionLocation = Locations.Top },
+                                l.EmptySpaceItem() with { RelativeSize = 90 }
+                            )
                         )
-                    )
+                    }
                 })
             });
         }

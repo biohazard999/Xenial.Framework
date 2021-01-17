@@ -140,6 +140,16 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         {
                             childNode1,
                             childNode2,
+                            new LayoutTabGroupItem()
+                        }
+                    };
+
+                    rootNode = rootNode with
+                    {
+                        Children = new()
+                        {
+                            childNode1,
+                            childNode2,
                             new()
                         }
                     };
