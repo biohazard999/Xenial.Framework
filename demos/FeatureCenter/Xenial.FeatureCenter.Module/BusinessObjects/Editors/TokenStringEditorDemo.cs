@@ -1,12 +1,8 @@
-﻿using DevExpress.ExpressApp.DC;
+﻿using System;
+
 using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 using DevExpress.Xpo;
-
-using System;
-using System.Collections.Generic;
-
-using Xenial.Framework.Base;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {

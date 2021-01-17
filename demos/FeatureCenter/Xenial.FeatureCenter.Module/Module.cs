@@ -1,26 +1,25 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 using Bogus;
 
-using DevExpress.Xpo;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
-using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Editors;
+using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Updating;
+
+using Xenial.FeatureCenter.Module.BusinessObjects;
+using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
+using Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders;
+using Xenial.FeatureCenter.Module.Updaters;
 
 using Xenial.Framework;
 using Xenial.Framework.StepProgressEditors;
 using Xenial.Framework.TokenEditors;
 using Xenial.Framework.WebView;
-
-using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
-using Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders;
-using Xenial.FeatureCenter.Module.BusinessObjects;
-using Xenial.FeatureCenter.Module.Updaters;
 
 namespace Xenial.FeatureCenter.Module
 {
@@ -54,8 +53,8 @@ namespace Xenial.FeatureCenter.Module
         {
             base.AddGeneratorUpdaters(updaters);
 
-            updaters.UseNoViewsGeneratorUpdater();
             updaters.UseSingletonNavigationItems();
+            updaters.UseNoViewsGeneratorUpdater();
             updaters.UseDetailViewLayoutBuilders();
         }
 
