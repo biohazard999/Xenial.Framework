@@ -63,6 +63,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         }
 
         [WebViewHtmlStringEditor]
+        [Size(SizeAttribute.Unlimited)]
         public string? Html { get => html; set => SetPropertyValue(ref html, value); }
     }
 }
