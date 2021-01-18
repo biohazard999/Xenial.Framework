@@ -57,17 +57,6 @@ namespace Xenial.FeatureCenter.Module
             updaters.UseDetailViewLayoutBuilders();
         }
 
-        protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
-        {
-            base.RegisterEditorDescriptors(editorDescriptorsFactory);
-
-            editorDescriptorsFactory.RegisterPropertyEditorAlias(
-                "Xenial.WebViewStringPropertyEditor",
-                typeof(string),
-                true
-            );
-        }
-
         public override void Setup(XafApplication application)
         {
             application.UseNonPersistentSingletons();

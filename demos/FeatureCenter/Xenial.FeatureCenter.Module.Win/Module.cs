@@ -25,17 +25,5 @@ namespace Xenial.FeatureCenter.Module.Win
                 typeof(XenialTokenEditorsWindowsFormsModule),
                 typeof(XenialStepProgressEditorsWindowsFormsModule)
             );
-
-        protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
-        {
-            base.RegisterEditorDescriptors(editorDescriptorsFactory);
-
-            editorDescriptorsFactory.RegisterPropertyEditor(
-                "Xenial.WebViewStringPropertyEditor",
-                typeof(string),
-                typeof(WebViewStringPropertyEditor),
-                false
-            );
-        }
     }
 }

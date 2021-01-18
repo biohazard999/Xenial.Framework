@@ -22,6 +22,7 @@ namespace Xenial.Framework.WebView.Win
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
             editorDescriptorsFactory.UseWebViewUriPropertyEditorWin();
+            editorDescriptorsFactory.UseWebViewHtmlStringPropertyEditorWin();
         }
     }
 }

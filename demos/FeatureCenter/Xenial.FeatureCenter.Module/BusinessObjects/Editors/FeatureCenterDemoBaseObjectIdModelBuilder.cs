@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using DevExpress.ExpressApp.DC;
+using DevExpress.Persistent.Base;
 
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items;
-using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.ModelBuilders;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
@@ -34,42 +33,42 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                 {
                     Children = new()
                     {
-                        l.PropertyEditor(m => m.Installation),
+                        l.PropertyEditor(m => m.Installation) with { ShowCaption = false, CaptionLocation = Locations.Top },
                     }
                 },
                 l.Tab("Usage", "Actions_Settings") with
                 {
                     Children = new()
                     {
-                        l.PropertyEditor(m => m.Usage),
+                        l.PropertyEditor(m => m.Usage) with { ShowCaption = false, CaptionLocation = Locations.Top },
                     }
                 },
                 l.Tab("Remarks", "Actions_Info") with
                 {
                     Children = new()
                     {
-                        l.PropertyEditor(m => m.Remarks),
+                        l.PropertyEditor(m => m.Remarks) with { ShowCaption = false, CaptionLocation = Locations.Top },
                     }
                 },
                 l.Tab("Demo-Code", "ToggleFieldCodes") with
                 {
                     Children = new()
                     {
-                        l.PropertyEditor(m => m.DemoCode),
+                        l.PropertyEditor(m => m.DemoCode) with { ShowCaption = false, CaptionLocation = Locations.Top },
                     }
                 },
                 l.Tab("Supported Platforms", "Bool") with
                 {
                     Children = new()
                     {
-                        l.PropertyEditor(m => m.SupportedPlatforms),
+                        l.PropertyEditor(m => m.SupportedPlatforms) with { ShowCaption = false, CaptionLocation = Locations.Top },
                     }
                 },
                 l.Tab("Documentation", "DocumentStatistics") with
                 {
                     Children = new()
                     {
-                        l.PropertyEditor(m => m.Documentation),
+                        l.PropertyEditor(m => m.Documentation) with { ShowCaption = false, CaptionLocation = Locations.Top },
                     }
                 }
         );

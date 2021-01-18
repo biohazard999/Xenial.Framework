@@ -392,22 +392,22 @@ pre code .tag:not(body) {{
 
         [NonPersistent]
         [Size(SizeAttribute.Unlimited)]
-        [EditorAlias("Xenial.WebViewStringPropertyEditor")]
+        [WebViewHtmlStringEditor]
         public string Installation => BuildInstallationHtml();
 
         [NonPersistent]
         [Size(SizeAttribute.Unlimited)]
-        [EditorAlias("Xenial.WebViewStringPropertyEditor")]
+        [WebViewHtmlStringEditor]
         public string Usage => BuildUsageHtml();
 
         [NonPersistent]
         [Size(SizeAttribute.Unlimited)]
-        [EditorAlias("Xenial.WebViewStringPropertyEditor")]
+        [WebViewHtmlStringEditor]
         public string Remarks => BuildHtml("Remarks", RemarksHtml());
 
         [NonPersistent]
         [Size(SizeAttribute.Unlimited)]
-        [EditorAlias("Xenial.WebViewStringPropertyEditor")]
+        [WebViewHtmlStringEditor]
         public string SupportedPlatforms => BuildHtml("Supported Platforms", SupportedPlatformsHtml());
 
         [NonPersistent]

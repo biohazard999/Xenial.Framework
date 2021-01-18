@@ -15,7 +15,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         {
             base.Build();
 
-            this.HasCaption("Editors - WebViewUri")
+            this.HasCaption("Editors - WebViewUriEditor")
                 .WithDefaultClassOptions()
                 .IsSingleton(autoCommit: true)
                 .HasImage("Business_World");
