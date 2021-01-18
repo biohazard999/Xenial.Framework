@@ -13,20 +13,18 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
             typeof(FeatureCenterBaseObjectId),
             typeof(FeatureCenterDemoBaseObjectId),
 
-            typeof(TokenStringEditorDemo),
-            //typeof(TokenEditorPersistentTokens),
+            typeof(StepProgressBarEnumEditorDemo),
 
-            typeof(StepProgressBarEnumEditorDemo)
+            typeof(TokenStringEditorDemo),
+            typeof(TokenObjectsEditorDemo),
+            typeof(TokenObjectsEditorDemoTokens),
         };
 
         internal static readonly Type[] NonPersistentTypes = new[]
         {
             typeof(ModelBuilderBasicPropertiesDemo),
 
-            typeof(WebViewEditorDemo),
-
-            typeof(TokenEditorNonPersistentDemo),
-            typeof(TokenEditorNonPersistentTokens),
+            typeof(WebViewEditorDemo)
         };
     }
 }

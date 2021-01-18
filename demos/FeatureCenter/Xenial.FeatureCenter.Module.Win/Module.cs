@@ -32,7 +32,7 @@ namespace Xenial.FeatureCenter.Module.Win
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
 
-            editorDescriptorsFactory.UseTokenObjectsPropertyEditorsWin<TokenEditorNonPersistentTokens>();
+            //editorDescriptorsFactory.UseTokenObjectsPropertyEditorsWin<TokenEditorNonPersistentTokens>();
             //editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForTypeWin<XPCollection<TokenEditorPersistentTokens>>();
 
             editorDescriptorsFactory.RegisterPropertyEditor(

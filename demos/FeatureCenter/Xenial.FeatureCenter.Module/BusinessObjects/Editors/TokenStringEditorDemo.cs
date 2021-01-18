@@ -11,7 +11,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
     [Persistent]
     public partial class TokenStringEditorDemo : FeatureCenterDemoBaseObjectId
     {
-        private string? tokenEditorStringTokens;
+        private string? stringTokens;
 
         public TokenStringEditorDemo(Session session) : base(session) { }
 
@@ -21,27 +21,9 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             StringTokens = "Xenial.Framework;Xenial.Framework.Win;";
         }
 
-        //[Association]
-        //[TokenObjectsEditor]
-        //[ImmediatePostData]
-        //public XPCollection<TokenEditorPersistentTokens> TokenEditorPersistentTokens => GetCollection<TokenEditorPersistentTokens>();
-
         [TokenStringEditor]
         [ModelDefault(ModelDefaults.PredefinedValues, "Xenial.Framework;Xenial.Framework.Win;Xenial.Framework.TokenEditors;Xenial.Framework.TokenEditors.Win;Xenial.Framework.WebView.Win;Xenial.Framework.WebView")]
         [Size(SizeAttribute.Unlimited)]
-        public string? StringTokens { get => tokenEditorStringTokens; set => SetPropertyValue(ref tokenEditorStringTokens, value); }
+        public string? StringTokens { get => stringTokens; set => SetPropertyValue(ref stringTokens, value); }
     }
-
-    //[Persistent]
-    //public class TokenEditorPersistentTokens : FeatureCenterBaseObjectId
-    //{
-    //    private string? name;
-
-    //    public TokenEditorPersistentTokens(Session session) : base(session) { }
-
-    //    public string? Name { get => name; set => SetPropertyValue(ref name, value); }
-
-    //    [Association]
-    //    public XPCollection<TokenStringEditorDemo> TokenEditorPersistentDemos => GetCollection<TokenStringEditorDemo>();
-    //}
 }

@@ -21,12 +21,12 @@ namespace Xenial.FeatureCenter.Module.Blazor
                     typeof(XenialTokenEditorsBlazorModule)
                 );
 
-        protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
-        {
-            base.RegisterEditorDescriptors(editorDescriptorsFactory);
+        //protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
+        //{
+        //    base.RegisterEditorDescriptors(editorDescriptorsFactory);
 
-            editorDescriptorsFactory.UseTokenObjectsPropertyEditorsBlazor<TokenEditorNonPersistentTokens>();
-            //editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForTypeBlazor<XPCollection<TokenEditorPersistentTokens>>();
-        }
+        //    //editorDescriptorsFactory.UseTokenObjectsPropertyEditorsBlazor<TokenEditorNonPersistentTokens>();
+        //    //editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForTypeBlazor<XPCollection<TokenEditorPersistentTokens>>();
+        //}
     }
 }
