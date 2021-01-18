@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-
-using Bogus;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
