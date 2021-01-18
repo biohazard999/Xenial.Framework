@@ -1,0 +1,19 @@
+﻿@if (ComponentModel is not null)
+{
+    <iframe @attributes="@ComponentModel.Attributes" src="@ComponentModel.Value"></iframe>
+}
+
+@code
+{
+    [Parameter]
+    public WebViewUriInputModel? ComponentModel { get; set; }
+    public static RenderFragment Create(WebViewUriInputModel componentModel) => @<WebViewUriComponent ComponentModel="@componentModel" />;
+
+    void ValuesChanged(Uri? value)
+    {
+        if (ComponentModel is not null)
+        {
+            ComponentModel.SetValueFromUI(value);
+        }
+    }
+}
