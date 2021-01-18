@@ -48,8 +48,8 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
   </body>
 </html>";
 
-        [ImmediatePostData]
         [Size(SizeAttribute.Unlimited)]
+        [ImmediatePostData]
         public string? HtmlContent
         {
             get => htmlContent;
