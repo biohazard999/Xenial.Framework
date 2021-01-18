@@ -11,4 +11,20 @@
     <ProjectReference Include="..\Xenial.Framework.WebView\Xenial.Framework.WebView.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\**\*.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework) == $(NetStandard2_1Version)">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.11" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework) == $(Net5Version)">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1" />
+  </ItemGroup>
+  
 </Project>
