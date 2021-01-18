@@ -7,9 +7,9 @@ using DevExpress.Persistent.Base;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
-    public class WebViewEditorDemoModelBuilder : FeatureCenterDemoBaseObjectIdModelBuilder<WebViewUriEditorDemo>
+    public class WebViewUriEditorDemoModelBuilder : FeatureCenterDemoBaseObjectIdModelBuilder<WebViewUriEditorDemo>
     {
-        public WebViewEditorDemoModelBuilder(ITypeInfo typeInfo) : base(typeInfo) { }
+        public WebViewUriEditorDemoModelBuilder(ITypeInfo typeInfo) : base(typeInfo) { }
 
         public override void Build()
         {

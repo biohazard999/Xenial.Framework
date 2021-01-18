@@ -19,7 +19,8 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
             typeof(TokenObjectsEditorDemo),
             typeof(TokenObjectsEditorDemoTokens),
 
-            typeof(WebViewUriEditorDemo)
+            typeof(WebViewUriEditorDemo),
+            typeof(WebViewHtmlStringEditorDemo),
         };
 
         internal static readonly Type[] NonPersistentTypes = new[]
