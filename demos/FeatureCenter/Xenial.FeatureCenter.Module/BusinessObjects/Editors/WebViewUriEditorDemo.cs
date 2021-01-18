@@ -3,29 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using DevExpress.ExpressApp;
-using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
-
-using Xenial.Framework.Base;
+using DevExpress.Xpo;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
-    [DomainComponent]
-    public class WebViewEditorDemo : NonPersistentBaseObject
+    [Persistent]
+    public partial class WebViewUriEditorDemo : FeatureCenterDemoBaseObjectId
     {
         private static readonly string[] schemes = new[] { "http://", "https://" };
 
         private string? urlString;
         private Uri? uri;
 
-        public override void OnCreated()
+        public WebViewUriEditorDemo(Session session) : base(session) { }
+
+        public override void AfterConstruction()
         {
+            base.AfterConstruction();
             UrlString = "https://www.xenial.io";
-            base.OnCreated();
         }
 
         [ImmediatePostData]
+        //This code converts for example 'www.xenial.io' to 'https://www.xenial.io' and sets the Uri
+        //It's only relevant for the demo.
         public string? UrlString
         {
             get => urlString;
@@ -56,6 +57,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             }
         }
 
+        [WebViewUriEditor]
         public Uri? Uri { get => uri; set => SetPropertyValue(ref uri, value); }
     }
 }
