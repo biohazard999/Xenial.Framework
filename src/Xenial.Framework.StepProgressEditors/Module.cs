@@ -1,6 +1,7 @@
 ﻿using System;
 
 using DevExpress.ExpressApp.Editors;
+using DevExpress.ExpressApp.Model.Core;
 
 namespace Xenial.Framework.StepProgressEditors
 {

@@ -42,6 +42,7 @@ namespace Xenial.Framework.StepProgressEditors.Win
         {
             base.AddGeneratorUpdaters(updaters);
 
+            //TODO: Remove in DX20.2.5
             updaters.UseStepProgressEnumPropertyEditors();
         }
     }
