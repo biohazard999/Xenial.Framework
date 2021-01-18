@@ -89,5 +89,15 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] WebViewUriEditorDemo_Usage_ModelEditor {
+            get {
+                object obj = ResourceManager.GetObject("WebViewUriEditorDemo_Usage_ModelEditor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

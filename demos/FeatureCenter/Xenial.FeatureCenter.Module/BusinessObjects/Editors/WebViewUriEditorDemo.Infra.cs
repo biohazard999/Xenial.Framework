@@ -26,7 +26,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                         },
                         new Tab("Model-Editor", "fas fa-tools")
                         {
-                            HtmlAble = ImageBlock.Create("is-4by3", Resources.TokenStringEditorDemo_Usage_ModelEditor)
+                            HtmlAble = ImageBlock.Create("is-4by3", Resources.WebViewUriEditorDemo_Usage_ModelEditor)
                         },
                     }
                 }

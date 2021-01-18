@@ -30,21 +30,12 @@ namespace Xenial.FeatureCenter.Module.Win
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
 
-            //editorDescriptorsFactory.UseTokenObjectsPropertyEditorsWin<TokenEditorNonPersistentTokens>();
-            //editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForTypeWin<XPCollection<TokenEditorPersistentTokens>>();
-
             editorDescriptorsFactory.RegisterPropertyEditor(
                 "Xenial.WebViewStringPropertyEditor",
                 typeof(string),
                 typeof(WebViewStringPropertyEditor),
                 false
             );
-        }
-
-        public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
-        {
-            base.AddGeneratorUpdaters(updaters);
-            updaters.UseStepProgressEnumPropertyEditors();
         }
     }
 }

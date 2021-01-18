@@ -72,51 +72,6 @@ namespace Xenial.FeatureCenter.Module
         {
             application.UseNonPersistentSingletons();
 
-            //application.ObjectSpaceCreated -= Application_ObjectSpaceCreated;
-            //application.ObjectSpaceCreated += Application_ObjectSpaceCreated;
-            //application.Disposed -= Application_Disposed;
-            //application.Disposed += Application_Disposed;
-
-            //void Application_ObjectSpaceCreated(object? _, ObjectSpaceCreatedEventArgs e)
-            //{
-            //    if (e.ObjectSpace is NonPersistentObjectSpace nos)
-            //    {
-            //        nos.ObjectsGetting -= Nos_ObjectsGetting;
-            //        nos.ObjectsGetting += Nos_ObjectsGetting;
-            //        nos.Disposed -= Nos_Disposed;
-            //        nos.Disposed += Nos_Disposed;
-
-
-            //        void Nos_ObjectsGetting(object sender, ObjectsGettingEventArgs e)
-            //        {
-            //            if (e.ObjectType == typeof(TokenEditorNonPersistentTokens))
-            //            {
-            //                var faker = new Faker<TokenEditorNonPersistentTokens>()
-            //                    .RuleFor(r => r.Name, f => f.Name.FirstName());
-            //                var tokens = faker.Generate(100);
-            //                var bindingList = new BindingList<TokenEditorNonPersistentTokens>();
-            //                foreach (var token in tokens)
-            //                {
-            //                    bindingList.Add(token);
-            //                }
-            //                e.Objects = bindingList;
-            //            }
-            //        }
-
-            //        void Nos_Disposed(object? _, EventArgs e)
-            //        {
-            //            nos.Disposed -= Nos_Disposed;
-            //            nos.ObjectsGetting -= Nos_ObjectsGetting;
-            //        }
-            //    }
-            //}
-
-            //void Application_Disposed(object? _, EventArgs e)
-            //{
-            //    application.ObjectSpaceCreated -= Application_ObjectSpaceCreated;
-            //    application.Disposed -= Application_Disposed;
-            //}
-
             base.Setup(application);
         }
 
