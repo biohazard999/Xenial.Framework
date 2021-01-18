@@ -1,0 +1,24 @@
+﻿<div class="xenial__web-view__html-string-component">
+    @if (ComponentModel is not null)
+    {
+        <iframe @attributes="@ComponentModel.Attributes"
+                style="width: 100%; min-height: 500px; height: 60vh; border: none;"
+                src="@ComponentModel.Base64Value"
+                ></iframe>
+    }
+</div>
+
+@code
+{
+    [Parameter]
+    public WebViewHtmlStringInputModel? ComponentModel { get; set; }
+    public static RenderFragment Create(WebViewHtmlStringInputModel componentModel) => @<WebViewHtmlStringComponent ComponentModel="@componentModel" />;
+
+    void ValuesChanged(string? value)
+    {
+        if (ComponentModel is not null)
+        {
+            ComponentModel.SetValueFromUI(value);
+        }
+    }
+}

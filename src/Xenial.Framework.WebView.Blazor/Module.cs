@@ -34,6 +34,7 @@ namespace Xenial.Framework.WebView.Blazor
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
             editorDescriptorsFactory.UseWebViewUriPropertyEditorsBlazor();
+            editorDescriptorsFactory.UseWebViewHtmlStringPropertyEditorsBlazor();
         }
     }
 }
