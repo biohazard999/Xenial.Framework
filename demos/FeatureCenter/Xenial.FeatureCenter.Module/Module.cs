@@ -64,9 +64,6 @@ namespace Xenial.FeatureCenter.Module
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
 
-            //editorDescriptorsFactory.UseTokenObjectsPropertyEditors<TokenEditorNonPersistentTokens>();
-            //editorDescriptorsFactory.UseTokenObjectsPropertyEditorsForType<XPCollection<TokenEditorPersistentTokens>>();
-
             editorDescriptorsFactory.RegisterPropertyEditorAlias(
                 "Xenial.WebViewStringPropertyEditor",
                 typeof(string),
