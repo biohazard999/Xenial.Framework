@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 using DevExpress.Persistent.Base;
@@ -25,12 +27,15 @@ namespace Xenial.Framework.ModelBuilders
         }
 
         /// <summary>
-        /// Use the Token Objects Property Editor <see cref="TokenObjectsEditorAttribute"/>
+        /// Use the Token Objects Property Editor <see cref="TokenObjectsEditorAttribute" />
         /// </summary>
+        /// <typeparam name="TProperty">The type of the t property.</typeparam>
         /// <typeparam name="TClassType">The type of the type.</typeparam>
         /// <param name="builder">The builder.</param>
-        /// <returns></returns>
-        public static IPropertyBuilder<System.Collections.IList?, TClassType> UseTokenObjectsPropertyEditor<TClassType>(this IPropertyBuilder<System.Collections.IList?, TClassType> builder)
+        /// <returns>IPropertyBuilder&lt;TProperty, TClassType&gt;.</returns>
+        /// <exception cref="ArgumentNullException">builder</exception>
+        public static IPropertyBuilder<TProperty?, TClassType> UseTokenObjectsPropertyEditor<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder)
+            where TProperty : IList
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
             return builder.WithAttribute(new TokenObjectsEditorAttribute());
