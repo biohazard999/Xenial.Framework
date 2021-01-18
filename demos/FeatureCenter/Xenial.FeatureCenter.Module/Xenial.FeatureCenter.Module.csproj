@@ -21,16 +21,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="**\*.md" />
-    <EmbeddedResource Include="**\*.gif" />
+    <None Remove="**\*.md" />
+    <None Remove="**\*.gif" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="BusinessObjects\Editors\StepProgressBarEnumEditorDemo.Remarks.md" />
-    <None Remove="BusinessObjects\Editors\TokenStringEditorDemo.Remarks.md" />
-    <None Remove="BusinessObjects\Editors\TokenStringEditorDemo.Usage.Attributes.md" />
-    <None Remove="BusinessObjects\Editors\TokenStringEditorDemo.Usage.ModelBuilders.md" />
-    <None Remove="BusinessObjects\Editors\TokenStringEditorDemo.Usage.ModelEditor.gif" />
+    <EmbeddedResource Include="**\*.md" />
+    <EmbeddedResource Include="**\*.gif" />
   </ItemGroup>
 
   <ItemGroup>

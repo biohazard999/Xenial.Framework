@@ -121,6 +121,9 @@
   <data name="StepProgressBarEnumEditorDemo_Usage_ModelEditor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>stepprogressbarenumeditordemo.usage.modeleditor.gif;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="TokenObjectsEditorDemo_Usage_ModelEditor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>tokenobjectseditordemo.usage.modeleditor.gif;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="TokenStringEditorDemo_Usage_ModelEditor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>tokenstringeditordemo.usage.modeleditor.gif;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

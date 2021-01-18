@@ -73,6 +73,16 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] TokenObjectsEditorDemo_Usage_ModelEditor {
+            get {
+                object obj = ResourceManager.GetObject("TokenObjectsEditorDemo_Usage_ModelEditor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] TokenStringEditorDemo_Usage_ModelEditor {
             get {
                 object obj = ResourceManager.GetObject("TokenStringEditorDemo_Usage_ModelEditor", resourceCulture);

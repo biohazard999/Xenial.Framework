@@ -11,15 +11,10 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         [Association]
         [TokenObjectsEditor]
         public XPCollection<TokenObjectsEditorDemoTokens> Tokens => GetCollection<TokenObjectsEditorDemoTokens>();
-
-        //[Association]
-        //[TokenObjectsEditor]
-        //[ImmediatePostData]
-        //public XPCollection<TokenObjectsEditorDemoTokens> TokensImmediatePostData => GetCollection<TokenObjectsEditorDemoTokens>();
     }
 
     [Persistent]
-    public class TokenObjectsEditorDemoTokens : FeatureCenterBaseObjectId
+    public partial class TokenObjectsEditorDemoTokens : FeatureCenterBaseObjectId
     {
         private string? name;
 
