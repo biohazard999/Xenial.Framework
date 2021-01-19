@@ -12,4 +12,6 @@ Current not tested scenarios are:
 Various EditModes <strong>Readonly/AllowEdit</strong> are not supported yet.<br>
 </div>
 
+> The interactive documentation in the FeatureCenter is built upon this control.
+
 </div>

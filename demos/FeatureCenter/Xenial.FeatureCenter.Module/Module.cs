@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.ConditionalAppearance;
 using DevExpress.ExpressApp.DC;
-using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Updating;
 
@@ -27,6 +27,7 @@ namespace Xenial.FeatureCenter.Module
         protected override ModuleTypeList GetRequiredModuleTypesCore()
             => base.GetRequiredModuleTypesCore()
                 .AndModuleTypes(
+                    typeof(ConditionalAppearanceModule),
                     typeof(XenialWebViewModule),
                     typeof(XenialTokenEditorsModule),
                     typeof(XenialStepProgressEditorsModule)

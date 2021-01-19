@@ -15,7 +15,7 @@ public class WebViewUriEditorDemoModelBuilder
         base.Build();
         
         For(m => m.Uri)
-            .UsingWebViewUriPropertyEditor();
+            .UseWebViewUriPropertyEditor();
     }
 }
 ```

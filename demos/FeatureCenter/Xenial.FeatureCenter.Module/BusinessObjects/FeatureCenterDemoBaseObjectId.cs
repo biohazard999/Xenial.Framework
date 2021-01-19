@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 
+using DevExpress.ExpressApp.ConditionalAppearance;
 using DevExpress.Persistent.Base;
 using DevExpress.Text.Interop;
 using DevExpress.Xpo;
@@ -15,6 +17,7 @@ using Xenial.Framework.Utils;
 namespace Xenial.FeatureCenter.Module.BusinessObjects
 {
     [NonPersistent]
+    [Appearance("Hide.DEMO_LAYOUT_GROUP", AppearanceItemType.LayoutItem, nameof(IsNotAvailableOnPlatform), Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, TargetItems = "DEMO_LAYOUT_GROUP")]
     public abstract class FeatureCenterDemoBaseObjectId : FeatureCenterBaseObjectId
     {
         private static readonly MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
@@ -23,11 +26,48 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 
         protected virtual IEnumerable<RequiredNuget> GetRequiredModules() => Array.Empty<RequiredNuget>();
 
+        protected virtual string GetNotSupportedWarning(bool includeSection = false) => string.Empty;
+
+        [WebViewHtmlStringEditor]
+        [Appearance("Hide.NotSupportedHtml", AppearanceItemType.ViewItem, nameof(IsAvailableOnPlatform), Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide)]
+        public string NotSupportedHtml => BuildHtml("Demo", BuildNotSupportedHtmlWarning());
+
+        [Browsable(false)]
+        public bool IsAvailableOnPlatform => GetRequiredModules().FirstOrDefault(e => e.Platform == FeatureCenterModule.CurrentPlatform) is not null;
+
+        [Browsable(false)]
+        public bool IsNotAvailableOnPlatform => !IsAvailableOnPlatform;
+
+        private string BuildNotSupportedHtmlWarning()
+        {
+            if (!IsAvailableOnPlatform)
+            {
+                var warning = GetNotSupportedWarning();
+                if (!string.IsNullOrEmpty(warning))
+                {
+                    var sb = new StringBuilder();
+                    sb.AppendLine("<div class='notification is-warning is-light'>");
+                    sb.AppendLine($"Platform <strong>{FeatureCenterModule.CurrentPlatform}</strong> is currently <strong>NOT</strong> supported.");
+                    sb.AppendLine("</div>");
+                    sb.AppendLine(warning);
+                    return sb.ToString();
+                }
+            }
+
+            return string.Empty;
+        }
+
         private string BuildInstallationMarkDown()
         {
             var sb = new StringBuilder();
 
             var types = GetRequiredModules().Where(m => !m.Platform.HasValue || (m.Platform == FeatureCenterModule.CurrentPlatform));
+
+            var warning = BuildNotSupportedHtmlWarning();
+            if (!string.IsNullOrEmpty(warning))
+            {
+                sb.AppendLine(warning);
+            }
 
             sb.AppendLine(Section.Create(string.Empty, new TabGroup
             {
@@ -169,6 +209,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 
             sb.AppendLine(tabGroup.ToString());
         }
+
 
         internal record Tab(string Caption, string? Image)
         {

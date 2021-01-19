@@ -1,8 +1,8 @@
 ﻿
 ```cs
-public class WebViewUriEditorDemo
+public class WebViewHtmlStringEditorDemo
 {
-    [WebViewUriEditor]
-    public Uri Tokens { get; set; }
+    [WebViewHtmlStringEditor]
+    public string HtmlContent { get; set; } = "<html><head></head><body><h1>Hello from WebViewHtmlStringEditor</h1></body></html>";
 }
 ```

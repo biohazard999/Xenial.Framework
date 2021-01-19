@@ -71,12 +71,25 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             sb.AppendLine("</table>");
             sb.AppendLine("</div>");
 
-            sb.AppendLine("<div class='section'>");
+            sb.AppendLine(GetNotSupportedWarning(includeSection: true));
+
+            return sb.ToString();
+        }
+
+        protected override string GetNotSupportedWarning(bool includeSection = false)
+        {
+            var sb = new StringBuilder();
+            if (includeSection)
+            {
+                sb.AppendLine("<div class='section'>");
+            }
             sb.AppendLine("<div class='notification is-warning is-light'>");
             sb.AppendLine("<strong>Blazor</strong> support will be implemented once DevExpress provides a similar control.");
             sb.AppendLine("</div>");
-            sb.AppendLine("</div>");
-
+            if (includeSection)
+            {
+                sb.AppendLine("</div>");
+            }
             return sb.ToString();
         }
 

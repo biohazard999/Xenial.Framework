@@ -29,9 +29,6 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                     "https://www.google.com",
                 });
 
-            For(m => m.Uri)
-                .UsingWebViewUriPropertyEditor();
-
             this.WithDetailViewLayout(l => new()
             {
                 BuildDemoLayout(l, (l, tab) => tab with

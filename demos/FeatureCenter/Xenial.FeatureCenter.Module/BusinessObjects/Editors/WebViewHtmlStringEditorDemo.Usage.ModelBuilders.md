@@ -1,21 +1,21 @@
 ﻿
 ```cs
-public class WebViewUriEditorDemo
+public class WebViewHtmlStringEditorDemo
 {
-    public Uri Uri { get; set; }
+    public string HtmlContent { get; set; } = "<html><head></head><body><h1>Hello from WebViewHtmlStringEditor</h1></body></html>";
 }
-public class WebViewUriEditorDemoModelBuilder 
-    : ModelBuilder<WebViewUriEditorDemo>
+public class WebViewHtmlStringEditorDemoModelBuilder 
+    : ModelBuilder<WebViewHtmlStringEditorDemo>
 {
-    public WebViewUriEditorDemoModelBuilder(ITypeInfo typeInfo) 
+    public WebViewHtmlStringEditorDemoModelBuilder(ITypeInfo typeInfo) 
         : base(typeInfo) { }
     
     public override void Build()
     {
         base.Build();
         
-        For(m => m.Uri)
-            .UsingWebViewUriPropertyEditor();
+        For(m => m.HtmlContent)
+            .UseWebViewHtmlStringPropertyEditor();
     }
 }
 ```
