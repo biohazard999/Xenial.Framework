@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using DevExpress.ExpressApp;
 
@@ -19,5 +21,8 @@ namespace Xenial.FeatureCenter.Module.Blazor
                     typeof(XenialTokenEditorsBlazorModule),
                     typeof(XenialWebViewBlazorModule)
                 );
+
+        protected override IEnumerable<Type> GetDeclaredControllerTypes()
+            => base.GetDeclaredControllerTypes().Concat(new[] { typeof(DownloadWindowsFormsDemoWindowController) });
     }
 }

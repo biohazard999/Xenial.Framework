@@ -19,5 +19,11 @@
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors.Blazor/Xenial.Framework.TokenEditors.Blazor.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.WebView.Blazor/Xenial.Framework.WebView.Blazor.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="DownloadWindowsFormsDemoWindowController.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
   
 </Project>

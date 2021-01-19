@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using DevExpress.ExpressApp;
@@ -25,5 +26,8 @@ namespace Xenial.FeatureCenter.Module.Win
                 typeof(XenialTokenEditorsWindowsFormsModule),
                 typeof(XenialStepProgressEditorsWindowsFormsModule)
             );
+
+        protected override IEnumerable<Type> GetDeclaredControllerTypes()
+            => base.GetDeclaredControllerTypes().Concat(new[] { typeof(OpenBlazorDemoWindowController) });
     }
 }
