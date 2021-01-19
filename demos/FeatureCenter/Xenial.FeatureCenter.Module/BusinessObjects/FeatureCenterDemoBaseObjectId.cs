@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using DevExpress.Persistent.Base;
+using DevExpress.Text.Interop;
 using DevExpress.Xpo;
 
 using Markdig;
@@ -68,7 +69,106 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
             return sb.ToString();
         }
 
-        protected virtual void AddInstallationSection(StringBuilder sb) { }
+        public record GeneratorUpdaterInstallation(string GeneratorUpdater)
+        {
+            public string[] Comment { get; set; } = Array.Empty<string>();
+        }
+
+        public record EditorInstallation(string Module, string EditorDescriptorsFactory, AvailablePlatform? Platform = null)
+        {
+            public GeneratorUpdaterInstallation? GeneratorUpdater { get; set; }
+        }
+
+        protected virtual IEnumerable<EditorInstallation> EditorInstallations { get; } = Array.Empty<EditorInstallation>();
+
+        protected virtual void AddInstallationSection(StringBuilder sb)
+        {
+            string GetModuleCaption(EditorInstallation installation)
+                => installation.Platform switch
+                {
+                    null => "Common Module",
+                    AvailablePlatform.Win => "Windows Forms Module",
+                    AvailablePlatform.Blazor => "Blazor Module",
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+
+            string GetModuleName(EditorInstallation installation)
+                => installation.Platform switch
+                {
+                    null => "MyProjectModule",
+                    AvailablePlatform.Win => "MyProjectWindowsFormsModule",
+                    AvailablePlatform.Blazor => "MyProjectBlazorModule",
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+
+            Section CreateModuleSection(EditorInstallation installation)
+                 => Section.Create(GetModuleCaption(installation), CodeBlock.Create("cs", $@"public class {GetModuleName(installation)} : ModuleBase
+{{
+    protected override ModuleTypeList GetRequiredModuleTypesCore()
+    {{
+        var moduleTypes = base.GetRequiredModuleTypesCore();
+        
+        moduleTypes.Add(typeof({installation.Module}));
+        
+        return moduleTypes;
+    }}
+}}"));
+
+            Section CreateEditorDescriptorSection(EditorInstallation installation)
+            {
+                var genUpdater = string.Empty;
+                if (installation.GeneratorUpdater is not null)
+                {
+                    var comment = string.Join(Environment.NewLine, installation.GeneratorUpdater.Comment.Select(c => $"        //{c}"));
+                    genUpdater = $@"
+    public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
+    {{
+        base.AddGeneratorUpdaters(updaters);{(string.IsNullOrEmpty(comment) ? string.Empty : $"{Environment.NewLine}{comment}")}
+        updaters.{installation.GeneratorUpdater.GeneratorUpdater}();
+    }}";
+                }
+
+                return Section.Create(GetModuleCaption(installation), CodeBlock.Create("cs", $@"public class {GetModuleName(installation)} : ModuleBase
+{{
+    protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
+    {{
+        base.RegisterEditorDescriptors(editorDescriptorsFactory);
+        editorDescriptorsFactory.{installation.EditorDescriptorsFactory}();
+    }}{genUpdater}
+}}"));
+            }
+
+            var moduleSections = EditorInstallations.Where(m => !m.Platform.HasValue || (m.Platform.HasValue && m.Platform == FeatureCenterModule.CurrentPlatform))
+                .Select(CreateModuleSection)
+                .ToList();
+
+            var editorDescriptorSections = EditorInstallations.Where(m => !m.Platform.HasValue || (m.Platform.HasValue && m.Platform == FeatureCenterModule.CurrentPlatform))
+                .Select(CreateEditorDescriptorSection)
+                .ToList();
+
+            var tabGroup = Section.Create(string.Empty, new TabGroup
+            {
+                Tabs = new()
+                {
+                    new("Using Modules", "fas fa-code")
+                    {
+                        HtmlAble = new Section()
+                        {
+                            Content = new(moduleSections)
+                        }
+                    },
+                    new("Using Feature Slices", "fas fa-pizza-slice")
+                    {
+                        HtmlAble = new Section()
+                        {
+                            Content = new(editorDescriptorSections)
+                        }
+                    }
+                }
+            });
+
+            sb.AppendLine(tabGroup.ToString());
+        }
 
         internal record Tab(string Caption, string? Image)
         {
