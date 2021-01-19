@@ -9,7 +9,8 @@ Platform support: [.NET Standard 2.0 and upwards, including net462](https://docs
 
 - [Quick start](#quick-start)
 - [Documentation](https://framework.xenial.io)
-- [Nuget](https://www.nuget.org/packages/Xenial.Framework/)
+- [Nuget](https://www.nuget.org/packages?q=Xenial.Framework)
+- [Online-Demo](https://framework.featurecenter.xenial.io/)
 
 ### Prerequisites
 
