@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
+
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     public partial class StepProgressBarEnumEditorDemo

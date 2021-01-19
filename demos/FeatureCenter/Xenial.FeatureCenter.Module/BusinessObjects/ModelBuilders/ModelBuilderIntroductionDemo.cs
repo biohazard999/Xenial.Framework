@@ -9,8 +9,8 @@ using DevExpress.Xpo;
 namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
 {
     [Persistent]
-    public class ModelBuilderBasicsDemo : FeatureCenterModelBuildersBaseObject
+    public partial class ModelBuilderIntroductionDemo : FeatureCenterModelBuildersBaseObject
     {
-        public ModelBuilderBasicsDemo(Session session) : base(session) { }
+        public ModelBuilderIntroductionDemo(Session session) : base(session) { }
     }
 }

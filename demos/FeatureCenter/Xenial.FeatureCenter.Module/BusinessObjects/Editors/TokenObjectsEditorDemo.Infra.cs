@@ -4,6 +4,8 @@ using System.Text;
 
 using Xenial.Framework.Base;
 
+using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
+
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [GenerateNoView("TokenObjectsEditorDemoTokens_TokenObjectsEditorDemos_ListView")]

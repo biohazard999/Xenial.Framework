@@ -28,7 +28,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 #region ModelBuilders
             typeof(FeatureCenterModelBuildersBaseObject),
 
-            typeof(ModelBuilderBasicsDemo)
+            typeof(ModelBuilderIntroductionDemo)
 #endregion
         };
 

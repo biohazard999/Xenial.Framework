@@ -73,7 +73,7 @@ namespace Xenial.FeatureCenter.Module
             base.CustomizeTypesInfo(typesInfo);
 
             typesInfo
-                .CreateModelBuilder<ModelBuilderBasicsDemoModelBuilder>()
+                .CreateModelBuilder<ModelBuilderIntroductionDemoBuilder>()
                 .Build();
 
             typesInfo
