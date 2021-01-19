@@ -21,7 +21,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
         {
             base.Build();
 
-            this.HasCaption("ModelBuilder - ModelClass Properties")
+            this.HasCaption("ModelBuilders - ModelClass Properties")
                 .WithDefaultClassOptions()
                 .HasImage("direction1")
                 .IsSingleton(autoCommit: true)

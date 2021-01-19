@@ -11,6 +11,7 @@ using DevExpress.ExpressApp.Updating;
 using Xenial.FeatureCenter.Module.BusinessObjects;
 using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
 using Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders;
+using Xenial.FeatureCenter.Module.Model.GeneratorUpdaters;
 using Xenial.FeatureCenter.Module.Updaters;
 
 using Xenial.Framework;
@@ -52,6 +53,8 @@ namespace Xenial.FeatureCenter.Module
         public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
         {
             base.AddGeneratorUpdaters(updaters);
+
+            updaters.Add(new FeatureCenterNavigationItemNodesUpdater());
 
             updaters.UseSingletonNavigationItems();
             updaters.UseNoViewsGeneratorUpdater();
