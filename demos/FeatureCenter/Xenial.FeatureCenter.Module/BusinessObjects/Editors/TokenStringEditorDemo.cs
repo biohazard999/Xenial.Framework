@@ -9,7 +9,7 @@ using Xenial.Framework.ModelBuilders;
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [Persistent]
-    public partial class TokenStringEditorDemo : FeatureCenterDemoBaseObjectId
+    public partial class TokenStringEditorDemo : FeatureCenterEditorsBaseObject
     {
         private string? stringTokens;
 

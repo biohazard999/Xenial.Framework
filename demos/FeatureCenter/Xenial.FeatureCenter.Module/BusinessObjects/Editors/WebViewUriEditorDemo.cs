@@ -9,7 +9,7 @@ using DevExpress.Xpo;
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [Persistent]
-    public partial class WebViewUriEditorDemo : FeatureCenterDemoBaseObjectId
+    public partial class WebViewUriEditorDemo : FeatureCenterEditorsBaseObject
     {
         private static readonly string[] schemes = new[] { "http://", "https://" };
 

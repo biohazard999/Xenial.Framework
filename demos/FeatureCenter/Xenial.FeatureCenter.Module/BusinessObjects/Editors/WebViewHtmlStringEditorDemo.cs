@@ -6,7 +6,7 @@ using DevExpress.Xpo;
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [Persistent]
-    public partial class WebViewHtmlStringEditorDemo : FeatureCenterDemoBaseObjectId
+    public partial class WebViewHtmlStringEditorDemo : FeatureCenterEditorsBaseObject
     {
         private string? html;
         private string? htmlContent;

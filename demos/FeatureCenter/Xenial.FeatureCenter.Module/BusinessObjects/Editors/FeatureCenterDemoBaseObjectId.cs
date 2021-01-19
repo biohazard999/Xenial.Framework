@@ -7,22 +7,21 @@ using System.Text;
 
 using DevExpress.ExpressApp.ConditionalAppearance;
 using DevExpress.Persistent.Base;
-using DevExpress.Text.Interop;
 using DevExpress.Xpo;
 
 using Markdig;
 
 using Xenial.Framework.Utils;
 
-namespace Xenial.FeatureCenter.Module.BusinessObjects
+namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [NonPersistent]
     [Appearance("Hide.DEMO_LAYOUT_GROUP", AppearanceItemType.LayoutItem, nameof(IsNotAvailableOnPlatform), Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, TargetItems = "DEMO_LAYOUT_GROUP")]
-    public abstract class FeatureCenterDemoBaseObjectId : FeatureCenterBaseObjectId
+    public abstract class FeatureCenterEditorsBaseObject : FeatureCenterBaseObjectId
     {
         private static readonly MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
 
-        protected FeatureCenterDemoBaseObjectId(Session session) : base(session) { }
+        protected FeatureCenterEditorsBaseObject(Session session) : base(session) { }
 
         protected virtual IEnumerable<RequiredNuget> GetRequiredModules() => Array.Empty<RequiredNuget>();
 

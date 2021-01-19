@@ -11,7 +11,9 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
         {
             typeof(FeatureCenterBaseObject),
             typeof(FeatureCenterBaseObjectId),
-            typeof(FeatureCenterDemoBaseObjectId),
+
+#region Editors
+            typeof(FeatureCenterEditorsBaseObject),
 
             typeof(StepProgressBarEnumEditorDemo),
 
@@ -21,11 +23,15 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 
             typeof(WebViewUriEditorDemo),
             typeof(WebViewHtmlStringEditorDemo),
+#endregion
+
+#region ModelBuilders
+            typeof(FeatureCenterModelBuildersBaseObject),
+
+            typeof(ModelBuilderBasicsDemo)
+#endregion
         };
 
-        internal static readonly Type[] NonPersistentTypes = new[]
-        {
-            typeof(ModelBuilderBasicPropertiesDemo),
-        };
+        internal static readonly Type[] NonPersistentTypes = Array.Empty<Type>();
     }
 }

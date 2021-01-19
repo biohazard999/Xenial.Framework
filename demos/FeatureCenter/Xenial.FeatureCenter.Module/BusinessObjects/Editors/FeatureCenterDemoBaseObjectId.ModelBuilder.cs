@@ -10,7 +10,7 @@ using Xenial.Framework.ModelBuilders;
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     public abstract class FeatureCenterDemoBaseObjectIdModelBuilder<TClassType> : ModelBuilder<TClassType>
-        where TClassType : FeatureCenterDemoBaseObjectId
+        where TClassType : FeatureCenterEditorsBaseObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FeatureCenterDemoBaseObjectIdModelBuilder`1"/> class.

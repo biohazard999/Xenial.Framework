@@ -4,7 +4,7 @@ using DevExpress.Xpo;
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [Persistent]
-    public partial class TokenObjectsEditorDemo : FeatureCenterDemoBaseObjectId
+    public partial class TokenObjectsEditorDemo : FeatureCenterEditorsBaseObject
     {
         public TokenObjectsEditorDemo(Session session) : base(session) { }
 

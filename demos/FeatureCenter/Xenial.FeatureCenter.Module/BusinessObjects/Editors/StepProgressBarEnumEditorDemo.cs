@@ -10,7 +10,7 @@ using DevExpress.Xpo;
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [Persistent]
-    public partial class StepProgressBarEnumEditorDemo : FeatureCenterDemoBaseObjectId
+    public partial class StepProgressBarEnumEditorDemo : FeatureCenterEditorsBaseObject
     {
         public StepProgressBarEnumEditorDemo(Session session) : base(session) { }
 
