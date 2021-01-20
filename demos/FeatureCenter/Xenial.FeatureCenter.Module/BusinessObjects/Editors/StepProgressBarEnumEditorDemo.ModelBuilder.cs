@@ -11,7 +11,7 @@ using Xenial.Framework.ModelBuilders;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
-    public class StepProgressBarEnumEditorDemoModelBuilder : FeatureCenterDemoBaseObjectIdModelBuilder<StepProgressBarEnumEditorDemo>
+    public class StepProgressBarEnumEditorDemoModelBuilder : FeatureCenterEditorsBaseObjectModelBuilder<StepProgressBarEnumEditorDemo>
     {
         public StepProgressBarEnumEditorDemoModelBuilder(ITypeInfo typeInfo) : base(typeInfo) { }
 

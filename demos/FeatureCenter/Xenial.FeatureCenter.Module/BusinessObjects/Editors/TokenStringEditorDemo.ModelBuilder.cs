@@ -7,7 +7,7 @@ using Xenial.Framework.ModelBuilders;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
-    public class TokenStringEditorDemoModelBuilder : FeatureCenterDemoBaseObjectIdModelBuilder<TokenStringEditorDemo>
+    public class TokenStringEditorDemoModelBuilder : FeatureCenterEditorsBaseObjectModelBuilder<TokenStringEditorDemo>
     {
         public TokenStringEditorDemoModelBuilder(ITypeInfo typeInfo) : base(typeInfo) { }
 

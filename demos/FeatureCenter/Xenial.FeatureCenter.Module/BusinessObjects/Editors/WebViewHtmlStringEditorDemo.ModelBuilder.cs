@@ -7,7 +7,7 @@ using DevExpress.Persistent.Base;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
-    public class WebViewHtmlStringEditorDemoModelBuilder : FeatureCenterDemoBaseObjectIdModelBuilder<WebViewHtmlStringEditorDemo>
+    public class WebViewHtmlStringEditorDemoModelBuilder : FeatureCenterEditorsBaseObjectModelBuilder<WebViewHtmlStringEditorDemo>
     {
         public WebViewHtmlStringEditorDemoModelBuilder(ITypeInfo typeInfo) : base(typeInfo) { }
 

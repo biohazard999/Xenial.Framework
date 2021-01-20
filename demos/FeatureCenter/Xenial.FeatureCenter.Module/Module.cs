@@ -77,6 +77,10 @@ namespace Xenial.FeatureCenter.Module
                 .Build();
 
             typesInfo
+                .CreateModelBuilder<FeatureCenterEditorsBaseObjectModelBuilder>()
+                .Build();
+
+            typesInfo
                 .CreateModelBuilder<StepProgressBarEnumEditorDemoModelBuilder>()
                 .Build();
 
@@ -94,6 +98,9 @@ namespace Xenial.FeatureCenter.Module
 
             typesInfo
                 .CreateModelBuilder<WebViewHtmlStringEditorDemoModelBuilder>()
+                .Build();
+
+            typesInfo.CreateModelBuilder<FeatureCenterModelBuildersBaseObjectModelBuilder>()
                 .Build();
         }
     }

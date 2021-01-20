@@ -9,14 +9,25 @@ using Xenial.Framework.ModelBuilders;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
-    public abstract class FeatureCenterDemoBaseObjectIdModelBuilder<TClassType> : ModelBuilder<TClassType>
+    public class FeatureCenterEditorsBaseObjectModelBuilder : ModelBuilder<FeatureCenterEditorsBaseObject>
+    {
+        public FeatureCenterEditorsBaseObjectModelBuilder(ITypeInfo typeInfo) : base(typeInfo) { }
+
+        public override void Build()
+        {
+            base.Build();
+            this.GenerateNoViews();
+        }
+    }
+
+    public abstract class FeatureCenterEditorsBaseObjectModelBuilder<TClassType> : ModelBuilder<TClassType>
         where TClassType : FeatureCenterEditorsBaseObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FeatureCenterDemoBaseObjectIdModelBuilder`1"/> class.
         /// </summary>
         /// <param name="typeInfo">The type information.</param>
-        public FeatureCenterDemoBaseObjectIdModelBuilder(ITypeInfo typeInfo) : base(typeInfo) { }
+        public FeatureCenterEditorsBaseObjectModelBuilder(ITypeInfo typeInfo) : base(typeInfo) { }
 
         public override void Build()
         {
