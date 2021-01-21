@@ -111,16 +111,24 @@ Do you want to download and install it now?
                     }
 
                     SetPrivateFieldValue<Task?>(control, "_initTask", null);
-
-                    await control.EnsureCoreWebView2AndInstallAsync();
+                    try
+                    {
+                        await control.EnsureCoreWebView2Async();
+                    }
+                    catch (COMException ex2) { HandleCOMException(ex2); }
+                    catch (Exception ex2) { HandleGenericException(ex2); }
                 }
             }
-            catch (COMException ex)
+            catch (COMException ex) { HandleCOMException(ex); }
+            catch (Exception ex) { HandleGenericException(ex); }
+
+            static void HandleCOMException(COMException ex)
             {
                 Tracing.LogError(new Guid("FF39957F-C7E7-4498-B6B5-79317D53EAB7"), ex);
                 WinApplication.Messaging.ShowException(ex.ToString());
             }
-            catch (Exception ex)
+
+            static void HandleGenericException(Exception ex)
             {
                 Tracing.LogError(new Guid("0985D675-A93B-48B7-AC88-E3622DD86DAC"), ex);
                 WinApplication.Messaging.ShowException(ex.ToString());
