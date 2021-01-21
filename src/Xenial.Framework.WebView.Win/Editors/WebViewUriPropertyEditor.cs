@@ -65,11 +65,11 @@ namespace Xenial.Framework.WebView.Win.Editors
                 Tracing.LogError(new Guid("369655EA-E64B-45C6-8481-6098F7D96183"), ex);
                 if (await WebView2RuntimeInstaller.DownloadAndInstallWebView2Runtime())
                 {
-                    await EnsureCoreWebView2Async();
                     if (!Debugger.IsAttached)
                     {
                         Debugger.Launch();
                     }
+                    await EnsureCoreWebView2Async();
                 }
             }
             catch (COMException ex)
