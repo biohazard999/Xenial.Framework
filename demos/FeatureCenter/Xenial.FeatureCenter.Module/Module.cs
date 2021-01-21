@@ -72,6 +72,9 @@ namespace Xenial.FeatureCenter.Module
         {
             base.CustomizeTypesInfo(typesInfo);
 
+            typesInfo.RemoveXafViewsFromApplicationModel();
+            typesInfo.RemoveXpoViewsFromApplicationModel();
+
             typesInfo
                 .CreateModelBuilder<ModelBuilderIntroductionDemoBuilder>()
                 .Build();
