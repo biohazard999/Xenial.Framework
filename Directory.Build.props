@@ -38,7 +38,7 @@
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeFormatting.ruleset</CodeAnalysisRuleSet>
     
-    <DxVersion>20.2.4</DxVersion>
+    <DxVersion>20.2.5</DxVersion>
     <!-- <XenialVersion>20204.0.1</XenialVersion> -->
     <XenialVersion>$(PackageVersion)</XenialVersion>
     <DxPackageVersion>$(DxVersion)</DxPackageVersion>
