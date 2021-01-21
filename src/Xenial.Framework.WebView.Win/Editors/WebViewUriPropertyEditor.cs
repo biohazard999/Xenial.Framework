@@ -6,7 +6,10 @@ using DevExpress.ExpressApp.Win;
 using DevExpress.ExpressApp.Win.Editors;
 using DevExpress.Persistent.Base;
 
+using Microsoft.Web.WebView2.Core;
+
 using Xenial.Framework.WebView.Win.Editors;
+using Xenial.Framework.WebView.Win.Helpers;
 
 namespace Xenial.Framework.WebView.Win.Editors
 {
@@ -51,6 +54,14 @@ namespace Xenial.Framework.WebView.Win.Editors
             try
             {
                 await Control.EnsureCoreWebView2Async();
+            }
+            catch (EdgeNotFoundException ex)
+            {
+                Tracing.LogError(new Guid("369655EA-E64B-45C6-8481-6098F7D96183"), ex);
+                if (await WebView2RuntimeInstaller.DownloadAndInstallWebView2Runtime())
+                {
+                    await Control.EnsureCoreWebView2Async();
+                }
             }
             catch (COMException ex)
             {
