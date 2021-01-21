@@ -35,10 +35,9 @@ namespace Xenial.Framework.WebView.Win.Helpers
             {
                 await httpClient.DownloadFileAsync(WebView2RuntimeInstallerUrl, installerStream);
             }
+
             var proc = Process.Start(installerPath, "/install");
             proc.WaitForExit();
-
-            await Task.Delay(5000);
 
             return true;
         }

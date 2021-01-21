@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -65,6 +66,10 @@ namespace Xenial.Framework.WebView.Win.Editors
                 if (await WebView2RuntimeInstaller.DownloadAndInstallWebView2Runtime())
                 {
                     await EnsureCoreWebView2Async();
+                    if (!Debugger.IsAttached)
+                    {
+                        Debugger.Launch();
+                    }
                 }
             }
             catch (COMException ex)
