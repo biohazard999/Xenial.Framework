@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <Reference Include="System.Configuration" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
   
   <Target Name="DeleteFiles" AfterTargets="Publish">
