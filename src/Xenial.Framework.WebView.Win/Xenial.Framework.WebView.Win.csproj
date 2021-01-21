@@ -18,7 +18,7 @@
   
   <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Net.Http" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
   </ItemGroup>
   
 </Project>
