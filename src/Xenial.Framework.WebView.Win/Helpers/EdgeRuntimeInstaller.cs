@@ -37,6 +37,9 @@ namespace Xenial.Framework.WebView.Win.Helpers
             }
             var proc = Process.Start(installerPath, "/install");
             proc.WaitForExit();
+
+            await Task.Delay(5000);
+
             return true;
         }
     }
