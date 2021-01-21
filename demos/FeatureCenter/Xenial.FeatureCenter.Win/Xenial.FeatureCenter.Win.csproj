@@ -21,9 +21,17 @@
   <ItemGroup>
     <Reference Include="System.Configuration" />
   </ItemGroup>
+
+  <ItemGroup Condition="$(Configuration) == 'Release'">
+    <PackageReference Include="Microsoft.DotNet.Framework.NativeImageCompiler" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
   
   <Target Name="DeleteFiles" AfterTargets="Publish">
     <Delete Files="$(PublishDir)DevExpress.BonusSkins.$(DxVersionPart).dll" />
+    <Delete Files="$(PublishDir)Microsoft.Web.WebView2.Wpf.dll" />
   </Target>
   
 </Project>
