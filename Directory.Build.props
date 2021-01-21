@@ -60,6 +60,23 @@
     <DefineConstants>$(DefineConstants);NET5</DefineConstants>
   </PropertyGroup>
   
+  <PropertyGroup Condition="$(DxVersion) &lt;= 20.2.4">
+    <DefineConstants>$(DefineConstants);DX_LTE_20_2_4</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(DxVersion) &lt;= 20.2.5">
+    <DefineConstants>$(DefineConstants);DX_LTE_20_2_5</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(DxVersion) &gt; 20.2.4">
+    <DefineConstants>$(DefineConstants);DX_GT_20_2_4</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(DxVersion) &gt; 20.2.5">
+    <DefineConstants>$(DefineConstants);DX_GT_20_2_5</DefineConstants>
+  </PropertyGroup>
+
+
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
     <None Include="$(MSBuildThisFileDirectory)\LICENSE.md" Pack="true" PackagePath="\" Visible="false" />

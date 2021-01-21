@@ -33,6 +33,7 @@ namespace Xenial.Framework.StepProgressEditors.Win
             editorDescriptorsFactory.UseStepProgressEnumPropertyEditorsWin();
         }
 
+#if DX_LTE_20_2_4
         /// <summary>
         /// Registers the Generator Updaters. These are classes, used to customize the Application Model's zero layer after it has been generated.
         /// </summary>
@@ -42,8 +43,8 @@ namespace Xenial.Framework.StepProgressEditors.Win
         {
             base.AddGeneratorUpdaters(updaters);
 
-            //TODO: Remove in DX20.2.5
             updaters.UseStepProgressEnumPropertyEditors();
         }
+#endif
     }
 }

@@ -108,6 +108,21 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         {
             new EditorInstallation("XenialStepProgressEditorsModule", "UseStepProgressEnumPropertyEditors", null),
             new EditorInstallation("XenialStepProgressEditorsWindowsFormsModule", "UseStepProgressEnumPropertyEditorsWin", AvailablePlatform.Win)
+#if DX_LTE_20_2_4
+            {
+                GeneratorUpdater = new("UseStepProgressEnumPropertyEditors")
+                {
+                    Comment = new []
+                    {
+                        "This is optional.",
+                        "You need this only for nullable enumeration properties in combination with the",
+                        "EditorAliasAttribute, StepProgressEnumEditorAttribute or ModelBuilders",
+                        "when using DevExpress version <= 20.2.4",
+                        "See: https://supportcenter.devexpress.com/ticket/details/t962834/registering-an-editor-alias-for-nullable-types for more information"
+                    }
+                }
+            }
+#endif
         };
     }
 }
