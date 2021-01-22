@@ -1,0 +1,16 @@
+<Configuration>
+  <VGpu>Enable</VGpu>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\F\git\Xenial.Framework\artifacts\SandboxScripts</HostFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>C:\F\git\Xenial.Framework\artifacts\demos</HostFolder>
+      <ReadOnly>false</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+    <Command>C:\Users\WDAGUtilityAccount\Desktop\SandboxScripts\run-app.bat</Command>
+  </LogonCommand>
+</Configuration>
