@@ -2,11 +2,11 @@
   <VGpu>Enable</VGpu>
   <MappedFolders>
     <MappedFolder>
-      <HostFolder>C:\F\git\Xenial.Framework\artifacts\SandboxScripts</HostFolder>
+      <HostFolder>C:\F\git\Xenial.Framework\e2e\SandboxScripts</HostFolder>
       <ReadOnly>true</ReadOnly>
     </MappedFolder>
     <MappedFolder>
-      <HostFolder>C:\F\git\Xenial.Framework\artifacts\demos</HostFolder>
+      <HostFolder>C:\F\git\Xenial.Framework\artifacts</HostFolder>
       <ReadOnly>false</ReadOnly>
     </MappedFolder>
   </MappedFolders>
