@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Blazor.Templates;
 
 using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
 using Xenial.Framework;
@@ -25,5 +26,23 @@ namespace Xenial.FeatureCenter.Module.Blazor
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
             => base.GetDeclaredControllerTypes().Concat(new[] { typeof(DownloadWindowsFormsDemoWindowController) });
+
+        public override void Setup(XafApplication application)
+        {
+            base.Setup(application);
+            application.CustomizeTemplate -= Application_CustomizeTemplate;
+            application.CustomizeTemplate += Application_CustomizeTemplate;
+        }
+
+        private void Application_CustomizeTemplate(object sender, CustomizeTemplateEventArgs e)
+        {
+            if (e.Context == TemplateContext.ApplicationWindow && e.Template is WindowTemplate windowTemplate)
+            {
+                windowTemplate.AboutInfoString
+                    = @$"Xenial: {XenialVersion.Version}/{XenialVersion.Branch}<br>
+Demo: {XenialVersion.Version}/{XenialVersion.Branch}<br>
+DxVersion: {XenialVersion.DxVersion}";
+            }
+        }
     }
 }
