@@ -75,13 +75,16 @@ namespace Xenial.Framework.MsBuild
                && bool.TryParse(generateXenialVersionInfoStr, out var generateXenialVersionInfo)
                && generateXenialVersionInfo)
             {
-                var xenialVersion = GetType().Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                var xenialPackageVersion = GetType().Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
                     .FirstOrDefault(m => m.Key == "XenialPackageVersion")?.Value;
 
                 var xenialPackageBranch = GetType().Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
                     .FirstOrDefault(m => m.Key == "XenialPackageBranch")?.Value;
 
-                if (!string.IsNullOrEmpty(xenialVersion))
+                var dxPackageVersion = GetType().Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                    .FirstOrDefault(m => m.Key == "DevExpressPackageVersion")?.Value;
+
+                if (!string.IsNullOrEmpty(xenialPackageVersion))
                 {
                     var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
                     syntaxWriter.WriteLine("using System;");
@@ -93,8 +96,9 @@ namespace Xenial.Framework.MsBuild
                     syntaxWriter.WriteLine("[CompilerGenerated]");
                     syntaxWriter.WriteLine("internal static class XenialVersion");
                     syntaxWriter.OpenBrace();
-                    syntaxWriter.WriteLine($"internal const string Version = \"{xenialVersion}\";");
+                    syntaxWriter.WriteLine($"internal const string Version = \"{xenialPackageVersion}\";");
                     syntaxWriter.WriteLine($"internal const string Branch = \"{xenialPackageBranch}\";");
+                    syntaxWriter.WriteLine($"internal const string DxVersion = \"{dxPackageVersion}\";");
 
                     syntaxWriter.CloseBrace();
                     syntaxWriter.CloseBrace();
