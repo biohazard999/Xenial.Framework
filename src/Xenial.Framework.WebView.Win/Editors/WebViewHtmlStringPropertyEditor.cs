@@ -108,8 +108,20 @@ namespace Xenial.Framework.WebView.Win.Editors
         {
             CoreWebView2Ready -= XenialWebView2_CoreWebView2Ready;
             isReady = true;
-            await EnsureCoreWebView2Async();
-            NavigateToString(string.IsNullOrEmpty(htmlContent) ? "about:blank" : htmlContent);
+            await this.EnsureCoreWebView2AndInstallAsync();
+            NavigateToHtmlContent();
+        }
+
+        private void NavigateToHtmlContent()
+        {
+            try
+            {
+                NavigateToString(string.IsNullOrEmpty(htmlContent) ? "about:blank" : htmlContent);
+            }
+            catch (ArgumentException)
+            {
+                NavigateToString("<html><head></head><body>Content is to long.</body></html>");
+            }
         }
 
         private string? htmlContent;
@@ -126,7 +138,7 @@ namespace Xenial.Framework.WebView.Win.Editors
                 htmlContent = value;
                 if (isReady)
                 {
-                    NavigateToString(string.IsNullOrEmpty(htmlContent) ? "about:blank" : htmlContent);
+                    NavigateToHtmlContent();
                 }
             }
         }
