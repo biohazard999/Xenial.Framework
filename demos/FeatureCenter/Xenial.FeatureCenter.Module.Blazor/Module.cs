@@ -38,10 +38,7 @@ namespace Xenial.FeatureCenter.Module.Blazor
         {
             if (e.Context == TemplateContext.ApplicationWindow && e.Template is WindowTemplate windowTemplate)
             {
-                windowTemplate.AboutInfoString
-                    = @$"Xenial: {XenialVersion.Version}/{XenialVersion.Branch}<br>
-Demo: {XenialVersion.Version}/{XenialVersion.Branch}<br>
-DxVersion: {XenialVersion.DxVersion}";
+                windowTemplate.AboutInfoString = string.Join("<br>", FeatureCenterModule.VersionInformation);
             }
         }
     }

@@ -27,6 +27,10 @@ namespace Xenial.FeatureCenter.Module.Win
             );
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
-            => base.GetDeclaredControllerTypes().Concat(new[] { typeof(OpenBlazorDemoWindowController) });
+            => base.GetDeclaredControllerTypes().Concat(new[]
+            {
+                typeof(OpenBlazorDemoWindowController),
+                typeof(StatusBarVersionWindowController)
+            });
     }
 }

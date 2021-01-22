@@ -106,5 +106,12 @@ namespace Xenial.FeatureCenter.Module
             typesInfo.CreateModelBuilder<FeatureCenterModelBuildersBaseObjectModelBuilder>()
                 .Build();
         }
+
+        public static string[] VersionInformation = new[]
+        {
+            $"Xenial: {XenialVersion.Version}/{XenialVersion.Branch}",
+            $"Demo: {XenialVersion.Version}/{XenialVersion.Branch}",
+            $"DxVersion: {XenialVersion.DxVersion}"
+        };
     }
 }
