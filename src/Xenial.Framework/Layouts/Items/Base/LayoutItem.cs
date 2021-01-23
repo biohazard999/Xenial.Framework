@@ -101,11 +101,10 @@ namespace Xenial.Framework.Layouts.Items.Base
         {
             _ = item ?? throw new ArgumentNullException(nameof(item));
 
-            if (Children.Contains(item))
+            if (Children.Remove(item))
             {
-                var value = Children.Remove(item);
                 item.Parent = null;
-                return value;
+                return true;
             }
             return false;
         }
