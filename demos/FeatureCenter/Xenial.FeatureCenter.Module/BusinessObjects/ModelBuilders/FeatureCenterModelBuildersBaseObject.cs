@@ -1,8 +1,6 @@
-﻿using DevExpress.Xpo;
+﻿using System;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using DevExpress.Xpo;
 
 using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
 

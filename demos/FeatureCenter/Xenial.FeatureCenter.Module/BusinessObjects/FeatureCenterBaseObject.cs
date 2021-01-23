@@ -5,7 +5,6 @@ using DevExpress.Xpo;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects
 {
-
     [NonPersistent]
     public abstract class FeatureCenterBaseObject : XPBaseObject
     {

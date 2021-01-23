@@ -1,9 +1,6 @@
-﻿using DevExpress.ExpressApp.DC;
-using DevExpress.ExpressApp.Model;
+﻿using System;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using DevExpress.ExpressApp.DC;
 
 using Xenial.Framework.ModelBuilders;
 
