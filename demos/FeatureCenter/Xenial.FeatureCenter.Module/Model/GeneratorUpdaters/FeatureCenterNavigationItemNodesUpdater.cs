@@ -38,7 +38,11 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                 foreach (var groupName in nodesDictionary.Keys)
                 {
                     var newItem = rootNavigationItems.Items.AddNode<IModelNavigationItem>(groupName);
-                    newItem.ImageName = imageNames.ContainsKey(newItem.Id) ? imageNames[newItem.Id] : null;
+                    if (!imageNames.TryGetValue(newItem.Id, out var imageName))
+                    {
+                        imageName = null;
+                    }
+                    newItem.ImageName = imageName;
 
                     var newNavItems = nodesDictionary[groupName];
                     foreach (var navItem in newNavItems)
