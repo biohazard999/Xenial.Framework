@@ -25,7 +25,11 @@ namespace Xenial.FeatureCenter.Module.Blazor
                 );
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
-            => base.GetDeclaredControllerTypes().Concat(new[] { typeof(DownloadWindowsFormsDemoWindowController) });
+            => base.GetDeclaredControllerTypes().Concat(new[]
+            {
+                typeof(DownloadWindowsFormsDemoWindowController),
+                typeof(HelpAndFeedbackWindowControllerBlazor)
+            });
 
         public override void Setup(XafApplication application)
         {

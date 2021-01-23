@@ -30,6 +30,7 @@ namespace Xenial.FeatureCenter.Module.Win
             => base.GetDeclaredControllerTypes().Concat(new[]
             {
                 typeof(OpenBlazorDemoWindowController),
+                typeof(HelpAndFeedbackWindowControllerWin),
                 typeof(StatusBarVersionWindowController)
             });
     }

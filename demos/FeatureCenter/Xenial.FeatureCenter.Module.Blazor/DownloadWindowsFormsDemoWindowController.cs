@@ -27,7 +27,7 @@ namespace Xenial.FeatureCenter.Module.Blazor
             DownloadWindowsFormsDemoSimpleAction.Execute += DownloadWindowsFormsDemoSimpleAction_Execute;
         }
 
-        private void DownloadWindowsFormsDemoSimpleAction_Execute(object sender, SimpleActionExecuteEventArgs e)
+        private void DownloadWindowsFormsDemoSimpleAction_Execute(object? sender, SimpleActionExecuteEventArgs e)
         {
             if (Application is BlazorApplication blazorApplication)
             {
