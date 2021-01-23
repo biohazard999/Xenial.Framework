@@ -42,6 +42,7 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                     {
                         imageName = null;
                     }
+
                     newItem.ImageName = imageName;
 
                     var newNavItems = nodesDictionary[groupName];
@@ -60,11 +61,17 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
 
             void AddOrAppendToDictionary(string groupName, IModelNavigationItem item)
             {
-                if (!nodesDictionary!.ContainsKey(groupName))
+                if (nodesDictionary is not null)
                 {
-                    nodesDictionary[groupName] = new List<IModelNavigationItem>();
+                    if (nodesDictionary.TryGetValue(groupName, out var modelNavigationItems))
+                    {
+                        modelNavigationItems.Add(item);
+                    }
+                    else
+                    {
+                        nodesDictionary.Add(groupName, new List<IModelNavigationItem> { item });
+                    }
                 }
-                nodesDictionary[groupName].Add(item);
             }
 
             void AddToDictionary(IModelNavigationItem item, string? caption)
