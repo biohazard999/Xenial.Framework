@@ -10,6 +10,12 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
 {
     public sealed partial class FeatureCenterNavigationItemNodesUpdater : ModelNodesGeneratorUpdater<NavigationItemNodeGenerator>
     {
+        private static readonly Dictionary<string, string> imageNames = new()
+        {
+            ["ModelBuilders"] = "direction1",
+            ["Editors"] = "EditNames"
+        };
+
         public override void UpdateNode(ModelNode node)
         {
             const string defaultGroupName = "Default";
@@ -29,6 +35,8 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                 foreach (var groupName in nodesDictionary.Keys)
                 {
                     var newItem = rootNavigationItems.Items.AddNode<IModelNavigationItem>(groupName);
+                    newItem.ImageName = imageNames.ContainsKey(newItem.Id) ? imageNames[newItem.Id] : null;
+
                     var newNavItems = nodesDictionary[groupName];
                     foreach (var navItem in newNavItems)
                     {
@@ -60,6 +68,7 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                     var groupName = caption.Split('-')[0].Trim();
                     var newCaption = caption.Split('-')[1].Trim();
                     item.Caption = newCaption;
+
                     if (item is IModelBaseChoiceActionItem choiceActionItem)
                     {
                         choiceActionItem.Caption = newCaption;
