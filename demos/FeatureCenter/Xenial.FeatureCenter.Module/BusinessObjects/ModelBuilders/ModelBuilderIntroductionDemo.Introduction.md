@@ -16,7 +16,7 @@ ModelBuilders are one of the many `NonVisual Components` of `Xenial` and designe
 1. Reduces code deduplication and help you build consistent applications
 1. Code refactoring becomes a lot easier
 
-### Resons why *not* to use ModelBuilders
+### Reasons *not* to use ModelBuilders
 
 1. It comes (as almost anything) with a small startup performance penalty
 1. It may slightly increase code complexity
