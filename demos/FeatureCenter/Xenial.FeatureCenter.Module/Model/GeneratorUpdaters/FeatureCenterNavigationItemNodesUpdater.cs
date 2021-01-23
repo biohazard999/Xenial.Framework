@@ -109,11 +109,11 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
 
             static void CopyPropertiesTo<T>(T source, T dest)
             {
-                var plist = from prop in typeof(T).GetProperties() where prop.CanRead && prop.CanWrite select prop;
-
-                foreach (var prop in plist)
+                foreach (var property in typeof(T).GetProperties())
+                {
+                    if (property.CanRead && property.CanWrite)
                     {
-                    prop.SetValue(dest, prop.GetValue(source, null), null);
+                        property.SetValue(dest, property.GetValue(source, null), null);
                     }
                 }
             }
