@@ -18,7 +18,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
 
             this.GenerateNoViews();
 
-            For(m => m.Summary)
+            For(m => m.Introduction)
                 .UseWebViewHtmlStringPropertyEditor();
         }
     }

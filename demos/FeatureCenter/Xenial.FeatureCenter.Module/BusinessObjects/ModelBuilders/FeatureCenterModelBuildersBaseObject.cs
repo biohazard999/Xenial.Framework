@@ -10,8 +10,9 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
     {
         public FeatureCenterModelBuildersBaseObject(Session session) : base(session) { }
 
-        public string Summary => BuildHtml("Summary", BuildSummaryHtml());
+        public string Introduction => BuildHtml("Introduction", BuildIntroductionHtml());
 
-        protected virtual string BuildSummaryHtml() => string.Empty;
+        protected virtual string BuildIntroductionHtml()
+            => MarkDownBlock.FromResourceString("BusinessObjects/ModelBuilders/ModelBuilderIntroductionDemo.Introduction.md").ToString();
     }
 }
