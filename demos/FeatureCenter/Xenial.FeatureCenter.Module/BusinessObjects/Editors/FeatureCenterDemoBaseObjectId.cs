@@ -66,40 +66,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                 sb.AppendLine(warning);
             }
 
-            sb.AppendLine(Section.Create(string.Empty, new TabGroup
-            {
-                Tabs = new()
-                {
-                    new(".NET CLI", "fas fa-terminal")
-                    {
-                        HtmlAble = CodeBlock.Create(
-                            "shell",
-                            string.Join(Environment.NewLine, types.Select(t => $"dotnet add package {t.Nuget} --version {XenialVersion.Version}"))
-                        )
-                    },
-                    new("PackageReference", "fas fa-code")
-                    {
-                        HtmlAble = CodeBlock.Create(
-                            "xml",
-                            string.Join(Environment.NewLine, types.Select(t => $"<PackageReference Include=\"{t.Nuget}\" Version=\"{XenialVersion.Version}\" />"))
-                        )
-                    },
-                    new("Package Manager", "fas fa-terminal")
-                    {
-                        HtmlAble = CodeBlock.Create(
-                            "powershell",
-                            string.Join(Environment.NewLine, types.Select(t => $"Install-Package {t.Nuget} -Version {XenialVersion.Version}"))
-                        )
-                    },
-                    new("Paket CLI", "fas fa-terminal")
-                    {
-                        HtmlAble = CodeBlock.Create(
-                            "shell",
-                            string.Join(Environment.NewLine, types.Select(t => $"paket add {t.Nuget} --version {XenialVersion.Version}"))
-                        )
-                    }
-                }
-            }).ToString());
+            sb.AppendLine(NugetInstallSection(types).ToString());
 
             AddInstallationSection(sb);
 
@@ -262,18 +229,5 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         protected virtual string DocsUrlFragment => string.Empty;
         protected virtual string RemarksHtml() => string.Empty;
         protected virtual string SupportedPlatformsHtml() => string.Empty;
-    }
-
-
-    public record RequiredNuget(string ModuleName, AvailablePlatform? Platform = null)
-    {
-        private readonly string nugetPostFix = Platform.HasValue ? $".{Platform.Value}" : string.Empty;
-        public string Nuget => $"Xenial.Framework.{ModuleName}{nugetPostFix}";
-    }
-
-    public enum AvailablePlatform
-    {
-        Win,
-        Blazor
     }
 }

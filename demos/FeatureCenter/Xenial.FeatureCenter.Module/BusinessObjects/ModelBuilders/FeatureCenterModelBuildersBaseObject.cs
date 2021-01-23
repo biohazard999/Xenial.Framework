@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using DevExpress.Xpo;
 
@@ -14,5 +15,15 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
 
         protected virtual string BuildIntroductionHtml()
             => MarkDownBlock.FromResourceString("BusinessObjects/ModelBuilders/ModelBuilderIntroductionDemo.Introduction.md").ToString();
+
+        public string Installation => BuildHtml("Installation", BuildInstallationHtml());
+
+        protected virtual string BuildInstallationHtml()
+            => NugetInstallSection(GetRequiredModules()).ToString();
+
+        protected virtual IEnumerable<RequiredNuget> GetRequiredModules() => new[]
+        {
+            new RequiredNuget("Xenial.Framework")
+        };
     }
 }

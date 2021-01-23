@@ -20,6 +20,9 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
 
             For(m => m.Introduction)
                 .UseWebViewHtmlStringPropertyEditor();
+
+            For(m => m.Installation)
+                .UseWebViewHtmlStringPropertyEditor();
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 
 using DevExpress.ExpressApp;
 
-using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
+using Xenial.FeatureCenter.Module.BusinessObjects;
 using Xenial.Framework;
 using Xenial.Framework.StepProgressEditors.Win;
 using Xenial.Framework.TokenEditors.Win;

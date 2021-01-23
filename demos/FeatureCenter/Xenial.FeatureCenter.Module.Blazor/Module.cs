@@ -5,7 +5,7 @@ using System.Linq;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Blazor.Templates;
 
-using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
+using Xenial.FeatureCenter.Module.BusinessObjects;
 using Xenial.Framework;
 using Xenial.Framework.TokenEditors.Blazor;
 using Xenial.Framework.WebView.Blazor;
