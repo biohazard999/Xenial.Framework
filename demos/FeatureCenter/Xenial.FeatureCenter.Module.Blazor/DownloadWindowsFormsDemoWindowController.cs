@@ -16,6 +16,7 @@ namespace Xenial.FeatureCenter.Module.Blazor
 
         public DownloadWindowsFormsDemoWindowController()
         {
+            TargetWindowType = WindowType.Main;
             DownloadWindowsFormsDemoSimpleAction = new SimpleAction(this, nameof(DownloadWindowsFormsDemoSimpleAction), PredefinedCategory.RecordsNavigation)
             {
                 Caption = "Download Winforms Demo",

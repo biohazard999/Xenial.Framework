@@ -13,6 +13,7 @@ namespace Xenial.FeatureCenter.Module.Win
 
         public OpenBlazorDemoWindowController()
         {
+            TargetWindowType = WindowType.Main;
             OpenBlazorDemoSimpleAction = new SimpleAction(this, nameof(OpenBlazorDemoSimpleAction), PredefinedCategory.RecordsNavigation)
             {
                 Caption = "Open Blazor Demo",
