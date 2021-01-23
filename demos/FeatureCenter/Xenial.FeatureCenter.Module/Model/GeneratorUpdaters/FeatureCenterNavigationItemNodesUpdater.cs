@@ -20,8 +20,11 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
         {
             const string defaultGroupName = "Default";
 
-            var nodesDictionary = new Dictionary<string, List<IModelNavigationItem>>();
-            nodesDictionary[defaultGroupName] = new List<IModelNavigationItem>();
+            var nodesDictionary =
+                new Dictionary<string, List<IModelNavigationItem>>
+                {
+                    {defaultGroupName, new List<IModelNavigationItem>()}
+                };
 
             if (node is IModelRootNavigationItems rootNavigationItems)
             {
@@ -57,7 +60,6 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                 {
                     nodesDictionary[groupName] = new List<IModelNavigationItem>();
                 }
-
                 nodesDictionary[groupName].Add(item);
             }
 
@@ -87,6 +89,7 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                 {
                     AddToDictionary(item, item.Caption);
                 }
+
                 foreach (var nestedNode in item.Items)
                 {
                     CollectNodes(nestedNode);
@@ -98,8 +101,9 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                 var plist = from prop in typeof(T).GetProperties() where prop.CanRead && prop.CanWrite select prop;
 
                 foreach (var prop in plist)
-                {
+                    {
                     prop.SetValue(dest, prop.GetValue(source, null), null);
+                    }
                 }
             }
         }
