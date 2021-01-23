@@ -14,17 +14,17 @@ using Xenial.Framework.WebView.Win;
 
 namespace Xenial.FeatureCenter.Win
 {
-    public class FeatureCenterWindowsFromsApplication : WinApplication
+    public class FeatureCenterWindowsFormsApplication : WinApplication
     {
-        static FeatureCenterWindowsFromsApplication()
+        static FeatureCenterWindowsFormsApplication()
             => SQLiteConnectionProvider.Register();
 
-        public FeatureCenterWindowsFromsApplication()
+        public FeatureCenterWindowsFormsApplication()
         {
             IgnoreUserModelDiffs = true;
 
             var dirName = Path.GetDirectoryName(GetType().Assembly.Location);
-            var dbName = $"{nameof(FeatureCenterWindowsFromsApplication)}.db";
+            var dbName = $"{nameof(FeatureCenterWindowsFormsApplication)}.db";
 
             var dbPath = string.IsNullOrEmpty(dirName)
                 ? dbName

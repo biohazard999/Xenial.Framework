@@ -14,12 +14,9 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
         {
             base.Build();
 
-            this.GenerateNoListViews();
-
             this.HasCaption("ModelBuilders - Introduction")
                 .WithDefaultClassOptions()
                 .HasImage("direction1")
-                .IsSingleton(autoCommit: true)
             ;
         }
     }

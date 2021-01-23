@@ -23,7 +23,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders
 
         protected virtual IEnumerable<RequiredNuget> GetRequiredModules() => new[]
         {
-            new RequiredNuget("Xenial.Framework")
+            new RequiredNuget(null)
         };
     }
 }

@@ -75,13 +75,16 @@ namespace Xenial.FeatureCenter.Module
             typesInfo.RemoveXafViewsFromApplicationModel();
             typesInfo.RemoveXpoViewsFromApplicationModel();
 
-            typesInfo
-                .CreateModelBuilder<ModelBuilderIntroductionDemoBuilder>()
-                .Build();
 
             typesInfo
                 .CreateModelBuilder<FeatureCenterEditorsBaseObjectModelBuilder>()
                 .Build();
+
+            typesInfo
+                .CreateModelBuilder<FeatureCenterModelBuildersBaseObjectModelBuilder>()
+                .Build();
+
+            #region Editors
 
             typesInfo
                 .CreateModelBuilder<StepProgressBarEnumEditorDemoModelBuilder>()
@@ -103,8 +106,19 @@ namespace Xenial.FeatureCenter.Module
                 .CreateModelBuilder<WebViewHtmlStringEditorDemoModelBuilder>()
                 .Build();
 
-            typesInfo.CreateModelBuilder<FeatureCenterModelBuildersBaseObjectModelBuilder>()
+            #endregion
+
+            #region ModelBuilders
+
+            typesInfo
+                .CreateModelBuilder<ModelBuilderIntroductionDemoBuilderInfra>()
                 .Build();
+
+            typesInfo
+                .CreateModelBuilder<ModelBuilderIntroductionDemoBuilder>()
+                .Build();
+
+            #endregion
         }
 
         public static string[] VersionInformation = new[]
