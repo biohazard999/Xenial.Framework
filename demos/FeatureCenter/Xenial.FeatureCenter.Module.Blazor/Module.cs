@@ -30,11 +30,12 @@ namespace Xenial.FeatureCenter.Module.Blazor
         public override void Setup(XafApplication application)
         {
             base.Setup(application);
+            _ = application ?? throw new ArgumentNullException(nameof(application));
             application.CustomizeTemplate -= Application_CustomizeTemplate;
             application.CustomizeTemplate += Application_CustomizeTemplate;
         }
 
-        private void Application_CustomizeTemplate(object sender, CustomizeTemplateEventArgs e)
+        private void Application_CustomizeTemplate(object? sender, CustomizeTemplateEventArgs e)
         {
             if (e.Context == TemplateContext.ApplicationWindow && e.Template is WindowTemplate windowTemplate)
             {
