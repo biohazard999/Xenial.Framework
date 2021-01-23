@@ -36,9 +36,9 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                     {
                         return null;
                     }
-                    if (modelViewLayoutElementFactories.ContainsKey(type))
+                    if (modelViewLayoutElementFactories.TryGetValue(type, out var modelViewLayoutElementFactory))
                     {
-                        return modelViewLayoutElementFactories[type].Value;
+                        return modelViewLayoutElementFactory.Value;
                     }
                     return FindFactory(type.GetBaseType());
                 }
