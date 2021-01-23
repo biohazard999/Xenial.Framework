@@ -6,6 +6,7 @@ using System.Text;
 
 using Markdig;
 
+using Xenial.FeatureCenter.Module.BusinessObjects;
 using Xenial.Framework.Utils;
 
 namespace Xenial.FeatureCenter.Module.HtmlBuilders
@@ -76,6 +77,41 @@ namespace Xenial.FeatureCenter.Module.HtmlBuilders
                 return sb.ToString();
             }
         }
+
+        internal static Section NugetInstallSection(IEnumerable<RequiredNuget> types) => Section.Create(string.Empty, new TabGroup
+        {
+            Tabs = new()
+            {
+                new(".NET CLI", "fas fa-terminal")
+                {
+                    HtmlAble = CodeBlock.Create(
+                        "shell",
+                        string.Join(Environment.NewLine, types.Select(t => $"dotnet add package {t.Nuget} --version {XenialVersion.Version}"))
+                    )
+                },
+                new("PackageReference", "fas fa-code")
+                {
+                    HtmlAble = CodeBlock.Create(
+                        "xml",
+                        string.Join(Environment.NewLine, types.Select(t => $"<PackageReference Include=\"{t.Nuget}\" Version=\"{XenialVersion.Version}\" />"))
+                    )
+                },
+                new("Package Manager", "fas fa-terminal")
+                {
+                    HtmlAble = CodeBlock.Create(
+                        "powershell",
+                        string.Join(Environment.NewLine, types.Select(t => $"Install-Package {t.Nuget} -Version {XenialVersion.Version}"))
+                    )
+                },
+                new("Paket CLI", "fas fa-terminal")
+                {
+                    HtmlAble = CodeBlock.Create(
+                        "shell",
+                        string.Join(Environment.NewLine, types.Select(t => $"paket add {t.Nuget} --version {XenialVersion.Version}"))
+                    )
+                }
+            }
+        });
 
         internal interface IHtmlAble
         {
@@ -273,6 +309,22 @@ pre code .tag:not(body) {{
     padding-left: unset;
     padding-right: unset;
     white-space: unset;
+}}
+
+/* fix for hover on button */
+div.code-toolbar > .toolbar a, div.code-toolbar > .toolbar button, div.code-toolbar > .toolbar span {{
+    color: #f8f8f2!important;
+    background-color: rgba(249, 38, 114, 0.7)!important;
+    font-weight: bold!important;
+    box-shadow: 0 0 3pt 2pt #f92672;
+}}
+
+div.code-toolbar > .toolbar a:hover, div.code-toolbar > .toolbar button:hover, div.code-toolbar > .toolbar span:hover {{
+    cursor: pointer;
+}}
+
+div.code-toolbar > .toolbar {{
+  left: .5em;
 }}
 
 </style>
