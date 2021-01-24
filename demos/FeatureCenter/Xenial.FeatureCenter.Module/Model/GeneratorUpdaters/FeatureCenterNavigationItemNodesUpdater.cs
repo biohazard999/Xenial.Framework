@@ -20,8 +20,11 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
         {
             const string defaultGroupName = "Default";
 
-            var nodesDictionary = new Dictionary<string, List<IModelNavigationItem>>();
-            nodesDictionary[defaultGroupName] = new List<IModelNavigationItem>();
+            var nodesDictionary =
+                new Dictionary<string, List<IModelNavigationItem>>
+                {
+                    {defaultGroupName, new List<IModelNavigationItem>()}
+                };
 
             if (node is IModelRootNavigationItems rootNavigationItems)
             {
@@ -35,7 +38,12 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                 foreach (var groupName in nodesDictionary.Keys)
                 {
                     var newItem = rootNavigationItems.Items.AddNode<IModelNavigationItem>(groupName);
-                    newItem.ImageName = imageNames.ContainsKey(newItem.Id) ? imageNames[newItem.Id] : null;
+                    if (!imageNames.TryGetValue(newItem.Id, out var imageName))
+                    {
+                        imageName = null;
+                    }
+
+                    newItem.ImageName = imageName;
 
                     var newNavItems = nodesDictionary[groupName];
                     foreach (var navItem in newNavItems)
@@ -53,12 +61,17 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
 
             void AddOrAppendToDictionary(string groupName, IModelNavigationItem item)
             {
-                if (!nodesDictionary!.ContainsKey(groupName))
+                if (nodesDictionary is not null)
                 {
-                    nodesDictionary[groupName] = new List<IModelNavigationItem>();
+                    if (nodesDictionary.TryGetValue(groupName, out var modelNavigationItems))
+                    {
+                        modelNavigationItems.Add(item);
+                    }
+                    else
+                    {
+                        nodesDictionary.Add(groupName, new List<IModelNavigationItem> { item });
+                    }
                 }
-
-                nodesDictionary[groupName].Add(item);
             }
 
             void AddToDictionary(IModelNavigationItem item, string? caption)
@@ -87,6 +100,7 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                 {
                     AddToDictionary(item, item.Caption);
                 }
+
                 foreach (var nestedNode in item.Items)
                 {
                     CollectNodes(nestedNode);
@@ -95,11 +109,12 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
 
             static void CopyPropertiesTo<T>(T source, T dest)
             {
-                var plist = from prop in typeof(T).GetProperties() where prop.CanRead && prop.CanWrite select prop;
-
-                foreach (var prop in plist)
+                foreach (var property in typeof(T).GetProperties())
                 {
-                    prop.SetValue(dest, prop.GetValue(source, null), null);
+                    if (property.CanRead && property.CanWrite)
+                    {
+                        property.SetValue(dest, property.GetValue(source, null), null);
+                    }
                 }
             }
         }

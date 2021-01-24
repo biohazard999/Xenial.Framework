@@ -47,6 +47,8 @@ namespace Xenial.FeatureCenter.Module.Win
 
         private void WindowTemplateController_CustomizeWindowStatusMessages(object? sender, CustomizeWindowStatusMessagesEventArgs e)
         {
+            e.StatusMessages.Add(Environment.Is64BitProcess ? "x64" : "x86");
+
             foreach (var versionInfo in FeatureCenterModule.VersionInformation)
             {
                 e.StatusMessages.Add(versionInfo);

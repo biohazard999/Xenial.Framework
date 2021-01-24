@@ -9,6 +9,7 @@ using DevExpress.ExpressApp.Utils;
 using DevExpress.ExpressApp.Utils.Reflection;
 using DevExpress.ExpressApp.Win.Editors;
 using DevExpress.ExpressApp.Win.Utils;
+using DevExpress.Utils.Controls;
 using DevExpress.XtraEditors;
 
 using Xenial.Framework.StepProgressEditors.Win.Editors;
@@ -177,7 +178,7 @@ namespace Xenial.Framework.StepProgressEditors.Win.Editors
                 var item = info.Item;
                 if (item is not null)
                 {
-                    Cursor = Cursors.Hand;
+                    Cursor = DXCursors.GetCursor(Cursors.Hand);
                 }
             }
             else

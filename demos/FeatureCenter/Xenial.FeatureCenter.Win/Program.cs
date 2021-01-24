@@ -31,10 +31,7 @@ namespace Xenial.FeatureCenter.Win
             Tracing.Initialize();
 
             var winApplication = new FeatureCenterWindowsFormsApplication();
-            if (ConfigurationManager.ConnectionStrings["ConnectionString"] != null)
-            {
-                winApplication.ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-            }
+
 #if EASYTEST
             if(ConfigurationManager.ConnectionStrings["EasyTestConnectionString"] != null)
             {
