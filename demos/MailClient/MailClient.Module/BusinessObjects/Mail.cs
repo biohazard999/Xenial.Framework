@@ -56,6 +56,14 @@ namespace MailClient.Module.BusinessObjects
         [Persistent("HtmlBody")]
         [Size(SizeAttribute.Unlimited)]
         public string? HtmlBody { get; set; }
+
+        [Persistent("MessageId")]
+        [Size(255)]
+        public string MessageId { get; set; }
+
+        [Persistent("MessageIdHash")]
+        [Size(50)]
+        public string MessageIdHash { get; set; }
     }
 
     public enum MailDirection

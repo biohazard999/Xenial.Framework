@@ -22,6 +22,8 @@ namespace MailClient.Module
 
         protected override IEnumerable<Type> GetDeclaredExportedTypes() => ModelTypeList.PersistentTypes;
 
+        protected override IEnumerable<Type> GetDeclaredControllerTypes() => new[] { typeof(ReceiveMailsViewController) };
+
         public override void CustomizeTypesInfo(ITypesInfo typesInfo)
         {
             base.CustomizeTypesInfo(typesInfo);
