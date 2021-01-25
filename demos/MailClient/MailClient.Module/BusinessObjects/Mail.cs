@@ -12,7 +12,7 @@ namespace MailClient.Module.BusinessObjects
     {
         // 50000 chosen to be explicit to allow enough size to avoid truncation, yet stay beneath the MySql row size limit of ~65K
         // apparently anything over 4K converts to nvarchar(max) on SqlServer
-        public const int TextSizeIndexable = 2000;
+        public const int TextSizeIndexable = 1000;
 
         public Mail(Session session) : base(session) { }
 

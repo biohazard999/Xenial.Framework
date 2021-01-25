@@ -174,7 +174,7 @@ namespace MailClient.Module.Domain
                     return value;
                 }
 
-                return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+                return value!.Length <= maxLength ? value : value.Substring(0, maxLength);
             }
 
             async IAsyncEnumerable<Mail> ReceiveAsync(int mailAccountId, IMailFolder folder, [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -194,8 +194,10 @@ namespace MailClient.Module.Domain
 
                     var headerList = HeaderList.Load(headerStream, cancellationToken: cancellationToken);
 
-                    Console.WriteLine($"{current}/{inboxCount}");
-                    System.Diagnostics.Debug.WriteLine($"{current}/{inboxCount}");
+                    if (current % 15 == 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"{current}/{inboxCount} - {inboxCount - current + 1}");
+                    }
 
                     var messageId = headerList.GetMessageId();
                     var messageIdHash = headerList.GetMessageIdHash();
