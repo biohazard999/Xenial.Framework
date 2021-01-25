@@ -18,6 +18,7 @@ using MailKit.Security;
 
 using MimeKit;
 using System.IO;
+using Xenial.Framework;
 
 namespace MailClient.Module.Domain
 {
@@ -66,6 +67,97 @@ namespace MailClient.Module.Domain
                 };
             }
 
+            string GetBaseFolder(int mailAccountId)
+            {
+                using var os = objectSpaceFactory(typeof(MailSettings));
+                var settings = os.GetSingleton<MailSettings>();
+                return Path.Combine(settings.StoragePath, mailAccountId.ToString());
+            }
+
+            (Guid uniqueId, string fileName) CreateFileName(int mailAccountId, MailDirection direction, DateTime dateTime)
+            {
+                var folder = GetBaseFolder(mailAccountId);
+                const string ext = "eml";
+
+                string GetDirection()
+                  => direction switch
+                  {
+                      MailDirection.Inbound => "IN",
+                      MailDirection.Outbound => "OUT",
+                      _ => "UNKNOWN"
+                  };
+
+                var uuid = Guid.NewGuid();
+
+                var fileName = $"{mailAccountId}_{GetDirection()}_{dateTime:yyyyMMddHHmmssfff}_{uuid}.{ext}";
+                return (uuid, fileName);
+            }
+
+            (Guid uniqueId, string fileName) CreateFullFileName(int mailAccountId, MailDirection direction, DateTime dateTime)
+            {
+                var baseFolder = GetBaseFolder(mailAccountId);
+                var (uniqueId, fileName) = CreateFileName(mailAccountId, direction, dateTime);
+                var fullFileName = Path.Combine(baseFolder, dateTime.Year.ToString(), dateTime.Month.ToString(), fileName);
+                return (uniqueId, fullFileName);
+            }
+
+            void EnsureDirectory(string fileName)
+            {
+                var directoryName = Path.GetDirectoryName(fileName);
+                if (!Directory.Exists(directoryName))
+                {
+                    Directory.CreateDirectory(directoryName);
+                }
+            }
+
+            async IAsyncEnumerable<Mail> ReceiveAsync(int mailAccountId, IMailFolder folder, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+            {
+                await folder.OpenAsync(FolderAccess.ReadOnly, cancellationToken: cancellationToken);
+
+                var uniqueIds = await folder.FetchAsync(0, -1, MessageSummaryItems.UniqueId, cancellationToken: cancellationToken);
+
+                var inboxCount = uniqueIds.Count;
+                for (var current = inboxCount - 1; current > -1; current--)
+                {
+                    using var headerStream = await folder.GetStreamAsync(uniqueIds[current].UniqueId, "HEADER", cancellationToken: cancellationToken);
+
+                    var headerList = HeaderList.Load(headerStream, cancellationToken: cancellationToken);
+
+                    var messageId = headerList.GetMessageId();
+                    var messageIdHash = headerList.GetMessageIdHash();
+
+                    var query = new MailQuery(objectSpaceFactory);
+
+                    var existingMails = query.GetExistingInboundMails(mailAccountId, messageId, messageIdHash);
+
+                    if (!existingMails.Any())
+                    {
+                        using var os = objectSpaceFactory(typeof(Mail));
+                        var uniqueId = uniqueIds[current].UniqueId;
+                        using var rawMessageStream = await folder.GetStreamAsync(uniqueId, string.Empty, cancellationToken: cancellationToken);
+
+                        var currentDateTime = DateTime.UtcNow;
+
+                        var (uuid, fullFileName) = CreateFullFileName(mailAccountId, MailDirection.Inbound, currentDateTime);
+
+                        EnsureDirectory(fullFileName);
+
+                        using (var fileStream = File.Create(fullFileName))
+                        {
+                            rawMessageStream.Seek(0, SeekOrigin.Begin);
+                            await rawMessageStream.CopyToAsync(fileStream);
+                        }
+
+                        rawMessageStream.Seek(0, SeekOrigin.Begin);
+
+                        var message = MimeMessage.Load(rawMessageStream, cancellationToken: cancellationToken);
+
+                        yield return (Mail)null;
+                    }
+
+                }
+            }
+
             var mailAccount = await FindMailAccountAsync(os, mailConfigId);
             if (mailAccount is null)
             {
@@ -105,51 +197,6 @@ namespace MailClient.Module.Domain
             yield break;
         }
 
-        private async IAsyncEnumerable<Mail> ReceiveAsync(int mailAccountId, IMailFolder folder, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        {
-            await folder.OpenAsync(FolderAccess.ReadOnly, cancellationToken: cancellationToken);
-
-            var uniqueIds = await folder.FetchAsync(0, -1, MessageSummaryItems.UniqueId, cancellationToken: cancellationToken);
-
-            var inboxCount = uniqueIds.Count;
-            for (var current = inboxCount - 1; current > -1; current--)
-            {
-                using var headerStream = await folder.GetStreamAsync(uniqueIds[current].UniqueId, "HEADER", cancellationToken: cancellationToken);
-
-                var headerList = HeaderList.Load(headerStream, cancellationToken: cancellationToken);
-
-                var messageId = headerList.GetMessageId();
-                var messageIdHash = headerList.GetMessageIdHash();
-
-                var query = new MailQuery(objectSpaceFactory);
-
-                var existingMails = query.GetExistingInboundMails(mailAccountId, messageId, messageIdHash);
-
-                if (!existingMails.Any())
-                {
-                    using var os = objectSpaceFactory(typeof(Mail));
-                    var uniqueId = uniqueIds[current].UniqueId;
-                    using var rawMessageStream = await folder.GetStreamAsync(uniqueId, string.Empty, cancellationToken: cancellationToken);
-
-                    var currentDateTime = DateTime.UtcNow;
-
-                    var fileName = CreateFileName(mailAccountId, MailDirection.Inbound, currentDateTime);
-
-                    using (var fileStream = File.Create(fileName))
-                    {
-                        rawMessageStream.Seek(0, SeekOrigin.Begin);
-                        await rawMessageStream.CopyToAsync(fileStream);
-                    }
-
-                    rawMessageStream.Seek(0, SeekOrigin.Begin);
-
-                    var message = MimeMessage.Load(rawMessageStream, cancellationToken: cancellationToken);
-
-                }
-
-                yield return (Mail)null;
-            }
-        }
     }
 
     internal record MailInfo(int Id, int MailAccountId, string? FileName, string MessageId, string MessageIdHash);

@@ -21,6 +21,12 @@ namespace MailClient.Module.BusinessObjects
 
         public MailDirection Direction { get; set; } = MailDirection.Inbound;
 
+        [Persistent("UUId")]
+        [Indexed(Unique = true)]
+        [RuleRequiredField(DefaultContexts.Save)]
+        [RuleUniqueValue(DefaultContexts.Save)]
+        public Guid UUId { get; set; }
+
         [Persistent("From")]
         [Size(textSizeIndexable)]
         [Indexed]
