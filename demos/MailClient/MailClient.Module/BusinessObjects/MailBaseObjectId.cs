@@ -10,11 +10,7 @@ namespace MailClient.Module.BusinessObjects
     [NonPersistent]
     public abstract class MailBaseObjectId : MailBaseObject
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XenialLicenseBaseObjectId"/> class.
-        /// </summary>
-        /// <param name="session">The session.</param>
-        public MailBaseObjectId(Session session) : base(session) { }
+        protected MailBaseObjectId(Session session) : base(session) { }
 
         [Key(AutoGenerate = true)]
         [Persistent("Id")]

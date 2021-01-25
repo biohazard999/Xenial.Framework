@@ -10,10 +10,6 @@ namespace MailClient.Module.BusinessObjects
     [NonPersistent]
     public abstract class MailBaseObject : XPBaseObject
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XenialBaseObject"/> class.
-        /// </summary>
-        /// <param name="session">The session.</param>
         protected MailBaseObject(Session session) : base(session) { }
 
         /// <summary>

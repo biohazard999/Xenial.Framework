@@ -1,0 +1,12 @@
+﻿{
+  "profiles": {
+    "MailClient.Blazor": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:11001;http://localhost:11000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

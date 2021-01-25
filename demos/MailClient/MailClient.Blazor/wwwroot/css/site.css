@@ -1,0 +1,226 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+html, body {
+  height: 100%;
+}
+
+app {
+  display: block;
+  height: 100%;
+}
+
+.header-logo {
+  /*flex-shrink: 0;
+    background-color: currentColor;
+    -webkit-mask: url('../images/Logo.svg');
+    mask: url('../images/Logo.svg');
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;*/
+  width: 180px;
+  height: 24px;
+  background: url(../images/Logo.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: relative;
+  margin-top: 6px;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+  .header-logo::after {
+    content: "MailClient";
+    position: absolute;
+    left: 3rem;
+    top: .5rem;
+    bottom: 0;
+    font-weight: bold;
+  }
+
+#blazor-error-ui {
+  background: inherit;
+  bottom: 0;
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 100001;
+}
+
+#loadingBackground {
+  background-color: transparent !important;
+}
+
+  #loadingBackground .loading-image {
+    width: 4rem;
+    height: 4rem;
+  }
+
+
+/* PROFILE CARD */
+:root {
+  --profile-card-height: 3rem;
+  --profile-card-small-size: 0.8rem;
+}
+
+@media (min-width: 281px) {
+  :root {
+    --profile-card-height: 4rem;
+    --profile-card-small-size: 1rem;
+  }
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: row;
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-card__image {
+  font-size: calc(var(--profile-card-height) / 2);
+  display: inline-flex;
+  margin: 0.5rem;
+  width: var(--profile-card-height);
+  height: var(--profile-card-height);
+  border-radius: 50%;
+  background-color: var(--xenial-dark-color);
+  position: relative;
+}
+
+  .profile-card__image a {
+    display: flex;
+    line-height: 1;
+    margin: auto;
+    padding: 0;
+    align-content: center;
+  }
+
+  .profile-card__image img {
+    margin: 0;
+    border-radius: 50%;
+    max-width: var(--profile-card-height);
+    max-height: var(--profile-card-height);
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+.profile-card__image-initials {
+  background-color: var(--data-backcolor);
+  color: var(--data-forecolor);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: inline-block;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 0.5em;
+  width: 100%;
+  height: 100%;
+  line-height: calc(var(--profile-card-height) - 0.2rem);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.profile-card__image i.profile-card__image-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: inline-block;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 0.5em;
+  width: 100%;
+  height: 100%;
+  line-height: var(--profile-card-height);
+  text-align: center;
+}
+
+.profile-card__image img.profile-card__image-item {
+  display: block;
+  margin: auto;
+}
+
+.profile-card__details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-card__details-name {
+  font-size: calc(calc(var(--profile-card-height) / 2) - 0.5rem);
+  font-weight: bold;
+  flex: 1;
+  min-width: 0;
+  line-height: 1;
+  padding-top: 0.5rem;
+}
+
+  .profile-card__details-name > * {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    /* These are technically the same, but use both */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    /* This is the dangerous one in WebKit, as it breaks things wherever */
+    word-break: break-all;
+    /* Instead use this non-standard one: */
+    word-break: break-word;
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+.profile-card__details-email {
+  line-height: 1;
+  padding-bottom: 1rem;
+}
+
+  .profile-card__details-email > a {
+    display: inline;
+    word-wrap: none;
+    text-decoration: none;
+    font-size: var(--profile-card-small-size);
+  }
+
+    .profile-card__details-email > a i {
+      display: inline;
+      text-decoration: none;
+      padding-right: 0.2rem;
+    }
+
+    .profile-card__details-email > a span {
+      display: inline;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      text-decoration: underline;
+      /* These are technically the same, but use both */
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      -ms-word-break: break-all;
+      /* This is the dangerous one in WebKit, as it breaks things wherever */
+      word-break: break-all;
+      /* Instead use this non-standard one: */
+      word-break: break-word;
+      /* Adds a hyphen where the word breaks, if supported (No Blink) */
+      -ms-hyphens: auto;
+      -moz-hyphens: auto;
+      -webkit-hyphens: auto;
+      hyphens: auto;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
