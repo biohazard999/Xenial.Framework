@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Xenial.Framework.Win" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.Validation.Win" Version="$(DxVersion)" />
   </ItemGroup>
   
 </Project>

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model.Core;
+using DevExpress.ExpressApp.Validation;
 
 using MailClient.Module.BusinessObjects;
 
@@ -13,6 +15,11 @@ namespace MailClient.Module
 {
     public class MailClientModule : XenialModuleBase
     {
+        protected override ModuleTypeList GetRequiredModuleTypesCore() => base.GetRequiredModuleTypesCore().AndModuleTypes(new[]
+        {
+            typeof(ValidationModule)
+        });
+
         protected override IEnumerable<Type> GetDeclaredExportedTypes() => ModelTypeList.PersistentTypes;
 
         public override void CustomizeTypesInfo(ITypesInfo typesInfo)
@@ -24,6 +31,9 @@ namespace MailClient.Module
 
             ModelBuilder.Create<MailBaseObject>(typesInfo).GenerateNoViews().Build();
             ModelBuilder.Create<MailBaseObjectId>(typesInfo).GenerateNoViews().Build();
+
+            new MailClientBuilderManager(typesInfo)
+                .Build();
         }
 
         public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)

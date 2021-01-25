@@ -4,6 +4,8 @@ using DevExpress.ExpressApp.Blazor;
 using DevExpress.ExpressApp.Blazor.SystemModule;
 
 using DevExpress.ExpressApp.SystemModule;
+using DevExpress.ExpressApp.Validation;
+using DevExpress.ExpressApp.Validation.Blazor;
 using DevExpress.ExpressApp.Xpo;
 
 using MailClient.Blazor.Services;
@@ -27,10 +29,15 @@ namespace MailClient.Blazor
             DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
             CheckCompatibilityType = CheckCompatibilityType.DatabaseSchema;
 
-            Modules.Add(new SystemModule());
-            Modules.Add(new SystemBlazorModule());
-            Modules.Add(new MailClientModule());
-            Modules.Add(new MailClientBlazorModule());
+            Modules.AddRange(new ModuleBase[]
+            {
+                new SystemModule(),
+                new SystemBlazorModule(),
+                new ValidationModule(),
+                new ValidationBlazorModule(),
+                new MailClientModule(),
+                new MailClientBlazorModule()
+            });
         }
 
         protected override void OnSetupStarted()

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.SystemModule;
+using DevExpress.ExpressApp.Validation;
+using DevExpress.ExpressApp.Validation.Win;
 using DevExpress.ExpressApp.Win;
 using DevExpress.ExpressApp.Win.SystemModule;
 using DevExpress.ExpressApp.Xpo;
@@ -32,6 +34,8 @@ namespace MailClient.Win
             {
                 new SystemModule(),
                 new SystemWindowsFormsModule(),
+                new ValidationModule(),
+                new ValidationWindowsFormsModule(),
                 new MailClientModule(),
                 new MailClientWindowsFormsModule()
             });
