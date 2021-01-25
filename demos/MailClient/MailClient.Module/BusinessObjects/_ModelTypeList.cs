@@ -15,7 +15,8 @@ namespace MailClient.Module.BusinessObjects
             typeof(MailBaseObject),
             typeof(MailBaseObjectId),
 
-            typeof(MailSettings),
+            typeof(MailAccount),
+            typeof(Mail),
         };
     }
 
@@ -29,7 +30,8 @@ namespace MailClient.Module.BusinessObjects
 
         protected override IEnumerable<IBuilder> GetBuilders() => new IBuilder[]
         {
-            TypesInfo.CreateModelBuilder<MailSettingsModelBuilder>()
+            TypesInfo.CreateModelBuilder<MailAccountModelBuilder>(),
+            TypesInfo.CreateModelBuilder<MailModelBuilder>(),
         };
     }
 }
