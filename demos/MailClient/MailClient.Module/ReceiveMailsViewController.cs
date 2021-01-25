@@ -32,8 +32,12 @@ namespace MailClient.Module
             {
                 await foreach (var mail in receiver.ReceiveAsync(mailAccount.Id))
                 {
-
+                    ObjectSpace.ReloadObject(ObjectSpace.GetObject(mail));
+                    View.Refresh(true);
                 }
+                View.Refresh(true);
+
+                Application.ShowViewStrategy.ShowMessage("Fetched All Mails!");
             }
         }
     }

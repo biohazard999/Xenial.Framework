@@ -12,7 +12,7 @@ namespace MailClient.Module.BusinessObjects
     {
         // 50000 chosen to be explicit to allow enough size to avoid truncation, yet stay beneath the MySql row size limit of ~65K
         // apparently anything over 4K converts to nvarchar(max) on SqlServer
-        private const int textSizeIndexable = 50000;
+        public const int TextSizeIndexable = 2000;
 
         public Mail(Session session) : base(session) { }
 
@@ -21,6 +21,14 @@ namespace MailClient.Module.BusinessObjects
 
         public MailDirection Direction { get; set; } = MailDirection.Inbound;
 
+        [Persistent("MessageDateTime")]
+        [Indexed]
+        public DateTime? MessageDateTime { get; set; }
+
+        [Persistent("ReceivedDateTime")]
+        [Indexed]
+        public DateTime? ReceivedDateTime { get; set; }
+
         [Persistent("UUId")]
         [Indexed(Unique = true)]
         [RuleRequiredField(DefaultContexts.Save)]
@@ -28,27 +36,37 @@ namespace MailClient.Module.BusinessObjects
         public Guid UUId { get; set; }
 
         [Persistent("From")]
-        [Size(textSizeIndexable)]
+        [Size(TextSizeIndexable)]
         [Indexed]
         public string? From { get; set; }
 
+        [Persistent("FromAll")]
+        [Size(TextSizeIndexable)]
+        [Indexed]
+        public string? FromAll { get; set; }
+
         [Persistent("To")]
-        [Size(textSizeIndexable)]
+        [Size(TextSizeIndexable)]
         [Indexed]
         public string? To { get; set; }
 
+        [Persistent("ToAll")]
+        [Size(TextSizeIndexable)]
+        [Indexed]
+        public string? ToAll { get; set; }
+
         [Persistent("CC")]
-        [Size(textSizeIndexable)]
+        [Size(TextSizeIndexable)]
         [Indexed]
         public string? CC { get; set; }
 
         [Persistent("BCC")]
-        [Size(textSizeIndexable)]
+        [Size(TextSizeIndexable)]
         [Indexed]
         public string? BCC { get; set; }
 
         [Persistent("Subject")]
-        [Size(textSizeIndexable)]
+        [Size(TextSizeIndexable)]
         [Indexed]
         public string? Subject { get; set; }
 
@@ -69,24 +87,63 @@ namespace MailClient.Module.BusinessObjects
         public string MessageId { get; set; }
 
         [Persistent("MessageIdHash")]
-        [Size(50)]
+        [Size(255)]
         [Indexed]
         public string MessageIdHash { get; set; }
 
         [Persistent("FileName")]
-        [Size(textSizeIndexable)]
+        [Size(TextSizeIndexable)]
         [Indexed]
         public string? FileName { get; set; }
 
         [Persistent("ImapFolderName")]
-        [Size(textSizeIndexable)]
+        [Size(TextSizeIndexable)]
         [Indexed]
         public string? ImapFolderName { get; set; }
+
+        [Persistent("AttachmentCount")]
+        [Indexed]
+        public int? AttachmentCount { get; set; }
+
+        [Persistent("MessageImportance")]
+        public MailImportance MessageImportance { get; set; }
+
+        [Persistent("MessagePriority")]
+        public MailPriority MessagePriority { get; set; }
+
+        [Persistent("MessagePriorityX")]
+        public MailPriorityX MessagePriorityX { get; set; }
+
+        [Persistent("Size")]
+        public long? Size { get; set; }
     }
 
     public enum MailDirection
     {
         Outbound = 1,
         Inbound = 2,
+    }
+
+    public enum MailImportance
+    {
+        Low = 0,
+        Normal = 1,
+        High = 2
+    }
+
+    public enum MailPriority
+    {
+        NonUrgent = 0,
+        Normal = 1,
+        Urgent = 2
+    }
+
+    public enum MailPriorityX
+    {
+        Highest = 1,
+        High = 2,
+        Normal = 3,
+        Low = 4,
+        Lowest = 5
     }
 }
