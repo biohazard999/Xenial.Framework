@@ -10,5 +10,9 @@
     <PackageReference Include="Xenial.Framework.Xpo" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="DevExpress.ExpressApp.Validation" Version="$(DxVersion)" />
   </ItemGroup>
-  
+
+  <ItemGroup Condition="'$(TargetFramework)' == '$(NetStandardVersion)' OR '$(TargetFramework)' == '$(NetStandard2_1Version)' OR '$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
+  </ItemGroup>
+
 </Project>
