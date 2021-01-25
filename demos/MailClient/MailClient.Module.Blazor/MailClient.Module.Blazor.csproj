@@ -1,11 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MailClient.Module\MailClient.Module.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Blazor" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
 </Project>

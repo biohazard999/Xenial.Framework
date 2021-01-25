@@ -1,11 +1,37 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks></TargetFrameworks>
+    <TargetFramework>$(FullFrameworkVersion)</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <OutputType>WinExe</OutputType>
+    <CheckXenialLicense>false</CheckXenialLicense>
+    <GenerateXenialLicense>false</GenerateXenialLicense>
+    <ApplicationIcon>$(MSBuildThisFileDirectory)..\..\..\img\appicon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.23" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MailClient.Module.Win\MailClient.Module.Win.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(Configuration) == 'Release'">
+    <PackageReference Include="Microsoft.DotNet.Framework.NativeImageCompiler" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <Target Name="DeleteFiles" AfterTargets="Publish">
+    <Delete Files="$(PublishDir)DevExpress.BonusSkins.$(DxVersionPart).dll" />
+    <Delete Files="$(PublishDir)Microsoft.Web.WebView2.Wpf.dll" />
+  </Target>
 
 </Project>

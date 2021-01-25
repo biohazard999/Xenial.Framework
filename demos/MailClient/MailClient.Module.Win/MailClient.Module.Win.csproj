@@ -1,11 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>$(FullFrameworkVersion)</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MailClient.Module\MailClient.Module.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Win" Version="$(XenialDemoPackageVersion)" />
+  </ItemGroup>
+  
 </Project>
