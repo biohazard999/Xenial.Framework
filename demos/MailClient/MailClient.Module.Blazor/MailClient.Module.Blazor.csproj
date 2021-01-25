@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
+    <DxExtendStartupHost>false</DxExtendStartupHost>
+    <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
   </PropertyGroup>
 
   <ItemGroup>

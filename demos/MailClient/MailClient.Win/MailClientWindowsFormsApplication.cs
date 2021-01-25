@@ -6,9 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Win;
+using DevExpress.ExpressApp.Win.SystemModule;
 using DevExpress.ExpressApp.Xpo;
-using DevExpress.XtraPrinting;
+
+using MailClient.Module;
+using MailClient.Module.Win;
 
 namespace MailClient.Win
 {
@@ -23,6 +27,14 @@ namespace MailClient.Win
             ConnectionString = DevExpress.Xpo.DB.MySqlConnectionProvider.GetConnectionString("localhost", "root", "root", "MailClient");
             DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
             CheckCompatibilityType = CheckCompatibilityType.DatabaseSchema;
+
+            Modules.AddRange(new ModuleBase[]
+            {
+                new SystemModule(),
+                new SystemWindowsFormsModule(),
+                new MailClientModule(),
+                new MailClientWindowsFormsModule()
+            });
         }
 
         protected override void CreateDefaultObjectSpaceProvider(CreateCustomObjectSpaceProviderEventArgs args)
