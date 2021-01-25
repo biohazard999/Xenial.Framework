@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using DevExpress.Data.ODataLinq.Helpers;
 using DevExpress.ExpressApp;
 
 using MailClient.Module.BusinessObjects;
@@ -15,6 +17,7 @@ using MailKit.Net.Imap;
 using MailKit.Security;
 
 using MimeKit;
+using System.IO;
 
 namespace MailClient.Module.Domain
 {
@@ -63,47 +66,46 @@ namespace MailClient.Module.Domain
                 };
             }
 
-            var mailConfig = await FindMailAccountAsync(os, mailConfigId);
-            if (mailConfig is null)
+            var mailAccount = await FindMailAccountAsync(os, mailConfigId);
+            if (mailAccount is null)
             {
                 yield break;
             }
 
             using var imapClient = new ImapClient();
 
-            if (mailConfig.IgnoreInvalidCertificate)
+            if (mailAccount.IgnoreInvalidCertificate)
             {
                 imapClient.ServerCertificateValidationCallback
                     = (sender, certificate, chain, sslPolicyErrors) => true;
             }
 
             await imapClient.ConnectAsync(
-                mailConfig.ReceiveHost,
-                mailConfig.ReceivePort ?? 993,
-                options: GetSecuritySocketOptions(mailConfig.SecuritySocketOptions),
+                mailAccount.ReceiveHost,
+                mailAccount.ReceivePort ?? 993,
+                options: GetSecuritySocketOptions(mailAccount.SecuritySocketOptions),
                 cancellationToken: cancellationToken
             );
 
             imapClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
             await imapClient.AuthenticateAsync(
-                mailConfig.ReceiveUserName,
-                mailConfig.ReceivePassword,
+                mailAccount.ReceiveUserName,
+                mailAccount.ReceivePassword,
                 cancellationToken: cancellationToken
             );
 
             var inbox = imapClient.Inbox;
 
-            await foreach (var mail in ReceiveAsync(inbox, cancellationToken))
+            await foreach (var mail in ReceiveAsync(mailAccount.Id, inbox, cancellationToken))
             {
-
+                yield return mail;
             }
-
 
             yield break;
         }
 
-        async IAsyncEnumerable<Mail> ReceiveAsync(IMailFolder folder, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        private async IAsyncEnumerable<Mail> ReceiveAsync(int mailAccountId, IMailFolder folder, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             await folder.OpenAsync(FolderAccess.ReadOnly, cancellationToken: cancellationToken);
 
@@ -118,17 +120,98 @@ namespace MailClient.Module.Domain
 
                 var messageId = headerList.GetMessageId();
                 var messageIdHash = headerList.GetMessageIdHash();
-                using var os = objectSpaceFactory(typeof(Mail));
 
+                var query = new MailQuery(objectSpaceFactory);
+
+                var existingMails = query.GetExistingInboundMails(mailAccountId, messageId, messageIdHash);
+
+                if (!existingMails.Any())
+                {
+                    using var os = objectSpaceFactory(typeof(Mail));
+                    var uniqueId = uniqueIds[current].UniqueId;
+                    using var rawMessageStream = await folder.GetStreamAsync(uniqueId, string.Empty, cancellationToken: cancellationToken);
+
+                    var currentDateTime = DateTime.UtcNow;
+
+                    var fileName = CreateFileName(mailAccountId, MailDirection.Inbound, currentDateTime);
+
+                    using (var fileStream = File.Create(fileName))
+                    {
+                        rawMessageStream.Seek(0, SeekOrigin.Begin);
+                        await rawMessageStream.CopyToAsync(fileStream);
+                    }
+
+                    rawMessageStream.Seek(0, SeekOrigin.Begin);
+
+                    var message = MimeMessage.Load(rawMessageStream, cancellationToken: cancellationToken);
+
+                }
 
                 yield return (Mail)null;
             }
         }
     }
 
+    internal record MailInfo(int Id, int MailAccountId, string? FileName, string MessageId, string MessageIdHash);
+
+    internal class MailQuery
+    {
+        private readonly Func<Type, IObjectSpace> objectSpaceFactory;
+        public MailQuery(Func<Type, IObjectSpace> objectSpaceFactory)
+            => this.objectSpaceFactory = objectSpaceFactory ?? throw new ArgumentNullException(nameof(objectSpaceFactory));
+
+        public IList<MailInfo> GetExistingInboundMails(
+            int mailAccountId,
+            string messageId,
+            string messageIdHash
+        ) => GetExistingMails(
+            mailAccountId,
+            messageId,
+            messageIdHash,
+            MailDirection.Inbound
+        );
+        public IList<MailInfo> GetExistingOutboundMails(
+            int mailAccountId,
+            string messageId,
+            string messageIdHash
+        ) => GetExistingMails(
+            mailAccountId,
+            messageId,
+            messageIdHash,
+            MailDirection.Outbound
+        );
+
+        public IList<MailInfo> GetExistingMails(
+            int mailAccountId,
+            string messageId,
+            string messageIdHash,
+            MailDirection direction
+        )
+        {
+            using var os = objectSpaceFactory(typeof(Mail));
+            return os.GetObjectsQuery<Mail>(true)
+                .Where(m =>
+                    m.Direction == direction
+                    && m.Account != null
+                    && m.Account.Id == mailAccountId
+                    && m.MessageId == messageId
+                    && m.MessageIdHash == messageIdHash)
+                .Select(m => new
+                {
+                    m.Id,
+                    AccountId = m.Account!.Id,
+                    m.FileName,
+                    m.MessageId,
+                    m.MessageIdHash
+                })
+                .Select(m => new MailInfo(m.Id, m.AccountId, m.FileName, m.MessageId, m.MessageIdHash))
+                .ToList();
+        }
+    }
+
     internal static class HeaderListExtensions
     {
-        public static string ComputeHash(this HashAlgorithm hashAlgorithm, string input, Encoding encoding, string separator, int separatorByteCount)
+        internal static string ComputeHash(this HashAlgorithm hashAlgorithm, string input, Encoding encoding, string separator, int separatorByteCount)
         {
             _ = hashAlgorithm ?? throw new ArgumentNullException(nameof(hashAlgorithm));
             _ = input ?? throw new ArgumentNullException(nameof(input));
@@ -160,7 +243,7 @@ namespace MailClient.Module.Domain
             return sb.ToString();
         }
 
-        public static string ToSha256Hash(this HeaderList headerCollection)
+        internal static string ToSha256Hash(this HeaderList headerCollection)
         {
             var sb = new StringBuilder();
 
@@ -176,20 +259,21 @@ namespace MailClient.Module.Domain
             return r;
         }
 
-        public static string ToSha256Hash(this string str)
+        internal static string ToSha256Hash(this string str)
         {
             using HashAlgorithm hash = SHA256.Create();
             var r = hash.ComputeHash(str, Encoding.ASCII, "-", 4);
             return r.ToString();
 
         }
-        public static string ToHMSGID(this HeaderList headerCollection)
+
+        internal static string ToHMSGID(this HeaderList headerCollection)
             => $"<{headerCollection.ToSha256Hash()}_HMSGID>";
 
-        public static string ToNMSGID(this string str)
+        internal static string ToNMSGID(this string str)
             => $"<{str.ToSha256Hash()}_NMSGID>".Replace("-", string.Empty);
 
-        public static string GetMessageIdHash(this HeaderList headerCollection)
+        internal static string GetMessageIdHash(this HeaderList headerCollection)
         {
             var messageIdHeaderEntry = headerCollection["Message-ID"];
 
@@ -199,9 +283,11 @@ namespace MailClient.Module.Domain
                 return messageIdHeaderEntry;
             }
 
-            if (headerCollection["Thread-Index"] != null)
+            var threadIndex = headerCollection["Thread-Index"];
+
+            if (threadIndex is not null)
             {
-                messageIdHeaderEntry = headerCollection["Thread-Index"] + "|" + messageIdHeaderEntry;
+                messageIdHeaderEntry = $"{threadIndex}|{messageIdHeaderEntry}";
 
                 if (messageIdHeaderEntry.Length > 255)
                 {
@@ -214,7 +300,7 @@ namespace MailClient.Module.Domain
             return messageIdHeaderEntry;
         }
 
-        public static string GetMessageId(this HeaderList headerCollection)
+        internal static string GetMessageId(this HeaderList headerCollection)
         {
             var messageIdHeaderEntry = headerCollection["Message-ID"];
 

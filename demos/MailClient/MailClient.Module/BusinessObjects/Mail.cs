@@ -59,11 +59,23 @@ namespace MailClient.Module.BusinessObjects
 
         [Persistent("MessageId")]
         [Size(255)]
+        [Indexed]
         public string MessageId { get; set; }
 
         [Persistent("MessageIdHash")]
         [Size(50)]
+        [Indexed]
         public string MessageIdHash { get; set; }
+
+        [Persistent("FileName")]
+        [Size(textSizeIndexable)]
+        [Indexed]
+        public string? FileName { get; set; }
+
+        [Persistent("ImapFolderName")]
+        [Size(textSizeIndexable)]
+        [Indexed]
+        public string? ImapFolderName { get; set; }
     }
 
     public enum MailDirection
