@@ -96,7 +96,7 @@ namespace Xenial.Framework.ModelBuilders
         /// The exp.
         /// </value>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public ExpressionHelper<TClassType> ExpressionHelper { get; } = new ExpressionHelper<TClassType>();
+        public ExpressionHelper<TClassType> ExpressionHelper { get; } = Xenial.Utils.ExpressionHelper.Create<TClassType>();
 
         /// <summary>
         /// Gets the default detail view.

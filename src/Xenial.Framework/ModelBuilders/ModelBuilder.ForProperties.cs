@@ -44,7 +44,7 @@ namespace Xenial.Framework.ModelBuilders
                 }
             }
 
-            return new AggregatedPropertyBuilder<object?, TClassType>(propertyBuilderList);
+            return new AggregatedPropertyBuilder<object?, TClassType>(this, propertyBuilderList);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Xenial.Framework.ModelBuilders
                 }
             }
 
-            return new AggregatedPropertyBuilder<TPropertyType?, TClassType>(propertyBuilderList);
+            return new AggregatedPropertyBuilder<TPropertyType?, TClassType>(this, propertyBuilderList);
         }
     }
 }
