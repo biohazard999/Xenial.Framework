@@ -18,6 +18,12 @@ namespace MailClient.Module.BusinessObjects
             this.HasNavigationItem("Mail - Mails")
                 .HasImage("Glyph_Mail")
                 .HasCaption("Mail");
+
+            For(m => m.MessageDateTime)
+                .HasDisplayFormat("{0:G}");
+
+            For(m => m.ReceivedDateTime)
+                .HasDisplayFormat("{0:G}");
         }
     }
 }
