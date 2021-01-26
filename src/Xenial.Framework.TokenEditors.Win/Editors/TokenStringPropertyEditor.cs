@@ -56,6 +56,23 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
             base.SetupRepositoryItem(item);
             if (item is RepositoryItemTokenEdit tokenEdit)
             {
+                //tokenEdit.TokenPopulateMode = TokenEditTokenPopupateMode.Default;
+                tokenEdit.EditValueType = TokenEditValueType.String;
+                tokenEdit.EditMode = TokenEditMode.Manual;
+                tokenEdit.EditValueSeparatorChar = ';';
+                tokenEdit.Separators.Clear();
+                tokenEdit.Separators.Add(";");
+                tokenEdit.Separators.Add(",");
+                //tokenEdit.CheckMode = TokenEditCheckMode.Multiple;
+                tokenEdit.ShowDropDown = true;
+                tokenEdit.PopupFilterMode = TokenEditPopupFilterMode.Contains;
+
+                tokenEdit.ValidateToken -= TokenEdit_ValidateToken;
+                tokenEdit.ValidateToken += TokenEdit_ValidateToken;
+
+                void TokenEdit_ValidateToken(object? _, TokenEditValidateTokenEventArgs e)
+                    => e.IsValid = true;
+
                 InitTokens();
 
                 void InitTokens()
@@ -63,8 +80,6 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
                     tokenEdit.Tokens.BeginUpdate();
                     try
                     {
-                        tokenEdit.EditValueSeparatorChar = ';';
-
                         if (Model is not null && !string.IsNullOrEmpty(Model.PredefinedValues))
                         {
                             foreach (var predefinedValue in Model.PredefinedValues.Split(';'))
@@ -78,7 +93,6 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
                         tokenEdit.Tokens.EndUpdate();
                     }
                 }
-
             }
         }
     }
