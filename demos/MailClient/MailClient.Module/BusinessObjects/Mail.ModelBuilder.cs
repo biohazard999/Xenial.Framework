@@ -23,16 +23,14 @@ namespace MailClient.Module.BusinessObjects
             this.HasNavigationItem("Mail - Mails")
                 .HasImage("Glyph_Mail")
                 .HasCaption("Mail")
-                .WithDefaultListViewOptions(MasterDetailMode.ListViewAndDetailView);
+                .WithDefaultListViewOptions(MasterDetailMode.ListViewAndDetailView)
+            ;
 
             ForProperties(
                 m => m.UUId,
                 m => m.MessageIdHash,
                 m => m.MessageId,
                 m => m.FileName,
-                m => m.FromAll,
-                m => m.CC,
-                m => m.BCC,
                 m => m.MessageImportance,
                 m => m.MessagePriority,
                 m => m.MessagePriorityX,
@@ -43,8 +41,9 @@ namespace MailClient.Module.BusinessObjects
                 m => m.ImapFolderName,
                 m => m.HtmlBody,
                 m => m.TextBody,
+                m => m.FromAll,
                 m => m.ToAll,
-                m => m.FromAll
+                m => m.BCC
             ).IsNotVisibleInAnyView();
 
             ForProperties(
@@ -59,7 +58,8 @@ namespace MailClient.Module.BusinessObjects
                 .Except(
                     m => m.Subject,
                     m => m.MessageDateTime
-                ).IsNotVisibleInListView();
+                )
+            .IsNotVisibleInListView();
 
             ForPropertiesOfType<DateTime>()
                 .HasDisplayFormat("{0:G}");
@@ -71,7 +71,8 @@ namespace MailClient.Module.BusinessObjects
                 m => m.ToAll,
                 m => m.CC,
                 m => m.BCC
-            ).UseTokenStringPropertyEditor();
+            ).UseTokenStringPropertyEditor()
+             .NotAllowingEdit();
         }
     }
 }
