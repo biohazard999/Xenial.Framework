@@ -1,5 +1,6 @@
 ﻿using System;
 
+using DevExpress.ExpressApp.Editors;
 using DevExpress.Persistent.Base;
 
 namespace Xenial.Framework.ModelBuilders
@@ -71,6 +72,25 @@ namespace Xenial.Framework.ModelBuilders
         /// <returns></returns>
         public static IPropertyBuilder<TProperty?, TClassType> HasDisplayFormat<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder, string displayFormat)
             => builder.WithModelDefault(ModelDefaults.DisplayFormat, displayFormat);
+
+        /// <summary>
+        /// Determines whether [has edit mask] [the specified edit mask].
+        /// </summary>
+        /// <typeparam name="TProperty">The type of the t property.</typeparam>
+        /// <typeparam name="TClassType">The type of the t class type.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="editMask">The edit mask.</param>
+        /// <param name="editMaskType">Type of the edit mask.</param>
+        /// <returns>IPropertyBuilder&lt;System.Nullable&lt;TProperty&gt;, TClassType&gt;.</returns>
+        public static IPropertyBuilder<TProperty?, TClassType> HasEditMask<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder, string editMask, EditMaskType? editMaskType)
+        {
+            builder.WithModelDefault("EditMask", editMask);
+            if (editMaskType.HasValue)
+            {
+                builder.WithModelDefault("EditMaskType", editMaskType.Value.ToString());
+            }
+            return builder;
+        }
 
         /// <summary>
         /// Determines whether the specified index has index.
