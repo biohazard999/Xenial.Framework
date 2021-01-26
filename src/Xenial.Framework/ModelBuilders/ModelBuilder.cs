@@ -14,7 +14,7 @@ namespace Xenial.Framework.ModelBuilders
     /// <summary>
     /// 
     /// </summary>
-    public static class ModelBuilder
+    public static partial class ModelBuilder
     {
         /// <summary>
         /// Finds the type information.
