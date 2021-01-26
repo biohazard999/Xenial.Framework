@@ -7,6 +7,7 @@
     <PackageReference Include="MailKit" Version="2.10.1" />
     <PackageReference Include="MimeKit" Version="2.10.1" />
     <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.TokenEditors" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Xpo" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="DevExpress.ExpressApp.Validation" Version="$(DxVersion)" />
   </ItemGroup>

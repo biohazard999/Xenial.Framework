@@ -1,6 +1,7 @@
 ﻿using System;
 
 using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Validation.Win;
 
 using Xenial.Framework;
@@ -15,5 +16,11 @@ namespace MailClient.Module.Win
                 typeof(ValidationWindowsFormsModule),
                 typeof(MailClientModule)
             });
+
+        protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
+        {
+            base.RegisterEditorDescriptors(editorDescriptorsFactory);
+            editorDescriptorsFactory.UseTokenStringPropertyEditorsWin();
+        }
     }
 }

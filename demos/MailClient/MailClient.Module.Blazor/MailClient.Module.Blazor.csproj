@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Xenial.Framework.Blazor" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.TokenEditors.Blazor" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="DevExpress.ExpressApp.Validation.Blazor" Version="$(DxVersion)" />
   </ItemGroup>
 

@@ -4,6 +4,7 @@ using System.Linq;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
+using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Updating;
 using DevExpress.ExpressApp.Validation;
@@ -36,6 +37,12 @@ namespace MailClient.Module
         {
             new MailClientSeedModelUpdater(objectSpace, versionFromDB)
         });
+
+        protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
+        {
+            base.RegisterEditorDescriptors(editorDescriptorsFactory);
+            editorDescriptorsFactory.UseTokenStringPropertyEditors();
+        }
 
         public override void CustomizeTypesInfo(ITypesInfo typesInfo)
         {
