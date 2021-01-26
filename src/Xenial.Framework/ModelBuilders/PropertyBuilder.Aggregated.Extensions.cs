@@ -24,6 +24,7 @@ namespace Xenial.Framework.ModelBuilders
             params Expression<Func<TClassType, TPropertyType?>>[] propertyExpressions
         )
         {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
             var propertyBuilders = builder.PropertyBuilders.ToList();
             foreach (var propertyExpression in propertyExpressions)
             {
