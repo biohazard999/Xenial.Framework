@@ -19,7 +19,7 @@ namespace Xenial.Framework.ModelBuilders
 
             foreach (var propertyExpression in propertyExpressions)
             {
-                _ = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpression));
+                _ = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpressions));
 
                 var propertyName = ExpressionHelper.Property(propertyExpression);
                 if (propertyName is not null)
@@ -60,7 +60,7 @@ namespace Xenial.Framework.ModelBuilders
 
             foreach (var propertyExpression in propertyExpressions)
             {
-                _ = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpression));
+                _ = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpressions));
 
                 var propertyName = ExpressionHelper.Property(propertyExpression);
                 if (propertyName is not null)
