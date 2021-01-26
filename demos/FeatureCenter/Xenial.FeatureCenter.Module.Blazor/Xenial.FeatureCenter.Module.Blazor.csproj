@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Blazor/Xenial.Framework.Blazor.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors.Blazor/Xenial.Framework.TokenEditors.Blazor.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.WebView.Blazor/Xenial.Framework.WebView.Blazor.csproj" />
   </ItemGroup>

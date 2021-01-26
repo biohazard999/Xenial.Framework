@@ -10,9 +10,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp.Validation.Win" Version="$(DxVersion)" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
     <PackageReference Include="Xenial.Framework.Win" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.TokenEditors.Win" Version="$(XenialDemoPackageVersion)" />
-    <PackageReference Include="DevExpress.ExpressApp.Validation.Win" Version="$(DxVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Win/Xenial.Framework.Win.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors.Win/Xenial.Framework.TokenEditors.Win.csproj" />
   </ItemGroup>
   
 </Project>
