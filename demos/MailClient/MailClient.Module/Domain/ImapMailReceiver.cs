@@ -26,7 +26,7 @@ namespace MailClient.Module.Domain
 {
     public class ImapMailReceiver
     {
-        readonly Func<Type, IObjectSpace> objectSpaceFactory;
+        private readonly Func<Type, IObjectSpace> objectSpaceFactory;
 
         public ImapMailReceiver(Func<Type, IObjectSpace> objectSpaceFactory)
             => this.objectSpaceFactory = objectSpaceFactory;
@@ -279,8 +279,10 @@ namespace MailClient.Module.Domain
                             var (uuid, fileName) = await StoreMessage();
 
                             var mail = await LoadMesage(uuid, fileName);
+
                             if (mail is not null)
                             {
+                                existingMails.Add(new MailInfo(mail.Id, mailAccountId, mail.FileName, mail.MessageId, mail.MessageIdHash));
                                 yield return mail;
                             }
                         }
