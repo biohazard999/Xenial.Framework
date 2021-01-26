@@ -14,6 +14,9 @@ namespace MailClient.Module.BusinessObjects
         // apparently anything over 4K converts to nvarchar(max) on SqlServer
         public const int TextSizeIndexable = 1000;
 
+        //https://docs.microsoft.com/de-de/sql/sql-server/maximum-capacity-specifications-for-sql-server?view=sql-server-ver15#ssde-objects
+        public const int ByteSizeIndexable = 1700; //This is the limit for SqlServers maximum byte count per non clustered indexed 
+
         public Mail(Session session) : base(session) { }
 
         [RuleRequiredField(DefaultContexts.Save)]

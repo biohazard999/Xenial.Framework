@@ -20,13 +20,9 @@ namespace MailClient.Win
 {
     public class MailClientWindowsFormsApplication : WinApplication
     {
-        static MailClientWindowsFormsApplication()
-            => DevExpress.Xpo.DB.MySqlConnectionProvider.Register();
-
         public MailClientWindowsFormsApplication()
         {
             IgnoreUserModelDiffs = true;
-            //ConnectionString = DevExpress.Xpo.DB.MySqlConnectionProvider.GetConnectionString("localhost", "root", "root", "MailClient");
             ConnectionString = DevExpress.Xpo.DB.MSSqlConnectionProvider.GetConnectionString(@"DESKTOP-4NVFKC3\SQLEXPRESS", "MailClient");
             DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
             CheckCompatibilityType = CheckCompatibilityType.DatabaseSchema;

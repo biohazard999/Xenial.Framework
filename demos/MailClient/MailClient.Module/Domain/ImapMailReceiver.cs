@@ -134,15 +134,15 @@ namespace MailClient.Module.Domain
                     mail.MessageDateTime = mailReceiveInfo.ReceivedDateTime;
                 }
 
-                mail.Subject = Truncate(mailReceiveInfo.Message.Subject, Mail.TextSizeIndexable);
+                mail.Subject = TruncateForIndex(mailReceiveInfo.Message.Subject);
 
-                mail.To = Truncate(mailReceiveInfo.Message.To?.Mailboxes?.FirstOrDefault()?.Address, Mail.TextSizeIndexable);
-                mail.From = Truncate(mailReceiveInfo.Message.From?.Mailboxes?.FirstOrDefault()?.Address, Mail.TextSizeIndexable);
+                mail.To = TruncateForIndex(mailReceiveInfo.Message.To?.Mailboxes?.FirstOrDefault()?.Address);
+                mail.From = TruncateForIndex(mailReceiveInfo.Message.From?.Mailboxes?.FirstOrDefault()?.Address);
 
-                mail.ToAll = Truncate(string.Join(";", mailReceiveInfo.Message.To?.Select(t => t.ToString())), Mail.TextSizeIndexable);
-                mail.FromAll = Truncate(string.Join(";", mailReceiveInfo.Message.From?.Select(t => t.ToString())), Mail.TextSizeIndexable);
-                mail.CC = Truncate(string.Join(";", mailReceiveInfo.Message.Cc?.Select(t => t.ToString())), Mail.TextSizeIndexable);
-                mail.BCC = Truncate(string.Join(";", mailReceiveInfo.Message.Bcc?.Select(t => t.ToString())), Mail.TextSizeIndexable);
+                mail.ToAll = TruncateForIndex(string.Join(";", mailReceiveInfo.Message.To?.Select(t => t.ToString())));
+                mail.FromAll = TruncateForIndex(string.Join(";", mailReceiveInfo.Message.From?.Select(t => t.ToString())));
+                mail.CC = TruncateForIndex(string.Join(";", mailReceiveInfo.Message.Cc?.Select(t => t.ToString())));
+                mail.BCC = TruncateForIndex(string.Join(";", mailReceiveInfo.Message.Bcc?.Select(t => t.ToString())));
 
                 mail.MessagePriority = mailReceiveInfo.Message.Priority switch
                 {
@@ -167,14 +167,41 @@ namespace MailClient.Module.Domain
                 return mail;
             }
 
-            static string? Truncate(string? value, int maxLength)
+            static string? TruncateForIndex(string? value)
             {
-                if (string.IsNullOrEmpty(value))
+                static string? Truncate(string? value, int maxLength)
                 {
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        return value;
+                    }
+
+                    return value!.Length <= maxLength ? value : value.Substring(0, maxLength);
+                }
+
+                static string? TruncateByBytes(string? value, int maxBytes)
+                {
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        return value;
+                    }
+
+                    while (Encoding.Unicode.GetByteCount(value) > maxBytes)
+                    {
+                        if (value is null)
+                        {
+                            return null;
+                        }
+                        value = value.Substring(0, value.Length - 1);
+                    }
+
                     return value;
                 }
 
-                return value!.Length <= maxLength ? value : value.Substring(0, maxLength);
+
+                var newValue = Truncate(value, Mail.TextSizeIndexable);
+                newValue = TruncateByBytes(newValue, Mail.ByteSizeIndexable);
+                return newValue;
             }
 
             async IAsyncEnumerable<Mail> ReceiveAsync(int mailAccountId, IMailFolder folder, [EnumeratorCancellation] CancellationToken cancellationToken = default)

@@ -21,9 +21,6 @@ namespace MailClient.Blazor
 {
     public class MailClientBlazorApplication : BlazorApplication
     {
-        static MailClientBlazorApplication()
-            => DevExpress.Xpo.DB.MySqlConnectionProvider.Register();
-
         public MailClientBlazorApplication()
         {
             DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
@@ -44,7 +41,7 @@ namespace MailClient.Blazor
         {
             base.OnSetupStarted();
 #if DEBUG
-            ConnectionString = DevExpress.Xpo.DB.MySqlConnectionProvider.GetConnectionString("localhost", "root", "root", "MailClient");
+            ConnectionString = DevExpress.Xpo.DB.MSSqlConnectionProvider.GetConnectionString(@"DESKTOP-4NVFKC3\SQLEXPRESS", "MailClient");
 #else
             var configuration = ServiceProvider.GetRequiredService<IConfiguration>();
             if (configuration.GetConnectionString("DefaultConnection") != null)
