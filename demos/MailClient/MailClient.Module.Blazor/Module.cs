@@ -10,6 +10,8 @@ namespace MailClient.Module.Blazor
 {
     public class MailClientBlazorModule : XenialModuleBase
     {
+        public MailClientBlazorModule() : base(useNullDiffsStore: false) { }
+
         protected override ModuleTypeList GetRequiredModuleTypesCore()
             => base.GetRequiredModuleTypesCore().AndModuleTypes(new[]
             {
