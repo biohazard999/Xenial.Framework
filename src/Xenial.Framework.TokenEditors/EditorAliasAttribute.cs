@@ -6,7 +6,7 @@ using Xenial.Framework.TokenEditors.PubTernal;
 namespace DevExpress.Persistent.Base
 {
     /// <summary>
-    /// Class WebViewUriEditorAttribute.
+    /// Class TokenObjectsEditorAttribute.
     /// Implements the <see cref="DevExpress.Persistent.Base.EditorAliasAttribute" />
     /// </summary>
     /// <seealso cref="DevExpress.Persistent.Base.EditorAliasAttribute" />
@@ -22,7 +22,7 @@ namespace DevExpress.Persistent.Base
     }
 
     /// <summary>
-    /// Class WebViewUriEditorAttribute.
+    /// Class TokenStringEditorAttribute.
     /// Implements the <see cref="DevExpress.Persistent.Base.EditorAliasAttribute" />
     /// </summary>
     /// <seealso cref="DevExpress.Persistent.Base.EditorAliasAttribute" />
