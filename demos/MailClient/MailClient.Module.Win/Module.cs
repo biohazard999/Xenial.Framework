@@ -10,6 +10,8 @@ namespace MailClient.Module.Win
 {
     public class MailClientWindowsFormsModule : XenialModuleBase
     {
+        public MailClientWindowsFormsModule() : base(useNullDiffsStore: false) { }
+
         protected override ModuleTypeList GetRequiredModuleTypesCore()
             => base.GetRequiredModuleTypesCore().AndModuleTypes(new[]
             {
