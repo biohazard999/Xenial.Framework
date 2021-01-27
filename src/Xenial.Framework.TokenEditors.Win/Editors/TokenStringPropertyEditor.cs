@@ -41,6 +41,7 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
                 tokenEdit.DropDownShowMode = model.TokenDropDownShowMode switch
                 {
                     TokenDropDownShowMode.Default => TokenEditDropDownShowMode.Default,
+                    TokenDropDownShowMode.Regular => TokenEditDropDownShowMode.Regular,
                     TokenDropDownShowMode.Outlook => TokenEditDropDownShowMode.Outlook,
                     _ => tokenEdit.DropDownShowMode
                 };
@@ -72,24 +73,31 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
             base.SetupRepositoryItem(item);
             if (item is RepositoryItemTokenEdit tokenEdit)
             {
-                ApplyModelOptions(tokenEdit);
-                tokenEdit.EditValueType = TokenEditValueType.String;
-                tokenEdit.EditMode = TokenEditMode.Manual;
-                tokenEdit.EditValueSeparatorChar = ';';
-                tokenEdit.Separators.Clear();
-                tokenEdit.Separators.Add(";");
-                tokenEdit.Separators.Add(",");
-                //tokenEdit.CheckMode = TokenEditCheckMode.Multiple;
-                tokenEdit.ShowDropDown = true;
-                tokenEdit.PopupFilterMode = TokenEditPopupFilterMode.Contains;
+                tokenEdit.BeginUpdate();
+                try
+                {
+                    ApplyModelOptions(tokenEdit);
+                    tokenEdit.EditValueType = TokenEditValueType.String;
+                    tokenEdit.EditMode = TokenEditMode.Manual;
+                    tokenEdit.EditValueSeparatorChar = ';';
+                    tokenEdit.Separators.Clear();
+                    tokenEdit.Separators.Add(";");
+                    tokenEdit.Separators.Add(",");
+                    tokenEdit.ShowDropDown = true;
+                    tokenEdit.PopupFilterMode = TokenEditPopupFilterMode.Contains;
 
-                tokenEdit.ValidateToken -= TokenEdit_ValidateToken;
-                tokenEdit.ValidateToken += TokenEdit_ValidateToken;
+                    tokenEdit.ValidateToken -= TokenEdit_ValidateToken;
+                    tokenEdit.ValidateToken += TokenEdit_ValidateToken;
 
-                void TokenEdit_ValidateToken(object? _, TokenEditValidateTokenEventArgs e)
-                    => e.IsValid = true;
+                    void TokenEdit_ValidateToken(object? _, TokenEditValidateTokenEventArgs e)
+                        => e.IsValid = true;
 
-                InitTokens();
+                    InitTokens();
+                }
+                finally
+                {
+                    tokenEdit.EndUpdate();
+                }
 
                 void InitTokens()
                 {
