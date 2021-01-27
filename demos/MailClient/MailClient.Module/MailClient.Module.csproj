@@ -1,7 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFrameworks>$(NetStandardVersion)</TargetFrameworks>
+    <TargetFramework>$(NetStandardVersion)</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Model.DesignedDiffs.xafml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Model.DesignedDiffs.xafml" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.10.1" />

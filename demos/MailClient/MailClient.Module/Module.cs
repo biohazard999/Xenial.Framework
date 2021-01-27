@@ -5,6 +5,7 @@ using System.Linq;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Editors;
+using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Updating;
 using DevExpress.ExpressApp.Validation;
@@ -19,10 +20,16 @@ namespace MailClient.Module
 {
     public class MailClientModule : XenialModuleBase
     {
+        public MailClientModule() : base(useNullDiffsStore: false) { }
+
         protected override ModuleTypeList GetRequiredModuleTypesCore() => base.GetRequiredModuleTypesCore().AndModuleTypes(new[]
         {
             typeof(ValidationModule)
         });
+
+        protected override IEnumerable<Type> GetRegularTypes() => base.GetRegularTypes()
+            .UseDetailViewLayoutBuildersRegularTypes()
+            .UseTokenStringEditorRegularTypes();
 
         protected override IEnumerable<Type> GetDeclaredExportedTypes() => ModelTypeList.PersistentTypes;
 
@@ -44,12 +51,22 @@ namespace MailClient.Module
             editorDescriptorsFactory.UseTokenStringPropertyEditors();
         }
 
+        public override void ExtendModelInterfaces(ModelInterfaceExtenders extenders)
+        {
+            base.ExtendModelInterfaces(extenders);
+
+            extenders
+                .UseDetailViewLayoutBuilders()
+                .UseTokenStringPropertyEditors();
+        }
+
         public override void CustomizeTypesInfo(ITypesInfo typesInfo)
         {
             base.CustomizeTypesInfo(typesInfo);
 
-            typesInfo.RemoveXafViewsFromApplicationModel();
-            typesInfo.RemoveXpoViewsFromApplicationModel();
+            typesInfo
+                .RemoveXafViewsFromApplicationModel()
+                .RemoveXpoViewsFromApplicationModel();
 
             ModelBuilder.Create<MailBaseObject>(typesInfo).GenerateNoViews().Build();
             ModelBuilder.Create<MailBaseObjectId>(typesInfo).GenerateNoViews().Build();
