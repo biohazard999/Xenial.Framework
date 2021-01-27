@@ -44,7 +44,6 @@ namespace DevExpress.Persistent.Base
         public TokenDropDownShowMode? TokenDropDownShowMode { get; set; }
     }
 
-
     /// <summary>
     /// Enum TokenDropDownShowMode
     /// </summary>
