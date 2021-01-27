@@ -70,6 +70,13 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
                     TokenDropDownShowMode.Outlook => TokenEditDropDownShowMode.Outlook,
                     _ => tokenEdit.DropDownShowMode
                 };
+
+                tokenEdit.PopupFilterMode = model.TokenPopupFilterMode switch
+                {
+                    TokenPopupFilterMode.StartsWith => TokenEditPopupFilterMode.StartWith,
+                    TokenPopupFilterMode.Contains => TokenEditPopupFilterMode.Contains,
+                    _ => tokenEdit.PopupFilterMode
+                };
             }
             return tokenEdit;
         }

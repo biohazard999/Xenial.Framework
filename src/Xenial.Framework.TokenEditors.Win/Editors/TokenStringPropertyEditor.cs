@@ -45,6 +45,13 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
                     TokenDropDownShowMode.Outlook => TokenEditDropDownShowMode.Outlook,
                     _ => tokenEdit.DropDownShowMode
                 };
+
+                tokenEdit.PopupFilterMode = model.TokenPopupFilterMode switch
+                {
+                    TokenPopupFilterMode.StartsWith => TokenEditPopupFilterMode.StartWith,
+                    TokenPopupFilterMode.Contains => TokenEditPopupFilterMode.Contains,
+                    _ => tokenEdit.PopupFilterMode
+                };
             }
             return tokenEdit;
         }
@@ -78,12 +85,14 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
                 {
                     ApplyModelOptions(tokenEdit);
                     tokenEdit.EditValueType = TokenEditValueType.String;
+                    tokenEdit.ShowDropDown = true;
                     tokenEdit.EditMode = TokenEditMode.Manual;
+
                     tokenEdit.EditValueSeparatorChar = ';';
                     tokenEdit.Separators.Clear();
                     tokenEdit.Separators.Add(";");
                     tokenEdit.Separators.Add(",");
-                    tokenEdit.ShowDropDown = true;
+
                     tokenEdit.PopupFilterMode = TokenEditPopupFilterMode.Contains;
 
                     tokenEdit.ValidateToken -= TokenEdit_ValidateToken;
