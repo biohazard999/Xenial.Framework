@@ -106,7 +106,7 @@ namespace Xenial.Framework.TokenEditors.Model
             var attribute = modelMember.MemberInfo.FindAttribute<TokenStringEditorAttribute>();
             if (attribute is not null)
             {
-                return attribute.TokenDropDownShowMode;
+                return attribute.DropDownShowMode;
             }
             return null;
         }

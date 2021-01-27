@@ -41,8 +41,6 @@ namespace MailClient.Module.BusinessObjects
                 m => m.ImapFolderName,
                 m => m.HtmlBody,
                 m => m.TextBody,
-                m => m.FromAll,
-                m => m.ToAll,
                 m => m.BCC
             ).IsNotVisibleInAnyView();
 
@@ -66,13 +64,16 @@ namespace MailClient.Module.BusinessObjects
 
             ForProperties(
                 m => m.From,
-                m => m.FromAll,
-                m => m.To,
-                m => m.ToAll,
                 m => m.CC,
                 m => m.BCC
             ).UseTokenStringPropertyEditor()
              .NotAllowingEdit();
+
+            For(m => m.ToAll)
+                .UseTokenStringPropertyEditor(o => o.DropDownShowMode = TokenDropDownShowMode.Outlook);
+
+            For(m => m.FromAll)
+                .UseTokenStringPropertyEditor(o => o.DropDownShowMode = TokenDropDownShowMode.Default);
         }
     }
 }
