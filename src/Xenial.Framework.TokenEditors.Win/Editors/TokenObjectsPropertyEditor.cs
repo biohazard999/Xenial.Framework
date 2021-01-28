@@ -61,9 +61,9 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
 
         private XenialRepositoryItemTokenObjectsEdit ApplyModelOptions(XenialRepositoryItemTokenObjectsEdit tokenEdit)
         {
-            if (Model is ITokenObjectsModelPropertyEditor model)
+            if (Model is IXenialTokenObjectsModelPropertyEditor model)
             {
-                tokenEdit.DropDownShowMode = model.TokenDropDownShowMode switch
+                tokenEdit.DropDownShowMode = model.XenialTokenObjectsDropDownShowMode switch
                 {
                     TokenDropDownShowMode.Default => TokenEditDropDownShowMode.Default,
                     TokenDropDownShowMode.Regular => TokenEditDropDownShowMode.Regular,
@@ -71,7 +71,7 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
                     _ => tokenEdit.DropDownShowMode
                 };
 
-                tokenEdit.PopupFilterMode = model.TokenPopupFilterMode switch
+                tokenEdit.PopupFilterMode = model.XenialTokenObjectsPopupFilterMode switch
                 {
                     TokenPopupFilterMode.StartsWith => TokenEditPopupFilterMode.StartWith,
                     TokenPopupFilterMode.Contains => TokenEditPopupFilterMode.Contains,

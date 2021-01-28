@@ -36,9 +36,9 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
 
         private RepositoryItemTokenEdit ApplyModelOptions(RepositoryItemTokenEdit tokenEdit)
         {
-            if (Model is ITokenStringModelPropertyEditor model)
+            if (Model is IXenialTokenStringModelPropertyEditor model)
             {
-                tokenEdit.DropDownShowMode = model.TokenDropDownShowMode switch
+                tokenEdit.DropDownShowMode = model.XenialTokenStringDropDownShowMode switch
                 {
                     TokenDropDownShowMode.Default => TokenEditDropDownShowMode.Default,
                     TokenDropDownShowMode.Regular => TokenEditDropDownShowMode.Regular,
@@ -46,7 +46,7 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
                     _ => tokenEdit.DropDownShowMode
                 };
 
-                tokenEdit.PopupFilterMode = model.TokenPopupFilterMode switch
+                tokenEdit.PopupFilterMode = model.XenialTokenStringPopupFilterMode switch
                 {
                     TokenPopupFilterMode.StartsWith => TokenEditPopupFilterMode.StartWith,
                     TokenPopupFilterMode.Contains => TokenEditPopupFilterMode.Contains,
@@ -92,8 +92,6 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
                     tokenEdit.Separators.Clear();
                     tokenEdit.Separators.Add(";");
                     tokenEdit.Separators.Add(",");
-
-                    tokenEdit.PopupFilterMode = TokenEditPopupFilterMode.Contains;
 
                     tokenEdit.ValidateToken -= TokenEdit_ValidateToken;
                     tokenEdit.ValidateToken += TokenEdit_ValidateToken;
