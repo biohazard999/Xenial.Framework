@@ -30,6 +30,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                         (
                             l.Tab("Basic",
                                 l.PropertyEditor(m => m.StringTokens) with { CaptionLocation = Locations.Top },
+                                l.PropertyEditor(m => m.UserDefinedStringTokens) with { CaptionLocation = Locations.Top },
                                 l.EmptySpaceItem() with { RelativeSize = 90 }
                             )
                         )
