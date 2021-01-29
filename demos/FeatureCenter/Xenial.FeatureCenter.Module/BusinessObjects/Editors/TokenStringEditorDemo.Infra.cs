@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Bogus;
+
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
@@ -92,5 +95,14 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             new EditorInstallation("XenialTokenEditorsWindowsFormsModule", "UseTokenStringPropertyEditorsWin", AvailablePlatform.Win),
             new EditorInstallation("XenialTokenEditorsBlazorModule", "UseTokenStringPropertyEditorsBlazor", AvailablePlatform.Blazor),
         };
+
+        public static readonly IEnumerable<string> DemoTokens
+            = Enumerable.Range(1, 100)
+                .Select(_ => new Faker()
+                    .Vehicle
+                    .Manufacturer()
+                )
+                .Distinct()
+                .ToArray();
     }
 }

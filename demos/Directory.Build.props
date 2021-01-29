@@ -8,7 +8,7 @@
     <NoWarn>CA1014;CA1303;CA1716;$(NoWarn)</NoWarn>
     <CheckXenialLicense>false</CheckXenialLicense>
     <GenerateXenialLicense>false</GenerateXenialLicense>
-    <XenialDebug>false</XenialDebug>
+    <XenialDebug>true</XenialDebug>
     <SrcDirectory>$(MSBuildThisFileDirectory)..\src\</SrcDirectory>
     <XenialDemoPackageVersion Condition="'$(XenialDemoPackageVersion)' == ''">*-*</XenialDemoPackageVersion>
     <DxVersionPart>v20.2</DxVersionPart>
