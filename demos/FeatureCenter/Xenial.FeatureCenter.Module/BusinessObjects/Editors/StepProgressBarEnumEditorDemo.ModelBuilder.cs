@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
 
-using Xenial.Framework.Layouts;
-using Xenial.Framework.Layouts.Items;
-using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.ModelBuilders;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
