@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
@@ -96,7 +97,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             new EditorInstallation("XenialTokenEditorsBlazorModule", "UseTokenStringPropertyEditorsBlazor", AvailablePlatform.Blazor),
         };
 
-        public static readonly IEnumerable<string> DemoTokens
+        public static IEnumerable<string> DemoTokens { get; }
             = Enumerable.Range(1, 100)
                 .Select(_ => new Faker()
                     .Vehicle
@@ -104,5 +105,14 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                 )
                 .Distinct()
                 .ToArray();
+
+        private static string PickRandomDemoTokens() => string.Join(";", Enumerable.Range(1, 5).Select(_ => new Faker().PickRandom(DemoTokens)).ToArray());
+
+        public static IEnumerable<string> XenialAssemblies { get; }
+            = AppDomain.CurrentDomain
+                .GetAssemblies()
+                .Select(a => a.GetName().Name)
+                .Where(a => a.StartsWith("Xenial.Framework"));
+
     }
 }

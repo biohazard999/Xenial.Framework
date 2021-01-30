@@ -27,10 +27,11 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         {
             base.AfterConstruction();
             StringTokens = "Xenial.Framework;Xenial.Framework.Win;";
-            DropDownShowModeOutlookStringTokens = string.Join(";", Enumerable.Range(1, 5).Select(_ => new Faker().PickRandom(DemoTokens)).ToArray());
-            DropDownShowModeRegularStringTokens = string.Join(";", Enumerable.Range(1, 5).Select(_ => new Faker().PickRandom(DemoTokens)).ToArray());
-            TokenPopupFilterModeContainsStringTokens = string.Join(";", Enumerable.Range(1, 5).Select(_ => new Faker().PickRandom(DemoTokens)).ToArray());
-            TokenPopupFilterModeStartsWithStringTokens = string.Join(";", Enumerable.Range(1, 5).Select(_ => new Faker().PickRandom(DemoTokens)).ToArray());
+
+            DropDownShowModeOutlookStringTokens = PickRandomDemoTokens();
+            DropDownShowModeRegularStringTokens = PickRandomDemoTokens();
+            TokenPopupFilterModeContainsStringTokens = PickRandomDemoTokens();
+            TokenPopupFilterModeStartsWithStringTokens = PickRandomDemoTokens();
         }
 
         [TokenStringEditor]
