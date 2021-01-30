@@ -23,6 +23,20 @@ namespace Xenial.Framework.Layouts
             => GeneratorType = generatorType ?? throw new ArgumentNullException(nameof(generatorType));
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="DetailViewLayoutBuilderAttribute" /> class.
+        /// </summary>
+        /// <param name="generatorType">Type of the generator.</param>
+        /// <param name="buildLayoutMethodName">Name of the build layout method.</param>
+        /// <exception cref="ArgumentNullException">generatorType</exception>
+        /// <exception cref="ArgumentNullException">buildLayoutMethodName</exception>
+        public DetailViewLayoutBuilderAttribute(Type generatorType, string buildLayoutMethodName)
+            => (GeneratorType, BuildLayoutMethodName)
+            = (
+                generatorType ?? throw new ArgumentNullException(nameof(generatorType)),
+                buildLayoutMethodName ?? throw new ArgumentNullException(nameof(buildLayoutMethodName))
+            );
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DetailViewLayoutBuilderAttribute"/> class.
         /// </summary>
         /// <param name="buildLayoutDelegate">The build layout delegate.</param>
