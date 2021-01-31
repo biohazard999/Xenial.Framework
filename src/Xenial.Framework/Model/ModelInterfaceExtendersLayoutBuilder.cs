@@ -24,7 +24,7 @@ namespace DevExpress.ExpressApp.Model
         {
             _ = extenders ?? throw new ArgumentNullException(nameof(extenders));
 
-            extenders.Add<IModelObjectView, IModelObjectGeneratedView>();
+            extenders.Add<IModelObjectView, IModelGeneratedDetailView>();
 
             return extenders;
         }
@@ -38,8 +38,8 @@ namespace DevExpress.ExpressApp.Model
         public static IEnumerable<Type> UseDetailViewLayoutBuildersRegularTypes(this IEnumerable<Type> types)
             => types.Concat(new[]
             {
-                typeof(IModelObjectGeneratedView),
-                typeof(ModelObjectGeneratedViewDomainLogic)
+                typeof(IModelGeneratedDetailView),
+                typeof(ModelGeneratedDetailViewDomainLogic)
             }
         );
     }
