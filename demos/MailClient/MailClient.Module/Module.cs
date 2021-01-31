@@ -28,7 +28,6 @@ namespace MailClient.Module
         });
 
         protected override IEnumerable<Type> GetRegularTypes() => base.GetRegularTypes()
-            .UseDetailViewLayoutBuildersRegularTypes()
             .UseTokenStringEditorRegularTypes();
 
         protected override IEnumerable<Type> GetDeclaredExportedTypes() => ModelTypeList.PersistentTypes;
@@ -56,7 +55,6 @@ namespace MailClient.Module
             base.ExtendModelInterfaces(extenders);
 
             extenders
-                .UseDetailViewLayoutBuilders()
                 .UseTokenStringPropertyEditors();
         }
 

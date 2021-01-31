@@ -59,11 +59,10 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
     public static class SimpleBusinessObjectLayoutBuilder
     {
+        internal static bool BuildLayoutWasCalled;
         public static Layout BuildLayout()
         {
-            var item = LayoutPropertyEditorItem<SimpleBusinessObject>
-                .Create(p => p.BoolProperty);
-
+            BuildLayoutWasCalled = true;
             var layoutPropertyEditor = new LayoutPropertyEditorItem(nameof(SimpleBusinessObject.StringProperty));
 
             return new()
@@ -105,18 +104,13 @@ namespace Xenial.Framework.Tests.Layouts.Items
                     detailView.ShouldNotBeNull();
                 });
 
-                It("Sets the generator flag when attribute is set in code", () =>
+                It("static buddy builder was called", () =>
                 {
                     var detailView = model.FindDetailView<SimpleBusinessObject>();
 
-                    if (detailView is IModelGeneratedDetailView modelGeneratedView)
-                    {
-                        modelGeneratedView.DetailViewLayoutGeneratorType.ShouldBe(typeof(SimpleBusinessObjectLayoutBuilder));
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Model extention was not registered correctly");
-                    }
+                    var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
+
+                    SimpleBusinessObjectLayoutBuilder.BuildLayoutWasCalled.ShouldBeTrue();
                 });
             });
 
@@ -159,20 +153,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
                     var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
 
                     SimpleBusinessObjectWithStaticBuilderConvention.BuildLayoutWasCalled.ShouldBeTrue();
-                });
-
-                It("Sets the generator flag when attribute is set in code", () =>
-                {
-                    var detailView = model.FindDetailView<SimpleBusinessObjectWithStaticBuilderConvention>();
-
-                    if (detailView is IModelGeneratedDetailView modelGeneratedView)
-                    {
-                        modelGeneratedView.DetailViewLayoutGeneratorType.ShouldBe(typeof(SimpleBusinessObjectWithStaticBuilderConvention));
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Model extention was not registered correctly");
-                    }
                 });
             });
         });

@@ -188,10 +188,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
                 => base.GetDeclaredExportedTypes()
                     .Concat(boModelTypes);
 
-            protected override IEnumerable<Type> GetRegularTypes()
-                => base.GetRegularTypes()
-                    .UseDetailViewLayoutBuildersRegularTypes();
-
             public override void CustomizeTypesInfo(ITypesInfo typesInfo)
             {
                 base.CustomizeTypesInfo(typesInfo);
@@ -202,12 +198,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
             {
                 base.AddGeneratorUpdaters(updaters);
                 updaters.UseDetailViewLayoutBuilders();
-            }
-
-            public override void ExtendModelInterfaces(ModelInterfaceExtenders extenders)
-            {
-                base.ExtendModelInterfaces(extenders);
-                extenders.UseDetailViewLayoutBuilders();
             }
         }
     }
