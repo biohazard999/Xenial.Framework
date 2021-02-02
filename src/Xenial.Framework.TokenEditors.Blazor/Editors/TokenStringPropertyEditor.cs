@@ -64,14 +64,19 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
             componentModel.ValueFieldName = nameof(DataItem<object>.Value);
             componentModel.TextFieldName = nameof(DataItem<object>.Text);
 
-            foreach (var item in (Model.PredefinedValues ?? string.Empty).Split(";"))
+            foreach (var item in (Model.PredefinedValues ?? string.Empty).Split(";").Where(val => !string.IsNullOrEmpty(val)))
             {
                 data.Add(new DataItem<object>(item, item));
             }
 
-            componentModel.Data = data;
-            componentModel.ValueFieldName = nameof(DataItem<object>.Value);
-            componentModel.TextFieldName = nameof(DataItem<object>.Text);
+            var currentObjectVal = this.GetPropertyValue(CurrentObject);
+            if (currentObjectVal is string currentObjectValStr)
+            {
+                foreach (var item in currentObjectValStr.Split(";").Where(val => !string.IsNullOrEmpty(val)))
+                {
+                    data.Add(new DataItem<object>(item, item));
+                }
+            }
 
             if (Model is IXenialTokenStringModelPropertyEditor model)
             {
