@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Beer.Json;
@@ -211,6 +212,76 @@ namespace Xenial.Build
             Target("release", async () =>
             {
                 await Release();
+            });
+
+            Target("LOC", () =>
+            {
+                var locLic = CountNumberOfLinesInCSFilesOfDirectory("./lic");
+                var locSrc = CountNumberOfLinesInCSFilesOfDirectory("./src");
+
+                Console.WriteLine($"LOC lic: {locLic}");
+                Console.WriteLine($"LOC src: {locSrc}");
+
+                int CountNumberOfLinesInCSFilesOfDirectory(string dirPath)
+                {
+                    var csFiles = new DirectoryInfo(dirPath.Trim()).GetFiles("*.cs", SearchOption.AllDirectories);
+
+                    var totalNumberOfLines = 0;
+                    Parallel.ForEach(csFiles, async fo =>
+                    {
+                        Interlocked.Add(ref totalNumberOfLines, await CountNumberOfLine(fo));
+                    });
+                    return totalNumberOfLines;
+                }
+
+                async Task<int> CountNumberOfLine(FileInfo fo)
+                {
+                    var count = 0;
+                    var inComment = 0;
+                    using (var sr = fo.OpenText())
+                    {
+                        string line;
+                        while ((line = await sr.ReadLineAsync()) != null)
+                        {
+                            if (IsRealCode(line.Trim(), ref inComment))
+                            {
+                                count++;
+                            }
+                        }
+                    }
+                    return count;
+                }
+
+                bool IsRealCode(string trimmed, ref int inComment)
+                {
+                    if (trimmed.StartsWith("/*") && trimmed.EndsWith("*/"))
+                    {
+                        return false;
+                    }
+                    else if (trimmed.StartsWith("/*"))
+                    {
+                        inComment++;
+                        return false;
+                    }
+                    else if (trimmed.EndsWith("*/"))
+                    {
+                        inComment--;
+                        return false;
+                    }
+
+                    return
+                           inComment == 0
+                        && !trimmed.StartsWith("//")
+                        && (trimmed.StartsWith("if")
+                            || trimmed.StartsWith("else if")
+                            || trimmed.StartsWith("using (")
+                            || trimmed.StartsWith("else  if")
+                            || trimmed.Contains(";")
+                            || trimmed.StartsWith("public") //method signature
+                            || trimmed.StartsWith("private") //method signature
+                            || trimmed.StartsWith("protected") //method signature
+                            );
+                }
             });
 
             Target("default", DependsOn("test"));
