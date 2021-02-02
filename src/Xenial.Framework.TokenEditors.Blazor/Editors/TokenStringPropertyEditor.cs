@@ -111,6 +111,13 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
                     TokenPopupFilterMode.Contains => DataGridFilteringMode.Contains,
                     _ => componentModel.FilteringMode
                 };
+
+                componentModel.AllowCustomTags = model.XenialTokenStringAllowUserDefinedTokens switch
+                {
+                    true => true,
+                    false => false,
+                    _ => componentModel.AllowCustomTags
+                };
             }
 
             return new XenialStringToStringAdapter(componentModel);
