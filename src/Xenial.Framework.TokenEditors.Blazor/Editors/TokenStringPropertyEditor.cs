@@ -45,9 +45,31 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
             }
             public override void SetValue(object value)
             {
-                var str = (string)value;
-                object[]? values = !string.IsNullOrEmpty(str) ? str.Split(CheckedListBoxItemsDisplayTextProvider.MultiTextSeparator).Select(str => str.Trim()).ToArray() : null;
-                base.SetValue(values);
+                if (value is string str)
+                {
+                    var values = str
+                        .Split(CheckedListBoxItemsDisplayTextProvider.MultiTextSeparator)
+                        .Select(str => str.Trim())
+                        .Where(str => !string.IsNullOrEmpty(str))
+                        .ToArray();
+
+                    foreach (var val in values)
+                    {
+                        if (!ComponentModel.Data.Any(m => m.Text == val))
+                        {
+                            if (ComponentModel.Data is List<DataItem<object>> data)
+                            {
+                                data.Add(new DataItem<object>(val, val?.ToString()));
+                            }
+                        }
+                    }
+
+                    base.SetValue(values);
+                }
+                else
+                {
+                    base.SetValue(null);
+                }
             }
         }
 
@@ -74,7 +96,10 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
             {
                 foreach (var item in currentObjectValStr.Split(";").Where(val => !string.IsNullOrEmpty(val)))
                 {
-                    data.Add(new DataItem<object>(item, item));
+                    if (!data.Any(m => m.Text == item))
+                    {
+                        data.Add(new DataItem<object>(item, item));
+                    }
                 }
             }
 

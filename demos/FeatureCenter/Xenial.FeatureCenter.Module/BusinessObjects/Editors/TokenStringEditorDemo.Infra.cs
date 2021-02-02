@@ -1,16 +1,21 @@
 ﻿using Bogus;
 
+using DevExpress.ExpressApp;
+using DevExpress.Persistent.Base;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 
+using Xenial.Framework;
+
 using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
-    public partial class TokenStringEditorDemo
+    public partial class TokenStringEditorDemo : IObjectSpaceLink
     {
         protected override string DemoCodeFileName => "demos/FeatureCenter/Xenial.FeatureCenter.Module/BusinessObjects/Editors/TokenStringEditorDemo.cs";
 
@@ -106,7 +111,8 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                 .Distinct()
                 .ToArray();
 
-        private static string PickRandomDemoTokens() => string.Join(";", Enumerable.Range(1, 5).Select(_ => new Faker().PickRandom(DemoTokens)).ToArray());
+        private static string PickRandomDemoTokens() => string.Join(";", Enumerable.Range(1, 5).Select(_ => new Faker().PickRandom(DemoTokens)).Distinct().ToArray());
+        private static string PickRandomXenialTokens() => string.Join(";", Enumerable.Range(2, 5).Select(_ => new Faker().PickRandom(XenialAssemblies)).Distinct().ToArray());
 
         public static IEnumerable<string> XenialAssemblies { get; }
             = AppDomain.CurrentDomain
@@ -114,5 +120,21 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                 .Select(a => a.GetName().Name)
                 .Where(a => a.StartsWith("Xenial.Framework"));
 
+        [Action]
+        public void ResetDemo()
+        {
+            StringTokens = "Xenial.Framework;Xenial.Framework.Win;";
+
+            DropDownShowModeOutlookStringTokens = PickRandomDemoTokens();
+            DropDownShowModeRegularStringTokens = PickRandomDemoTokens();
+            TokenPopupFilterModeContainsStringTokens = PickRandomDemoTokens();
+            TokenPopupFilterModeStartsWithStringTokens = PickRandomDemoTokens();
+
+            TokensWithoutPredefinedValues = PickRandomXenialTokens();
+
+            this.ObjectSpaceFor(GetType())?.CommitChanges();
+        }
+
+        IObjectSpace IObjectSpaceLink.ObjectSpace { get; set; }
     }
 }
