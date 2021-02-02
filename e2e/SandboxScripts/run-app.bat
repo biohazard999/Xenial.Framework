@@ -15,5 +15,5 @@ echo > C:\users\WDAGUtilityAccount\Desktop\installed-dotnet.txt
 echo > C:\users\WDAGUtilityAccount\Desktop\ready.txt
 CD C:\users\WDAGUtilityAccount\Desktop\artifacts
 mkdir Xenial.FeatureCenter.Win
-tar -xf Xenial.FeatureCenter.Win.v0.0.45-alpha.0.9.AnyCPU.zip -C ./Xenial.FeatureCenter.Win
+tar -xf Xenial.FeatureCenter.Win.v0.0.47-alpha.0.58.AnyCPU.zip -C ./Xenial.FeatureCenter.Win
 Xenial.FeatureCenter.Win\Xenial.FeatureCenter.Win.exe
