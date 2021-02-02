@@ -15,7 +15,7 @@ using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
-    public partial class TokenStringEditorDemo : IObjectSpaceLink
+    public partial class TokenStringEditorDemo
     {
         protected override string DemoCodeFileName => "demos/FeatureCenter/Xenial.FeatureCenter.Module/BusinessObjects/Editors/TokenStringEditorDemo.cs";
 
@@ -119,22 +119,5 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                 .GetAssemblies()
                 .Select(a => a.GetName().Name)
                 .Where(a => a.StartsWith("Xenial.Framework"));
-
-        [Action]
-        public void ResetDemo()
-        {
-            StringTokens = "Xenial.Framework;Xenial.Framework.Win;";
-
-            DropDownShowModeOutlookStringTokens = PickRandomDemoTokens();
-            DropDownShowModeRegularStringTokens = PickRandomDemoTokens();
-            TokenPopupFilterModeContainsStringTokens = PickRandomDemoTokens();
-            TokenPopupFilterModeStartsWithStringTokens = PickRandomDemoTokens();
-
-            TokensWithoutPredefinedValues = PickRandomXenialTokens();
-
-            this.ObjectSpaceFor(GetType())?.CommitChanges();
-        }
-
-        IObjectSpace IObjectSpaceLink.ObjectSpace { get; set; }
     }
 }

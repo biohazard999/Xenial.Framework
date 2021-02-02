@@ -71,6 +71,11 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
                     base.SetValue(null);
                 }
             }
+            protected override RenderFragment CreateComponent()
+            {
+                var component = base.CreateComponent();
+                return component;
+            }
         }
 
         /// <summary>
@@ -86,7 +91,7 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
             componentModel.ValueFieldName = nameof(DataItem<object>.Value);
             componentModel.TextFieldName = nameof(DataItem<object>.Text);
 
-            foreach (var item in (Model.PredefinedValues ?? string.Empty).Split(";").Where(val => !string.IsNullOrEmpty(val)))
+            foreach (var item in (Model.PredefinedValues ?? string.Empty).Split(";").Where(val => !string.IsNullOrEmpty(val)).Select(val => val.Trim()).Distinct())
             {
                 data.Add(new DataItem<object>(item, item));
             }
@@ -94,7 +99,7 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
             var currentObjectVal = this.GetPropertyValue(CurrentObject);
             if (currentObjectVal is string currentObjectValStr)
             {
-                foreach (var item in currentObjectValStr.Split(";").Where(val => !string.IsNullOrEmpty(val)))
+                foreach (var item in currentObjectValStr.Split(";").Where(val => !string.IsNullOrEmpty(val)).Select(val => val.Trim()).Distinct())
                 {
                     if (!data.Any(m => m.Text == item))
                     {
@@ -118,6 +123,25 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
                     false => false,
                     _ => componentModel.AllowCustomTags
                 };
+
+                if (componentModel.AllowCustomTags)
+                {
+                    componentModel.TagsChanged = EventCallback.Factory.Create<IEnumerable<string>>(this, arg =>
+                    {
+                        if (CurrentObject is not null)
+                        {
+                            if (arg is null)
+                            {
+                                MemberInfo.SetValue(CurrentObject, null);
+                            }
+                            else
+                            {
+                                MemberInfo.SetValue(CurrentObject, string.Join(";", arg.Where(v => !string.IsNullOrEmpty(v)).Distinct()));
+                            }
+                        }
+                    });
+                }
+
             }
 
             return new XenialStringToStringAdapter(componentModel);

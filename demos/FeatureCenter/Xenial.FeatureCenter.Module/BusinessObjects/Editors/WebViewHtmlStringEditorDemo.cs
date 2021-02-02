@@ -16,7 +16,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         public override void AfterConstruction()
         {
             base.AfterConstruction();
-            RegenerateHtmlContent();
+            ResetDemo();
         }
 
         [Size(SizeAttribute.Unlimited)]
@@ -37,8 +37,8 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         [Size(SizeAttribute.Unlimited)]
         public string? Html { get => html; set => SetPropertyValue(ref html, value); }
 
-        [Action(Caption = "Regenerate Html", ImageName = "text", AutoCommit = true, ToolTip = "Regenerates the default HTML with Bulma as a css library")]
-        public void RegenerateHtmlContent() => HtmlContent = $@"<!doctype html>
+        [Action(ImageName = "BO_Audit_ChangeHistory", Caption = "Reset Demo")]
+        public void ResetDemo() => HtmlContent = $@"<!doctype html>
 <html lang=""en"">
   <head>
     <meta charset=""utf-8"">
