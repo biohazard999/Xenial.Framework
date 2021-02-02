@@ -46,6 +46,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                         l.TabbedGroup
                         (
                             l.Tab("Basic",
+                                l.PropertyEditor(m => m.TokensWithoutPredefinedValues) with { CaptionLocation = Locations.Top },
                                 l.PropertyEditor(m => m.StringTokens) with { CaptionLocation = Locations.Top },
                                 l.PropertyEditor(m => m.AllowUserDefinedStringTokens) with { CaptionLocation = Locations.Top },
                                 l.EmptySpaceItem() with { RelativeSize = 90 }

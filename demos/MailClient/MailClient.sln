@@ -14,6 +14,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailClient.Win", "MailClient.Win\MailClient.Win.csproj", "{9950B880-E5CC-4942-9527-0DDDC54743CD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{06DAB7DB-7978-4EA2-B1F2-0767B85AE5B2}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{9004E362-8B3E-4984-85C7-7453E50DE69D}"
 EndProject

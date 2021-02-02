@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30803.129
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FeatureCenter", "FeatureCenter", "{4A8CB7A6-B904-4614-82CD-9A87260EC675}"
+	ProjectSection(SolutionItems) = preProject
+		FeatureCenter\Directory.Build.props = FeatureCenter\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.FeatureCenter.Module", "FeatureCenter\Xenial.FeatureCenter.Module\Xenial.FeatureCenter.Module.csproj", "{AE42B7F0-83C7-440D-9D20-25E0FD86991C}"
 EndProject

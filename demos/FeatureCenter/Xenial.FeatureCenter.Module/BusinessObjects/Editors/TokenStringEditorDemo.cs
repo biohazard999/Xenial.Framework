@@ -34,22 +34,28 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             TokenPopupFilterModeStartsWithStringTokens = PickRandomDemoTokens();
         }
 
+        private string tokensWithoutPredefinedValues = string.Join(";", Enumerable.Range(1, 5).Select(_ => new Faker().PickRandom(XenialAssemblies)).ToArray());
+        //[Persistent("TokensWithoutPredefinedValues")]
+        [NonPersistent]
         [TokenStringEditor]
-        [ModelDefault(ModelDefaults.PredefinedValues, "Xenial.Framework;Xenial.Framework.Win;Xenial.Framework.TokenEditors;Xenial.Framework.TokenEditors.Win;Xenial.Framework.WebView.Win;Xenial.Framework.WebView")]
+        public string TokensWithoutPredefinedValues { get => tokensWithoutPredefinedValues; set => SetPropertyValue(ref tokensWithoutPredefinedValues, value); }
+
+        //[TokenStringEditor]
+        //[ModelDefault(ModelDefaults.PredefinedValues, "Xenial.Framework;Xenial.Framework.Win;Xenial.Framework.TokenEditors;Xenial.Framework.TokenEditors.Win;Xenial.Framework.WebView.Win;Xenial.Framework.WebView")]
         [Size(SizeAttribute.Unlimited)]
         public string? StringTokens { get => stringTokens; set => SetPropertyValue(ref stringTokens, value); }
 
-        [TokenStringEditor(AllowUserDefinedTokens = true)]
+        //[TokenStringEditor(AllowUserDefinedTokens = true)]
         [Size(SizeAttribute.Unlimited)]
         public string? AllowUserDefinedStringTokens { get => allowUserDefinedStringTokens; set => SetPropertyValue(ref allowUserDefinedStringTokens, value); }
 
         #region TokenDropDownShowMode
 
-        [TokenStringEditor(TokenDropDownShowMode.Outlook)]
+        //[TokenStringEditor(TokenDropDownShowMode.Outlook)]
         [Size(SizeAttribute.Unlimited)]
         public string? DropDownShowModeOutlookStringTokens { get => dropDownShowModeOutlookStringTokens; set => SetPropertyValue(ref dropDownShowModeOutlookStringTokens, value); }
 
-        [TokenStringEditor(TokenDropDownShowMode.Regular)]
+        //[TokenStringEditor(TokenDropDownShowMode.Regular)]
         [Size(SizeAttribute.Unlimited)]
         public string? DropDownShowModeRegularStringTokens { get => dropDownShowModeRegularStringTokens; set => SetPropertyValue(ref dropDownShowModeRegularStringTokens, value); }
 
@@ -57,11 +63,11 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 
         #region TokenPopupFilterMode
 
-        [TokenStringEditor(TokenPopupFilterMode.Contains)]
+        //[TokenStringEditor(TokenPopupFilterMode.Contains)]
         [Size(SizeAttribute.Unlimited)]
         public string? TokenPopupFilterModeContainsStringTokens { get => tokenPopupFilterModeContainsStringTokens; set => SetPropertyValue(ref tokenPopupFilterModeContainsStringTokens, value); }
 
-        [TokenStringEditor(TokenPopupFilterMode.StartsWith)]
+        //[TokenStringEditor(TokenPopupFilterMode.StartsWith)]
         [Size(SizeAttribute.Unlimited)]
         public string? TokenPopupFilterModeStartsWithStringTokens { get => tokenPopupFilterModeStartsWithStringTokens; set => SetPropertyValue(ref tokenPopupFilterModeStartsWithStringTokens, value); }
 
