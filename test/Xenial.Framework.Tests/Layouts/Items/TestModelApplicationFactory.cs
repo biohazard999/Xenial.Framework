@@ -20,7 +20,7 @@ namespace Xenial.Framework.Tests.Layouts
     {
         internal static IModelDetailView? CreateDetailViewWithLayout(Func<LayoutBuilder<LayoutPropertyEditorItemBusinessObject>, Layout> layoutFunctor)
         {
-            var model = CreateApplication(new[]
+            var model = CreateApplication(new(new[]
             {
                 typeof(LayoutPropertyEditorItemBusinessObject)
             },
@@ -30,7 +30,7 @@ namespace Xenial.Framework.Tests.Layouts
                     .RemoveAttribute(typeof(DetailViewLayoutBuilderAttribute))
                     .WithDetailViewLayout(layoutFunctor)
                 .Build();
-            });
+            }));
 
             var detailView = model.FindDetailView<LayoutPropertyEditorItemBusinessObject>();
             return detailView;
@@ -38,7 +38,7 @@ namespace Xenial.Framework.Tests.Layouts
 
         internal static IModelDetailView? CreateComplexDetailViewWithLayout(Func<LayoutBuilder<SimpleBusinessObject>, Layout> layoutFunctor)
         {
-            var model = CreateApplication(new[]
+            var model = CreateApplication(new(new[]
             {
                 typeof(SimpleBusinessObject)
             },
@@ -48,7 +48,7 @@ namespace Xenial.Framework.Tests.Layouts
                     .RemoveAttribute(typeof(DetailViewLayoutBuilderAttribute))
                     .WithDetailViewLayout(layoutFunctor)
                 .Build();
-            });
+            }));
 
             var detailView = model.FindDetailView<SimpleBusinessObject>();
             return detailView;

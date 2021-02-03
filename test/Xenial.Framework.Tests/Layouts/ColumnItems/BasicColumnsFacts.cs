@@ -71,9 +71,9 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems
 
                 It($"Finds {typeof(SimpleBusinessObject)}  ListView", () =>
                 {
-                    var detailView = model.FindListView<SimpleBusinessObject>();
+                    var listView = model.FindListView<SimpleBusinessObject>();
 
-                    detailView.ShouldNotBeNull();
+                    listView.ShouldNotBeNull();
                 });
 
                 It("static buddy builder was called", () =>

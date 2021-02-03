@@ -10,12 +10,17 @@ using DXSystemModele = DevExpress.ExpressApp.SystemModule.SystemModule;
 
 namespace Xenial.Framework.Tests.Layouts
 {
+    internal record CreateApplicationOptions(Type[] BoModelTypes, Action<ITypesInfo>? CustomizeTypesInfo = null)
+    {
+        internal Action<ModelNodesGeneratorUpdaters>? CustomizeGeneratorUpdaters { get; set; }
+    }
+
     internal static partial class TestModelApplicationFactory
     {
-        internal static IModelApplication CreateApplication(
-            Type[] boModelTypes,
-            Action<ITypesInfo>? customizeTypesInfo = null
-        )
+        internal static IModelApplication CreateApplication(Type[] boModelTypes, Action<ITypesInfo>? customizeTypesInfo = null)
+            => CreateApplication(new(boModelTypes, customizeTypesInfo));
+
+        internal static IModelApplication CreateApplication(CreateApplicationOptions options)
         {
             XafTypesInfo.HardReset();
 
@@ -24,7 +29,7 @@ namespace Xenial.Framework.Tests.Layouts
                 var store = typesInfo.FindEntityStore(typeof(NonPersistentTypeInfoSource));
                 if (store is not null)
                 {
-                    foreach (var type in boModelTypes)
+                    foreach (var type in options.BoModelTypes)
                     {
                         store.RegisterEntity(type);
                     }
@@ -36,7 +41,10 @@ namespace Xenial.Framework.Tests.Layouts
             var modules = new ModuleBase[]
             {
                 new DXSystemModele(),
-                new TestModule(boModelTypes, customizeTypesInfo)
+                new TestModule(options.BoModelTypes, options.CustomizeTypesInfo)
+                {
+                    CustomizeGeneratorUpdaters = options.CustomizeGeneratorUpdaters
+                }
             };
 
             foreach (var module in modules)
@@ -46,7 +54,7 @@ namespace Xenial.Framework.Tests.Layouts
 
             modelManager.Setup(
                 XafTypesInfo.Instance,
-                boModelTypes,
+                options.BoModelTypes,
                 modules,
                 Enumerable.Empty<Controller>(),
                 Enumerable.Empty<Type>(),

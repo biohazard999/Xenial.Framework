@@ -13,7 +13,7 @@ namespace Xenial.Framework.Tests.Layouts
     {
         internal static IModelListView? CreateListViewWithColumns(Func<LayoutBuilder<LayoutPropertyEditorItemBusinessObject>, Layout> layoutFunctor)
         {
-            var model = CreateApplication(new[]
+            var model = CreateApplication(new(new[]
             {
                 typeof(LayoutPropertyEditorItemBusinessObject)
             },
@@ -23,7 +23,7 @@ namespace Xenial.Framework.Tests.Layouts
                 //    .RemoveAttribute(typeof(ListViewColumnsBuilderAttribute))
                 //    .WithListViewColumns(layoutFunctor)
                 //.Build();
-            });
+            }));
 
             var listView = model.FindListView<LayoutPropertyEditorItemBusinessObject>();
             return listView;
