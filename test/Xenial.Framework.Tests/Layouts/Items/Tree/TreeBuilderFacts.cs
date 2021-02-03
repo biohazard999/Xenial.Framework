@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
+using Xenial.Framework.Tests.Assertions;
+
+using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
 using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items

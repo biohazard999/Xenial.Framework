@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using Xenial.Framework.Tests.Layouts.ColumnItems;
 using Xenial.Framework.Tests.Layouts.Items;
 using Xenial.Framework.Tests.Model.Core;
 using Xenial.Framework.Tests.Model.GeneratorUpdaters;
@@ -52,6 +53,11 @@ namespace Xenial.Framework.Tests
                     TreeBuilderFacts.TreeBuilderTests();
 
                     LayoutIntegrationFacts.LayoutIntegrationTests();
+                });
+
+                Describe("Columns", () =>
+                {
+                    BasicColumnsFacts.BasicColumsTests();
                 });
             });
 

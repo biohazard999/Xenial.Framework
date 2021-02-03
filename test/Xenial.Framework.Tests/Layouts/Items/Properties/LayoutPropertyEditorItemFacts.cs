@@ -14,8 +14,9 @@ using FakeItEasy;
 
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Layouts.Items.LeafNodes;
+using Xenial.Framework.Tests.Assertions;
 
-using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
+using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
 using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items

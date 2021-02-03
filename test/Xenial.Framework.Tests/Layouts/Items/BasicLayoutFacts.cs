@@ -12,7 +12,7 @@ using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Layouts.Items.LeafNodes;
 using Xenial.Framework.Model;
 
-using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
+using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
 using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
