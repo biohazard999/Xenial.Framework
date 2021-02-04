@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
+using DevExpress.Persistent.Base;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
 
@@ -119,6 +121,10 @@ namespace MailClient.Module.BusinessObjects
 
         [Persistent("Size")]
         public long? Size { get; set; }
+
+        [Action]
+        public void OpenMail()
+            => Process.Start(FileName);
     }
 
     public enum MailDirection

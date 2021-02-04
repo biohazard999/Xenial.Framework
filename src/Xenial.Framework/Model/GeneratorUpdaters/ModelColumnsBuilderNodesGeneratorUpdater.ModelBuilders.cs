@@ -25,28 +25,28 @@ namespace Xenial.Framework.ModelBuilders
             return modelBuilder.WithAttribute(new ListViewColumnsBuilderAttribute(columnsFunctor));
         }
 
-        ///// <summary>
-        ///// Withes the detail view layout.
-        ///// </summary>
-        ///// <typeparam name="TClassType">The type of the t class type.</typeparam>
-        ///// <param name="modelBuilder">The model builder.</param>
-        ///// <param name="layoutBuilder">The layout builder.</param>
-        ///// <returns>IModelBuilder&lt;TClassType&gt;.</returns>
-        ///// <exception cref="ArgumentNullException">modelBuilder</exception>
-        ///// <exception cref="ArgumentNullException">layoutBuilder</exception>
-        ///// <exception cref="ArgumentNullException">modelBuilder</exception>
-        //public static IModelBuilder<TClassType> WithListViewColumns<TClassType>(
-        //  this IModelBuilder<TClassType> modelBuilder,
-        //  Func<LayoutBuilder<TClassType>, Layout> layoutBuilder
-        //)
-        //    where TClassType : class
-        //{
-        //    _ = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
-        //    _ = layoutBuilder ?? throw new ArgumentNullException(nameof(layoutBuilder));
+        /// <summary>
+        /// Withes the detail view layout.
+        /// </summary>
+        /// <typeparam name="TClassType">The type of the t class type.</typeparam>
+        /// <param name="modelBuilder">The model builder.</param>
+        /// <param name="columnsBuilder">The layout builder.</param>
+        /// <returns>IModelBuilder&lt;TClassType&gt;.</returns>
+        /// <exception cref="ArgumentNullException">modelBuilder</exception>
+        /// <exception cref="ArgumentNullException">layoutBuilder</exception>
+        /// <exception cref="ArgumentNullException">modelBuilder</exception>
+        public static IModelBuilder<TClassType> WithListViewColumns<TClassType>(
+          this IModelBuilder<TClassType> modelBuilder,
+          Func<ColumnsBuilder<TClassType>, Columns> columnsBuilder
+        )
+            where TClassType : class
+        {
+            _ = modelBuilder ?? throw new ArgumentNullException(nameof(modelBuilder));
+            _ = columnsBuilder ?? throw new ArgumentNullException(nameof(columnsBuilder));
 
-        //    var layout = layoutBuilder(new LayoutBuilder<TClassType>());
+            var columns = columnsBuilder(new ColumnsBuilder<TClassType>());
 
-        //    return modelBuilder.WithAttribute(new DetailViewLayoutBuilderAttribute(() => layout));
-        //}
+            return modelBuilder.WithAttribute(new ListViewColumnsBuilderAttribute(() => columns));
+        }
     }
 }

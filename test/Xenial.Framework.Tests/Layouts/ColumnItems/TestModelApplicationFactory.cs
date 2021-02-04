@@ -5,13 +5,14 @@ using System.Linq;
 
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items.Base;
+using Xenial.Framework.ModelBuilders;
 using Xenial.Framework.Tests.Layouts.ColumnItems;
 
 namespace Xenial.Framework.Tests.Layouts
 {
     internal static partial class TestModelApplicationFactory
     {
-        internal static IModelListView? CreateListViewWithColumns(Func<LayoutBuilder<LayoutPropertyEditorItemBusinessObject>, Layout> layoutFunctor)
+        internal static IModelListView? CreateListViewWithColumns(Func<ColumnsBuilder<LayoutPropertyEditorItemBusinessObject>, Columns> columnsFunctor)
         {
             var model = CreateApplication(new(new[]
             {
@@ -19,10 +20,10 @@ namespace Xenial.Framework.Tests.Layouts
             },
             typesInfo =>
             {
-                //ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
-                //    .RemoveAttribute(typeof(ListViewColumnsBuilderAttribute))
-                //    .WithListViewColumns(layoutFunctor)
-                //.Build();
+                ModelBuilder.Create<LayoutPropertyEditorItemBusinessObject>(typesInfo)
+                    .RemoveAttribute(typeof(ListViewColumnsBuilderAttribute))
+                    .WithListViewColumns(columnsFunctor)
+                .Build();
             }));
 
             var listView = model.FindListView<LayoutPropertyEditorItemBusinessObject>();

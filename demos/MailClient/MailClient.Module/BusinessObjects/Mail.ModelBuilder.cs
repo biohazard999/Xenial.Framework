@@ -64,6 +64,7 @@ namespace MailClient.Module.BusinessObjects
 
             ForProperties(
                 m => m.From,
+                m => m.To,
                 m => m.CC,
                 m => m.BCC
             ).UseTokenStringPropertyEditor()
