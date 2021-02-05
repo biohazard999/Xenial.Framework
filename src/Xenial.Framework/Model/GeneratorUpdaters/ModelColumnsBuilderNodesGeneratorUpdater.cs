@@ -6,6 +6,8 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 
+using Xenial.Framework.Layouts;
+
 namespace Xenial.Framework.Model.GeneratorUpdaters
 {
     /// <summary>
@@ -28,7 +30,54 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
             {
                 if (modelColumns.Parent is IModelListView modelListView)
                 {
-                    BuildColumnNode(modelColumns, null!);
+                    if (modelListView.Equals(modelListView.ModelClass.DefaultListView))
+                    {
+                        var attribute = modelListView.ModelClass.TypeInfo.FindAttribute<ListViewColumnsBuilderAttribute>();
+                        if (attribute is not null)
+                        {
+                            if (!string.IsNullOrEmpty(attribute.BuildColumnsMethodName))
+                            {
+                                if (attribute.GeneratorType is null)
+                                {
+                                    attribute.GeneratorType = modelListView.ModelClass.TypeInfo.Type;
+                                }
+                            }
+
+                            if (attribute.BuildColumnsDelegate is null)
+                            {
+                                if (string.IsNullOrEmpty(attribute.BuildColumnsMethodName))
+                                {
+                                    attribute.BuildColumnsMethodName = "BuildColumns";
+                                    if (attribute.GeneratorType is null)
+                                    {
+                                        attribute.GeneratorType = modelListView.ModelClass.TypeInfo.Type;
+                                    }
+                                }
+
+                                if (attribute.GeneratorType is not null)
+                                {
+                                    var method = attribute.GeneratorType.GetMethod(attribute.BuildColumnsMethodName);
+                                    if (method is not null)
+                                    {
+                                        var @delegate = Delegate.CreateDelegate(typeof(BuildColumnsFunctor), method);
+                                        attribute.BuildColumnsDelegate = (BuildColumnsFunctor)@delegate;
+                                    } //TODO: ERROR HANDLING
+                                }
+                            }
+
+                            //TODO: Factory
+                            if (attribute.BuildColumnsDelegate is not null)
+                            {
+                                var builder = attribute.BuildColumnsDelegate;
+                                var columns = builder.Invoke()
+                                    ?? throw new InvalidOperationException($"ColumnsBuilder on Type '{modelListView.ModelClass.TypeInfo.Type}' for View '{modelListView.Id}' must return an object of Type '{typeof(Columns)}'");
+
+                                modelColumns.ClearNodes();
+                            }
+                        }
+                    }
+
+                    //BuildColumnNode(modelColumns, null!);
                 }
             }
         }

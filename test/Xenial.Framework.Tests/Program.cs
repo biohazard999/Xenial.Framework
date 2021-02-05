@@ -55,10 +55,10 @@ namespace Xenial.Framework.Tests
                     LayoutIntegrationFacts.LayoutIntegrationTests();
                 });
 
-                //Describe("Columns", () =>
-                //{
-                //    //BasicColumnsFacts.BasicColumsTests();
-                //});
+                Describe("Columns", () =>
+                {
+                    BasicColumnsFacts.BasicColumnsTests();
+                });
             });
 
             return await Run(args);

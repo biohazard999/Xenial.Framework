@@ -39,6 +39,7 @@ namespace Xenial.Framework.Tests.Layouts
         {
             base.AddGeneratorUpdaters(updaters);
             updaters.UseDetailViewLayoutBuilders();
+            updaters.UseListViewColumnBuilders();
 
             CustomizeGeneratorUpdaters?.Invoke(updaters);
         }

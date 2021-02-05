@@ -56,7 +56,7 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems
             where TModelType : class
                 => model.FindListView(typeof(TModelType));
 
-        public static void BasicColumsTests() => Describe("Basic Layouts", () =>
+        public static void BasicColumnsTests() => Describe("Basic Columns", () =>
         {
             It($"creates {nameof(IModelApplication)}", () =>
             {

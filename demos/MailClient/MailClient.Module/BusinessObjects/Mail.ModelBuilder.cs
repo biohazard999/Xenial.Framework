@@ -45,11 +45,13 @@ namespace MailClient.Module.BusinessObjects
             ).IsNotVisibleInAnyView();
 
             ForProperties(
+                m => m.Account,
                 m => m.Direction,
                 m => m.ImapFolderName,
                 m => m.MessageDateTime,
                 m => m.MessageId,
-                m => m.MessageIdHash
+                m => m.MessageIdHash,
+                m => m.Subject
             ).NotAllowingEdit();
 
             ForAllProperties()
@@ -66,15 +68,11 @@ namespace MailClient.Module.BusinessObjects
                 m => m.From,
                 m => m.To,
                 m => m.CC,
-                m => m.BCC
+                m => m.BCC,
+                m => m.FromAll,
+                m => m.ToAll
             ).UseTokenStringPropertyEditor()
              .NotAllowingEdit();
-
-            For(m => m.ToAll)
-                .UseTokenStringPropertyEditor(o => o.DropDownShowMode = TokenDropDownShowMode.Outlook);
-
-            For(m => m.FromAll)
-                .UseTokenStringPropertyEditor(o => o.DropDownShowMode = TokenDropDownShowMode.Default);
         }
     }
 }
