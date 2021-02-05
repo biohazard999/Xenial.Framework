@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
@@ -80,40 +78,6 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                     //BuildColumnNode(modelColumns, null!);
                 }
             }
-        }
-
-        private static IModelColumn BuildColumnNode(IModelColumns modelColumns, Xenial.Framework.Layouts.ColumnItems.Column builderColumn)
-        {
-            var node = modelColumns.AddNode<IModelColumn>(builderColumn.Id);
-
-            node.Index = builderColumn.Index ?? modelColumns.Count - 1;
-            node.PropertyName = builderColumn.PropertyName;
-            node.Caption = builderColumn.Caption ?? node.Caption;
-            node.PropertyEditorType = builderColumn.PropertyEditorType ?? node.PropertyEditorType;
-            node.AllowEdit = builderColumn.AllowEdit ?? node.AllowEdit;
-            node.GroupIndex = builderColumn.GroupIndex ?? node.GroupIndex;
-            node.GroupInterval = builderColumn.GroupInterval ?? node.GroupInterval;
-            node.ImmediatePostData = builderColumn.ImmediatePostData ?? node.ImmediatePostData;
-            node.IsPassword = builderColumn.IsPassword ?? node.IsPassword;
-            node.LookupEditorMode = builderColumn.LookupEditorMode ?? node.LookupEditorMode;
-            node.SortIndex = builderColumn.SortIndex ?? node.SortIndex;
-            node.SortOrder = builderColumn.SortOrder ?? node.SortOrder;
-            node.DataSourceCriteria = builderColumn.DataSourceCriteria ?? node.DataSourceCriteria;
-            node.DataSourceCriteriaProperty = builderColumn.DataSourceCriteriaProperty ?? node.DataSourceCriteriaProperty;
-            node.DataSourceProperty = builderColumn.DataSourceProperty ?? node.DataSourceProperty;
-            node.DataSourcePropertyIsNullCriteria = builderColumn.DataSourcePropertyIsNullCriteria ?? node.DataSourcePropertyIsNullCriteria;
-            node.DataSourcePropertyIsNullMode = builderColumn.DataSourcePropertyIsNullMode ?? node.DataSourcePropertyIsNullMode;
-            node.LookupProperty = builderColumn.LookupProperty ?? node.LookupProperty;
-            node.PredefinedValues = builderColumn.PredefinedValues ?? node.PredefinedValues;
-            node.DisplayFormat = builderColumn.DisplayFormat ?? node.DisplayFormat;
-            node.EditMaskType = builderColumn.EditMaskType ?? node.EditMaskType;
-            node.EditMask = builderColumn.EditMask ?? node.EditMask;
-            node.MaxLength = builderColumn.MaxLength ?? node.MaxLength;
-            node.RowCount = builderColumn.RowCount ?? node.RowCount;
-            node.Width = builderColumn.Width ?? node.Width;
-            node.ToolTip = builderColumn.ToolTip ?? node.ToolTip;
-
-            return node;
         }
     }
 }

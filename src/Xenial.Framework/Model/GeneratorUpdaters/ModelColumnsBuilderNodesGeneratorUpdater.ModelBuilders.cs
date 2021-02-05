@@ -1,7 +1,6 @@
 ﻿using System;
 
 using Xenial.Framework.Layouts;
-using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.ModelBuilders
 {

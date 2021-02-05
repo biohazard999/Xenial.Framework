@@ -11,8 +11,6 @@ using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Layouts.Items.LeafNodes;
 
-using static Xenial.Framework.Model.GeneratorUpdaters.ModelDetailViewLayoutNodesGeneratorUpdaterMappers;
-
 namespace Xenial.Framework.Model.GeneratorUpdaters
 {
     /// <summary>
