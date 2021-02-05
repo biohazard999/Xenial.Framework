@@ -10,6 +10,7 @@ using Shouldly;
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Layouts.Items.LeafNodes;
+using Xenial.Framework.Tests.Assertions;
 
 using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
 using static Xenial.Tasty;
@@ -73,16 +74,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
     public static class BasicLayoutFacts
     {
-        internal static IModelDetailView? FindDetailView(this IModelApplication model, Type boType)
-            => model
-                .Views
-                .OfType<IModelDetailView>()
-                .FirstOrDefault(d => d.Id.Equals(ModelNodeIdHelper.GetDetailViewId(boType), StringComparison.Ordinal));
-
-        internal static IModelDetailView? FindDetailView<TModelType>(this IModelApplication model)
-            where TModelType : class
-                => model.FindDetailView(typeof(TModelType));
-
         public static void BasicLayoutTests() => Describe("Basic Layouts", () =>
         {
             It($"creates {nameof(IModelApplication)}", () =>

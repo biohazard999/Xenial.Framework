@@ -17,6 +17,26 @@ namespace Xenial.Framework.Tests.Assertions
 {
     internal static class ModelNodeAssertions
     {
+        internal static IModelDetailView? FindDetailView(this IModelApplication model, Type boType)
+            => model
+                .Views
+                .OfType<IModelDetailView>()
+                .FirstOrDefault(d => d.Id.Equals(ModelNodeIdHelper.GetDetailViewId(boType), StringComparison.Ordinal));
+
+        internal static IModelDetailView? FindDetailView<TModelType>(this IModelApplication model)
+            where TModelType : class
+                => model.FindDetailView(typeof(TModelType));
+
+        internal static IModelListView? FindListView(this IModelApplication model, Type boType)
+            => model
+                .Views
+                .OfType<IModelListView>()
+                .FirstOrDefault(d => d.Id.Equals(ModelNodeIdHelper.GetListViewId(boType), StringComparison.Ordinal));
+
+        internal static IModelListView? FindListView<TModelType>(this IModelApplication model)
+            where TModelType : class
+                => model.FindListView(typeof(TModelType));
+
         internal static void VisualizeModelNode(this IModelNode? modelNode)
         {
             _ = modelNode ?? throw new ArgumentNullException(nameof(modelNode));

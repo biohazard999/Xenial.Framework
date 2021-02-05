@@ -6,6 +6,7 @@ using System.Linq;
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.ModelBuilders;
+using Xenial.Framework.Tests.Assertions;
 using Xenial.Framework.Tests.Layouts.ColumnItems;
 
 namespace Xenial.Framework.Tests.Layouts

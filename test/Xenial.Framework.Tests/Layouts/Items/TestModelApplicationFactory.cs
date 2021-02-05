@@ -6,6 +6,7 @@ using DevExpress.ExpressApp.Model;
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.ModelBuilders;
+using Xenial.Framework.Tests.Assertions;
 using Xenial.Framework.Tests.Layouts.Items;
 
 namespace Xenial.Framework.Tests.Layouts
@@ -52,6 +53,24 @@ namespace Xenial.Framework.Tests.Layouts
 
             var detailView = model.FindDetailView<SimpleBusinessObject>();
             return detailView;
+        }
+
+        internal static IModelListView? CreateComplexListViewWithLayout(Func<ColumnsBuilder<SimpleBusinessObject>, Columns> columnsFunctor)
+        {
+            var model = CreateApplication(new(new[]
+            {
+                typeof(SimpleBusinessObject)
+            },
+            typesInfo =>
+            {
+                ModelBuilder.Create<SimpleBusinessObject>(typesInfo)
+                    .RemoveAttribute(typeof(ListViewColumnsBuilderAttribute))
+                    .WithListViewColumns(columnsFunctor)
+                .Build();
+            }));
+
+            var listView = model.FindListView<SimpleBusinessObject>();
+            return listView;
         }
     }
 }

@@ -1,5 +1,10 @@
-﻿using System;
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable CA1000 // Don't declare static members in generic types
+#pragma warning disable IDE1006 // Naming Styles
+
+using System;
 using System.ComponentModel;
+using System.Linq.Expressions;
 
 using DevExpress.Data;
 using DevExpress.ExpressApp.Editors;
@@ -7,9 +12,24 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 
 using Xenial.Framework.Utils.Slugger;
+using Xenial.Utils;
+using Xenial.Data;
 
 namespace Xenial.Framework.Layouts.ColumnItems
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    [XenialCheckLicence]
+    public partial record Column<TModelClass>(string PropertyName) : Column(PropertyName)
+        where TModelClass : class
+    {
+        protected static ExpressionHelper<TModelClass> ExpressionHelper { get; } = Xenial.Utils.ExpressionHelper.Create<TModelClass>();
+
+        public static Column<TModelClass> Create<TProperty>(Expression<Func<TModelClass, TProperty>> expression)
+            => new(ExpressionHelper.Property(expression));
+    }
+
     /// <summary>
     /// 
     /// </summary>

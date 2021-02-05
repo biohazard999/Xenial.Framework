@@ -58,6 +58,7 @@ namespace Xenial.Framework.Tests
                 Describe("Columns", () =>
                 {
                     BasicColumnsFacts.BasicColumnsTests();
+                    ColumnsIntegrationFacts.ColumnsIntegrationTests();
                 });
             });
 

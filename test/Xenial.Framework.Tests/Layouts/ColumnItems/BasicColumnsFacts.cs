@@ -11,6 +11,7 @@ using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.ColumnItems;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Layouts.Items.LeafNodes;
+using Xenial.Framework.Tests.Assertions;
 
 using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
 using static Xenial.Tasty;
@@ -74,16 +75,6 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems
 
     public static class BasicColumnsFacts
     {
-        internal static IModelListView? FindListView(this IModelApplication model, Type boType)
-            => model
-                .Views
-                .OfType<IModelListView>()
-                .FirstOrDefault(d => d.Id.Equals(ModelNodeIdHelper.GetListViewId(boType), StringComparison.Ordinal));
-
-        internal static IModelListView? FindListView<TModelType>(this IModelApplication model)
-            where TModelType : class
-                => model.FindListView(typeof(TModelType));
-
         public static void BasicColumnsTests() => Describe("Basic Columns", () =>
         {
             It($"creates {nameof(IModelApplication)}", () =>
