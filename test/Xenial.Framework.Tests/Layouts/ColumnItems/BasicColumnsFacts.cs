@@ -44,6 +44,34 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems
         }
     }
 
+    [DomainComponent]
+    [ListViewColumnsBuilder(nameof(BuildExoticColumns))]
+    public sealed class SimpleBusinessObjectWithStaticBuilder
+    {
+        public string? StringProperty { get; set; }
+
+        internal static bool BuildExoticColumnsWasCalled;
+
+        public static Columns BuildExoticColumns()
+        {
+            BuildExoticColumnsWasCalled = true;
+            return new();
+        }
+    }
+
+    [DomainComponent]
+    [ListViewColumnsBuilder]
+    public sealed class SimpleBusinessObjectWithStaticBuilderConvention
+    {
+        internal static bool BuildColumnsWasCalled;
+
+        public static Columns BuildColumns()
+        {
+            BuildColumnsWasCalled = true;
+            return new();
+        }
+    }
+
     public static class BasicColumnsFacts
     {
         internal static IModelListView? FindListView(this IModelApplication model, Type boType)
@@ -83,6 +111,48 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems
                     var _ = listView?.Columns?.FirstOrDefault(); //We need to access the columns node cause it's lazy evaluated
 
                     SimpleBusinessObjectColumnsBuilder.BuildColumnsWasCalled.ShouldBeTrue();
+                });
+            });
+
+            Describe("use static type on model class", () =>
+            {
+                var model = CreateApplication(new[] { typeof(SimpleBusinessObjectWithStaticBuilder) });
+
+                It("returns the list view", () =>
+                {
+                    var listView = model.FindListView<SimpleBusinessObjectWithStaticBuilder>();
+
+                    listView.ShouldNotBeNull();
+                });
+
+                It("static builder was called", () =>
+                {
+                    var listView = model.FindListView<SimpleBusinessObjectWithStaticBuilder>();
+
+                    var _ = listView?.Columns?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
+
+                    SimpleBusinessObjectWithStaticBuilder.BuildExoticColumnsWasCalled.ShouldBeTrue();
+                });
+            });
+
+            Describe("use static type on model class with convention", () =>
+            {
+                var model = CreateApplication(new[] { typeof(SimpleBusinessObjectWithStaticBuilderConvention) });
+
+                It("returns the list view", () =>
+                {
+                    var listView = model.FindListView<SimpleBusinessObjectWithStaticBuilderConvention>();
+
+                    listView.ShouldNotBeNull();
+                });
+
+                It("static builder was called", () =>
+                {
+                    var listView = model.FindListView<SimpleBusinessObjectWithStaticBuilderConvention>();
+
+                    var _ = listView?.Columns?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
+
+                    SimpleBusinessObjectWithStaticBuilderConvention.BuildColumnsWasCalled.ShouldBeTrue();
                 });
             });
         });
