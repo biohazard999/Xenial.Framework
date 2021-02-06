@@ -14,6 +14,8 @@ using static Xenial.Tasty;
 using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
 using Xenial.Framework.Tests.Assertions;
 using DevExpress.Data;
+using DevExpress.ExpressApp.Editors;
+using DevExpress.Persistent.Base;
 
 namespace Xenial.Framework.Tests.Layouts.ColumnItems.Properties
 {
@@ -51,6 +53,189 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems.Properties
                         [e.Property(m => m.SortIndex)] = sortIndex,
                         [e.Property(m => m.GroupIndex)] = groupIndex,
                         [e.Property(m => m.GroupInterval)] = groupInterval
+                    });
+                });
+
+                It($"{nameof(IModelMemberViewItem)}", () =>
+                {
+                    var dataSourceProperty = faker.Random.String2(100);
+                    var dataSourceCriteriaProperty = faker.Random.String2(100);
+                    var propertyName = faker.Random.String2(100);
+                    var maxLength = faker.Random.Number(100);
+
+                    var listView = CreateListViewWithColumns(b => new()
+                    {
+                        b.Column(m => m.StringProperty) with
+                        {
+                            DataSourceProperty = dataSourceProperty,
+                            DataSourceCriteriaProperty = dataSourceCriteriaProperty,
+                            PropertyName = propertyName,
+                            MaxLength = maxLength,
+                        },
+                    });
+
+                    listView.AssertColumnProperties<IModelColumn, IModelMemberViewItem>((e) => new()
+                    {
+                        [e.Property(m => m.DataSourceProperty)] = dataSourceProperty,
+                        [e.Property(m => m.DataSourceCriteriaProperty)] = dataSourceCriteriaProperty,
+                        [e.Property(m => m.PropertyName)] = propertyName,
+                        [e.Property(m => m.MaxLength)] = maxLength,
+                        //TODO: IMAGE Editor Properties
+                        //[e.Property(m => m.ImageEditorCustomHeight)] = groupInterval
+                        //[e.Property(m => m.ImageEditorMode)] = groupInterval
+                        //[e.Property(m => m.ImageEditorFixedWidth)] = groupInterval
+                        //[e.Property(m => m.ImageEditorFixedHeight)] = groupInterval
+                    });
+                });
+
+                It($"{nameof(IModelMemberViewItem)}", () =>
+                {
+                    var dataSourceProperty = faker.Random.String2(100);
+                    var dataSourceCriteriaProperty = faker.Random.String2(100);
+                    var propertyName = faker.Random.String2(100);
+                    var maxLength = faker.Random.Number(100);
+
+                    var listView = CreateListViewWithColumns(b => new()
+                    {
+                        b.Column(m => m.StringProperty) with
+                        {
+                            DataSourceProperty = dataSourceProperty,
+                            DataSourceCriteriaProperty = dataSourceCriteriaProperty,
+                            PropertyName = propertyName,
+                            MaxLength = maxLength,
+                        },
+                    });
+
+                    listView.AssertColumnProperties<IModelColumn, IModelMemberViewItem>((e) => new()
+                    {
+                        [e.Property(m => m.DataSourceProperty)] = dataSourceProperty,
+                        [e.Property(m => m.DataSourceCriteriaProperty)] = dataSourceCriteriaProperty,
+                        [e.Property(m => m.PropertyName)] = propertyName,
+                        [e.Property(m => m.MaxLength)] = maxLength,
+                        //TODO: IMAGE Editor Properties
+                        //[e.Property(m => m.ImageEditorCustomHeight)] = groupInterval
+                        //[e.Property(m => m.ImageEditorMode)] = groupInterval
+                        //[e.Property(m => m.ImageEditorFixedWidth)] = groupInterval
+                        //[e.Property(m => m.ImageEditorFixedHeight)] = groupInterval
+                    });
+                });
+
+                It($"{nameof(IModelLayoutElement)}", () =>
+                {
+                    var id = faker.Random.String2(100);
+                    var index = faker.Random.Int(100);
+
+                    var listView = CreateListViewWithColumns(b => new()
+                    {
+                        b.Column(m => m.StringProperty) with
+                        {
+                            Id = id,
+                            Index = index
+                        },
+                    });
+
+                    listView.AssertColumnProperties<IModelColumn, IModelLayoutElement>((e) => new()
+                    {
+                        [e.Property(m => m.Id)] = id,
+                        [e.Property(m => m.Index)] = index,
+                    });
+                });
+
+                It($"{nameof(IModelToolTip)}", () =>
+                {
+                    var tooltip = faker.Random.String2(100);
+
+                    var listView = CreateListViewWithColumns(b => new()
+                    {
+                        b.Column(m => m.StringProperty) with
+                        {
+                            ToolTip = tooltip
+                        },
+                    });
+
+                    listView.AssertColumnProperties<IModelColumn, IModelToolTip>((e) => new()
+                    {
+                        [e.Property(m => m.ToolTip)] = tooltip,
+                    });
+                });
+
+                It($"{nameof(IModelCommonMemberViewItem)}", () =>
+                {
+                    var editMask = faker.Random.String2(100);
+                    var propertyEditorType = faker.PickRandom(typeof(BasicColumnPropertiesFacts).Assembly.GetTypes());
+                    var immediatePostData = faker.Random.Bool();
+                    var lookupEditorMode = faker.Random.Enum<LookupEditorMode>();
+                    var predefinedValues = faker.Random.String2(100);
+                    var imageSizeMode = faker.Random.Enum<ImageSizeMode>();
+                    var imageForFalse = faker.Random.String2(100);
+                    var imageForTrue = faker.Random.String2(100);
+                    var captionForFalse = faker.Random.String2(100);
+                    var captionForTrue = faker.Random.String2(100);
+                    var allowClear = faker.Random.Bool();
+                    var dataSourcePropertyIsNullCriteria = faker.Random.String2(100);
+                    var dataSourcePropertyIsNullMode = faker.Random.Enum<DataSourcePropertyIsNullMode>();
+                    var lookupProperty = faker.Random.String2(100);
+                    var allowEdit = faker.Random.Bool();
+                    var rowCount = faker.Random.Int(100);
+                    var caption = faker.Random.String2(100);
+                    var displayFormat = faker.Random.String2(100);
+                    var isPassword = faker.Random.Bool();
+                    var editMaskType = faker.Random.Enum<EditMaskType>();
+                    var dataSourceCriteria = faker.Random.String2(100);
+                    var nullText = faker.Random.String2(100);
+
+                    var listView = CreateListViewWithColumns(b => new()
+                    {
+                        b.Column(m => m.StringProperty) with
+                        {
+                            EditMask = editMask,
+                            PropertyEditorType = propertyEditorType,
+                            ImmediatePostData = immediatePostData,
+                            LookupEditorMode = lookupEditorMode,
+                            PredefinedValues = predefinedValues,
+                            ImageSizeMode = imageSizeMode,
+                            ImageForFalse = imageForFalse,
+                            ImageForTrue = imageForTrue,
+                            CaptionForFalse = captionForFalse,
+                            CaptionForTrue = captionForTrue,
+                            AllowClear = allowClear,
+                            DataSourcePropertyIsNullCriteria = dataSourcePropertyIsNullCriteria,
+                            LookupProperty = lookupProperty,
+                            AllowEdit = allowEdit,
+                            RowCount = rowCount,
+                            Caption = caption,
+                            DisplayFormat = displayFormat,
+                            IsPassword = isPassword,
+                            EditMaskType = editMaskType,
+                            DataSourceCriteria = dataSourceCriteria,
+                            NullText = nullText,
+                        },
+                    });
+
+                    listView.AssertColumnProperties<IModelColumn, IModelCommonMemberViewItem>((e) => new()
+                    {
+                        [e.Property(m => m.EditMask)] = editMask,
+                        [e.Property(m => m.PropertyEditorType)] = propertyEditorType,
+                        [e.Property(m => m.ImmediatePostData)] = immediatePostData,
+                        [e.Property(m => m.LookupEditorMode)] = lookupEditorMode,
+                        [e.Property(m => m.PredefinedValues)] = predefinedValues,
+                        [e.Property(m => m.ImageSizeMode)] = imageSizeMode,
+                        [e.Property(m => m.ImageForFalse)] = imageForFalse,
+                        [e.Property(m => m.ImageForTrue)] = imageForTrue,
+                        [e.Property(m => m.CaptionForFalse)] = captionForFalse,
+                        [e.Property(m => m.CaptionForTrue)] = captionForTrue,
+                        [e.Property(m => m.AllowClear)] = allowClear,
+                        [e.Property(m => m.DataSourcePropertyIsNullCriteria)] = dataSourcePropertyIsNullCriteria,
+                        [e.Property(m => m.DataSourcePropertyIsNullMode)] = dataSourcePropertyIsNullMode,
+                        [e.Property(m => m.LookupProperty)] = lookupProperty,
+                        [e.Property(m => m.AllowEdit)] = allowEdit,
+                        [e.Property(m => m.RowCount)] = rowCount,
+                        [e.Property(m => m.Caption)] = caption,
+                        [e.Property(m => m.DisplayFormat)] = displayFormat,
+                        [e.Property(m => m.IsPassword)] = isPassword,
+                        [e.Property(m => m.EditMaskType)] = editMaskType,
+                        [e.Property(m => m.DataSourceCriteria)] = dataSourceCriteria,
+                        [e.Property(m => m.NullText)] = nullText,
                     });
                 });
             });

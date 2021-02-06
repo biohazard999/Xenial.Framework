@@ -79,13 +79,14 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                     var columnNode = modelColumns.AddNode<IModelColumn>(column.Id);
 
                                     MapColumn(columnNode, column);
-
+                                    MapModelMemberViewItem(columnNode, column);
+                                    MapModelLayoutElement(columnNode, column);
+                                    MapModelToolTip(columnNode, column);
+                                    MapModelCommonMemberViewItem(columnNode, column);
                                 }
                             }
                         }
                     }
-
-                    //BuildColumnNode(modelColumns, null!);
                 }
             }
         }
