@@ -62,6 +62,10 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems.Properties
                     var dataSourceCriteriaProperty = faker.Random.String2(100);
                     var propertyName = faker.Random.String2(100);
                     var maxLength = faker.Random.Number(100);
+                    var imageEditorCustomHeight = faker.Random.Number(100);
+                    var imageEditorMode = faker.Random.Enum<ImageEditorMode>();
+                    var imageEditorFixedWidth = faker.Random.Number(100);
+                    var imageEditorFixedHeight = faker.Random.Number(100);
 
                     var listView = CreateListViewWithColumns(b => new()
                     {
@@ -71,6 +75,10 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems.Properties
                             DataSourceCriteriaProperty = dataSourceCriteriaProperty,
                             PropertyName = propertyName,
                             MaxLength = maxLength,
+                            ImageEditorCustomHeight = imageEditorCustomHeight,
+                            ImageEditorMode = imageEditorMode,
+                            ImageEditorFixedWidth = imageEditorFixedWidth,
+                            ImageEditorFixedHeight = imageEditorFixedHeight
                         },
                     });
 
@@ -80,43 +88,10 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems.Properties
                         [e.Property(m => m.DataSourceCriteriaProperty)] = dataSourceCriteriaProperty,
                         [e.Property(m => m.PropertyName)] = propertyName,
                         [e.Property(m => m.MaxLength)] = maxLength,
-                        //TODO: IMAGE Editor Properties
-                        //[e.Property(m => m.ImageEditorCustomHeight)] = groupInterval
-                        //[e.Property(m => m.ImageEditorMode)] = groupInterval
-                        //[e.Property(m => m.ImageEditorFixedWidth)] = groupInterval
-                        //[e.Property(m => m.ImageEditorFixedHeight)] = groupInterval
-                    });
-                });
-
-                It($"{nameof(IModelMemberViewItem)}", () =>
-                {
-                    var dataSourceProperty = faker.Random.String2(100);
-                    var dataSourceCriteriaProperty = faker.Random.String2(100);
-                    var propertyName = faker.Random.String2(100);
-                    var maxLength = faker.Random.Number(100);
-
-                    var listView = CreateListViewWithColumns(b => new()
-                    {
-                        b.Column(m => m.StringProperty) with
-                        {
-                            DataSourceProperty = dataSourceProperty,
-                            DataSourceCriteriaProperty = dataSourceCriteriaProperty,
-                            PropertyName = propertyName,
-                            MaxLength = maxLength,
-                        },
-                    });
-
-                    listView.AssertColumnProperties<IModelColumn, IModelMemberViewItem>((e) => new()
-                    {
-                        [e.Property(m => m.DataSourceProperty)] = dataSourceProperty,
-                        [e.Property(m => m.DataSourceCriteriaProperty)] = dataSourceCriteriaProperty,
-                        [e.Property(m => m.PropertyName)] = propertyName,
-                        [e.Property(m => m.MaxLength)] = maxLength,
-                        //TODO: IMAGE Editor Properties
-                        //[e.Property(m => m.ImageEditorCustomHeight)] = groupInterval
-                        //[e.Property(m => m.ImageEditorMode)] = groupInterval
-                        //[e.Property(m => m.ImageEditorFixedWidth)] = groupInterval
-                        //[e.Property(m => m.ImageEditorFixedHeight)] = groupInterval
+                        [e.Property(m => m.ImageEditorCustomHeight)] = imageEditorCustomHeight,
+                        [e.Property(m => m.ImageEditorMode)] = imageEditorMode,
+                        [e.Property(m => m.ImageEditorFixedWidth)] = imageEditorFixedWidth,
+                        [e.Property(m => m.ImageEditorFixedHeight)] = imageEditorFixedHeight
                     });
                 });
 
@@ -200,6 +175,7 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems.Properties
                             CaptionForTrue = captionForTrue,
                             AllowClear = allowClear,
                             DataSourcePropertyIsNullCriteria = dataSourcePropertyIsNullCriteria,
+                            DataSourcePropertyIsNullMode = dataSourcePropertyIsNullMode,
                             LookupProperty = lookupProperty,
                             AllowEdit = allowEdit,
                             RowCount = rowCount,

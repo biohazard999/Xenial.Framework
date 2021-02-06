@@ -55,17 +55,35 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 modelColumn.DataSourceProperty
                     = column.DataSourceProperty;
             }
-
             if (column.DataSourceCriteriaProperty is not null)
             {
                 modelColumn.DataSourceCriteriaProperty
                     = column.DataSourceCriteriaProperty;
             }
-
             if (column.MaxLength.HasValue)
             {
                 modelColumn.MaxLength
                     = column.MaxLength ?? modelColumn.MaxLength;
+            }
+            if (column.ImageEditorCustomHeight.HasValue)
+            {
+                modelColumn.ImageEditorCustomHeight
+                    = column.ImageEditorCustomHeight ?? modelColumn.ImageEditorCustomHeight;
+            }
+            if (column.ImageEditorMode.HasValue)
+            {
+                modelColumn.ImageEditorMode
+                    = column.ImageEditorMode ?? modelColumn.ImageEditorMode;
+            }
+            if (column.ImageEditorFixedWidth.HasValue)
+            {
+                modelColumn.ImageEditorFixedWidth
+                    = column.ImageEditorFixedWidth ?? modelColumn.ImageEditorFixedWidth;
+            }
+            if (column.ImageEditorFixedHeight.HasValue)
+            {
+                modelColumn.ImageEditorFixedHeight
+                    = column.ImageEditorFixedHeight ?? modelColumn.ImageEditorFixedHeight;
             }
         }
 
