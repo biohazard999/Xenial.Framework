@@ -88,6 +88,7 @@ namespace MailClient.Module
             updaters.UseSingletonNavigationItems();
             updaters.UseNoViewsGeneratorUpdater();
             updaters.UseDetailViewLayoutBuilders();
+            updaters.UseListViewColumnBuilders();
         }
     }
 }

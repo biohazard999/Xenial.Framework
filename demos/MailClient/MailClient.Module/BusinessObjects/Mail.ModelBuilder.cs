@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DevExpress.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -24,55 +25,39 @@ namespace MailClient.Module.BusinessObjects
                 .HasImage("Glyph_Mail")
                 .HasCaption("Mail")
                 .WithDefaultListViewOptions(MasterDetailMode.ListViewAndDetailView)
+                .GenerateNoLookupListView()
             ;
 
-            ForProperties(
-                m => m.UUId,
-                m => m.MessageIdHash,
-                m => m.MessageId,
-                m => m.FileName,
-                m => m.MessageImportance,
-                m => m.MessagePriority,
-                m => m.MessagePriorityX,
-                m => m.Size,
-                m => m.ReceivedDateTime,
-                m => m.Sent,
-                m => m.AttachmentCount,
-                m => m.ImapFolderName,
-                m => m.HtmlBody,
-                m => m.TextBody,
-                m => m.BCC
-            ).IsNotVisibleInAnyView();
-
-            ForProperties(
-                m => m.Account,
-                m => m.Direction,
-                m => m.ImapFolderName,
-                m => m.MessageDateTime,
-                m => m.MessageId,
-                m => m.MessageIdHash,
-                m => m.Subject
-            ).NotAllowingEdit();
-
             ForAllProperties()
-                .Except(
-                    m => m.Subject,
-                    m => m.MessageDateTime
-                )
-            .IsNotVisibleInListView();
+                .NotAllowingEdit();
 
             ForPropertiesOfType<DateTime>()
                 .HasDisplayFormat("{0:G}");
 
             ForProperties(
-                m => m.From,
-                m => m.To,
                 m => m.CC,
                 m => m.BCC,
                 m => m.FromAll,
                 m => m.ToAll
-            ).UseTokenStringPropertyEditor()
-             .NotAllowingEdit();
+            ).UseTokenStringPropertyEditor();
+
+            this.WithListViewColumns(b => new()
+            {
+                b.Column(m => m.MessageDateTime) with
+                {
+                    Caption = "Date",
+                    SortOrder = ColumnSortOrder.Descending,
+                    Width = 1
+                },
+                b.Column(m => m.From) with
+                {
+                    Width = 9
+                },
+                b.Column(m => m.Subject) with
+                {
+                    Width = 90
+                }
+            });
         }
     }
 }
