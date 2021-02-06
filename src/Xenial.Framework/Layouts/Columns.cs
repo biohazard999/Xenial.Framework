@@ -8,6 +8,7 @@ using Xenial.Framework.Layouts.ColumnItems;
 #pragma warning disable CA1033 //Seal Type -> By Design
 #pragma warning disable CA1710 //Rename Type to end in Collection -> By Design
 #pragma warning disable CA2227 //Collection fields should not have a setter -> By Design
+#pragma warning disable CA1822 //By design for fluent interface
 
 namespace Xenial.Framework.Layouts
 {
