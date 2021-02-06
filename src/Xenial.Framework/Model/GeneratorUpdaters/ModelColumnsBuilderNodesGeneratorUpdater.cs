@@ -74,15 +74,25 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
 
                                 modelColumns.ClearNodes();
 
+                                var index = 0;
                                 foreach (var column in columns)
                                 {
                                     var columnNode = modelColumns.AddNode<IModelColumn>(column.Id);
-
+                                    columnNode.Index = index;
                                     MapColumn(columnNode, column);
                                     MapModelMemberViewItem(columnNode, column);
                                     MapModelLayoutElement(columnNode, column);
                                     MapModelToolTip(columnNode, column);
                                     MapModelCommonMemberViewItem(columnNode, column);
+
+                                    if (column.Index.HasValue)
+                                    {
+                                        index = column.Index.Value + 1;
+                                    }
+                                    else
+                                    {
+                                        index++;
+                                    }
                                 }
                             }
                         }
