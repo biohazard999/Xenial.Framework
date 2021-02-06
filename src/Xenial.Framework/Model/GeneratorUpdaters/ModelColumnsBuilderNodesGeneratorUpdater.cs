@@ -6,6 +6,8 @@ using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Xenial.Framework.Layouts;
 
+using static Xenial.Framework.Model.GeneratorUpdaters.ModelColumnsBuilderNodesGeneratorUpdaterMappers;
+
 namespace Xenial.Framework.Model.GeneratorUpdaters
 {
     /// <summary>
@@ -71,6 +73,14 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                     ?? throw new InvalidOperationException($"ColumnsBuilder on Type '{modelListView.ModelClass.TypeInfo.Type}' for View '{modelListView.Id}' must return an object of Type '{typeof(Columns)}'");
 
                                 modelColumns.ClearNodes();
+
+                                foreach (var column in columns)
+                                {
+                                    var columnNode = modelColumns.AddNode<IModelColumn>(column.Id);
+
+                                    MapColumn(columnNode, column);
+
+                                }
                             }
                         }
                     }

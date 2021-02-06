@@ -15,6 +15,7 @@ namespace Xenial.Framework.Tests.Layouts
     public sealed class LayoutPropertyEditorItemBusinessObject
     {
         public string? StringProperty { get; set; }
+        public bool? BoolProperty { get; set; }
     }
 
     internal static partial class TestModelApplicationFactory
