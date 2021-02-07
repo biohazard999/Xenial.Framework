@@ -83,9 +83,9 @@ namespace Xenial.FeatureCenter.Module.Win
 
         private TreeList? FindEmbeddedTreeList(NavBarGroupControlContainer container)
         {
-            if (container != null && container.Controls.Count == 1 && container.Controls[0] is TreeList treeList)
+            if (container is not null && container.Controls.Count >= 1)
             {
-                return treeList;
+                return container.Controls.OfType<TreeList>().FirstOrDefault();
             }
             return null;
         }
@@ -108,15 +108,9 @@ namespace Xenial.FeatureCenter.Module.Win
                             PaintStyle = BadgePaintStyle.Information
                         }
                     };
-                    badge.Appearance.BackColor = Color.LightCyan;
-                    badge.Visible = true;
                     badge.Properties.Location = ContentAlignment.MiddleCenter;
-
                     badge.TargetElement = group.NavBar;
                     adorner.Elements.Add(badge);
-                    adorner.Show();
-                    adorner.Update();
-                    //adornerController.AddBadge(badge);
                 }
             }
         }
