@@ -31,7 +31,10 @@ namespace Xenial.FeatureCenter.Module.Win
             {
                 typeof(OpenBlazorDemoWindowController),
                 typeof(HelpAndFeedbackWindowControllerWin),
-                typeof(StatusBarVersionWindowController)
+                typeof(StatusBarVersionWindowController),
+
+                typeof(AdornerWindowsFormsWindowController),
+                typeof(AdornerWindowsFormsCustomizeNavigationController)
             });
     }
 }

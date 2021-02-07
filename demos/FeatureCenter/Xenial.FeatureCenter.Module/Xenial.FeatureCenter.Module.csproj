@@ -10,6 +10,7 @@
     <PackageReference Include="Xenial.Framework.WebView" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.TokenEditors" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.StepProgressEditors" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.Badges" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">
@@ -18,6 +19,7 @@
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.WebView/Xenial.Framework.WebView.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors/Xenial.Framework.TokenEditors.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.StepProgressEditors\Xenial.Framework.StepProgressEditors.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Badges\Xenial.Framework.Badges.csproj" />
   </ItemGroup>
 
   <ItemGroup>
