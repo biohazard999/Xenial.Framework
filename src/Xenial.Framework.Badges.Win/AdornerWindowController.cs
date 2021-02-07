@@ -208,62 +208,66 @@ namespace Xenial.FeatureCenter.Module.Win
 
                         foreach (NavBarGroup g in navBarControl.Groups)
                         {
-                            var b = (Badge)g.Tag;
-                            if (viewInfo is NavBarViewInfo vi)
+                            if (g.Tag is Badge b)
                             {
-                                var gi = vi.GetGroupInfo(g);
-                                if (gi != null && gi.CaptionBounds != Rectangle.Empty)
+                                if (viewInfo is NavBarViewInfo vi)
                                 {
-                                    var piBadge = typeof(Badge).GetProperty("ViewInfo", BindingFlags.Instance | BindingFlags.NonPublic);
-                                    var viBadge = piBadge.GetValue(b, null) as BadgeViewInfo;
-                                    if (needCalc || viBadge?.Cache == null)
+                                    var gi = vi.GetGroupInfo(g);
+                                    if (gi != null && gi.CaptionBounds != Rectangle.Empty)
                                     {
-                                        using (gi.Graphics = navBarControl.CreateGraphics())
+                                        var piBadge = typeof(Badge).GetProperty("ViewInfo", BindingFlags.Instance | BindingFlags.NonPublic);
+                                        var viBadge = piBadge.GetValue(b, null) as BadgeViewInfo;
+                                        if (needCalc || viBadge?.Cache == null)
                                         {
-                                            viBadge?.Calc(gi.Cache, gi.CaptionBounds);
+                                            using (gi.Graphics = navBarControl.CreateGraphics())
+                                            {
+                                                viBadge?.Calc(gi.Cache, gi.CaptionBounds);
+                                            }
                                         }
-                                    }
-                                    if (viBadge is not null)
-                                    {
-                                        var height = viBadge.Bounds.Height;
-                                        b.Properties.Offset = new Point(gi.CaptionBounds.Right, gi.CaptionBounds.Top + height / 2);
+                                        if (viBadge is not null)
+                                        {
+                                            var height = viBadge.Bounds.Height;
+                                            b.Properties.Offset = new Point(gi.CaptionBounds.Right, gi.CaptionBounds.Top + height / 2);
+                                        }
                                     }
                                 }
-                            }
 
-                            if (viewInfo is DevExpress.XtraNavBar.ViewInfo.NavigationPaneViewInfo viPanel)
-                            {
-                                if (viPanel.OverflowInfo != null)
+
+                                if (viewInfo is DevExpress.XtraNavBar.ViewInfo.NavigationPaneViewInfo viPanel)
                                 {
-                                    foreach (NavigationPaneOverflowPanelObjectInfo button in viPanel.OverflowInfo.Buttons)
+                                    if (viPanel.OverflowInfo != null)
                                     {
-                                        if (button.HintText != g.Caption)
+                                        foreach (NavigationPaneOverflowPanelObjectInfo button in viPanel.OverflowInfo.Buttons)
                                         {
-                                            continue;
-                                        }
-                                        else
-                                        {
-                                            var piBadge = typeof(Badge).GetProperty("ViewInfo", BindingFlags.Instance | BindingFlags.NonPublic);
-                                            var viBadge = piBadge.GetValue(b, null) as BadgeViewInfo;
-                                            if (needCalc || viBadge?.Cache == null)
+                                            if (button.HintText != g.Caption)
                                             {
-                                                using (viPanel.OverflowInfo.Graphics = navBarControl.CreateGraphics())
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                var piBadge = typeof(Badge).GetProperty("ViewInfo", BindingFlags.Instance | BindingFlags.NonPublic);
+                                                var viBadge = piBadge.GetValue(b, null) as BadgeViewInfo;
+                                                if (needCalc || viBadge?.Cache == null)
                                                 {
-                                                    viBadge?.Calc(viPanel.OverflowInfo.Cache, viPanel.OverflowInfo.Bounds);
+                                                    using (viPanel.OverflowInfo.Graphics = navBarControl.CreateGraphics())
+                                                    {
+                                                        viBadge?.Calc(viPanel.OverflowInfo.Cache, viPanel.OverflowInfo.Bounds);
+                                                    }
+                                                }
+                                                if (viBadge is not null)
+                                                {
+                                                    var height = viBadge.Bounds.Height;
+                                                    var width = viBadge.Bounds.Width;
+
+                                                    b.Properties.Offset = new Point(button.Bounds.Right - width / 2, button.Bounds.Top + height / 2);
+                                                    break;
                                                 }
                                             }
-                                            if (viBadge is not null)
-                                            {
-                                                var height = viBadge.Bounds.Height;
-                                                var width = viBadge.Bounds.Width;
-
-                                                b.Properties.Offset = new Point(button.Bounds.Right - width / 2, button.Bounds.Top + height / 2);
-                                                break;
-                                            }
                                         }
                                     }
                                 }
                             }
+
                             if (viewInfo is NavBarViewInfo vi2)
                             {
                                 foreach (var visibleItemLink in g.VisibleItemLinks.OfType<NavBarItemLink>())
