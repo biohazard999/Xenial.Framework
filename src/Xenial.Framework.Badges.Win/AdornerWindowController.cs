@@ -125,15 +125,34 @@ namespace Xenial.FeatureCenter.Module.Win
                             adorner.Elements.Add(badge);
                         }
                     }
+                    foreach (var navBarItemLink in group.VisibleItemLinks.OfType<NavBarItemLink>())
+                    {
+                        if (xafNavBarControl.ActionControl.NavBarItemLinkToActionItemMap.TryGetValue(navBarItemLink, out var actionItemLink))
+                        {
+                            if (
+                                actionItemLink.Model is IXenialModelBadgeStaticTextItem modelBadgeStaticTextItem
+                                && modelBadgeStaticTextItem.XenialBadgeStaticText is not null
+                            )
+                            {
+                                var badge = new Badge()
+                                {
+                                    Visible = true,
+                                    Properties =
+                                    {
+                                        Text = modelBadgeStaticTextItem.XenialBadgeStaticText,
+                                        PaintStyle = BadgePaintStyle.Information
+                                    }
+                                };
+
+                                badge.TargetElement = group.NavBar;
+                                badge.Tag = navBarItemLink;
+                                navBarItemLink.Item.Tag = badge;
+                                adorner.Elements.Add(badge);
+                            }
+                        }
+                    }
                 }
                 var treeList = FindEmbeddedTreeList(group.ControlContainer);
-                // Customize TreeList
-                foreach (NavBarItem item in group.NavBar.Items)
-                {
-
-
-
-                }
             }
         }
 
