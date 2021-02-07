@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>$(FullFrameworkVersion)</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
+    <!-- TODO: Remove -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
