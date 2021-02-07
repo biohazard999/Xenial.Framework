@@ -2,6 +2,7 @@
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.SystemModule;
+using DevExpress.ExpressApp.Win.Templates.Navigation;
 using DevExpress.Utils.VisualEffects;
 using DevExpress.XtraBars.Navigation;
 using DevExpress.XtraNavBar;
@@ -14,6 +15,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using Xenial.Framework.Badges.Model;
 
 namespace Xenial.FeatureCenter.Module.Win
 {
@@ -94,23 +97,42 @@ namespace Xenial.FeatureCenter.Module.Win
         {
             foreach (NavBarGroup group in groups)
             {
+                if (
+                    group.NavBar is XafNavBarControl xafNavBarControl
+                    && xafNavBarControl.ActionControl is not null
+                )
+                {
+                    if (xafNavBarControl.ActionControl.NavBarGroupToActionItemMap.TryGetValue(group, out var actionItem))
+                    {
+                        if (
+                            actionItem.Model is IXenialModelBadgeStaticTextItem modelBadgeStaticTextItem
+                            && modelBadgeStaticTextItem.XenialBadgeStaticText is not null
+                        )
+                        {
+                            var badge = new Badge()
+                            {
+                                Visible = true,
+                                Properties =
+                                {
+                                    Text = modelBadgeStaticTextItem.XenialBadgeStaticText,
+                                    PaintStyle = BadgePaintStyle.Information
+                                }
+                            };
+
+                            badge.TargetElement = group.NavBar;
+                            badge.Tag = group;
+                            group.Tag = badge;
+                            adorner.Elements.Add(badge);
+                        }
+                    }
+                }
                 var treeList = FindEmbeddedTreeList(group.ControlContainer);
                 // Customize TreeList
-
                 foreach (NavBarItem item in group.NavBar.Items)
                 {
-                    var badge = new Badge()
-                    {
-                        Visible = true,
-                        Properties =
-                        {
-                            Text = "FOO",
-                            PaintStyle = BadgePaintStyle.Information
-                        }
-                    };
-                    badge.Properties.Location = ContentAlignment.MiddleCenter;
-                    badge.TargetElement = group.NavBar;
-                    adorner.Elements.Add(badge);
+
+
+
                 }
             }
         }
@@ -127,17 +149,9 @@ namespace Xenial.FeatureCenter.Module.Win
             }
             else if (e.Control is NavBarControl navBarControl)
             {
-                var containerControl = FindContainerControl(navBarControl);
+                var form = navBarControl.FindForm();
 
-                ContainerControl? FindContainerControl(Control? control)
-                {
-                    if (control is ContainerControl container)
-                    {
-                        return container;
-                    }
-                    return FindContainerControl(control?.Parent);
-                }
-                if (containerControl is not null)
+                if (form is not null)
                 {
                     navBarControl.MouseMove += (s, e) =>
                     {
@@ -221,7 +235,9 @@ namespace Xenial.FeatureCenter.Module.Win
                                         if (viBadge is not null)
                                         {
                                             var height = viBadge.Bounds.Height;
+
                                             b.Properties.Offset = new Point(gi.CaptionBounds.Right, gi.CaptionBounds.Top + height / 2);
+                                            //b.Properties.Offset = new Point(0, gi.CaptionBounds.Top + height / 2);
                                         }
                                     }
                                 }
@@ -336,28 +352,7 @@ namespace Xenial.FeatureCenter.Module.Win
                     }
 
                     var adorner = new AdornerUIManager();
-                    adorner.Owner = containerControl;
-
-                    var badge = new Badge()
-                    {
-                        Visible = true,
-                        Properties =
-                        {
-                            Text = "FOO",
-                            PaintStyle = BadgePaintStyle.Information
-                        }
-                    };
-                    badge.Appearance.BackColor = Color.LawnGreen;
-                    badge.Visible = true;
-                    badge.Properties.Location = ContentAlignment.MiddleCenter;
-                    badge.Appearance.BackColor = System.Drawing.Color.Yellow;
-                    badge.Appearance.Options.UseBackColor = true;
-                    badge.TargetElement = navBarControl;
-
-                    adorner.Elements.Add(badge);
-                    //adorner.Show();
-                    //adorner.Update();
-                    // Customize NavBarControl
+                    adorner.Owner = form;
                     CustomizeEmbeddedTreeList(adorner, navBarControl.Groups);
                 }
             }
