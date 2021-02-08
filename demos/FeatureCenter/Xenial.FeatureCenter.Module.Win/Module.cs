@@ -34,7 +34,6 @@ namespace Xenial.FeatureCenter.Module.Win
                 typeof(HelpAndFeedbackWindowControllerWin),
                 typeof(StatusBarVersionWindowController),
 
-                typeof(AdornerWindowsFormsWindowController),
                 typeof(AdornerWindowsFormsCustomizeNavigationController)
             });
 

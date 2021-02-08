@@ -16,6 +16,7 @@ using DevExpress.XtraNavBar.ViewInfo;
 using DevExpress.XtraTreeList;
 
 using Xenial.Framework.Badges.Model;
+using Xenial.Framework.Badges.Win.Adapters;
 using Xenial.Framework.Badges.Win.Helpers;
 
 using static Xenial.Framework.Badges.Win.Helpers.ModelMapperExtensions;
@@ -97,7 +98,7 @@ namespace Xenial.FeatureCenter.Module.Win
                                     Properties =
                                     {
                                         Text = modelBadgeStaticTextItem.XenialBadgeStaticText,
-                                        PaintStyle = ConvertPaintStyle(modelBadgeStaticTextItem.XenialBadgeStaticPaintStyle)
+                                        PaintStyle =  modelBadgeStaticTextItem.XenialBadgeStaticPaintStyle.ConvertPaintStyle()
                                     }
                                 };
 
@@ -138,6 +139,14 @@ namespace Xenial.FeatureCenter.Module.Win
             }
             else if (e.Control is NavBarControl navBarControl)
             {
+                var adapter = new NavBarAdornerAdapter(navBarControl);
+                var showNavigationItemController = Frame.GetController<ShowNavigationItemController>();
+                if (showNavigationItemController is not null)
+                {
+                    adapter.Enable(showNavigationItemController);
+                    return;
+                };
+
                 var form = navBarControl.FindForm();
 
                 if (form is not null)

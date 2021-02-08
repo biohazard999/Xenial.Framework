@@ -22,5 +22,11 @@ namespace Xenial.Framework.Badges.Win.Helpers
                 XenialStaticBadgePaintStyle.Warning => BadgePaintStyle.Warning,
                 _ => BadgePaintStyle.Default
             };
+
+#if !NET5_0
+        internal static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> tuple, out T1 key, out T2 value)
+            => (key, value) = (tuple.Key, tuple.Value);
+#endif
+
     }
 }
