@@ -84,6 +84,17 @@ namespace Xenial.FeatureCenter.Module.Win
             }
         }
 
+        private static BadgePaintStyle ConvertPaintStyle(XenialStaticBadgePaintStyle? paintStyle)
+            => paintStyle switch
+            {
+                XenialStaticBadgePaintStyle.Critical => BadgePaintStyle.Critical,
+                XenialStaticBadgePaintStyle.Information => BadgePaintStyle.Information,
+                XenialStaticBadgePaintStyle.Question => BadgePaintStyle.Question,
+                XenialStaticBadgePaintStyle.System => BadgePaintStyle.System,
+                XenialStaticBadgePaintStyle.Warning => BadgePaintStyle.Warning,
+                _ => BadgePaintStyle.Default
+            };
+
         private TreeList? FindEmbeddedTreeList(NavBarGroupControlContainer container)
         {
             if (container is not null && container.Controls.Count >= 1)
@@ -115,7 +126,7 @@ namespace Xenial.FeatureCenter.Module.Win
                                 Properties =
                                 {
                                     Text = modelBadgeStaticTextItem.XenialBadgeStaticText,
-                                    PaintStyle = BadgePaintStyle.Information
+                                    PaintStyle = ConvertPaintStyle(modelBadgeStaticTextItem.XenialBadgeStaticPaintStyle)
                                 }
                             };
 
@@ -140,7 +151,7 @@ namespace Xenial.FeatureCenter.Module.Win
                                     Properties =
                                     {
                                         Text = modelBadgeStaticTextItem.XenialBadgeStaticText,
-                                        PaintStyle = BadgePaintStyle.Information
+                                        PaintStyle = ConvertPaintStyle(modelBadgeStaticTextItem.XenialBadgeStaticPaintStyle)
                                     }
                                 };
 
@@ -172,13 +183,9 @@ namespace Xenial.FeatureCenter.Module.Win
 
                 if (form is not null)
                 {
-                    navBarControl.MouseMove += (s, e) =>
-                    {
-                        if (e.Button == MouseButtons.Left)
-                        {
-                            UpdateBadges(navBarControl, true);
-                        }
-                    };
+                    var adorner = new AdornerUIManager();
+                    adorner.Owner = form;
+                    CustomizeEmbeddedTreeList(adorner, navBarControl.Groups);
 
                     void BeginInvokeUpdateBadges()
                     {
@@ -202,14 +209,34 @@ namespace Xenial.FeatureCenter.Module.Win
                         }
                     }
 
+                    navBarControl.MouseMove += (s, e) =>
+                    {
+                        if (e.Button == MouseButtons.Left)
+                        {
+                            UpdateBadges(navBarControl, true);
+                        }
+                    };
+
+                    navBarControl.GroupCollapsed += (s, e) =>
+                    {
+                        UpdateBadges(navBarControl, true);
+                    };
+
+                    navBarControl.GroupExpanded += (s, e) =>
+                    {
+                        UpdateBadges(navBarControl, true);
+                    };
+
                     navBarControl.MouseWheel += (s, e) =>
                     {
                         BeginInvokeUpdateBadges();
                     };
+
                     navBarControl.NavPaneStateChanged += (s, e) =>
                     {
                         BeginInvokeUpdateBadges();
                     };
+
                     navBarControl.Resize += (s, e) =>
                     {
                         BeginInvokeUpdateBadges();
@@ -256,7 +283,6 @@ namespace Xenial.FeatureCenter.Module.Win
                                             var height = viBadge.Bounds.Height;
 
                                             b.Properties.Offset = new Point(gi.CaptionBounds.Right, gi.CaptionBounds.Top + height / 2);
-                                            //b.Properties.Offset = new Point(0, gi.CaptionBounds.Top + height / 2);
                                         }
                                     }
                                 }
@@ -318,27 +344,90 @@ namespace Xenial.FeatureCenter.Module.Win
                                                 ? li.CaptionRectangle
                                                 : li.ImageRectangle;
 
-                                            if (rect != Rectangle.Empty)
+                                            if (g.NavBar.NavPaneForm is not null)
                                             {
-                                                var gi = vi2.GetGroupInfo(g);
-                                                if (!gi.ClientInfoBounds.Contains(li.Bounds) && !gi.ClientInfoBounds.IntersectsWith(li.Bounds))
+                                                if (g.NavBar.NavPaneForm.Tag is not AdornerUIManager)
                                                 {
-                                                    liB.Visible = false;
-                                                }
-                                                if (liB.Visible)
-                                                {
-                                                    var piBadge = typeof(Badge).GetProperty("ViewInfo", BindingFlags.Instance | BindingFlags.NonPublic);
-                                                    if (piBadge.GetValue(liB, null) is BadgeViewInfo viBadge)
+                                                    var a = new AdornerUIManager();
+                                                    g.NavBar.NavPaneForm.Tag = a;
+                                                    a.Owner = g.NavBar.NavPaneForm;
+                                                    g.NavBar.NavPaneForm.Disposed -= NavPaneFormDisposed;
+                                                    g.NavBar.NavPaneForm.Disposed += NavPaneFormDisposed;
+                                                    void NavPaneFormDisposed(object sender, EventArgs e)
                                                     {
-                                                        if (needCalc || viBadge.Cache == null)
+                                                        a.Dispose();
+                                                        g.NavBar.NavPaneForm.Disposed -= NavPaneFormDisposed;
+                                                    }
+                                                }
+                                                if (g.NavBar.NavPaneForm.Tag is AdornerUIManager navPaneFormAdorner)
+                                                {
+                                                    var li2 = g.NavBar.NavPaneForm.ViewInfo.GetLinkInfo(visibleItemLink);
+                                                    if (li2 is not null)
+                                                    {
+                                                        var gi2 = g.NavBar.NavPaneForm.ExpandedGroupInfo;
+
+                                                        rect = useText
+                                                           ? li2.CaptionRectangle
+                                                           : li2.ImageRectangle;
+
+                                                        if (gi2 is not null && rect != Rectangle.Empty)
                                                         {
-                                                            using (gi.Graphics = navBarControl.CreateGraphics())
+                                                            var navBarLiBadge = (Badge)liB.Clone();
+                                                            navBarLiBadge.TargetElement = g.NavBar.NavPaneForm;
+                                                            navPaneFormAdorner.Elements.Add(navBarLiBadge);
+
+                                                            if (!gi2.ClientInfoBounds.Contains(li2.Bounds) && !gi2.ClientInfoBounds.IntersectsWith(li2.Bounds))
                                                             {
-                                                                viBadge.Calc(gi.Cache, gi.ClientInfoBounds);
+                                                                navBarLiBadge.Visible = false;
+                                                            }
+                                                            else
+                                                            {
+                                                                navBarLiBadge.Visible = true;
+                                                            }
+                                                            if (navBarLiBadge.Visible)
+                                                            {
+                                                                var piBadge = typeof(Badge).GetProperty("ViewInfo", BindingFlags.Instance | BindingFlags.NonPublic);
+                                                                if (piBadge.GetValue(navBarLiBadge, null) is BadgeViewInfo viBadge)
+                                                                {
+                                                                    if (needCalc || viBadge.Cache == null)
+                                                                    {
+                                                                        using (gi2.Graphics = navBarControl.CreateGraphics())
+                                                                        {
+                                                                            viBadge.Calc(gi2.Cache, gi2.ClientInfoBounds);
+                                                                        }
+                                                                    }
+                                                                    var height = viBadge.Bounds.Height;
+                                                                    navBarLiBadge.Properties.Offset = new Point(rect.Right, rect.Top + height / 2);
+                                                                }
                                                             }
                                                         }
-                                                        var height = viBadge.Bounds.Height;
-                                                        liB.Properties.Offset = new Point(rect.Right, rect.Top + height / 2);
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (rect != Rectangle.Empty)
+                                                {
+                                                    var gi = vi2.GetGroupInfo(g);
+                                                    if (!gi.ClientInfoBounds.Contains(li.Bounds) && !gi.ClientInfoBounds.IntersectsWith(li.Bounds))
+                                                    {
+                                                        liB.Visible = false;
+                                                    }
+                                                    if (liB.Visible)
+                                                    {
+                                                        var piBadge = typeof(Badge).GetProperty("ViewInfo", BindingFlags.Instance | BindingFlags.NonPublic);
+                                                        if (piBadge.GetValue(liB, null) is BadgeViewInfo viBadge)
+                                                        {
+                                                            if (needCalc || viBadge.Cache == null)
+                                                            {
+                                                                using (gi.Graphics = navBarControl.CreateGraphics())
+                                                                {
+                                                                    viBadge.Calc(gi.Cache, gi.ClientInfoBounds);
+                                                                }
+                                                            }
+                                                            var height = viBadge.Bounds.Height;
+                                                            liB.Properties.Offset = new Point(rect.Right, rect.Top + height / 2);
+                                                        }
                                                     }
                                                 }
                                             }
@@ -369,10 +458,6 @@ namespace Xenial.FeatureCenter.Module.Win
                             }, TaskCreationOptions.AttachedToParent);
                         }
                     }
-
-                    var adorner = new AdornerUIManager();
-                    adorner.Owner = form;
-                    CustomizeEmbeddedTreeList(adorner, navBarControl.Groups);
                 }
             }
             else if (e.Control is TreeList treeList)

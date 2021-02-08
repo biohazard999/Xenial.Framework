@@ -17,6 +17,22 @@ namespace Xenial.Framework.Badges.Model
         [Description("Gets or sets a static text badge on the item")]
         [DisplayName("StaticText")]
         string? XenialBadgeStaticText { get; set; }
+
+        [Category("Xenial.Badges")]
+        [ModelPersistentName("Xenial.Badges." + nameof(XenialBadgeStaticPaintStyle))]
+        [Description("Gets or sets a static text badge paint style on the item")]
+        [DisplayName("PaintStyle")]
+        XenialStaticBadgePaintStyle? XenialBadgeStaticPaintStyle { get; set; }
+    }
+
+    public enum XenialStaticBadgePaintStyle
+    {
+        Default = 0,
+        Critical = 1,
+        Information = 2,
+        Warning = 3,
+        Question = 4,
+        System = 5
     }
 }
 
