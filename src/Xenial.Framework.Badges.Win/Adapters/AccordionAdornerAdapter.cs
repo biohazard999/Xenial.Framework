@@ -95,7 +95,8 @@ namespace Xenial.Framework.Badges.Win.Adapters
                                 var badgeViewInfo = badge.GetViewInfo();
                                 if (badgeViewInfo is not null)
                                 {
-                                    badge.Visible = accordionElement.IsVisible;
+                                    badge.Visible = accordionElement.IsVisible
+                                        && accordionControl.OptionsMinimizing.State == AccordionControlState.Normal;
 
                                     var rect = accordionElementBaseViewInfo.TextBounds;
                                     if (needCalc || badgeViewInfo.Cache is null)
