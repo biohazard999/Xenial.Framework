@@ -47,19 +47,6 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 }
             }
 
-            //Dispose(() => accordionControl.GroupCollapsed -= GroupChange);
-            //accordionControl.GroupCollapsed -= GroupChange;
-            //accordionControl.GroupCollapsed += GroupChange;
-
-            //Dispose(() => accordionControl.GroupExpanded -= GroupChange);
-            //accordionControl.GroupExpanded -= GroupChange;
-            //accordionControl.GroupExpanded += GroupChange;
-
-            //void GroupChange(object sender, EventArgs e)
-            //{
-            //    UpdateBadges(true);
-            //}
-
             Dispose(() => accordionControl.FilterContent -= NeedInvoke);
             accordionControl.FilterContent -= NeedInvoke;
             accordionControl.FilterContent += NeedInvoke;
@@ -97,6 +84,11 @@ namespace Xenial.Framework.Badges.Win.Adapters
                                 {
                                     badge.Visible = accordionElement.IsVisible
                                         && accordionControl.OptionsMinimizing.State == AccordionControlState.Normal;
+
+                                    if (accordionElement.Level == 0 && accordionControl.OptionsMinimizing.State == AccordionControlState.Minimized)
+                                    {
+                                        badge.Visible = true;
+                                    }
 
                                     var rect = accordionElementBaseViewInfo.TextBounds;
                                     if (needCalc || badgeViewInfo.Cache is null)
