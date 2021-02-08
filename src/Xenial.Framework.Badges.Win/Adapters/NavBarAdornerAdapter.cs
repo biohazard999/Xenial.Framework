@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
+﻿
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Win.Templates.Navigation;
 using DevExpress.Utils.VisualEffects;
 using DevExpress.XtraNavBar;
 using DevExpress.XtraNavBar.ViewInfo;
+
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 using Xenial.Framework.Badges.Win.Helpers;
 
@@ -183,6 +182,13 @@ namespace Xenial.Framework.Badges.Win.Adapters
                         UpdateGroupBadge(navBarViewInfo, navBarGroup, groupBadge, needCalc);
                     }
                 }
+                foreach (var (choiceActionItem, navBarItemLink) in xafNavBarControl.ActionControl.ActionItemToNavBarItemLinkMap)
+                {
+                    if (badgeCollection.TryGetValue(choiceActionItem, out var groupBadge))
+                    {
+                        UpdateItemBadge(navBarViewInfo, navBarItemLink, groupBadge, needCalc);
+                    }
+                }
             }
             QueueAnimationTask();
         }
@@ -201,11 +207,18 @@ namespace Xenial.Framework.Badges.Win.Adapters
                         badgeViewInfo?.Calc(groupViewInfo.Cache, groupViewInfo.CaptionBounds);
                     }
                 }
+                var useText = UseText(navBarGroup);
+
+                var rect = useText
+                    ? groupViewInfo.CaptionBounds
+                    : groupViewInfo.ImageBounds;
+
                 if (badgeViewInfo is not null)
                 {
                     var height = badgeViewInfo.Bounds.Height;
+                    var width = badgeViewInfo.Bounds.Width;
 
-                    groupBadge.Properties.Offset = new Point(groupViewInfo.CaptionBounds.Right, groupViewInfo.CaptionBounds.Top + height / 2);
+                    groupBadge.Properties.Offset = new Point(rect.Right + width / 2, rect.Top + height / 2);
                     groupBadge.Visible = true;
                 }
             }
@@ -248,6 +261,58 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 }
             }
         }
+
+        private void UpdateItemBadge(NavBarViewInfo navBarViewInfo, NavBarItemLink navBarItemLink, Badge navBarItemBadge, bool needCalc)
+        {
+            var navBarItemLinkViewInfo = navBarViewInfo.GetLinkInfo(navBarItemLink);
+            if (navBarItemLinkViewInfo is not null && navBarItemLink.Group is NavBarGroup navBarGroup)
+            {
+                navBarItemBadge.Visible =
+                    navBarGroup.Expanded
+                    && navBarControl.OptionsNavPane.NavPaneState == NavPaneState.Expanded;
+
+                var useText = UseText(navBarItemLink);
+
+                var rect = useText
+                    ? navBarItemLinkViewInfo.CaptionRectangle
+                    : navBarItemLinkViewInfo.ImageRectangle;
+
+                if (rect != Rectangle.Empty)
+                {
+                    var navBarGroupViewInfo = navBarViewInfo.GetGroupInfo(navBarGroup);
+                    if (
+                        !navBarGroupViewInfo.ClientInfoBounds.Contains(navBarItemLinkViewInfo.Bounds)
+                        && !navBarGroupViewInfo.ClientInfoBounds.IntersectsWith(navBarItemLinkViewInfo.Bounds)
+                    )
+                    {
+                        navBarItemBadge.Visible = false;
+                        return;
+                    }
+                    var badgeViewInfo = navBarItemBadge.GetViewInfo();
+                    if (badgeViewInfo is not null)
+                    {
+                        var height = badgeViewInfo.Bounds.Height;
+                        navBarItemBadge.Properties.Offset = new Point(rect.Right, rect.Top + height / 2);
+                    }
+                }
+            }
+        }
+
+        private static bool UseText(NavBarItemLink navBarItemLink)
+            => navBarItemLink.Group?.GroupStyle switch
+            {
+                NavBarGroupStyle.Default => true,
+                NavBarGroupStyle.SmallIconsText => true,
+                NavBarGroupStyle.SmallIconsList => true,
+                _ => false
+            };
+
+        private static bool UseText(NavBarGroup navbarGroup)
+           => navbarGroup.NavBar?.OptionsNavPane.NavPaneState switch
+           {
+               NavPaneState.Expanded => true,
+               _ => false
+           };
 
         private void QueueAnimationTask()
         {
