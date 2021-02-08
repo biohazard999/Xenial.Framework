@@ -4,10 +4,12 @@ using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Win.Templates.Navigation;
 using DevExpress.Utils.VisualEffects;
 using DevExpress.XtraNavBar;
+using DevExpress.XtraNavBar.Forms;
 using DevExpress.XtraNavBar.ViewInfo;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,6 +27,9 @@ namespace Xenial.Framework.Badges.Win.Adapters
         private readonly NavBarControl navBarControl;
         private readonly AdornerUIManager adornerUIManager;
         private readonly Dictionary<ChoiceActionItem, Badge> badgeCollection = new();
+        private readonly Dictionary<NavPaneForm, AdornerUIManager> navePaneFormCollection = new();
+        private readonly Dictionary<NavPaneForm, List<(NavBarItemLink navBarItemLink, Badge badge)>> navePaneFormBadgeCollection = new();
+
         private readonly DisposableList disposableList = new();
 
         public NavBarAdornerAdapter(NavBarControl navBarControl)
@@ -135,12 +140,15 @@ namespace Xenial.Framework.Badges.Win.Adapters
         }
 
         private void BeginInvokeUpdateBadges()
+            => BeginInvokeAction(() => UpdateBadges());
+
+        private void BeginInvokeAction(Action action)
         {
             if (navBarControl.IsHandleCreated)
             {
                 navBarControl.BeginInvoke(new MethodInvoker(() =>
                 {
-                    UpdateBadges();
+                    action();
                 }));
             }
             else
@@ -152,7 +160,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 void HandleCreated(object s, EventArgs e)
                 {
                     navBarControl.HandleCreated -= HandleCreated;
-                    BeginInvokeUpdateBadges();
+                    BeginInvokeAction(action);
                 }
             }
         }
@@ -180,14 +188,20 @@ namespace Xenial.Framework.Badges.Win.Adapters
                     if (badgeCollection.TryGetValue(choiceActionItem, out var groupBadge))
                     {
                         UpdateGroupBadge(navBarViewInfo, navBarGroup, groupBadge, needCalc);
+
                     }
                 }
                 foreach (var (choiceActionItem, navBarItemLink) in xafNavBarControl.ActionControl.ActionItemToNavBarItemLinkMap)
                 {
-                    if (badgeCollection.TryGetValue(choiceActionItem, out var groupBadge))
+                    if (badgeCollection.TryGetValue(choiceActionItem, out var navBarItemLinkBadge))
                     {
-                        UpdateItemBadge(navBarViewInfo, navBarItemLink, groupBadge, needCalc);
+                        UpdateItemBadge(navBarViewInfo, navBarItemLink, navBarItemLinkBadge);
                     }
+                }
+
+                if (navBarControl.NavPaneForm is not null)
+                {
+                    AttachToNavPaneFormEvents(navBarControl.NavPaneForm, xafNavBarControl);
                 }
             }
             QueueAnimationTask();
@@ -262,15 +276,36 @@ namespace Xenial.Framework.Badges.Win.Adapters
             }
         }
 
-        private void UpdateItemBadge(NavBarViewInfo navBarViewInfo, NavBarItemLink navBarItemLink, Badge navBarItemBadge, bool needCalc)
+        private void UpdateItemBadge(NavBarViewInfo navBarViewInfo, NavBarItemLink navBarItemLink, Badge navBarItemBadge)
         {
             var navBarItemLinkViewInfo = navBarViewInfo.GetLinkInfo(navBarItemLink);
             if (navBarItemLinkViewInfo is not null && navBarItemLink.Group is NavBarGroup navBarGroup)
             {
-                navBarItemBadge.Visible =
-                    navBarGroup.Expanded
-                    && navBarControl.OptionsNavPane.NavPaneState == NavPaneState.Expanded;
+                var navBarGroupViewInfo = navBarViewInfo.GetGroupInfo(navBarGroup);
+                if (navBarGroupViewInfo is not null)
+                {
+                    navBarItemBadge.Visible =
+                       navBarGroup.Expanded
+                       && navBarControl.OptionsNavPane.NavPaneState == NavPaneState.Expanded;
 
+                    UpdateItemBadge(
+                        navBarItemLinkViewInfo,
+                        navBarItemLink,
+                        navBarItemBadge,
+                        navBarGroupViewInfo
+                    );
+                }
+            }
+        }
+
+        private void UpdateItemBadge(
+            NavLinkInfoArgs navBarItemLinkViewInfo,
+            NavBarItemLink navBarItemLink,
+            Badge navBarItemBadge,
+            NavGroupInfoArgs navBarGroupViewInfo)
+        {
+            if (navBarItemLinkViewInfo is not null && navBarItemLink.Group is NavBarGroup)
+            {
                 var useText = UseText(navBarItemLink);
 
                 var rect = useText
@@ -279,7 +314,6 @@ namespace Xenial.Framework.Badges.Win.Adapters
 
                 if (rect != Rectangle.Empty)
                 {
-                    var navBarGroupViewInfo = navBarViewInfo.GetGroupInfo(navBarGroup);
                     if (
                         !navBarGroupViewInfo.ClientInfoBounds.Contains(navBarItemLinkViewInfo.Bounds)
                         && !navBarGroupViewInfo.ClientInfoBounds.IntersectsWith(navBarItemLinkViewInfo.Bounds)
@@ -296,6 +330,104 @@ namespace Xenial.Framework.Badges.Win.Adapters
                     }
                 }
             }
+        }
+
+        private void AttachToNavPaneFormEvents(NavPaneForm navPaneForm, XafNavBarControl xafNavBarControl)
+        {
+            Dispose(() => navPaneForm.Disposed -= navPaneFormDisposed);
+            navPaneForm.Disposed -= navPaneFormDisposed;
+            navPaneForm.Disposed += navPaneFormDisposed;
+
+            Dispose(() => navPaneForm.Resize -= NeedInvoke);
+            navPaneForm.Resize -= NeedInvoke;
+            navPaneForm.Resize += NeedInvoke;
+
+            Dispose(() => navPaneForm.Shown -= NeedInvoke);
+            navPaneForm.Shown -= NeedInvoke;
+            navPaneForm.Shown += NeedInvoke;
+
+            void navPaneFormDisposed(object sender, EventArgs e)
+            {
+                navPaneForm.Resize -= NeedInvoke;
+                navPaneForm.Disposed -= navPaneFormDisposed;
+                if (navePaneFormCollection.TryGetValue(navPaneForm, out var adornerUIManager))
+                {
+                    adornerUIManager.Dispose();
+                    navePaneFormCollection.Remove(navPaneForm);
+                }
+                if (navePaneFormBadgeCollection.TryGetValue(navPaneForm, out var collection))
+                {
+                    collection.Clear();
+                }
+                navePaneFormBadgeCollection.Remove(navPaneForm);
+            }
+
+            void NeedInvoke(object sender, EventArgs e)
+            {
+                BeginInvokeAction(() =>
+                {
+                    if (navePaneFormBadgeCollection.TryGetValue(navPaneForm, out var collection))
+                    {
+                        foreach (var (navBarItemLink, badgeClone) in collection)
+                        {
+                            var navBarItemLinkInfo = navPaneForm.ViewInfo.GetLinkInfo(navBarItemLink);
+
+                            UpdateItemBadge(
+                                navBarItemLinkInfo,
+                                navBarItemLink,
+                                badgeClone,
+                                navPaneForm.ExpandedGroupInfo
+                            );
+                        }
+                    }
+                });
+            }
+
+            AdornerUIManager adornerUIManager;
+            if (!navePaneFormCollection.TryGetValue(navPaneForm, out adornerUIManager) && adornerUIManager is null)
+            {
+                adornerUIManager = new AdornerUIManager();
+                disposableList.Add(adornerUIManager);
+                adornerUIManager.Owner = navPaneForm;
+                navePaneFormCollection[navPaneForm] = adornerUIManager;
+
+                if (navPaneForm.ExpandedGroup is not null)
+                {
+                    foreach (var (choiceActionItem, navBarItemLink) in
+                        xafNavBarControl.ActionControl.ActionItemToNavBarItemLinkMap
+                        .Where(k => navPaneForm.ExpandedGroup.ItemLinks.Contains(k.Value))
+                    )
+                    {
+                        if (badgeCollection.TryGetValue(choiceActionItem, out var navBarItemLinkBadge))
+                        {
+                            var badgeClone = (Badge)navBarItemLinkBadge.Clone();
+                            badgeClone.TargetElement = navPaneForm;
+                            adornerUIManager.Elements.Add(badgeClone);
+
+                            var navBarItemLinkInfo = navPaneForm.ViewInfo.GetLinkInfo(navBarItemLink);
+
+                            if (!navePaneFormBadgeCollection.TryGetValue(navPaneForm, out var collection) && collection is null)
+                            {
+                                navePaneFormBadgeCollection[navPaneForm] = new();
+                            }
+
+                            var col = navePaneFormBadgeCollection[navPaneForm];
+
+                            col.Add((navBarItemLink, badgeClone));
+
+                            UpdateItemBadge(
+                                navBarItemLinkInfo,
+                                navBarItemLink,
+                                badgeClone,
+                                navPaneForm.ExpandedGroupInfo
+                            );
+                            badgeClone.Visible = true;
+                        }
+                    }
+                }
+            }
+
+            NeedInvoke(new(), EventArgs.Empty);
         }
 
         private static bool UseText(NavBarItemLink navBarItemLink)
