@@ -21,7 +21,12 @@ using static Xenial.Framework.Badges.Win.Adapters.ActionItemBadgeFactory;
 
 namespace Xenial.Framework.Badges.Win.Adapters
 {
-    internal class NavBarAdornerAdapter : IDisposable
+    internal interface IAdornerAdapter : IDisposable
+    {
+        void Disable();
+    }
+
+    internal class NavBarAdornerAdapter : IAdornerAdapter
     {
         private bool disposedValue;
         private readonly NavBarControl navBarControl;
@@ -52,6 +57,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             {
                 if (disposing)
                 {
+                    adornerUIManager.Owner = null;
                     adornerUIManager.Dispose();
                 }
 

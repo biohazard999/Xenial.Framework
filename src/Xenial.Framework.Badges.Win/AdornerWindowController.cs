@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -26,6 +27,7 @@ namespace Xenial.FeatureCenter.Module.Win
     public class AdornerWindowsFormsCustomizeNavigationController : WindowController
     {
         private readonly DisposableList disposables = new();
+        private readonly List<IAdornerAdapter> adornerAdapters = new();
 
         public AdornerWindowsFormsCustomizeNavigationController()
             => TargetWindowType = WindowType.Main;
@@ -140,6 +142,8 @@ namespace Xenial.FeatureCenter.Module.Win
             else if (e.Control is NavBarControl navBarControl)
             {
                 var adapter = new NavBarAdornerAdapter(navBarControl);
+                adornerAdapters.Add(adapter);
+                disposables.Add(adapter);
                 var showNavigationItemController = Frame.GetController<ShowNavigationItemController>();
                 if (showNavigationItemController is not null)
                 {
@@ -154,6 +158,11 @@ namespace Xenial.FeatureCenter.Module.Win
         }
         protected override void OnDeactivated()
         {
+            foreach (var adornerAdapter in adornerAdapters)
+            {
+                adornerAdapter.Disable();
+            }
+
             disposables.Dispose();
 
             var showNavigationItemController = Frame.GetController<ShowNavigationItemController>();
