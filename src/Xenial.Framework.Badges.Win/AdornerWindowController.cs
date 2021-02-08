@@ -1,4 +1,10 @@
-﻿
+﻿using System;
+using System.Drawing;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.SystemModule;
@@ -9,66 +15,17 @@ using DevExpress.XtraNavBar;
 using DevExpress.XtraNavBar.ViewInfo;
 using DevExpress.XtraTreeList;
 
-using System;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 using Xenial.Framework.Badges.Model;
+using Xenial.Framework.Badges.Win.Helpers;
+
+using static Xenial.Framework.Badges.Win.Helpers.ModelMapperExtensions;
 
 namespace Xenial.FeatureCenter.Module.Win
 {
-    public class AdornerWindowsFormsWindowController : WindowController
-    {
-        public AdornerWindowsFormsWindowController()
-              => TargetWindowType = WindowType.Main;
-
-        public AdornerUIManager? AdornerUIManager { get; set; }
-
-        protected override void OnActivated()
-        {
-            base.OnActivated();
-            AdornerUIManager = new AdornerUIManager();
-            Frame.TemplateChanged -= Frame_TemplateChanged;
-            Frame.TemplateChanged += Frame_TemplateChanged;
-        }
-
-        private void Frame_TemplateChanged(object sender, EventArgs e)
-        {
-            if (
-                Frame.Template is System.Windows.Forms.ContainerControl containerControl
-                && AdornerUIManager is not null
-            )
-            {
-                AdornerUIManager.Owner = containerControl;
-            }
-        }
-
-        protected override void OnDeactivated()
-        {
-            if (Frame is not null)
-            {
-                Frame.TemplateChanged -= Frame_TemplateChanged;
-            }
-            AdornerUIManager?.Dispose();
-            base.OnDeactivated();
-        }
-
-        public void AddBadge(Badge badge)
-        {
-            if (AdornerUIManager is not null)
-            {
-                AdornerUIManager.Elements.Add(badge);
-                AdornerUIManager.Update();
-                AdornerUIManager.Show();
-            }
-        }
-    }
-
     public class AdornerWindowsFormsCustomizeNavigationController : WindowController
     {
+        private readonly DisposableList disposables = new();
+
         public AdornerWindowsFormsCustomizeNavigationController()
             => TargetWindowType = WindowType.Main;
 
@@ -83,17 +40,6 @@ namespace Xenial.FeatureCenter.Module.Win
                 showNavigationItemController.ShowNavigationItemAction.CustomizeControl += ShowNavigationItemAction_CustomizeControl;
             }
         }
-
-        private static BadgePaintStyle ConvertPaintStyle(XenialStaticBadgePaintStyle? paintStyle)
-            => paintStyle switch
-            {
-                XenialStaticBadgePaintStyle.Critical => BadgePaintStyle.Critical,
-                XenialStaticBadgePaintStyle.Information => BadgePaintStyle.Information,
-                XenialStaticBadgePaintStyle.Question => BadgePaintStyle.Question,
-                XenialStaticBadgePaintStyle.System => BadgePaintStyle.System,
-                XenialStaticBadgePaintStyle.Warning => BadgePaintStyle.Warning,
-                _ => BadgePaintStyle.Default
-            };
 
         private TreeList? FindEmbeddedTreeList(NavBarGroupControlContainer container)
         {
@@ -126,7 +72,7 @@ namespace Xenial.FeatureCenter.Module.Win
                                 Properties =
                                 {
                                     Text = modelBadgeStaticTextItem.XenialBadgeStaticText,
-                                    PaintStyle = ConvertPaintStyle(modelBadgeStaticTextItem.XenialBadgeStaticPaintStyle)
+                                    PaintStyle = modelBadgeStaticTextItem.XenialBadgeStaticPaintStyle.ConvertPaintStyle()
                                 }
                             };
 
@@ -169,13 +115,26 @@ namespace Xenial.FeatureCenter.Module.Win
 
         private void ShowNavigationItemAction_CustomizeControl(object sender, CustomizeControlEventArgs e)
         {
-            if (e.Control is DevExpress.XtraBars.BarButtonItem barButtonItem)
-            {
-
-            }
             if (e.Control is AccordionControl accordionControl)
             {
-                // Customize AccordionControl
+                var form = accordionControl.FindForm();
+
+                if (form is not null)
+                {
+                    var adorner = new AdornerUIManager();
+                    adorner.Owner = form;
+                }
+                if (accordionControl is XafAccordionControl xafAccordionControl)
+                {
+                    foreach (var element in accordionControl.Elements)
+                    {
+                        var attachedAction2 = element.Tag as ChoiceActionItem;
+                        foreach (var el in element.Elements)
+                        {
+                            var attachedAction = el.Tag as ChoiceActionItem;
+                        }
+                    }
+                }
             }
             else if (e.Control is NavBarControl navBarControl)
             {
@@ -467,6 +426,8 @@ namespace Xenial.FeatureCenter.Module.Win
         }
         protected override void OnDeactivated()
         {
+            disposables.Dispose();
+
             var showNavigationItemController = Frame.GetController<ShowNavigationItemController>();
             if (showNavigationItemController is not null)
             {
