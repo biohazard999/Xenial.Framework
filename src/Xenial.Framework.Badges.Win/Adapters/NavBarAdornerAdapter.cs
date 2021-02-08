@@ -376,19 +376,29 @@ namespace Xenial.Framework.Badges.Win.Adapters
             {
                 BeginInvokeAction(() =>
                 {
-                    if (navePaneFormBadgeCollection.TryGetValue(navPaneForm, out var collection))
+                    AdornerUIManager? adornerUiManager;
+                    navePaneFormCollection.TryGetValue(navPaneForm, out adornerUiManager);
+                    adornerUiManager?.BeginUpdate();
+                    try
                     {
-                        foreach (var (navBarItemLink, badgeClone) in collection)
+                        if (navePaneFormBadgeCollection.TryGetValue(navPaneForm, out var collection))
                         {
-                            var navBarItemLinkInfo = navPaneForm.ViewInfo.GetLinkInfo(navBarItemLink);
+                            foreach (var (navBarItemLink, badgeClone) in collection)
+                            {
+                                var navBarItemLinkInfo = navPaneForm.ViewInfo.GetLinkInfo(navBarItemLink);
 
-                            UpdateItemBadge(
-                                navBarItemLinkInfo,
-                                navBarItemLink,
-                                badgeClone,
-                                navPaneForm.ExpandedGroupInfo
-                            );
+                                UpdateItemBadge(
+                                    navBarItemLinkInfo,
+                                    navBarItemLink,
+                                    badgeClone,
+                                    navPaneForm.ExpandedGroupInfo
+                                );
+                            }
                         }
+                    }
+                    finally
+                    {
+                        adornerUiManager?.EndUpdate();
                     }
                 });
             }
