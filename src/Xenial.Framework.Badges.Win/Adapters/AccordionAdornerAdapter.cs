@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,8 @@ using System.Windows.Forms;
 
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.SystemModule;
+using DevExpress.Utils.DPI;
+using DevExpress.Utils.Drawing;
 using DevExpress.Utils.VisualEffects;
 using DevExpress.XtraBars.Navigation;
 
@@ -33,20 +36,91 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 badge.Visible = true;
             }
 
-            if (accordionControl.GetViewInfo() is AccordionControlViewInfo accordionControlViewInfo)
+            AttachToEvents();
+        }
+
+        private void AttachToEvents()
+        {
+            Dispose(() => accordionControl.MouseMove -= MouseMove);
+            accordionControl.MouseMove -= MouseMove;
+            accordionControl.MouseMove += MouseMove;
+
+            void MouseMove(object sender, MouseEventArgs e)
             {
-                foreach (var (choiceActionItem, accordionElement) in accordionElementCollection)
+                if (e.Button == MouseButtons.Left)
                 {
-                    if (accordionControlViewInfo.GetElementInfo(accordionElement) is AccordionElementBaseViewInfo accordionElementBaseViewInfo)
+                    UpdateBadges(true);
+                }
+            }
+
+            //Dispose(() => accordionControl.GroupCollapsed -= GroupChange);
+            //accordionControl.GroupCollapsed -= GroupChange;
+            //accordionControl.GroupCollapsed += GroupChange;
+
+            //Dispose(() => accordionControl.GroupExpanded -= GroupChange);
+            //accordionControl.GroupExpanded -= GroupChange;
+            //accordionControl.GroupExpanded += GroupChange;
+
+            //void GroupChange(object sender, EventArgs e)
+            //{
+            //    UpdateBadges(true);
+            //}
+
+            Dispose(() => accordionControl.ExpandStateChanged -= NeedInvoke);
+            accordionControl.ExpandStateChanged -= NeedInvoke;
+            accordionControl.ExpandStateChanged += NeedInvoke;
+
+            Dispose(() => accordionControl.Resize -= NeedInvoke);
+            accordionControl.Resize -= NeedInvoke;
+            accordionControl.Resize += NeedInvoke;
+
+            void NeedInvoke(object sender, EventArgs e)
+                => BeginInvokeUpdateBadges();
+        }
+
+        private void BeginInvokeUpdateBadges()
+            => BeginInvokeAction(() => UpdateBadges());
+
+        private void UpdateBadges(bool needCalc = false)
+        {
+            AdornerUIManager.BeginUpdate();
+            try
+            {
+                if (accordionControl.GetViewInfo() is AccordionControlViewInfo accordionControlViewInfo)
+                {
+                    foreach (var (choiceActionItem, accordionElement) in accordionElementCollection)
                     {
-                        if (BadgeCollection.TryGetValue(choiceActionItem, out var badge))
+                        if (accordionControlViewInfo.GetElementInfo(accordionElement) is AccordionElementBaseViewInfo accordionElementBaseViewInfo)
                         {
-                            badge.Properties.Offset = accordionElementBaseViewInfo.TextBounds.Location;
+                            if (BadgeCollection.TryGetValue(choiceActionItem, out var badge))
+                            {
+                                var badgeViewInfo = badge.GetViewInfo();
+                                if (badgeViewInfo is not null)
+                                {
+                                    var rect = accordionElementBaseViewInfo.TextBounds;
+                                    if (needCalc || badgeViewInfo.Cache is null)
+                                    {
+                                        using (var graphics = accordionControl.CreateGraphics())
+                                        {
+                                            badgeViewInfo.Calc(new GraphicsCache(new DXPaintEventArgs(graphics)), rect);
+                                        }
+                                    }
+
+                                    var height = badgeViewInfo.Bounds.Height;
+                                    var width = badgeViewInfo.Bounds.Width;
+                                    badge.Properties.Offset = new Point(rect.Right + width / 2, rect.Top + rect.Height / 2);
+                                }
+                            }
                         }
                     }
                 }
             }
+            finally
+            {
+                AdornerUIManager.EndUpdate();
+            }
         }
+
 
         private void CollectElements(AccordionControlElementCollection elements)
         {

@@ -26,7 +26,6 @@ namespace Xenial.Framework.Badges.Win.Adapters
         public AdornerAdapterBase(AdornerUIManager adornerUIManager)
             => AdornerUIManager = adornerUIManager;
 
-      
         public void Disable()
         {
             DisposableList.Dispose();
@@ -103,5 +102,28 @@ namespace Xenial.Framework.Badges.Win.Adapters
         }
 
         protected void Dispose(Action disposeAction) => DisposableList.Actions.Add(disposeAction);
+
+        protected void BeginInvokeAction(Action action)
+        {
+            if (DefaultTargetElement.IsHandleCreated)
+            {
+                DefaultTargetElement.BeginInvoke(new MethodInvoker(() =>
+                {
+                    action();
+                }));
+            }
+            else
+            {
+                Dispose(() => DefaultTargetElement.HandleCreated -= HandleCreated);
+                DefaultTargetElement.HandleCreated -= HandleCreated;
+                DefaultTargetElement.HandleCreated += HandleCreated;
+
+                void HandleCreated(object s, EventArgs e)
+                {
+                    DefaultTargetElement.HandleCreated -= HandleCreated;
+                    BeginInvokeAction(action);
+                }
+            }
+        }
     }
 }

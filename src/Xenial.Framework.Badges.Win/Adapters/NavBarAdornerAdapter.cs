@@ -54,7 +54,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    UpdateBadges(true);
+                    UpdateBadges(needCalc: true);
                 }
             }
 
@@ -68,7 +68,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
 
             void GroupChange(object sender, EventArgs e)
             {
-                UpdateBadges(true);
+                UpdateBadges(needCalc: true);
             }
 
             Dispose(() => navBarControl.NavPaneStateChanged -= NeedInvoke);
@@ -85,29 +85,6 @@ namespace Xenial.Framework.Badges.Win.Adapters
 
         private void BeginInvokeUpdateBadges()
             => BeginInvokeAction(() => UpdateBadges());
-
-        private void BeginInvokeAction(Action action)
-        {
-            if (navBarControl.IsHandleCreated)
-            {
-                navBarControl.BeginInvoke(new MethodInvoker(() =>
-                {
-                    action();
-                }));
-            }
-            else
-            {
-                Dispose(() => navBarControl.HandleCreated -= HandleCreated);
-                navBarControl.HandleCreated -= HandleCreated;
-                navBarControl.HandleCreated += HandleCreated;
-
-                void HandleCreated(object s, EventArgs e)
-                {
-                    navBarControl.HandleCreated -= HandleCreated;
-                    BeginInvokeAction(action);
-                }
-            }
-        }
 
         private void UpdateBadges(bool needCalc = false)
         {
