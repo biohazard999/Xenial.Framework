@@ -17,31 +17,18 @@ using System.Windows.Forms;
 
 using Xenial.Framework.Badges.Win.Helpers;
 
-using static Xenial.Framework.Badges.Win.Adapters.ActionItemBadgeFactory;
-
 namespace Xenial.Framework.Badges.Win.Adapters
 {
-    internal interface IAdornerAdapter : IDisposable
+    internal class NavBarAdornerAdapter : AdornerAdapterBase
     {
-        void Disable();
-    }
-
-    internal class NavBarAdornerAdapter : IAdornerAdapter
-    {
-        private bool disposedValue;
         private readonly NavBarControl navBarControl;
-        private readonly AdornerUIManager adornerUIManager;
-        private readonly Dictionary<ChoiceActionItem, Badge> badgeCollection = new();
         private readonly Dictionary<NavPaneForm, AdornerUIManager> navePaneFormCollection = new();
         private readonly Dictionary<NavPaneForm, List<(NavBarItemLink navBarItemLink, Badge badge)>> navePaneFormBadgeCollection = new();
+        protected override Control DefaultTargetElement => navBarControl;
 
-        private readonly DisposableList disposableList = new();
-
-        public NavBarAdornerAdapter(NavBarControl navBarControl)
+        public NavBarAdornerAdapter(NavBarControl navBarControl) : base(new AdornerUIManager())
         {
             this.navBarControl = navBarControl;
-            adornerUIManager = new AdornerUIManager();
-            adornerUIManager.Owner = navBarControl.FindForm();
             navBarControl.Disposed += NavBarControl_Disposed;
         }
 
@@ -51,59 +38,10 @@ namespace Xenial.Framework.Badges.Win.Adapters
             Dispose();
         }
 
-        protected virtual void Dispose(bool disposing)
+        public override void Enable(ShowNavigationItemController showNavigationItemController)
         {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    adornerUIManager.Owner = null;
-                    adornerUIManager.Dispose();
-                }
-
-                disposedValue = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        public void Enable(ShowNavigationItemController showNavigationItemController)
-        {
-            CollectBadges(showNavigationItemController.ShowNavigationItemAction.Items);
+            base.Enable(showNavigationItemController);
             AttachToEvents();
-        }
-
-        private void CollectBadges(ChoiceActionItemCollection choiceActionItems)
-        {
-            adornerUIManager.BeginUpdate();
-            try
-            {
-                foreach (var choiceActionItem in choiceActionItems)
-                {
-                    CollectBadge(choiceActionItem);
-                    CollectBadges(choiceActionItem.Items);
-                }
-
-                void CollectBadge(ChoiceActionItem choiceActionItem)
-                {
-                    var badge = CreateBadge(choiceActionItem);
-                    if (badge is not null)
-                    {
-                        badge.Visible = false;
-                        badge.TargetElement = navBarControl;
-                        adornerUIManager.Elements.Add(badge);
-                        badgeCollection[choiceActionItem] = badge;
-                    }
-                }
-            }
-            finally
-            {
-                adornerUIManager.EndUpdate();
-            }
         }
 
         private void AttachToEvents()
@@ -173,7 +111,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
 
         private void UpdateBadges(bool needCalc = false)
         {
-            adornerUIManager.BeginUpdate();
+            AdornerUIManager.BeginUpdate();
             try
             {
                 var navBarViewInfo = navBarControl.GetViewInfo();
@@ -194,7 +132,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 {
                     foreach (var (choiceActionItem, navBarGroup) in xafNavBarControl.ActionControl.ActionItemToNavBarGroupMap)
                     {
-                        if (badgeCollection.TryGetValue(choiceActionItem, out var groupBadge))
+                        if (BadgeCollection.TryGetValue(choiceActionItem, out var groupBadge))
                         {
                             groupBadge.Visible = false;
                             UpdateGroupBadge(navBarViewInfo, navBarGroup, groupBadge, needCalc);
@@ -203,7 +141,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
                     }
                     foreach (var (choiceActionItem, navBarItemLink) in xafNavBarControl.ActionControl.ActionItemToNavBarItemLinkMap)
                     {
-                        if (badgeCollection.TryGetValue(choiceActionItem, out var navBarItemLinkBadge))
+                        if (BadgeCollection.TryGetValue(choiceActionItem, out var navBarItemLinkBadge))
                         {
                             navBarItemLinkBadge.Visible = false;
                             UpdateItemBadge(navBarViewInfo, navBarItemLink, navBarItemLinkBadge);
@@ -219,7 +157,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             }
             finally
             {
-                adornerUIManager.EndUpdate();
+                AdornerUIManager.EndUpdate();
             }
         }
 
@@ -413,7 +351,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             if (!navePaneFormCollection.TryGetValue(navPaneForm, out adornerUIManager) && adornerUIManager is null)
             {
                 adornerUIManager = new AdornerUIManager();
-                disposableList.Add(adornerUIManager);
+                DisposableList.Add(adornerUIManager);
                 adornerUIManager.Owner = navPaneForm;
                 navePaneFormCollection[navPaneForm] = adornerUIManager;
 
@@ -424,7 +362,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
                         .Where(k => navPaneForm.ExpandedGroup.ItemLinks.Contains(k.Value))
                     )
                     {
-                        if (badgeCollection.TryGetValue(choiceActionItem, out var navBarItemLinkBadge))
+                        if (BadgeCollection.TryGetValue(choiceActionItem, out var navBarItemLinkBadge))
                         {
                             var badgeClone = (Badge)navBarItemLinkBadge.Clone();
                             badgeClone.TargetElement = navPaneForm;
@@ -495,19 +433,5 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 }, TaskCreationOptions.AttachedToParent);
             }
         }
-
-        public void Disable()
-        {
-            disposableList.Dispose();
-
-            foreach (var badge in badgeCollection.Values)
-            {
-                badge.TargetElement = null;
-            }
-
-            badgeCollection.Clear();
-        }
-
-        private void Dispose(Action disposeAction) => disposableList.Actions.Add(disposeAction);
     }
 }

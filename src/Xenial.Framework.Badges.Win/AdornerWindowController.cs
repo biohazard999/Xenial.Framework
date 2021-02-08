@@ -120,24 +120,15 @@ namespace Xenial.FeatureCenter.Module.Win
         {
             if (e.Control is AccordionControl accordionControl)
             {
-                var form = accordionControl.FindForm();
-
-                if (form is not null)
+                var adapter = new AccordionAdornerAdapter(accordionControl);
+                adornerAdapters.Add(adapter);
+                disposables.Add(adapter);
+                var showNavigationItemController = Frame.GetController<ShowNavigationItemController>();
+                if (showNavigationItemController is not null)
                 {
-                    var adorner = new AdornerUIManager();
-                    adorner.Owner = form;
-                }
-                if (accordionControl is XafAccordionControl xafAccordionControl)
-                {
-                    foreach (var element in accordionControl.Elements)
-                    {
-                        var attachedAction2 = element.Tag as ChoiceActionItem;
-                        foreach (var el in element.Elements)
-                        {
-                            var attachedAction = el.Tag as ChoiceActionItem;
-                        }
-                    }
-                }
+                    adapter.Enable(showNavigationItemController);
+                    return;
+                };
             }
             else if (e.Control is NavBarControl navBarControl)
             {
