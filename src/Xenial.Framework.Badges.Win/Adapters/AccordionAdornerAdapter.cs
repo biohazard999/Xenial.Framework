@@ -30,12 +30,6 @@ namespace Xenial.Framework.Badges.Win.Adapters
         {
             base.Enable(showNavigationItemController);
             CollectElements(accordionControl.Elements);
-
-            foreach (var (choiceActionItem, badge) in BadgeCollection)
-            {
-                badge.Visible = true;
-            }
-
             AttachToEvents();
         }
 
@@ -65,6 +59,10 @@ namespace Xenial.Framework.Badges.Win.Adapters
             //{
             //    UpdateBadges(true);
             //}
+
+            Dispose(() => accordionControl.FilterContent -= NeedInvoke);
+            accordionControl.FilterContent -= NeedInvoke;
+            accordionControl.FilterContent += NeedInvoke;
 
             Dispose(() => accordionControl.ExpandStateChanged -= NeedInvoke);
             accordionControl.ExpandStateChanged -= NeedInvoke;
