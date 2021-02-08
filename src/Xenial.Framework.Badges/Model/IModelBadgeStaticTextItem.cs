@@ -16,6 +16,7 @@ namespace Xenial.Framework.Badges.Model
         [ModelPersistentName("Xenial.Badges." + nameof(XenialBadgeStaticText))]
         [Description("Gets or sets a static text badge on the item")]
         [DisplayName("StaticText")]
+        [Localizable(true)]
         string? XenialBadgeStaticText { get; set; }
 
         [Category("Xenial.Badges")]
