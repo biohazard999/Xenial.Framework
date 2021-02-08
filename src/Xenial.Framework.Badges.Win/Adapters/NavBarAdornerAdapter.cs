@@ -190,11 +190,9 @@ namespace Xenial.Framework.Badges.Win.Adapters
         private void UpdateGroupBadge(NavBarViewInfo navBarViewInfo, NavBarGroup navBarGroup, Badge groupBadge, bool needCalc)
         {
             var groupViewInfo = navBarViewInfo.GetGroupInfo(navBarGroup);
-            if (groupViewInfo != null && groupViewInfo.CaptionBounds != Rectangle.Empty)
+            if (groupViewInfo is not null && groupViewInfo.CaptionBounds != Rectangle.Empty)
             {
-                //TODO: speed up lookup
-                var propertyInfoBadge = typeof(Badge).GetProperty("ViewInfo", BindingFlags.Instance | BindingFlags.NonPublic);
-                var badgeViewInfo = propertyInfoBadge.GetValue(groupBadge, null) as BadgeViewInfo;
+                var badgeViewInfo = groupBadge.GetViewInfo();
 
                 if (needCalc || badgeViewInfo?.Cache == null)
                 {
@@ -209,6 +207,44 @@ namespace Xenial.Framework.Badges.Win.Adapters
 
                     groupBadge.Properties.Offset = new Point(groupViewInfo.CaptionBounds.Right, groupViewInfo.CaptionBounds.Top + height / 2);
                     groupBadge.Visible = true;
+                }
+            }
+
+            UpdateOverflowGroupBadge(navBarViewInfo, navBarGroup, groupBadge, needCalc);
+        }
+
+        private void UpdateOverflowGroupBadge(NavBarViewInfo navBarViewInfo, NavBarGroup navBarGroup, Badge groupBadge, bool needCalc)
+        {
+            if (
+                navBarViewInfo is NavigationPaneViewInfo navPaneViewInfo
+                && navPaneViewInfo.OverflowInfo is NavigationPaneOverflowPanelInfo overflowInfo
+            )
+            {
+                var buttons = overflowInfo.Buttons
+                    .OfType<NavigationPaneOverflowPanelObjectInfo>()
+                    .Where(b => b.Group == navBarGroup)
+                ;
+
+                foreach (var button in buttons)
+                {
+                    var badgeViewInfo = groupBadge.GetViewInfo();
+
+                    if (needCalc || badgeViewInfo?.Cache == null)
+                    {
+                        using (overflowInfo.Graphics = navBarControl.CreateGraphics())
+                        {
+                            badgeViewInfo?.Calc(overflowInfo.Cache, overflowInfo.Bounds);
+                        }
+                    }
+
+                    if (badgeViewInfo is not null)
+                    {
+                        var height = badgeViewInfo.Bounds.Height;
+                        var width = badgeViewInfo.Bounds.Width;
+
+                        groupBadge.Properties.Offset = new Point(button.Bounds.Right - width / 2, button.Bounds.Top + height / 2);
+                        groupBadge.Visible = true;
+                    }
                 }
             }
         }

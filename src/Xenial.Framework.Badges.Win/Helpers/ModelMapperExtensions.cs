@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,5 +29,39 @@ namespace Xenial.Framework.Badges.Win.Helpers
             => (key, value) = (tuple.Key, tuple.Value);
 #endif
 
+        private delegate AdornerElementViewInfo? GetBadgeViewInfoDelegate(Badge badge);
+
+        private static GetBadgeViewInfoDelegate? getBadgeViewInfo;
+
+        private static readonly object locker = new();
+
+        internal static BadgeViewInfo? GetViewInfo(this Badge badge)
+        {
+            if (getBadgeViewInfo is null)
+            {
+                var propertyInfo = typeof(Badge).GetProperty("ViewInfo", BindingFlags.Instance | BindingFlags.NonPublic);
+
+                if (
+                    propertyInfo is not null
+                    && propertyInfo.GetMethod is MethodInfo getMethod
+                )
+                {
+                    lock (locker)
+                    {
+                        getBadgeViewInfo = (GetBadgeViewInfoDelegate)Delegate.CreateDelegate(typeof(GetBadgeViewInfoDelegate), getMethod);
+                    }
+                }
+            }
+
+            if (getBadgeViewInfo is not null)
+            {
+                if (getBadgeViewInfo(badge) is BadgeViewInfo badgeViewInfo)
+                {
+                    return badgeViewInfo;
+                }
+            }
+
+            return null;
+        }
     }
 }
