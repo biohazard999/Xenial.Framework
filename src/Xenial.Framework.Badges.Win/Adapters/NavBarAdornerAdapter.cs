@@ -167,44 +167,54 @@ namespace Xenial.Framework.Badges.Win.Adapters
 
         private void UpdateBadges(bool needCalc = false)
         {
-            var navBarViewInfo = navBarControl.GetViewInfo();
+            adornerUIManager.BeginUpdate();
+            try
+            {
+                var navBarViewInfo = navBarControl.GetViewInfo();
 
-            if (navBarViewInfo is null)
-            {
-                return;
-            }
-            if (needCalc)
-            {
-                navBarViewInfo.Calc(navBarControl.ClientRectangle);
-            }
-
-            if (
-                navBarControl is XafNavBarControl xafNavBarControl
-                && xafNavBarControl.ActionControl is not null
-            )
-            {
-                foreach (var (choiceActionItem, navBarGroup) in xafNavBarControl.ActionControl.ActionItemToNavBarGroupMap)
+                if (navBarViewInfo is null)
                 {
-                    if (badgeCollection.TryGetValue(choiceActionItem, out var groupBadge))
-                    {
-                        UpdateGroupBadge(navBarViewInfo, navBarGroup, groupBadge, needCalc);
+                    return;
+                }
+                if (needCalc)
+                {
+                    navBarViewInfo.Calc(navBarControl.ClientRectangle);
+                }
 
+                if (
+                    navBarControl is XafNavBarControl xafNavBarControl
+                    && xafNavBarControl.ActionControl is not null
+                )
+                {
+                    foreach (var (choiceActionItem, navBarGroup) in xafNavBarControl.ActionControl.ActionItemToNavBarGroupMap)
+                    {
+                        if (badgeCollection.TryGetValue(choiceActionItem, out var groupBadge))
+                        {
+                            groupBadge.Visible = false;
+                            UpdateGroupBadge(navBarViewInfo, navBarGroup, groupBadge, needCalc);
+
+                        }
+                    }
+                    foreach (var (choiceActionItem, navBarItemLink) in xafNavBarControl.ActionControl.ActionItemToNavBarItemLinkMap)
+                    {
+                        if (badgeCollection.TryGetValue(choiceActionItem, out var navBarItemLinkBadge))
+                        {
+                            navBarItemLinkBadge.Visible = false;
+                            UpdateItemBadge(navBarViewInfo, navBarItemLink, navBarItemLinkBadge);
+                        }
+                    }
+
+                    if (navBarControl.NavPaneForm is not null)
+                    {
+                        AttachToNavPaneFormEvents(navBarControl.NavPaneForm, xafNavBarControl);
                     }
                 }
-                foreach (var (choiceActionItem, navBarItemLink) in xafNavBarControl.ActionControl.ActionItemToNavBarItemLinkMap)
-                {
-                    if (badgeCollection.TryGetValue(choiceActionItem, out var navBarItemLinkBadge))
-                    {
-                        UpdateItemBadge(navBarViewInfo, navBarItemLink, navBarItemLinkBadge);
-                    }
-                }
-
-                if (navBarControl.NavPaneForm is not null)
-                {
-                    AttachToNavPaneFormEvents(navBarControl.NavPaneForm, xafNavBarControl);
-                }
+                QueueAnimationTask();
             }
-            QueueAnimationTask();
+            finally
+            {
+                adornerUIManager.EndUpdate();
+            }
         }
 
         private void UpdateGroupBadge(NavBarViewInfo navBarViewInfo, NavBarGroup navBarGroup, Badge groupBadge, bool needCalc)
