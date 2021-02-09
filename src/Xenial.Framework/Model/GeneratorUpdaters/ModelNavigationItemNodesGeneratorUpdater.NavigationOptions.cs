@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Templates.ActionContainers;

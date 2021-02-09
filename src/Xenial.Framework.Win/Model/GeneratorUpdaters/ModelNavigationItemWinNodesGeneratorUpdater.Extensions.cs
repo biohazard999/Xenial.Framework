@@ -10,30 +10,30 @@ namespace DevExpress.ExpressApp.Model.Core
     public static partial class ModelNodesGeneratorUpdatersExtentions
     {
         /// <summary>
-        /// Uses the application win options.
+        /// Uses the navigation win options.
         /// </summary>
         /// <param name="updaters">The updaters.</param>
         /// <param name="options">The options.</param>
         /// <returns>ModelNodesGeneratorUpdaters.</returns>
-        public static ModelNodesGeneratorUpdaters UseApplicationWinOptions(this ModelNodesGeneratorUpdaters updaters, ApplicationWinOptions options)
+        public static ModelNodesGeneratorUpdaters UseNavigationWinOptions(this ModelNodesGeneratorUpdaters updaters, NavigationWinOptions options)
         {
             _ = updaters ?? throw new ArgumentNullException(nameof(updaters));
             _ = options ?? throw new ArgumentNullException(nameof(options));
 
-            updaters.Add(new ModelOptionsWinNodesGeneratorUpdater(options));
+            updaters.Add(new ModelNavigationItemWinNodesGeneratorUpdater(options));
             return updaters;
         }
 
         /// <summary>
-        /// Uses the application win options.
+        /// Uses the navigation win options.
         /// </summary>
         /// <param name="updaters">The updaters.</param>
         /// <param name="options">The options.</param>
         /// <returns>ModelNodesGeneratorUpdaters.</returns>
-        public static ModelNodesGeneratorUpdaters UseApplicationWinOptions(this ModelNodesGeneratorUpdaters updaters, Func<ApplicationWinOptions, ApplicationWinOptions> options)
+        public static ModelNodesGeneratorUpdaters UseApplicationWinOptions(this ModelNodesGeneratorUpdaters updaters, Func<NavigationWinOptions, NavigationWinOptions> options)
         {
             _ = options ?? throw new ArgumentNullException(nameof(options));
-            return updaters.UseApplicationWinOptions(options(new()));
+            return updaters.UseNavigationWinOptions(options(new()));
         }
     }
 }

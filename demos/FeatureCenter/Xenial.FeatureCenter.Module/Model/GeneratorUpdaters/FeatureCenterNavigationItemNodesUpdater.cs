@@ -7,8 +7,6 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.SystemModule;
 
-using Xenial.Framework.Badges.Model;
-
 namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
 {
     public sealed partial class FeatureCenterNavigationItemNodesUpdater : ModelNodesGeneratorUpdater<NavigationItemNodeGenerator>

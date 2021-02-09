@@ -1,15 +1,9 @@
-﻿using Bogus;
-
-using DevExpress.ExpressApp;
-using DevExpress.Persistent.Base;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
-using Xenial.Framework;
+using Bogus;
 
 using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
 

@@ -2,19 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.SystemModule;
-using DevExpress.Utils.DPI;
 using DevExpress.Utils.Drawing;
-using DevExpress.Utils.Filtering.Internal;
 using DevExpress.Utils.VisualEffects;
 using DevExpress.XtraBars.Navigation;
-using DevExpress.XtraEditors.Senders;
-using DevExpress.XtraRichEdit.API.Native;
 
 using Xenial.Framework.Badges.Win.Helpers;
 
