@@ -6,6 +6,7 @@ using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.ConditionalAppearance;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model.Core;
+using DevExpress.ExpressApp.Templates.ActionContainers;
 using DevExpress.ExpressApp.Updating;
 
 using Xenial.FeatureCenter.Module.BusinessObjects;
@@ -61,6 +62,10 @@ namespace Xenial.FeatureCenter.Module
             updaters.UseSingletonNavigationItems();
             updaters.UseNoViewsGeneratorUpdater();
             updaters.UseDetailViewLayoutBuilders();
+            updaters.UseNavigationOptions(o => o with
+            {
+                NavigationStyle = NavigationStyle.Accordion
+            });
         }
 
         public override void Setup(XafApplication application)
@@ -76,7 +81,6 @@ namespace Xenial.FeatureCenter.Module
 
             typesInfo.RemoveXafViewsFromApplicationModel();
             typesInfo.RemoveXpoViewsFromApplicationModel();
-
 
             typesInfo
                 .CreateModelBuilder<FeatureCenterEditorsBaseObjectModelBuilder>()

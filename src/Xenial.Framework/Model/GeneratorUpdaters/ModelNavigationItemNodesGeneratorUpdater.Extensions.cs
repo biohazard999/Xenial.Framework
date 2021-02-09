@@ -10,16 +10,16 @@ namespace DevExpress.ExpressApp.Model.Core
     public static partial class ModelNodesGeneratorUpdaterLayoutBuilderExtentions
     {
         /// <summary>
-        /// Uses the application options.
+        /// Uses the navigation options.
         /// </summary>
         /// <param name="updaters">The updaters.</param>
         /// <param name="options">The options.</param>
         /// <returns>ModelNodesGeneratorUpdaters.</returns>
-        public static ModelNodesGeneratorUpdaters UseApplicationOptions(this ModelNodesGeneratorUpdaters updaters, ApplicationOptions options)
+        public static ModelNodesGeneratorUpdaters UseNavigationOptions(this ModelNodesGeneratorUpdaters updaters, NavigationOptions options)
         {
             _ = updaters ?? throw new ArgumentNullException(nameof(updaters));
             _ = options ?? throw new ArgumentNullException(nameof(options));
-            updaters.Add(new ModelOptionsNodesGeneratorUpdater(options));
+            updaters.Add(new ModelNavigationItemNodesGeneratorUpdater(options));
             return updaters;
         }
 
@@ -29,10 +29,10 @@ namespace DevExpress.ExpressApp.Model.Core
         /// <param name="updaters">The updaters.</param>
         /// <param name="options">The options.</param>
         /// <returns>ModelNodesGeneratorUpdaters.</returns>
-        public static ModelNodesGeneratorUpdaters UseApplicationOptions(this ModelNodesGeneratorUpdaters updaters, Func<ApplicationOptions, ApplicationOptions> options)
+        public static ModelNodesGeneratorUpdaters UseNavigationOptions(this ModelNodesGeneratorUpdaters updaters, Func<NavigationOptions, NavigationOptions> options)
         {
             _ = options ?? throw new ArgumentNullException(nameof(options));
-            return updaters.UseApplicationOptions(options(new()));
+            return updaters.UseNavigationOptions(options(new()));
         }
     }
 }
