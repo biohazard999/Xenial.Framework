@@ -13,6 +13,7 @@ using DevExpress.Utils.Drawing;
 using DevExpress.Utils.Filtering.Internal;
 using DevExpress.Utils.VisualEffects;
 using DevExpress.XtraBars.Navigation;
+using DevExpress.XtraRichEdit.API.Native;
 
 using Xenial.Framework.Badges.Win.Helpers;
 
@@ -23,6 +24,8 @@ namespace Xenial.Framework.Badges.Win.Adapters
         private readonly AccordionControl accordionControl;
         private readonly Dictionary<ChoiceActionItem, AccordionControlElement> accordionElementCollection = new();
         private readonly Dictionary<AccordionControlForm, AdornerUIManager> accordionControlFormCollection = new();
+        private readonly Dictionary<ChoiceActionItem, AccordionControlElement> popupAccordionElementCollection = new();
+
         protected override Control DefaultTargetElement => accordionControl;
 
         internal AccordionAdornerAdapter(AccordionControl accordionControl) : base(new AdornerUIManager())
@@ -77,6 +80,8 @@ namespace Xenial.Framework.Badges.Win.Adapters
             AdornerUIManager.BeginUpdate();
             try
             {
+                UpdatePopupPadges();
+
                 if (accordionControl.GetViewInfo() is AccordionControlViewInfo accordionControlViewInfo)
                 {
                     foreach (var (choiceActionItem, accordionElement) in accordionElementCollection)
@@ -111,99 +116,6 @@ namespace Xenial.Framework.Badges.Win.Adapters
                                     var height = badgeViewInfo.Bounds.Height;
                                     var width = badgeViewInfo.Bounds.Width;
                                     badge.Properties.Offset = new Point(rect.Right + width / 2, rect.Top + rect.Height / 2);
-
-                                    var popupForm = accordionControl.GetPopupForm();
-
-                                    if (popupForm is not null)
-                                    {
-                                        if (!accordionControl.IsPopupFormShown)
-                                        {
-                                            //popupForm.Shown -= Shown;
-                                            popupForm.Shown += Shown;
-                                            popupForm.Activated += Shown;
-                                            popupForm.Deactivate += Deactivate;
-
-                                            void Shown(object sender, EventArgs e)
-                                            {
-                                                DoShit();
-                                            }
-
-                                            void Deactivate(object sender, EventArgs e)
-                                            {
-
-                                            }
-                                        }
-                                        else
-                                        {
-                                            DoShit();
-                                        }
-                                        void DoShit()
-                                        {
-                                            if (popupForm is null)
-                                            {
-                                                return;
-                                            }
-
-                                            if (!accordionControlFormCollection.TryGetValue(popupForm, out var adornerPopupMgr) && adornerPopupMgr is null)
-                                            {
-                                                adornerPopupMgr = new AdornerUIManager();
-                                                adornerPopupMgr.Owner = popupForm;
-                                                accordionControlFormCollection[popupForm] = adornerPopupMgr;
-
-                                                popupForm.Disposed -= PopupFormDisposed;
-                                                popupForm.Disposed += PopupFormDisposed;
-                                                void PopupFormDisposed(object sender, EventArgs e)
-                                                {
-                                                    popupForm.Disposed -= PopupFormDisposed;
-                                                    accordionControlFormCollection.Remove(popupForm);
-                                                }
-                                            }
-                                            if (accordionControlFormCollection.TryGetValue(popupForm, out var adornerPopupManager))
-                                            {
-                                                var popupAccordion = popupForm.Controls.OfType<AccordionControl>().FirstOrDefault();
-
-                                                var popupAccordionElementCollection = new Dictionary<ChoiceActionItem, AccordionControlElement>();
-
-                                                CollectPopupElements(popupAccordionElementCollection, popupAccordion.Elements);
-                                                void CollectPopupElements(
-                                                    Dictionary<ChoiceActionItem, AccordionControlElement> collection,
-                                                    AccordionControlElementCollection elements
-                                                    )
-                                                {
-                                                    foreach (var element in elements)
-                                                    {
-                                                        if (element.Tag is ChoiceActionItem choiceActionItem)
-                                                        {
-                                                            if (BadgeCollection.ContainsKey(choiceActionItem))
-                                                            {
-                                                                collection[choiceActionItem] = element;
-                                                            }
-                                                        }
-                                                        CollectPopupElements(collection, element.Elements);
-                                                    }
-                                                }
-                                                if (popupAccordionElementCollection.TryGetValue(choiceActionItem, out var popupAccordionControlElement))
-                                                {
-                                                    if (popupAccordion.GetViewInfo() is AccordionControlViewInfo popupAccordionControlViewInfo)
-                                                    {
-                                                        if (BadgeCollection.TryGetValue(choiceActionItem, out var badge))
-                                                        {
-                                                            var elViewInfo = popupAccordionControlViewInfo.GetElementInfo(popupAccordionControlElement);
-                                                            if (elViewInfo is not null)
-                                                            {
-                                                                var popupBadge = (Badge)badge.Clone();
-                                                                popupBadge.TargetElement = popupAccordion;
-                                                                adornerPopupManager.Elements.Add(popupBadge);
-                                                                var popupRect = elViewInfo.TextBounds;
-                                                                popupBadge.Visible = true;
-                                                                popupBadge.Properties.Offset = new Point(popupRect.Right + width / 2, popupRect.Top + popupRect.Height / 2);
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
                                 }
                             }
                         }
@@ -216,6 +128,147 @@ namespace Xenial.Framework.Badges.Win.Adapters
             }
         }
 
+        private void UpdatePopupPadges()
+        {
+            var popupForm = accordionControl.GetPopupForm();
+
+            if (popupForm is not null)
+            {
+                if (!accordionControl.IsPopupFormShown)
+                {
+                    AttachToPopupEvents(popupForm);
+                }
+            }
+        }
+
+        private void AttachToPopupEvents(AccordionControlForm popupForm)
+        {
+            if (!accordionControlFormCollection.TryGetValue(popupForm, out var adornerPopupMgr) && adornerPopupMgr is null)
+            {
+                adornerPopupMgr = new AdornerUIManager();
+                adornerPopupMgr.Owner = popupForm;
+                accordionControlFormCollection[popupForm] = adornerPopupMgr;
+
+                Dispose(() => popupForm.Disposed -= PopupFormDisposed);
+                popupForm.Disposed -= PopupFormDisposed;
+                popupForm.Disposed += PopupFormDisposed;
+                void PopupFormDisposed(object sender, EventArgs e)
+                {
+                    popupForm.Disposed -= PopupFormDisposed;
+                    accordionControlFormCollection.Remove(popupForm);
+                }
+            }
+
+            Dispose(() => popupForm.Shown -= PopupForm_Shown);
+            popupForm.Shown -= PopupForm_Shown;
+            popupForm.Shown += PopupForm_Shown;
+
+            Dispose(() => popupForm.Activated -= PopupForm_Shown);
+            popupForm.Activated -= PopupForm_Shown;
+            popupForm.Activated += PopupForm_Shown;
+
+            Dispose(() => popupForm.Deactivate -= PopupForm_Deactivate);
+            popupForm.Deactivate -= PopupForm_Deactivate;
+            popupForm.Deactivate += PopupForm_Deactivate;
+
+            Dispose(() => popupForm.FormClosed -= PopupForm_Deactivate);
+            popupForm.FormClosed -= PopupForm_Deactivate;
+            popupForm.FormClosed += PopupForm_Deactivate;
+        }
+
+        private void PopupForm_Shown(object sender, EventArgs e)
+        {
+            if (sender is AccordionControlForm popupForm)
+            {
+                var popupAccordion = popupForm.Controls.OfType<AccordionControl>().FirstOrDefault();
+
+                if (
+                    popupAccordion is not null
+                    && accordionControlFormCollection.TryGetValue(popupForm, out var adornerPopupManager)
+                )
+                {
+                    adornerPopupManager.BeginUpdate();
+                    try
+                    {
+                        CollectPopupElements(popupAccordion.Elements);
+
+                        foreach (var (choiceActionItem, popupAccordionControlElement) in popupAccordionElementCollection)
+                        {
+                            if (popupAccordion.GetViewInfo() is AccordionControlViewInfo popupAccordionControlViewInfo)
+                            {
+                                if (BadgeCollection.TryGetValue(choiceActionItem, out var badge))
+                                {
+                                    var elViewInfo = popupAccordionControlViewInfo.GetElementInfo(popupAccordionControlElement);
+                                    if (elViewInfo is not null)
+                                    {
+                                        var popupBadge = (Badge)badge.Clone();
+                                        popupBadge.TargetElement = popupAccordion;
+                                        adornerPopupManager.Elements.Add(popupBadge);
+                                        var popupRect = elViewInfo.TextBounds;
+                                        popupBadge.Visible = true;
+
+                                        var badgeViewInfo = popupBadge.GetViewInfo();
+
+                                        if (badgeViewInfo is not null)
+                                        {
+                                            if (badgeViewInfo.Cache is null)
+                                            {
+                                                using (var graphics = accordionControl.CreateGraphics())
+                                                {
+                                                    badgeViewInfo.Calc(new GraphicsCache(new DXPaintEventArgs(graphics)), popupRect);
+                                                }
+                                            }
+
+                                            var width = badgeViewInfo.Bounds.Width;
+
+                                            popupBadge.Properties.Offset = new Point(popupRect.Right + width / 2, popupRect.Top + popupRect.Height / 2);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        adornerPopupManager.EndUpdate();
+                    }
+                }
+            }
+        }
+        private void CollectPopupElements(AccordionControlElementCollection elements)
+        {
+            foreach (var element in elements)
+            {
+                if (element.Tag is ChoiceActionItem choiceActionItem)
+                {
+                    if (BadgeCollection.ContainsKey(choiceActionItem))
+                    {
+                        popupAccordionElementCollection[choiceActionItem] = element;
+                    }
+                }
+                CollectPopupElements(element.Elements);
+            }
+        }
+
+        private void PopupForm_Deactivate(object sender, EventArgs e)
+        {
+            popupAccordionElementCollection.Clear();
+            if (sender is AccordionControlForm popupForm)
+            {
+                if (accordionControlFormCollection.TryGetValue(popupForm, out var popupAdornerUIManager))
+                {
+                    popupAdornerUIManager.BeginUpdate();
+                    try
+                    {
+                        popupAdornerUIManager.Elements.Clear();
+                    }
+                    finally
+                    {
+                        popupAdornerUIManager.EndUpdate();
+                    }
+                }
+            }
+        }
 
         private void CollectElements(AccordionControlElementCollection elements)
         {
