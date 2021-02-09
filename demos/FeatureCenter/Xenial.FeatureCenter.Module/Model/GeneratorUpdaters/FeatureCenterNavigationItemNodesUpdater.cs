@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.SystemModule;
+
+using Xenial.Framework.Badges.Model;
 
 namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
 {
@@ -54,6 +57,19 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                         if (newNavItem is IModelBaseChoiceActionItem newChoiceActionItem && navItem is IModelBaseChoiceActionItem choiceActionItem)
                         {
                             newChoiceActionItem.Caption = choiceActionItem.Caption;
+                        }
+
+                        if (newNavItem.View is IModelObjectView objectView && objectView.ModelClass.TypeInfo.IsAttributeDefined<FeatureStatusAttribute>(true))
+                        {
+                            var attribute = objectView.ModelClass.TypeInfo.FindAttribute<FeatureStatusAttribute>(true);
+                            if (attribute is not null)
+                            {
+                                newNavItem.SetXenialStaticBadgeProperties(modelBadgeStaticTextItem =>
+                                {
+                                    modelBadgeStaticTextItem.XenialBadgeStaticText = attribute.BadgeText;
+                                    modelBadgeStaticTextItem.XenialBadgeStaticPaintStyle = attribute.BadgePaintStyle;
+                                });
+                            }
                         }
                     }
                 }

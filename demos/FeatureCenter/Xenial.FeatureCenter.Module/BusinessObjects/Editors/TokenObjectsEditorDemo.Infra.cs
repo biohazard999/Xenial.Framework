@@ -9,6 +9,7 @@ using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [GenerateNoView("TokenObjectsEditorDemoTokens_TokenObjectsEditorDemos_ListView")]
+    [FeatureStatusAlpha]
     public partial class TokenObjectsEditorDemo
     {
         protected override string DemoCodeFileName => "demos/FeatureCenter/Xenial.FeatureCenter.Module/BusinessObjects/Editors/TokenObjectsEditorDemo.cs";

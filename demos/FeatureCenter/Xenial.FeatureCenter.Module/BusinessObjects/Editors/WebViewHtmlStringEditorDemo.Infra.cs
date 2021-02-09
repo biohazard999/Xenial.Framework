@@ -6,6 +6,7 @@ using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
+    [FeatureStatusLab]
     public partial class WebViewHtmlStringEditorDemo
     {
         protected override string DemoCodeFileName => "demos/FeatureCenter/Xenial.FeatureCenter.Module/BusinessObjects/Editors/WebViewHtmlStringEditorDemo.cs";

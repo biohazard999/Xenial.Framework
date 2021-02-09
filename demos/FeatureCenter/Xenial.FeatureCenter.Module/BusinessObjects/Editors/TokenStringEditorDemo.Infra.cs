@@ -15,6 +15,7 @@ using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
+    [FeatureStatusBeta]
     public partial class TokenStringEditorDemo
     {
         protected override string DemoCodeFileName => "demos/FeatureCenter/Xenial.FeatureCenter.Module/BusinessObjects/Editors/TokenStringEditorDemo.cs";

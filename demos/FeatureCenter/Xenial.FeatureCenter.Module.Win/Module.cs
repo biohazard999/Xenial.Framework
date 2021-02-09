@@ -44,6 +44,7 @@ namespace Xenial.FeatureCenter.Module.Win
             {
                 EnableHtmlFormatting = true,
                 FormStyle = DevExpress.XtraBars.Ribbon.RibbonFormStyle.Ribbon,
+                UIType = UIType.TabbedMDI,
                 RibbonOptions =
                 {
                     RibbonControlStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.OfficeUniversal
