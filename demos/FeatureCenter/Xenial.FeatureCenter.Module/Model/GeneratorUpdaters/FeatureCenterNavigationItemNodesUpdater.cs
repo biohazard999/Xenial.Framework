@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using DevExpress.Data.Extensions;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
@@ -14,7 +15,8 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
         private static readonly Dictionary<string, string> imageNames = new()
         {
             ["ModelBuilders"] = "direction1",
-            ["Editors"] = "EditNames"
+            ["Editors"] = "EditNames",
+            ["Badges"] = "BringToFrontOfText",
         };
 
         public override void UpdateNode(ModelNode node)
@@ -70,6 +72,12 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                             }
                         }
                     }
+                }
+
+                var rootCaptionNames = imageNames.Keys.ToArray();
+                foreach (var item in rootNavigationItems.Items)
+                {
+                    item.Index = Array.IndexOf(rootCaptionNames, item.Caption);
                 }
             }
 

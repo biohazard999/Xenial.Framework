@@ -11,6 +11,7 @@ using DevExpress.ExpressApp.Templates.ActionContainers;
 using DevExpress.ExpressApp.Updating;
 
 using Xenial.FeatureCenter.Module.BusinessObjects;
+using Xenial.FeatureCenter.Module.BusinessObjects.Badges;
 using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
 using Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders;
 using Xenial.FeatureCenter.Module.Model.GeneratorUpdaters;
@@ -145,6 +146,19 @@ namespace Xenial.FeatureCenter.Module
 
             typesInfo
                 .CreateModelBuilder<ModelBuilderIntroductionDemoBuilder>()
+                .Build();
+
+            #endregion
+
+
+            #region Badges
+
+            typesInfo
+                .CreateModelBuilder<FeatureCenterBadgesBaseObjectModelBuilder>()
+                .Build();
+
+            typesInfo
+                .CreateModelBuilder<BadgesIntroductionDemoModelBuilder>()
                 .Build();
 
             #endregion
