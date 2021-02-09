@@ -22,9 +22,9 @@ using Xenial.Framework.Badges.Win.Helpers;
 
 using static Xenial.Framework.Badges.Win.Helpers.ModelMapperExtensions;
 
-namespace Xenial.FeatureCenter.Module.Win
+namespace Xenial.Framework.Badges.Win
 {
-    public class AdornerWindowsFormsCustomizeNavigationController : WindowController
+    public sealed class AdornerWindowsFormsCustomizeNavigationController : WindowController
     {
         private readonly DisposableList disposables = new();
         private readonly List<IAdornerAdapter> adornerAdapters = new();
@@ -41,6 +41,10 @@ namespace Xenial.FeatureCenter.Module.Win
             {
                 showNavigationItemController.ShowNavigationItemAction.CustomizeControl -= ShowNavigationItemAction_CustomizeControl;
                 showNavigationItemController.ShowNavigationItemAction.CustomizeControl += ShowNavigationItemAction_CustomizeControl;
+                foreach (var adornerAdapter in adornerAdapters)
+                {
+                    adornerAdapter.Enable(showNavigationItemController);
+                }
             }
         }
 
@@ -147,14 +151,13 @@ namespace Xenial.FeatureCenter.Module.Win
                 // Customize TreeList in old templates and new templates with UseLightStyle set to false
             }
         }
+
         protected override void OnDeactivated()
         {
             foreach (var adornerAdapter in adornerAdapters)
             {
                 adornerAdapter.Disable();
             }
-
-            disposables.Dispose();
 
             var showNavigationItemController = Frame.GetController<ShowNavigationItemController>();
             if (showNavigationItemController is not null)
@@ -163,6 +166,15 @@ namespace Xenial.FeatureCenter.Module.Win
             }
 
             base.OnDeactivated();
+        }
+
+        public void Destroy()
+            => disposables.Dispose();
+
+        protected override void Dispose(bool disposing)
+        {
+            Destroy();
+            base.Dispose(disposing);
         }
     }
 }

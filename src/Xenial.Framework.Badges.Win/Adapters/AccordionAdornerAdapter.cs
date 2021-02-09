@@ -211,7 +211,6 @@ namespace Xenial.Framework.Badges.Win.Adapters
             }
         }
 
-
         private void UpdatePopupBadges(AccordionControlForm popupForm, AccordionControl popupAccordion, AdornerUIManager adornerPopupManager)
         {
             adornerPopupManager.BeginUpdate();

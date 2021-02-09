@@ -81,6 +81,8 @@ namespace Xenial.Framework.Badges.Win.Adapters
 
             void NeedInvoke(object sender, EventArgs e)
                 => BeginInvokeUpdateBadges();
+
+            BeginInvokeAction(() => UpdateBadges(true));
         }
 
         private void BeginInvokeUpdateBadges()
