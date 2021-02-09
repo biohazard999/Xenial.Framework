@@ -13,6 +13,7 @@ using DevExpress.Utils.Drawing;
 using DevExpress.Utils.Filtering.Internal;
 using DevExpress.Utils.VisualEffects;
 using DevExpress.XtraBars.Navigation;
+using DevExpress.XtraEditors.Senders;
 using DevExpress.XtraRichEdit.API.Native;
 
 using Xenial.Framework.Badges.Win.Helpers;
@@ -70,6 +71,8 @@ namespace Xenial.Framework.Badges.Win.Adapters
 
             void NeedInvoke(object sender, EventArgs e)
                 => BeginInvokeUpdateBadges();
+
+            BeginInvokeUpdateBadges();
         }
 
         private void BeginInvokeUpdateBadges()
@@ -80,7 +83,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             AdornerUIManager.BeginUpdate();
             try
             {
-                UpdatePopupPadges();
+                UpdatePopup();
 
                 if (accordionControl.GetViewInfo() is AccordionControlViewInfo accordionControlViewInfo)
                 {
@@ -128,7 +131,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             }
         }
 
-        private void UpdatePopupPadges()
+        private void UpdatePopup()
         {
             var popupForm = accordionControl.GetPopupForm();
 
@@ -187,54 +190,82 @@ namespace Xenial.Framework.Badges.Win.Adapters
                     && accordionControlFormCollection.TryGetValue(popupForm, out var adornerPopupManager)
                 )
                 {
-                    adornerPopupManager.BeginUpdate();
-                    try
-                    {
-                        CollectPopupElements(popupAccordion.Elements);
+                    Dispose(() => popupAccordion.FilterContent -= FilterPopupAccordion);
+                    popupAccordion.FilterContent -= FilterPopupAccordion;
+                    popupAccordion.FilterContent += FilterPopupAccordion;
+                    Dispose(() => accordionControl.ExpandStateChanged -= FilterPopupAccordion);
+                    popupAccordion.ExpandStateChanged -= FilterPopupAccordion;
+                    popupAccordion.ExpandStateChanged += FilterPopupAccordion;
 
-                        foreach (var (choiceActionItem, popupAccordionControlElement) in popupAccordionElementCollection)
+                    void FilterPopupAccordion(object sender, EventArgs e)
+                        => BeginInvokeAction(() =>
                         {
-                            if (popupAccordion.GetViewInfo() is AccordionControlViewInfo popupAccordionControlViewInfo)
+                            adornerPopupManager.BeginUpdate();
+                            try
                             {
-                                if (BadgeCollection.TryGetValue(choiceActionItem, out var badge))
+                                adornerPopupManager.Elements.Clear();
+                            }
+                            finally
+                            {
+                                adornerPopupManager.EndUpdate();
+                            }
+                            UpdatePopupBadges(popupForm, popupAccordion, adornerPopupManager);
+                        });
+
+                    UpdatePopupBadges(popupForm, popupAccordion, adornerPopupManager);
+                }
+            }
+        }
+
+
+        private void UpdatePopupBadges(AccordionControlForm popupForm, AccordionControl popupAccordion, AdornerUIManager adornerPopupManager)
+        {
+            adornerPopupManager.BeginUpdate();
+            try
+            {
+                CollectPopupElements(popupAccordion.Elements);
+
+                foreach (var (choiceActionItem, popupAccordionControlElement) in popupAccordionElementCollection)
+                {
+                    if (popupAccordion.GetViewInfo() is AccordionControlViewInfo popupAccordionControlViewInfo)
+                    {
+                        if (BadgeCollection.TryGetValue(choiceActionItem, out var badge))
+                        {
+                            var elViewInfo = popupAccordionControlViewInfo.GetElementInfo(popupAccordionControlElement);
+                            if (elViewInfo is not null)
+                            {
+                                var popupBadge = (Badge)badge.Clone();
+                                popupBadge.TargetElement = popupAccordion;
+                                adornerPopupManager.Elements.Add(popupBadge);
+                                var popupRect = elViewInfo.TextBounds;
+                                popupBadge.Visible = popupAccordionControlElement.IsVisible;
+                                var badgeViewInfo = popupBadge.GetViewInfo();
+
+                                if (badgeViewInfo is not null)
                                 {
-                                    var elViewInfo = popupAccordionControlViewInfo.GetElementInfo(popupAccordionControlElement);
-                                    if (elViewInfo is not null)
+                                    if (badgeViewInfo.Cache is null)
                                     {
-                                        var popupBadge = (Badge)badge.Clone();
-                                        popupBadge.TargetElement = popupAccordion;
-                                        adornerPopupManager.Elements.Add(popupBadge);
-                                        var popupRect = elViewInfo.TextBounds;
-                                        popupBadge.Visible = true;
-
-                                        var badgeViewInfo = popupBadge.GetViewInfo();
-
-                                        if (badgeViewInfo is not null)
+                                        using (var graphics = accordionControl.CreateGraphics())
                                         {
-                                            if (badgeViewInfo.Cache is null)
-                                            {
-                                                using (var graphics = accordionControl.CreateGraphics())
-                                                {
-                                                    badgeViewInfo.Calc(new GraphicsCache(new DXPaintEventArgs(graphics)), popupRect);
-                                                }
-                                            }
-
-                                            var width = badgeViewInfo.Bounds.Width;
-
-                                            popupBadge.Properties.Offset = new Point(popupRect.Right + width / 2, popupRect.Top + popupRect.Height / 2);
+                                            badgeViewInfo.Calc(new GraphicsCache(new DXPaintEventArgs(graphics)), popupRect);
                                         }
                                     }
+
+                                    var width = badgeViewInfo.Bounds.Width;
+
+                                    popupBadge.Properties.Offset = new Point(popupRect.Right + width / 2, popupRect.Top + popupRect.Height / 2);
                                 }
                             }
                         }
                     }
-                    finally
-                    {
-                        adornerPopupManager.EndUpdate();
-                    }
                 }
             }
+            finally
+            {
+                adornerPopupManager.EndUpdate();
+            }
         }
+
         private void CollectPopupElements(AccordionControlElementCollection elements)
         {
             foreach (var element in elements)
