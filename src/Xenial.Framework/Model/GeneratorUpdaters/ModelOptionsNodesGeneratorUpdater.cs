@@ -39,7 +39,8 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 options.LookupSmallCollectionItemCount = Options.LookupSmallCollectionItemCount ??
                     options.LookupSmallCollectionItemCount;
 
-                options.DataAccessMode = Options.DataAccessMode ?? options.DataAccessMode;
+                options.DataAccessMode = Options.DataAccessMode ??
+                    options.DataAccessMode;
 
                 options.LayoutManagerOptions.CaptionColon = Options.Layout.CaptionColon ??
                     options.LayoutManagerOptions.CaptionColon;

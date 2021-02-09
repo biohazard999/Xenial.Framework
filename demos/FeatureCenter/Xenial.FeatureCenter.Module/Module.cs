@@ -59,13 +59,35 @@ namespace Xenial.FeatureCenter.Module
 
             updaters.Add(new FeatureCenterNavigationItemNodesUpdater());
 
-            updaters.UseSingletonNavigationItems();
-            updaters.UseNoViewsGeneratorUpdater();
-            updaters.UseDetailViewLayoutBuilders();
-            updaters.UseNavigationOptions(o => o with
+            updaters
+                .UseSingletonNavigationItems()
+                .UseNoViewsGeneratorUpdater()
+                .UseDetailViewLayoutBuilders()
+                .UseNavigationOptions(o => o with
+                {
+                    NavigationStyle = NavigationStyle.Accordion
+                })
+                .UseAppOptions(o => o with
+                {
+                    Title = "Xenial.FeatureCenter",
+                    Company = "Fa. Manuel Grundner, xenial.io",
+                    Logo = "xenial",
+                    Copyright = $"© Fa. Manuel Grundner, xenial.io 2018-{DateTime.Today.Year}<br>{Chipmunkify()}"
+                });
+        }
+
+        string Chipmunkify(int size = 20)
+        {
+            var colors = new[]
             {
-                NavigationStyle = NavigationStyle.Accordion
-            });
+                "red",
+                "orange",
+                "yellow",
+                "green",
+                "indigo",
+                "violet",
+            };
+            return string.Join(string.Empty, colors.Select(color => $"<size={size}><color={color}>🐿</color></size>"));
         }
 
         public override void Setup(XafApplication application)

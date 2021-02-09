@@ -11,6 +11,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\xenial.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\xenial.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.1" />
   </ItemGroup>
 
