@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.ConditionalAppearance;
@@ -76,7 +77,7 @@ namespace Xenial.FeatureCenter.Module
                 });
         }
 
-        string Chipmunkify(int size = 20)
+        private static string Chipmunkify(int size = 20)
         {
             var colors = new[]
             {
