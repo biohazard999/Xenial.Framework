@@ -6,7 +6,7 @@ namespace Xenial.Framework.Win.Model.GeneratorUpdaters
     /// <summary>
     /// Class RibbonOptions.
     /// </summary>
-    public class RibbonOptions
+    public record RibbonOptions
     {
         /// <summary>
         /// Specifies the style of the Ribbon UI when it is enabled via the DevExpress.ExpressApp.Win.SystemModule.IModelOptionsWin.FormStyle property.

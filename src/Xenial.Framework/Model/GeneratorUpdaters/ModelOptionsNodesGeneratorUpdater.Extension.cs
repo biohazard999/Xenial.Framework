@@ -18,7 +18,22 @@ namespace DevExpress.ExpressApp.Model.Core
         public static ModelNodesGeneratorUpdaters UseApplicationOptions(this ModelNodesGeneratorUpdaters updaters, ApplicationOptions options)
         {
             _ = updaters ?? throw new ArgumentNullException(nameof(updaters));
+            _ = options ?? throw new ArgumentNullException(nameof(options));
             updaters.Add(new ModelOptionsNodesGeneratorUpdater(options));
+            return updaters;
+        }
+
+        /// <summary>
+        /// Uses the application options.
+        /// </summary>
+        /// <param name="updaters">The updaters.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>ModelNodesGeneratorUpdaters.</returns>
+        public static ModelNodesGeneratorUpdaters UseApplicationOptions(this ModelNodesGeneratorUpdaters updaters, Func<ApplicationOptions, ApplicationOptions> options)
+        {
+            _ = updaters ?? throw new ArgumentNullException(nameof(updaters));
+            _ = options ?? throw new ArgumentNullException(nameof(options));
+            updaters.Add(new ModelOptionsNodesGeneratorUpdater(options(new())));
             return updaters;
         }
     }

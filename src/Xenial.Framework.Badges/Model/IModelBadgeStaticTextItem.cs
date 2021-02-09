@@ -37,7 +37,22 @@ namespace Xenial.Framework.Badges.Model
     }
 }
 
-
+namespace DevExpress.ExpressApp.SystemModule
+{
+    public static partial class IModelNavigationItemExtensions
+    {
+        public static IModelNavigationItem SetXenialStaticBadgeProperties(this IModelNavigationItem modelNavigationItem, Action<IXenialModelBadgeStaticTextItem> options)
+        {
+            _ = modelNavigationItem ?? throw new ArgumentNullException(nameof(modelNavigationItem));
+            _ = options ?? throw new ArgumentNullException(nameof(options));
+            if (modelNavigationItem is IXenialModelBadgeStaticTextItem modelBadgeStaticTextItem)
+            {
+                options(modelBadgeStaticTextItem);
+            }
+            return modelNavigationItem;
+        }
+    }
+}
 
 namespace DevExpress.ExpressApp.Model
 {

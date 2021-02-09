@@ -12,8 +12,10 @@ namespace Xenial.Framework.Win.Model.GeneratorUpdaters
     /// Implements the <see cref="Xenial.Framework.Model.GeneratorUpdaters.ApplicationOptions" />
     /// </summary>
     /// <seealso cref="Xenial.Framework.Model.GeneratorUpdaters.ApplicationOptions" />
-    public class ApplicationWinOptions : ApplicationOptions
+    public record ApplicationWinOptions : ApplicationOptions
     {
+        private RibbonOptions ribbonOptions = new RibbonOptions();
+
         /// <summary>
         /// Specifies whether the Standard UI or Ribbon UI is used in the Windows Forms Application.
         /// </summary>
@@ -24,7 +26,11 @@ namespace Xenial.Framework.Win.Model.GeneratorUpdaters
         /// Provides access to the RibbonOptions child node.
         /// </summary>
         /// <value>The ribbon options.</value>
-        public RibbonOptions RibbonOptions { get; set; } = new RibbonOptions();
+        public RibbonOptions RibbonOptions
+        {
+            get => ribbonOptions;
+            set => ribbonOptions = value ?? throw new ArgumentNullException(nameof(RibbonOptions));
+        }
 
         /// <summary>
         /// Specifies the kind of a Window in which new Views should be invoked, when a multiple document interface is used.

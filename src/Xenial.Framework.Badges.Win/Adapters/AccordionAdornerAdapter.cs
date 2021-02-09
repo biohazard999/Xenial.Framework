@@ -146,7 +146,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
 
         private void AttachToPopupEvents(AccordionControlForm popupForm)
         {
-            if (!accordionControlFormCollection.TryGetValue(popupForm, out var adornerPopupMgr) && adornerPopupMgr is null)
+            if (!accordionControlFormCollection.TryGetValue(popupForm, out var adornerPopupMgr))
             {
                 adornerPopupMgr = new AdornerUIManager();
                 adornerPopupMgr.Owner = popupForm;

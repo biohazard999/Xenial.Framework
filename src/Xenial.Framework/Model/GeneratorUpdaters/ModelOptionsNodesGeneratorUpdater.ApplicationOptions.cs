@@ -7,7 +7,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
     /// <summary>
     /// Class ApplicationOptions.
     /// </summary>
-    public class ApplicationOptions
+    public record ApplicationOptions
     {
         /// <summary>
         /// Considered for reference properties that are displayed by a Lookup Property Editor<br/>
