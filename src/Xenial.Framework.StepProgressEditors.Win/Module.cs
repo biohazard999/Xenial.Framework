@@ -1,6 +1,5 @@
 ﻿using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Editors;
-using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Win.SystemModule;
 
 namespace Xenial.Framework.StepProgressEditors.Win

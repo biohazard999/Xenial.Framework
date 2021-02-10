@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Win.SystemModule;
@@ -24,5 +22,9 @@ namespace Xenial.Framework.Badges.Win
                 typeof(SystemWindowsFormsModule),
                 typeof(XenialBadgesModule)
             });
+
+        protected override IEnumerable<Type> GetDeclaredControllerTypes()
+            => base.GetDeclaredControllerTypes()
+                .UseXenialBadgesWindowsFormsControllerTypes();
     }
 }

@@ -26,7 +26,8 @@ namespace Xenial.FeatureCenter.Module.Win
                 typeof(XenialWebViewWindowsFormsModule),
 
                 typeof(XenialTokenEditorsWindowsFormsModule),
-                typeof(XenialStepProgressEditorsWindowsFormsModule)
+                typeof(XenialStepProgressEditorsWindowsFormsModule),
+                typeof(XenialBadgesWindowsFormsModule)
             );
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
@@ -35,10 +36,7 @@ namespace Xenial.FeatureCenter.Module.Win
                 typeof(OpenBlazorDemoWindowController),
                 typeof(HelpAndFeedbackWindowControllerWin),
                 typeof(StatusBarVersionWindowController),
-                typeof(BadgedFeatureController),
-
-                //TODO: CREATE MODULE
-                typeof(AdornerWindowsFormsCustomizeNavigationController)
+                typeof(BadgesFeatureController),
             });
 
         public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)

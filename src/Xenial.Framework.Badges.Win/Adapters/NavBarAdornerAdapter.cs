@@ -1,6 +1,4 @@
-﻿
-using DevExpress.ExpressApp.Actions;
-using DevExpress.ExpressApp.SystemModule;
+﻿using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Win.Templates.Navigation;
 using DevExpress.Utils.VisualEffects;
 using DevExpress.XtraNavBar;
@@ -9,7 +7,6 @@ using DevExpress.XtraNavBar.ViewInfo;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;

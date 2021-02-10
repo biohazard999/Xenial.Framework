@@ -9,11 +9,11 @@ using Xenial.Framework.Badges.Win;
 
 namespace Xenial.FeatureCenter.Module.Win
 {
-    public sealed class BadgedFeatureController : ViewController
+    public sealed class BadgesFeatureController : ViewController
     {
         public SimpleAction ToggleBadgesSimpleAction { get; }
         private bool showBadges = true;
-        public BadgedFeatureController()
+        public BadgesFeatureController()
         {
             TargetObjectType = typeof(BadgesIntroductionDemo);
             ToggleBadgesSimpleAction = new SimpleAction(this, nameof(ToggleBadgesSimpleAction), DevExpress.Persistent.Base.PredefinedCategory.View)
