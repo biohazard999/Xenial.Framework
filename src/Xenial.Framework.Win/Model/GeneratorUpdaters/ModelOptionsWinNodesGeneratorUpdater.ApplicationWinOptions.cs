@@ -45,12 +45,6 @@ namespace Xenial.Framework.Win.Model.GeneratorUpdaters
         public Type? Messaging { get; set; }
 
         /// <summary>
-        ///  Specifies the Show View Strategy (see DevExpress.ExpressApp.ShowViewStrategyBase) used in the WinForms application.
-        /// </summary>
-        /// <value>The type of the UI.</value>
-        public UIType? UIType { get; set; }
-
-        /// <summary>
         /// Specifies whether a business object's icon should be displayed in a tab in a WinForms application with the TabbedMDI UI type.
         /// </summary>
         /// <value><c>null</c> if [show tab image] contains no value, <c>true</c> if [show tab image]; otherwise, <c>false</c>.</value>
