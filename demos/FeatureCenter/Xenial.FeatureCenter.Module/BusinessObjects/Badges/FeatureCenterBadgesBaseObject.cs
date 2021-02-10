@@ -14,7 +14,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Badges
         public string Introduction => BuildHtml("Introduction", BuildIntroductionHtml());
 
         protected virtual string BuildIntroductionHtml()
-            => MarkDownBlock.FromResourceString("BusinessObjects/Badges/ModelBuilderIntroductionDemo.Introduction.md").ToString();
+            => MarkDownBlock.FromResourceString("BusinessObjects/Badges/BadgesIntroductionDemo.Introduction.md").ToString();
 
         public string Installation => BuildHtml("Installation", BuildInstallationHtml());
 
