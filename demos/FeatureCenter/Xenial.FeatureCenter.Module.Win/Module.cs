@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model.Core;
 
 using Xenial.FeatureCenter.Module.BusinessObjects;
@@ -47,12 +48,17 @@ namespace Xenial.FeatureCenter.Module.Win
             {
                 EnableHtmlFormatting = true,
                 FormStyle = DevExpress.XtraBars.Ribbon.RibbonFormStyle.Ribbon,
-                UIType = UIType.TabbedMDI,
                 RibbonOptions =
                 {
                     RibbonControlStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.OfficeUniversal
                 }
             });
+        }
+
+        public override void CustomizeLogics(CustomLogics customLogics)
+        {
+            base.CustomizeLogics(customLogics);
+            customLogics.UseUiType(UIType.TabbedMDI);
         }
     }
 }
