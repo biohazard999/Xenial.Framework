@@ -103,18 +103,20 @@ export function xenialAttachBadges(items) {
     applyBadgeItems(virtualNavigationControl);
   }
 
+  const delay = 50;
+
   applyBadges();
 
   setTimeout(() => {
     applyBadges();
-  }, 150);
+  }, delay);
 
   if (navMenu instanceof HTMLElement) {
     navMenu.onmouseup = () => {
       queueMicrotask(() => {
         setTimeout(() => {
           applyBadges();
-        }, 150);
+        }, delay);
       });
     }
   }
