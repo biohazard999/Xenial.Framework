@@ -137,7 +137,23 @@ namespace Xenial.Framework.Badges.Blazor
         protected override void OnDeactivated()
         {
             base.OnDeactivated();
-            _ = true;
+            if (Application is BlazorApplication blazorApplication)
+            {
+                if (blazorApplication.ServiceProvider.GetService(typeof(IJSRuntime)) is IJSRuntime jSRuntime)
+                {
+#if NET5_0
+                    jSRuntime.InvokeAsync<IJSObjectReference>("import", $"./_content/{GetType().Assembly.GetName().Name}/Xenial.Framework.Badges.Blazor.js").AsTask().ContinueWith(autoImportTask =>
+                    {
+                        if (autoImportTask.IsCompletedSuccessfully && autoImportTask.Result is IJSObjectReference jsObjectReference)
+                        {
+                            jsObjectReference.InvokeVoidAsync("xenialDeattachBadges").AsTask().Await(false);
+                        }
+                    }, TaskScheduler.Default);
+#else
+                    jSRuntime.InvokeVoidAsync("xenialDeattachBadges").AsTask().Await(false);
+#endif
+                }
+            }
         }
     }
 }

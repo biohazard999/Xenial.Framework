@@ -24,6 +24,18 @@ const queryItems = (el, nodes) => {
   }
 }
 
+let injectedItems = [];
+let virtualNavigationControl = [];
+
+let disposables = [];
+
+const clearBadges = () => {
+  for (const el of [...injectedItems]) {
+    injectedItems = injectedItems.filter(item => item !== el);
+    el.remove();
+  }
+}
+
 export function xenialAttachBadges(items) {
   const xenialStyles = document.getElementById("xenialBadgesStyles");
 
@@ -36,9 +48,6 @@ export function xenialAttachBadges(items) {
   items = items || [];
 
   const navMenu = document.querySelector(".xaf-navmenu");
-  let injectedItems = [];
-
-  let virtualNavigationControl = [];
 
   const queryNavigationControl = () => {
     virtualNavigationControl = [];
@@ -46,17 +55,7 @@ export function xenialAttachBadges(items) {
     queryItems(rootUl, virtualNavigationControl);
   }
 
-  const clearBadges = () => {
-    for (const el of [...injectedItems]) {
-      injectedItems = injectedItems.filter(item => item !== el);
-      el.remove();
-    }
-  }
-
   const applyBadge = (virtualNavItem) => {
-    if (virtualNavItem.badge) {
-      console.log(virtualNavItem.badge);
-    }
     if (virtualNavItem.badge && virtualNavItem.badge.badge) {
       const badge = document.createElement("div");
       badge.innerText = virtualNavItem.badge.badge;
@@ -112,12 +111,30 @@ export function xenialAttachBadges(items) {
   }, delay);
 
   if (navMenu instanceof HTMLElement) {
-    navMenu.onmouseup = () => {
+
+    const mouseUp = () => {
       queueMicrotask(() => {
         setTimeout(() => {
           applyBadges();
         }, delay);
       });
-    }
+    };
+
+    navMenu.addEventListener("mouseup", mouseUp);
+
+    disposables.push(() => {
+      navMenu.removeEventListener("mouseup", mouseUp);
+    });
   }
+}
+
+export function xenialDeattachBadges() {
+
+  clearBadges();
+
+  for (const disposable of disposables) {
+    disposable();
+  }
+
+  disposables = [];
 }
