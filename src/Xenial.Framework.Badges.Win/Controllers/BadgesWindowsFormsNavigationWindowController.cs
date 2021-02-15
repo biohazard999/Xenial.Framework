@@ -11,13 +11,10 @@ using Xenial.Framework.Badges.Win.Helpers;
 
 namespace Xenial.Framework.Badges.Win
 {
-    public sealed class AdornerWindowsFormsCustomizeNavigationController : WindowController
+    public sealed class BadgesWindowsFormsNavigationWindowController : BadgesNavigationWindowControllerBase
     {
         private readonly DisposableList disposables = new();
         private readonly List<IAdornerAdapter> adornerAdapters = new();
-
-        public AdornerWindowsFormsCustomizeNavigationController()
-            => TargetWindowType = WindowType.Main;
 
         protected override void OnActivated()
         {

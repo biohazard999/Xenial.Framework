@@ -36,7 +36,7 @@ namespace Xenial.FeatureCenter.Module.Win
                 typeof(OpenBlazorDemoWindowController),
                 typeof(HelpAndFeedbackWindowControllerWin),
                 typeof(StatusBarVersionWindowController),
-                typeof(BadgesFeatureController),
+                typeof(BadgesWindowsFormsFeatureController)
             });
 
         public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)

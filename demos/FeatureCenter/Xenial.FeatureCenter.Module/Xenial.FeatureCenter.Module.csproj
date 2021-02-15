@@ -39,6 +39,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="BadgesFeatureController.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="BusinessObjects\Editors\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

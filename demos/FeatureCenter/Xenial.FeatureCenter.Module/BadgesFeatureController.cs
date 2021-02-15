@@ -2,14 +2,13 @@
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
-using DevExpress.XtraBars;
 
 using Xenial.FeatureCenter.Module.BusinessObjects.Badges;
-using Xenial.Framework.Badges.Win;
+using Xenial.Framework.Badges;
 
-namespace Xenial.FeatureCenter.Module.Win
+namespace Xenial.FeatureCenter.Module
 {
-    public sealed class BadgesFeatureController : ViewController
+    public class BadgesFeatureController : ViewController
     {
         public SimpleAction ToggleBadgesSimpleAction { get; }
         private bool showBadges = true;
@@ -24,15 +23,6 @@ namespace Xenial.FeatureCenter.Module.Win
             };
 
             ToggleBadgesSimpleAction.Execute += ToggleBadgesSimpleAction_Execute;
-            ToggleBadgesSimpleAction.CustomizeControl += ToggleBadgesSimpleAction_CustomizeControl;
-        }
-
-        private void ToggleBadgesSimpleAction_CustomizeControl(object sender, CustomizeControlEventArgs e)
-        {
-            if (e.Control is BarButtonItem barButtonItem)
-            {
-                barButtonItem.ButtonStyle = BarButtonStyle.Check;
-            }
         }
 
         protected override void OnActivated()
@@ -63,7 +53,7 @@ namespace Xenial.FeatureCenter.Module.Win
                 ? "Hides badges from the navigation panel"
                 : "Shows badges in the navigation panel";
 
-            var adornerWindowsFormsCustomizeNavigationController = Frame.GetController<AdornerWindowsFormsCustomizeNavigationController>();
+            var adornerWindowsFormsCustomizeNavigationController = Frame.GetController<BadgesNavigationWindowControllerBase>();
 
             if (adornerWindowsFormsCustomizeNavigationController is not null)
             {
@@ -72,7 +62,7 @@ namespace Xenial.FeatureCenter.Module.Win
 
             if (Application is not null && Application.MainWindow is not null)
             {
-                var mainWindowadornerWindowsFormsCustomizeNavigationController = Application.MainWindow.GetController<AdornerWindowsFormsCustomizeNavigationController>();
+                var mainWindowadornerWindowsFormsCustomizeNavigationController = Application.MainWindow.GetController<BadgesNavigationWindowControllerBase>();
                 if (mainWindowadornerWindowsFormsCustomizeNavigationController is not null)
                 {
                     mainWindowadornerWindowsFormsCustomizeNavigationController.Active[nameof(ToggleBadgesSimpleAction)] = showBadges;
