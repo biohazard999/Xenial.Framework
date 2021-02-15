@@ -33,6 +33,7 @@
     <PackageIconUrl>https://blog.delegate.at/img/favicon.ico</PackageIconUrl>
     <Publish>false</Publish>
     <IsPackTarget>false</IsPackTarget>
+    <!-- TODO: Fix signiture -->
     <NoWarn>$(NoWarn);NU5105;NU3018</NoWarn>
     <!-- <NoWarn>$(NoWarn);NU5105</NoWarn> -->
     <Nullable>enable</Nullable>
