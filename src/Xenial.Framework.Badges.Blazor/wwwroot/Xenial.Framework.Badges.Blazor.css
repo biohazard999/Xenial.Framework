@@ -1,36 +1,30 @@
-.notification-badge {
-	min-width: 7px;
-	border-radius: 2px;
-	padding: 1px 4px;
-	text-align: center;
-	font-size: 12px;
-	line-height: 12px;
-	background-color: #72777d;
-	cursor: pointer;
+﻿.xenial-notification-badge {
+  min-width: 7px;
+  border-radius: 2px;
+  padding: 1px 4px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 12px;
+  background-color: #72777d;
+  margin-left: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
+  opacity: 0.9;
+  color: #fff;
 }
 
-.notification-badge-content {
-	font-weight: bold;
-	color: #fff;
-	vertical-align: baseline;
+.xenial-notification-badge__information {
+  background-color: #309048;
 }
 
-.notification-badge-inline {
-	margin-left: 3px;
-	display: inline-block;
-	vertical-align: text-top;
-}
-.notification-badge-top {
-	position: absolute;
-	top: -2px;
-	right: -3px;
-}
-.notification-badge-bottom {
-	position: absolute;
-	bottom: -2px;
-	right: -3px;
+.xenial-notification-badge__system {
+  background-color: #0078D7;
 }
 
-.notification-badge-important {
-	background-color: #d33;
+.xenial-notification-badge__question {
+  background-color: #1E8BCD;
+}
+
+.xenial-notification-badge__critical {
+  background-color: #ED3D3B;
 }

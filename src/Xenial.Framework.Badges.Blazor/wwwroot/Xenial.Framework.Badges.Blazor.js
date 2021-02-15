@@ -1,95 +1,30 @@
-﻿/*
- * jQuery Badge plugin
- * version 2.0.0
- * https://github.com/wikimedia/jquery.badge
- *
- * @license MIT
- *
- * @author Ryan Kaldari <rkaldari@wikimedia.org>, 2012
- * @author Andrew Garrett <agarrett@wikimedia.org>, 2012
- * @author Marius Hoch <hoo@online.de>, 2012
- */
+﻿'use strict';
 
-/**
- * @class jQuery.plugin.badge
- */
-//( function ( $ ) {
-//	/**
-//	 * Put a badge on an item on the page. The badge container will be appended to the
-//	 *  selected element(s).
-//	 *
-//	 *     $element.badge( 5 );
-//	 *     $element.badge( '100+' );
-//	 *     $element.badge( 'New', 'inline' );
-//	 *     $element.badge( 0, 'top', true );
-//	 *
-//	 * @param {number|string} text The value to display in the badge. If the value is falsey
-//	 *  (0, null, false, '', etc.), any existing badge will be removed.
-//	 * @param {string} [position=top] The position of the badge. Options are:
-//	 *  inline, top, bottom.
-//	 * @param {boolean} [displayZero=false] True if the number zero should be displayed,
-//	 *  false if the number zero should result in the badge being hidden
-//	 * @return {jQuery}
-//	 * @chainable
-//	 */
-//	$.fn.badge = function ( text, position, displayZero ) {
-//		var $badge = this.find( '.notification-badge' ),
-//			badgeStyleClass,
-//			isImportant = true,
-//			displayBadge = true;
+const queryItems = (el, nodes) => {
+  const liItems = el.querySelectorAll(":scope > li");
 
-//		// Set the position of the badge
-//		if ( position === 'inline' ||
-//			position === 'top' ||
-//			position === 'bottom'
-//		) {
-//			badgeStyleClass = 'notification-badge-' + position;
-//		} else {
-//			badgeStyleClass = 'notification-badge-top';
-//		}
+  let i = 0;
+  for (const liItem of liItems) {
+    const targetElement = liItem.querySelector(":scope > a > .xaf-action");
+    const captionItem = targetElement.querySelector(":scope > span");
 
-//		// If we're displaying zero, ensure style to be non-important (grey instead of red)
-//		if ( text === 0 ) {
-//			isImportant = false;
-//			if ( !displayZero ) {
-//				displayBadge = false;
-//			}
-//		// If text is falsey (besides 0), hide the badge
-//		} else if ( !text ) {
-//			displayBadge = false;
-//		}
+    const node = {
+      index: i,
+      caption: captionItem.innerText,
+      children: [],
+      targetElement
+    }
+    i++;
+    nodes.push(node);
 
-//		if ( displayBadge ) {
-//			// If a badge already exists, reuse it
-//			if ( $badge.length ) {
-//				$badge
-//					.toggleClass( 'notification-badge-important', isImportant )
-//					.find( '.notification-badge-content' ).text( text );
-//			} else {
-//				// Otherwise, create a new badge with the specified text and style
-//				$badge = $( '<div class="notification-badge"></div>' )
-//					.addClass( badgeStyleClass )
-//					.toggleClass( 'notification-badge-important', isImportant )
-//					.append(
-//						$( '<span class="notification-badge-content"></span>' ).text( text )
-//					)
-//					.appendTo( this );
-//			}
-//		} else {
-//			$badge.remove();
-//		}
-//		return this;
-//	};
-
-//	/**
-//	 * @class jQuery
-//	 * @mixins jQuery.plugin.badge
-//	 */
-//}( jQuery ) );
-
+    const nestedUl = liItem.querySelector(":scope > ul");
+    if (nestedUl) {
+      queryItems(nestedUl, node.children);
+    }
+  }
+}
 
 export function xenialAttachBadges(items) {
-
   const xenialStyles = document.getElementById("xenialBadgesStyles");
 
   if (!xenialStyles) {
@@ -101,17 +36,84 @@ export function xenialAttachBadges(items) {
   items = items || [];
 
   const navMenu = document.querySelector(".xaf-navmenu");
+  let injectedItems = [];
+
+  let virtualNavigationControl = [];
+
+  const queryNavigationControl = () => {
+    virtualNavigationControl = [];
+    var rootUl = navMenu.getElementsByTagName("ul")[0];
+    queryItems(rootUl, virtualNavigationControl);
+  }
+
+  const clearBadges = () => {
+    for (const el of [...injectedItems]) {
+      injectedItems = injectedItems.filter(item => item !== el);
+      el.remove();
+    }
+  }
+
+  const applyBadge = (virtualNavItem) => {
+    if (virtualNavItem.badge) {
+      console.log(virtualNavItem.badge);
+    }
+    if (virtualNavItem.badge && virtualNavItem.badge.badge) {
+      const badge = document.createElement("div");
+      badge.innerText = virtualNavItem.badge.badge;
+      badge.classList.add("xenial-notification-badge");
+      if (virtualNavItem.badge.badgeType) {
+        badge.classList.add(`xenial-notification-badge__${virtualNavItem.badge.badgeType.toLowerCase()}`);
+      }
+      injectedItems.push(badge);
+      virtualNavItem.targetElement.insertAdjacentElement("beforeend", badge);
+    }
+  }
+
+  const mergeTrees = (virtualNavItems, navItems) => {
+    for (const virtualNavItem of virtualNavItems) {
+      const canidates = navItems.filter(navItem => navItem.caption === virtualNavItem.caption && navItem.index === virtualNavItem.index);
+      if (canidates && canidates.length > 0) {
+        virtualNavItem.badge = {
+          badge: canidates[0].badge,
+          badgeType: canidates[0].badgeType,
+        };
+        mergeTrees(virtualNavItem.children, canidates[0].children);
+      }
+      else {
+        virtualNavItem.badge = {
+          badge: undefined,
+          badgeType: undefined,
+          children: []
+        }
+      }
+    }
+  }
+
+  const applyBadgeItems = (virtualNavItems) => {
+    for (const virtualNavItem of virtualNavItems) {
+      applyBadge(virtualNavItem);
+      applyBadgeItems(virtualNavItem.children);
+    }
+  }
+
+  const applyBadges = () => {
+    clearBadges();
+    queryNavigationControl();
+    mergeTrees(virtualNavigationControl, items);
+    applyBadgeItems(virtualNavigationControl);
+  }
+
+  applyBadges();
+
+  setTimeout(() => {
+    applyBadges();
+  }, 150);
+
   if (navMenu instanceof HTMLElement) {
-    console.table(items);
     navMenu.onmouseup = () => {
       queueMicrotask(() => {
         setTimeout(() => {
-          const xafActions = navMenu.querySelectorAll(".xaf-action");
-          //console.table(items);
-          console.table(xafActions);
-          for (const xafAction of xafActions) {
-            console.log(xafAction.innerHTML);
-          }
+          applyBadges();
         }, 150);
       });
     }
