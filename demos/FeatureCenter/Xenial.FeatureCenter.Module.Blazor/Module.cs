@@ -7,6 +7,7 @@ using DevExpress.ExpressApp.Blazor.Templates;
 
 using Xenial.FeatureCenter.Module.BusinessObjects;
 using Xenial.Framework;
+using Xenial.Framework.Badges.Blazor;
 using Xenial.Framework.TokenEditors.Blazor;
 using Xenial.Framework.WebView.Blazor;
 
@@ -21,7 +22,8 @@ namespace Xenial.FeatureCenter.Module.Blazor
                 .AndModuleTypes(
                     typeof(FeatureCenterModule),
                     typeof(XenialTokenEditorsBlazorModule),
-                    typeof(XenialWebViewBlazorModule)
+                    typeof(XenialWebViewBlazorModule),
+                    typeof(XenialBadgesBlazorModule)
                 );
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
