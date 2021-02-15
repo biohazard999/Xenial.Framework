@@ -12,8 +12,4 @@
     <ProjectReference Include="..\Xenial.Framework.Badges\Xenial.Framework.Badges.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
-
 </Project>
