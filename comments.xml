@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>Xenial.Framework</name>
+  </assembly>
+  <members>
+    <member name="N:System.Runtime.CompilerServices" />
+    <member name="T:System.Runtime.CompilerServices.IsExternalInit"> <summary>
+ Reserved to be used by the compiler for tracking metadata.
+ This class should not be used by developers in source code.
+ </summary></member>
+  </members>
+</doc>

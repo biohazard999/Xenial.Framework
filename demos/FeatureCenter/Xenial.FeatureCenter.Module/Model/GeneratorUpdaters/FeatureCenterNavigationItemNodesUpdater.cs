@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using DevExpress.Data.Extensions;
+using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.SystemModule;
@@ -13,7 +15,8 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
         private static readonly Dictionary<string, string> imageNames = new()
         {
             ["ModelBuilders"] = "direction1",
-            ["Editors"] = "EditNames"
+            ["Editors"] = "EditNames",
+            ["Badges"] = "BringToFrontOfText",
         };
 
         public override void UpdateNode(ModelNode node)
@@ -55,7 +58,26 @@ namespace Xenial.FeatureCenter.Module.Model.GeneratorUpdaters
                         {
                             newChoiceActionItem.Caption = choiceActionItem.Caption;
                         }
+
+                        if (newNavItem.View is IModelObjectView objectView && objectView.ModelClass.TypeInfo.IsAttributeDefined<FeatureStatusAttribute>(true))
+                        {
+                            var attribute = objectView.ModelClass.TypeInfo.FindAttribute<FeatureStatusAttribute>(true);
+                            if (attribute is not null)
+                            {
+                                newNavItem.SetXenialStaticBadgeProperties(modelBadgeStaticTextItem =>
+                                {
+                                    modelBadgeStaticTextItem.XenialBadgeStaticText = attribute.BadgeText;
+                                    modelBadgeStaticTextItem.XenialBadgeStaticPaintStyle = attribute.BadgePaintStyle;
+                                });
+                            }
+                        }
                     }
+                }
+
+                var rootCaptionNames = imageNames.Keys.ToArray();
+                foreach (var item in rootNavigationItems.Items)
+                {
+                    item.Index = Array.IndexOf(rootCaptionNames, item.Caption);
                 }
             }
 

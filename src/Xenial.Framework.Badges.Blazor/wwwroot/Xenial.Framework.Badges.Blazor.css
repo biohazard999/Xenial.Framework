@@ -1,0 +1,30 @@
+﻿.xenial-notification-badge {
+  min-width: 7px;
+  border-radius: 2px;
+  padding: 1px 4px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 12px;
+  background-color: #72777d;
+  margin-left: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
+  opacity: 0.9;
+  color: #fff;
+}
+
+.xenial-notification-badge__information {
+  background-color: #309048;
+}
+
+.xenial-notification-badge__system {
+  background-color: #0078D7;
+}
+
+.xenial-notification-badge__question {
+  background-color: #1E8BCD;
+}
+
+.xenial-notification-badge__critical {
+  background-color: #ED3D3B;
+}

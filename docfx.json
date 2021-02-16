@@ -1,0 +1,78 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "**/*.csproj"
+          ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**"
+          ],
+          "src": "src"
+        }
+      ],
+      "dest": "docs/obj/api",
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "**/*.yml"
+        ],
+        "src": "docs/obj/api/",
+        "dest": "api"
+      },
+      {
+        "files": [
+          "docs/articles/**.md",
+          "docs/articles/**/toc.yml"
+        ],
+        "dest": "articles"
+      },
+      {
+        "files": [
+          "toc.yml",
+          "*.md"
+        ],
+        "src": "docs",
+        "dest": ""
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "docs/images/**"
+        ]
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+          "docs/apidoc/**.md"
+        ],
+        "exclude": [
+          "obj/**",
+          "artifacts/docs.xenial.io/**"
+        ]
+      }
+    ],
+    "dest": "artifacts/docs.xenial.io",
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
+    "template": [
+      "default",
+      "docs/material/material"
+    ],
+    "postProcessors": [],
+    "markdownEngineName": "markdig",
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "cleanupCacheHistory": false,
+    "disableGitFeatures": false
+  }
+}

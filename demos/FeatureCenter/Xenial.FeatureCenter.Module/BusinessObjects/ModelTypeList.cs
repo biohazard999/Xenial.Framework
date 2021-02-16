@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Xenial.FeatureCenter.Module.BusinessObjects.Badges;
 using Xenial.FeatureCenter.Module.BusinessObjects.Editors;
 using Xenial.FeatureCenter.Module.BusinessObjects.ModelBuilders;
 
@@ -28,7 +29,13 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects
 #region ModelBuilders
             typeof(FeatureCenterModelBuildersBaseObject),
 
-            typeof(ModelBuilderIntroductionDemo)
+            typeof(ModelBuilderIntroductionDemo),
+            #endregion
+
+#region Badges
+            typeof(FeatureCenterBadgesBaseObject),
+
+            typeof(BadgesIntroductionDemo)
 #endregion
         };
 

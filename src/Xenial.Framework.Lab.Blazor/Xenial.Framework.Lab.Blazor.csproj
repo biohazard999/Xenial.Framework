@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
+    <DxExtendStartupHost>false</DxExtendStartupHost>
+    <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.Blazor\Xenial.Framework.Blazor.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.Lab\Xenial.Framework.Lab.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework) == $(NetStandard2_1Version)">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.11" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework) == $(Net5Version)">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1" />
+  </ItemGroup>
+  
+</Project>

@@ -10,6 +10,7 @@
 *.userosscache
 *.sln.docstates
 THIRD-PARTY-NOTICES.TXT
+licenses.licx
 
 .cr/
 

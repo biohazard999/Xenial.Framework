@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>$(Net5Version)</TargetFramework>
+    <TargetFrameworks>$(Net5Version)</TargetFrameworks>
+    <EnableMSDeployAppOffline>true</EnableMSDeployAppOffline>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
+    <None Include="wwwroot\css\open-iconic\README.md" />
+    <None Include="wwwroot\images\Logo.svg" />
+    <None Include="wwwroot\images\SplashScreen.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.Blazor" Version="$(DxVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="$(DxVersion)" />
+    <PackageReference Include="DevExpress.Persistent.Base" Version="$(DxVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\MailClient.Module.Blazor\MailClient.Module.Blazor.csproj" />
+  </ItemGroup>
+
+</Project>

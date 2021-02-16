@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Beer.Json;
@@ -70,16 +71,16 @@ namespace Xenial.Build
                 () => RunAsync("dotnet", $"pack ./lic/Xenial.Framework.Licensing.sln  -c {Configuration} {logOptions("pack.lic")} {GetProperties()}")
             );
 
-            Target("lint", DependsOn("pack.lic", "ensure-tools"),
-                () => RunAsync("dotnet", $"format --exclude ext --check --verbosity diagnostic")
+            Target("lint", DependsOn("pack.lic", "ensure-tools")
+            // ,() => RunAsync("dotnet", $"format --exclude ext --check --verbosity diagnostic")
             );
 
             Target("restore", DependsOn("pack.lic", "lint"),
                 () => RunAsync("dotnet", $"restore {logOptions("restore")} {GetProperties()}")
             );
 
-            Target("format", DependsOn("ensure-tools", "restore"),
-                () => RunAsync("dotnet", $"format --exclude ext")
+            Target("format", DependsOn("ensure-tools", "restore")
+            // ,() => RunAsync("dotnet", $"format --exclude ext")
             );
 
             Target("build", DependsOn("restore"),
@@ -188,12 +189,16 @@ namespace Xenial.Build
 
             Target("demos", DependsOn("pack", "publish:framework.featurecenter.xenial.io", "publish:Xenial.FeatureCenter.Win"));
 
-            Target("docs",
-                () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs")
+            Target("docs:prepare",
+                () => RunAsync("restore.bat", workingDirectory: "tools")
+            );
+
+            Target("docs", DependsOn("docs:prepare"),
+                () => RunAsync(@"tools\packages\docfx.console\tools\docfx.exe")
             );
 
             Target("docs.serve", DependsOn("ensure-tools"),
-                () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs -w -p")
+                () => RunAsync("dotnet", @"serve -S -d artifacts\docs.xenial.io")
             );
 
             Target("deploy.nuget", DependsOn("ensure-tools"), async () =>
@@ -208,9 +213,78 @@ namespace Xenial.Build
                 }
             });
 
-            Target("release", async () =>
+            Target("release",
+                () => Release()
+            );
+
+            Target("LOC", () =>
             {
-                await Release();
+                var locLic = CountNumberOfLinesInCSFilesOfDirectory("./lic");
+                var locSrc = CountNumberOfLinesInCSFilesOfDirectory("./src");
+
+                Console.WriteLine($"LOC lic: {locLic}");
+                Console.WriteLine($"LOC src: {locSrc}");
+
+                int CountNumberOfLinesInCSFilesOfDirectory(string dirPath)
+                {
+                    var csFiles = new DirectoryInfo(dirPath.Trim()).GetFiles("*.cs", SearchOption.AllDirectories);
+
+                    var totalNumberOfLines = 0;
+                    Parallel.ForEach(csFiles, async fo =>
+                    {
+                        Interlocked.Add(ref totalNumberOfLines, await CountNumberOfLine(fo));
+                    });
+                    return totalNumberOfLines;
+                }
+
+                async Task<int> CountNumberOfLine(FileInfo fo)
+                {
+                    var count = 0;
+                    var inComment = 0;
+                    using (var sr = fo.OpenText())
+                    {
+                        string line;
+                        while ((line = await sr.ReadLineAsync()) != null)
+                        {
+                            if (IsRealCode(line.Trim(), ref inComment))
+                            {
+                                count++;
+                            }
+                        }
+                    }
+                    return count;
+                }
+
+                bool IsRealCode(string trimmed, ref int inComment)
+                {
+                    if (trimmed.StartsWith("/*") && trimmed.EndsWith("*/"))
+                    {
+                        return false;
+                    }
+                    else if (trimmed.StartsWith("/*"))
+                    {
+                        inComment++;
+                        return false;
+                    }
+                    else if (trimmed.EndsWith("*/"))
+                    {
+                        inComment--;
+                        return false;
+                    }
+
+                    return
+                           inComment == 0
+                        && !trimmed.StartsWith("//")
+                        && (trimmed.StartsWith("if")
+                            || trimmed.StartsWith("else if")
+                            || trimmed.StartsWith("using (")
+                            || trimmed.StartsWith("else  if")
+                            || trimmed.Contains(";")
+                            || trimmed.StartsWith("public") //method signature
+                            || trimmed.StartsWith("private") //method signature
+                            || trimmed.StartsWith("protected") //method signature
+                            );
+                }
             });
 
             Target("default", DependsOn("test"));

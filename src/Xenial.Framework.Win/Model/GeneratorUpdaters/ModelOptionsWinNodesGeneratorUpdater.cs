@@ -41,9 +41,6 @@ namespace Xenial.Framework.Win.Model.GeneratorUpdaters
                 options.MdiDefaultNewWindowTarget = Options.MdiDefaultNewWindowTarget
                     ?? options.MdiDefaultNewWindowTarget;
 
-                options.UIType = Options.UIType
-                   ?? options.UIType;
-
                 options.ShowTabImage = Options.ShowTabImage
                    ?? options.ShowTabImage;
 

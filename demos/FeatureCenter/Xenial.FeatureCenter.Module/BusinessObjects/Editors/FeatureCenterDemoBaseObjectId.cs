@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.ConditionalAppearance;
 using DevExpress.Persistent.Base;
 using DevExpress.Xpo;
@@ -17,7 +18,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
     [NonPersistent]
     [Appearance("Hide.DEMO_LAYOUT_GROUP", AppearanceItemType.LayoutItem, nameof(IsNotAvailableOnPlatform), Visibility = DevExpress.ExpressApp.Editors.ViewItemVisibility.Hide, TargetItems = "DEMO_LAYOUT_GROUP")]
-    public abstract class FeatureCenterEditorsBaseObject : FeatureCenterBaseObjectId
+    public abstract class FeatureCenterEditorsBaseObject : FeatureCenterBaseObjectId, IObjectSpaceLink
     {
         protected FeatureCenterEditorsBaseObject(Session session) : base(session) { }
 
@@ -229,5 +230,7 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
         protected virtual string DocsUrlFragment => string.Empty;
         protected virtual string RemarksHtml() => string.Empty;
         protected virtual string SupportedPlatformsHtml() => string.Empty;
+
+        IObjectSpace? IObjectSpaceLink.ObjectSpace { get; set; }
     }
 }

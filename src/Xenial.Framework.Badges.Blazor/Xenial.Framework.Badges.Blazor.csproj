@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
+    <DxExtendStartupHost>false</DxExtendStartupHost>
+    <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
+    <NoWarn>$(NoWarn);NU5118</NoWarn> <!-- Duplicate wwwroot files with netstandard2.1 and net5.0 -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.Blazor\Xenial.Framework.Blazor.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.Badges\Xenial.Framework.Badges.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework) == $(NetStandard2_1Version)">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.11" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework) == $(Net5Version)">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1" />
+  </ItemGroup>
+
+</Project>

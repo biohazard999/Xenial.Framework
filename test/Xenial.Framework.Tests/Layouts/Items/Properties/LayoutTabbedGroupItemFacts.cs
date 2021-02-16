@@ -9,8 +9,9 @@ using DevExpress.ExpressApp.Model;
 using FakeItEasy;
 
 using Xenial.Framework.Layouts.Items;
+using Xenial.Framework.Tests.Assertions;
 
-using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
+using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
 using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items

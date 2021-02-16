@@ -10,9 +10,9 @@ using Shouldly;
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Layouts.Items.LeafNodes;
-using Xenial.Framework.Model;
+using Xenial.Framework.Tests.Assertions;
 
-using static Xenial.Framework.Tests.Layouts.Items.TestModelApplicationFactory;
+using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
 using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
@@ -29,15 +29,40 @@ namespace Xenial.Framework.Tests.Layouts.Items
         public object? ObjectProperty { get; set; }
     }
 
-    public static class SimpleBusinessObjectLayoutBuilder
+    [DomainComponent]
+    [DetailViewLayoutBuilder(nameof(BuildExoticLayout))]
+    public sealed class SimpleBusinessObjectWithStaticBuilder
     {
+        public string? StringProperty { get; set; }
+
+        internal static bool BuildExoticLayoutWasCalled;
+
+        public static Layout BuildExoticLayout()
+        {
+            BuildExoticLayoutWasCalled = true;
+            return new();
+        }
+    }
+
+    [DomainComponent]
+    [DetailViewLayoutBuilder]
+    public sealed class SimpleBusinessObjectWithStaticBuilderConvention
+    {
+        internal static bool BuildLayoutWasCalled;
+
         public static Layout BuildLayout()
         {
-            var item = LayoutPropertyEditorItem<SimpleBusinessObject>
-                .Create(p => p.BoolProperty) with
-            {
-            };
+            BuildLayoutWasCalled = true;
+            return new();
+        }
+    }
 
+    public static class SimpleBusinessObjectLayoutBuilder
+    {
+        internal static bool BuildLayoutWasCalled;
+        public static Layout BuildLayout()
+        {
+            BuildLayoutWasCalled = true;
             var layoutPropertyEditor = new LayoutPropertyEditorItem(nameof(SimpleBusinessObject.StringProperty));
 
             return new()
@@ -49,16 +74,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
     public static class BasicLayoutFacts
     {
-        internal static IModelDetailView? FindDetailView(this IModelApplication model, Type boType)
-            => model
-                .Views
-                .OfType<IModelDetailView>()
-                .FirstOrDefault(d => d.Id.Equals(ModelNodeIdHelper.GetDetailViewId(boType), StringComparison.Ordinal));
-
-        internal static IModelDetailView? FindDetailView<TModelType>(this IModelApplication model)
-            where TModelType : class
-                => model.FindDetailView(typeof(TModelType));
-
         public static void BasicLayoutTests() => Describe("Basic Layouts", () =>
         {
             It($"creates {nameof(IModelApplication)}", () =>
@@ -79,18 +94,55 @@ namespace Xenial.Framework.Tests.Layouts.Items
                     detailView.ShouldNotBeNull();
                 });
 
-                It("Sets the generator flag when attribute is set in code", () =>
+                It("static buddy builder was called", () =>
                 {
                     var detailView = model.FindDetailView<SimpleBusinessObject>();
 
-                    if (detailView is IModelObjectGeneratedView modelGeneratedView)
-                    {
-                        modelGeneratedView.GeneratorType.ShouldBe(typeof(SimpleBusinessObjectLayoutBuilder));
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Model extention was not registered correctly");
-                    }
+                    var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
+
+                    SimpleBusinessObjectLayoutBuilder.BuildLayoutWasCalled.ShouldBeTrue();
+                });
+            });
+
+            Describe("use static type on model class", () =>
+            {
+                var model = CreateApplication(new[] { typeof(SimpleBusinessObjectWithStaticBuilder) });
+
+                It("returns the detail view", () =>
+                {
+                    var detailView = model.FindDetailView<SimpleBusinessObjectWithStaticBuilder>();
+
+                    detailView.ShouldNotBeNull();
+                });
+
+                It("static builder was called", () =>
+                {
+                    var detailView = model.FindDetailView<SimpleBusinessObjectWithStaticBuilder>();
+
+                    var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
+
+                    SimpleBusinessObjectWithStaticBuilder.BuildExoticLayoutWasCalled.ShouldBeTrue();
+                });
+            });
+
+            Describe("use static type on model class with convention", () =>
+            {
+                var model = CreateApplication(new[] { typeof(SimpleBusinessObjectWithStaticBuilderConvention) });
+
+                It("returns the detail view", () =>
+                {
+                    var detailView = model.FindDetailView<SimpleBusinessObjectWithStaticBuilderConvention>();
+
+                    detailView.ShouldNotBeNull();
+                });
+
+                It("static builder was called", () =>
+                {
+                    var detailView = model.FindDetailView<SimpleBusinessObjectWithStaticBuilderConvention>();
+
+                    var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
+
+                    SimpleBusinessObjectWithStaticBuilderConvention.BuildLayoutWasCalled.ShouldBeTrue();
                 });
             });
         });

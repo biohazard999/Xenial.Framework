@@ -7,7 +7,8 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
     /// <summary>
     /// Class LayoutOptions.
     /// </summary>
-    public class LayoutOptions
+    [XenialCheckLicence]
+    public partial record LayoutOptions
     {
         /// <summary>
         /// Specifies a string used to separate layout items and their captions.            

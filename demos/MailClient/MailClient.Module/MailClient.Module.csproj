@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(NetStandardVersion)</TargetFrameworks>
+    <TargetFramework>$(NetStandardVersion)</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Model.DesignedDiffs.xafml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Model.DesignedDiffs.xafml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="2.10.1" />
+    <PackageReference Include="MimeKit" Version="2.10.1" />
+    <PackageReference Include="DevExpress.ExpressApp.Validation" Version="$(DxVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == '$(NetStandardVersion)' OR '$(TargetFramework)' == '$(NetStandard2_1Version)' OR '$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
+    <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.Xpo" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.TokenEditors" Version="$(XenialDemoPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Xpo/Xenial.Framework.Xpo.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors/Xenial.Framework.TokenEditors.csproj" />
+  </ItemGroup>
+
+</Project>

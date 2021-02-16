@@ -6,6 +6,7 @@ using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.Persistent.Base;
 
+using Xenial.Framework.Model.Core;
 using Xenial.Framework.StepProgressEditors.Model.GeneratorUpdaters;
 using Xenial.Framework.TokenEditors.PubTernal;
 
@@ -29,7 +30,7 @@ namespace Xenial.Framework.StepProgressEditors.Model.GeneratorUpdaters
         {
             if (node is IModelBOModelClassMembers membersNode)
             {
-                var editorType = FindPropertyEditorType(node);
+                var editorType = EditorTypeVisibilityCalculator.FindPropertyEditorType(node, TokenEditorAliases.TokenObjectsPropertyEditor);
                 if (editorType is null)
                 {
                     return;
@@ -57,22 +58,6 @@ namespace Xenial.Framework.StepProgressEditors.Model.GeneratorUpdaters
                 foreach (var member in members)
                 {
                     member.memberInfo.PropertyEditorType = editorType;
-                }
-
-                static Type? FindPropertyEditorType(ModelNode n)
-                {
-                    var editorDescriptors = ((IModelSources)n.Application).EditorDescriptors;
-                    if (editorDescriptors != null)
-                    {
-                        foreach (var typeRegistration in editorDescriptors.PropertyEditorRegistrations)
-                        {
-                            if (typeRegistration.Alias == TokenEditorAliases.TokenObjectsPropertyEditor)
-                            {
-                                return typeRegistration.EditorType;
-                            }
-                        }
-                    }
-                    return null;
                 }
             }
         }

@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+
+using Bogus;
 
 using static Xenial.FeatureCenter.Module.HtmlBuilders.HtmlBuilder;
 
 namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
 {
+    [FeatureStatusBeta]
     public partial class TokenStringEditorDemo
     {
         protected override string DemoCodeFileName => "demos/FeatureCenter/Xenial.FeatureCenter.Module/BusinessObjects/Editors/TokenStringEditorDemo.cs";
@@ -92,5 +96,23 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
             new EditorInstallation("XenialTokenEditorsWindowsFormsModule", "UseTokenStringPropertyEditorsWin", AvailablePlatform.Win),
             new EditorInstallation("XenialTokenEditorsBlazorModule", "UseTokenStringPropertyEditorsBlazor", AvailablePlatform.Blazor),
         };
+
+        public static IEnumerable<string> DemoTokens { get; }
+            = Enumerable.Range(1, 100)
+                .Select(_ => new Faker()
+                    .Vehicle
+                    .Manufacturer()
+                )
+                .Distinct()
+                .ToArray();
+
+        private static string PickRandomDemoTokens() => string.Join(";", Enumerable.Range(1, 5).Select(_ => new Faker().PickRandom(DemoTokens)).Distinct().ToArray());
+        private static string PickRandomXenialTokens() => string.Join(";", Enumerable.Range(2, 5).Select(_ => new Faker().PickRandom(XenialAssemblies)).Distinct().ToArray());
+
+        public static IEnumerable<string> XenialAssemblies { get; }
+            = AppDomain.CurrentDomain
+                .GetAssemblies()
+                .Select(a => a.GetName().Name)
+                .Where(a => a.StartsWith("Xenial.Framework"));
     }
 }

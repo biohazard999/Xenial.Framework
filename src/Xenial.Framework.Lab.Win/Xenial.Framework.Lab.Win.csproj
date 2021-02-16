@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TargetFrameworks>$(FullFrameworkVersion)</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.Lab\Xenial.Framework.Lab.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+</Project>
