@@ -1,6 +1,10 @@
-config.wyam.dll
-config.wyam.hash
-config.wyam.packages.xml
-
-output/
-wwwroot/
+###############
+#    folder   #
+###############
+/**/DROP/
+/**/TEMP/
+/**/packages/
+/**/bin/
+/**/obj/
+api-gen/
+artifacts/docs.xenial.io
