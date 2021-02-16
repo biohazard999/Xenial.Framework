@@ -213,10 +213,9 @@ namespace Xenial.Build
                 }
             });
 
-            Target("release", async () =>
-            {
-                await Release();
-            });
+            Target("release",
+                () => Release()
+            );
 
             Target("LOC", () =>
             {
