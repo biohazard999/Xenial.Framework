@@ -189,12 +189,16 @@ namespace Xenial.Build
 
             Target("demos", DependsOn("pack", "publish:framework.featurecenter.xenial.io", "publish:Xenial.FeatureCenter.Win"));
 
-            Target("docs",
-                () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs")
+            Target("docs:prepare",
+                () => RunAsync("restore.bat", workingDirectory: "tools")
+            );
+
+            Target("docs", DependsOn("docs:prepare"),
+                () => RunAsync(@"tools\packages\docfx.console\tools\docfx.exe")
             );
 
             Target("docs.serve", DependsOn("ensure-tools"),
-                () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs -w -p")
+                () => RunAsync("dotnet", @"serve -S -d artifacts\docs.xenial.io")
             );
 
             Target("deploy.nuget", DependsOn("ensure-tools"), async () =>

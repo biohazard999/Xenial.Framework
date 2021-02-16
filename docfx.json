@@ -6,7 +6,10 @@
           "files": [
             "**/*.csproj"
           ],
-          "exclude": [ "**/bin/**", "**/obj/**" ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**"
+          ],
           "src": "src"
         }
       ],
@@ -18,7 +21,9 @@
   "build": {
     "content": [
       {
-        "files": [ "**/*.yml" ],
+        "files": [
+          "**/*.yml"
+        ],
         "src": "docs/obj/api/",
         "dest": "api"
       },
@@ -61,7 +66,7 @@
     "fileMetadataFiles": [],
     "template": [
       "default",
-      "docs/templates/discordfx"
+      "docs/material/material"
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
