@@ -4,11 +4,13 @@
       "src": [
         {
           "files": [
-            "src/**/*.csproj"
-          ]
+            "**/*.csproj"
+          ],
+          "exclude": [ "**/bin/**", "**/obj/**" ],
+          "src": "src"
         }
       ],
-      "dest": "api",
+      "dest": "docs/obj/api",
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }
@@ -16,16 +18,24 @@
   "build": {
     "content": [
       {
-        "files": [
-          "api/**.yml",
-          "api/index.md"
-        ]
+        "files": [ "**/*.yml" ],
+        "src": "docs/obj/api/",
+        "dest": "api"
       },
       {
         "files": [
-          "docs/**/**.md",
-          "docs/**/**/toc.yml"
-        ]
+          "docs/articles/**.md",
+          "docs/articles/**/toc.yml"
+        ],
+        "dest": "articles"
+      },
+      {
+        "files": [
+          "toc.yml",
+          "*.md"
+        ],
+        "src": "docs",
+        "dest": ""
       }
     ],
     "resource": [
@@ -50,7 +60,8 @@
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
-      "default"
+      "default",
+      "docs/templates/discordfx"
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
