@@ -23,7 +23,8 @@
       },
       {
         "files": [
-          "docs/articles/**.md,docs/articles/**/toc.yml,docs/toc.yml,docs/*.md"
+          "docs/**/**.md",
+          "docs/**/**/toc.yml"
         ]
       }
     ],
