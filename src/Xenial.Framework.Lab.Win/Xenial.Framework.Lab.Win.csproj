@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <TargetFrameworks>$(FullFrameworkVersion)</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
-    <ProjectReference Include="..\Xenial.Framework.Badges\Xenial.Framework.Badges.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.Lab\Xenial.Framework.Lab.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">

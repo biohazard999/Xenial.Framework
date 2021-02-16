@@ -10,9 +10,7 @@ namespace Xenial.Framework.Badges.Win
     {
         public static Type[] ControllerTypes { get; } = new[]
         {
-            typeof(BadgesWindowsFormsNavigationWindowController),
-
-            typeof(ExtendedLayoutController)
+            typeof(BadgesWindowsFormsNavigationWindowController)
         };
     }
 }

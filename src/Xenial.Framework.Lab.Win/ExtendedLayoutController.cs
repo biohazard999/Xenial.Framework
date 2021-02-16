@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Win.Editors;
@@ -10,11 +8,11 @@ using DevExpress.ExpressApp.Win.Layout;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraLayout;
 
-namespace Xenial.Framework.Badges.Win
+namespace Xenial.Framework.Lab.Win
 {
     public class ExtendedLayoutController : ViewController<DetailView>
     {
-        private readonly List<System.Windows.Forms.Control> controls = new List<System.Windows.Forms.Control>();
+        private readonly List<System.Windows.Forms.Control> controls = new();
 
         protected override void OnActivated()
         {
