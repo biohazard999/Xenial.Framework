@@ -10,12 +10,27 @@ module.exports = {
         docsBranch: 'master',
         editLinks: true,
         editLinkText: 'Help us improve this page!',
+        searchPlaceholder: 'Search...',
+        smoothScroll: true,
         nav: [
             { text: 'Home', link: '/' },
             { text: 'Guide', link: '/guide/' },
             { text: 'Blog', link: 'https://blog.xenial.io/tags/Xenial/' },
+            { text: 'Support', link: 'https://github.com/xenial-io/Xenial.Framework/issues/' },
             { text: 'Buy', link: 'https://stage.xenial.io/pricing/' },
         ],
-        sidebar: 'auto'
-    }
+        sidebar: [
+            '/',
+            '/guide/',
+            '/installation/'
+        ]
+    },
+    markdown: {
+        lineNumbers: true,
+        toc: { includeLevel: [1, 2] },
+    },
+    plugins: [
+        ['vuepress-plugin-global-variables', { variables: { xenialVersion: '1.0.0' } }],
+        ['vuepress-plugin-code-copy', true]
+    ],
 }
