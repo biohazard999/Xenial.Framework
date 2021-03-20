@@ -105,6 +105,8 @@ jobs:
 
     - name: Build
       run: dotnet run --project build/build.csproj docs
+      env:
+          DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
 
     - uses: actions/upload-artifact@v2
       if: startsWith(github.ref, 'refs/tags/v')
