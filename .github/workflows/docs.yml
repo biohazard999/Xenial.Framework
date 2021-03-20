@@ -48,4 +48,4 @@ jobs:
         # Folder to upload from, must end with trailing slash /
         local-dir: artifacts/docs.xenial.io/
         # How verbose should the information be - warn, info, debug
-        log-level: debug
+        log-level: verbose
