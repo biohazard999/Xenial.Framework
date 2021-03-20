@@ -31,7 +31,7 @@ module.exports = {
         toc: { includeLevel: [1, 2] },
     },
     plugins: [
-        ['vuepress-plugin-global-variables', { variables: { xenialVersion: '1.0.0' } }],
+        ['vuepress-plugin-global-variables', { variables: { xenialVersion: '0.0.48' } }],//TODO: Inject Version
         ['vuepress-plugin-code-copy', true]
     ],
 }
