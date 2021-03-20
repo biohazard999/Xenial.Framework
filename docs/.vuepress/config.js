@@ -8,7 +8,7 @@ module.exports = {
         lastUpdated: 'Last Updated',
         repo: 'xenial-io/Xenial.Framework',
         docsDir: 'docs',
-        docsBranch: 'master',
+        docsBranch: 'main',
         editLinks: true,
         editLinkText: 'Help us improve this page!',
         searchPlaceholder: 'Search...',
