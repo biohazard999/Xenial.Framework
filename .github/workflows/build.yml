@@ -87,7 +87,7 @@ jobs:
         asset_name: Xenial.FeatureCenter.Win.${{ steps.get_version.outputs.VERSION }}.AnyCPU.zip
         asset_content_type: application/zip
   docs:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
