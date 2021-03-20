@@ -1,3 +1,10 @@
+const git = require('git-rev-sync');
+let gitTag = git.tag();
+
+if (gitTag) {
+    gitTag = gitTag.substring(1);
+}
+
 module.exports = {
     title: "Xenial.Framework",
     description: "Easy. Flexible. Focused.",
@@ -31,7 +38,7 @@ module.exports = {
         toc: { includeLevel: [1, 2] },
     },
     plugins: [
-        ['vuepress-plugin-global-variables', { variables: { xenialVersion: '0.0.48' } }],//TODO: Inject Version
+        ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag } }],
         ['vuepress-plugin-code-copy', true]
     ],
 }

@@ -12,6 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "cpy-cli": "^3.1.1",
+    "git-rev-sync": "^3.0.1",
     "vuepress": "^1.8.2",
     "vuepress-plugin-global-variables": "^0.2.0"
   },
