@@ -14,7 +14,7 @@
     <NetBlazorLibVersion>$(NetStandard2_1Version);$(Net5Version)</NetBlazorLibVersion>
     <NetBlazorAppVersion>$(Net5Version)</NetBlazorAppVersion>
     <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version)</TargetFrameworks>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSource>True</IncludeSource>
