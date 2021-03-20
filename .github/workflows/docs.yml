@@ -49,3 +49,4 @@ jobs:
         local-dir: artifacts/docs.xenial.io/
         # How verbose should the information be - warn, info, debug
         log-level: verbose
+        dangerous-clean-slate: true
