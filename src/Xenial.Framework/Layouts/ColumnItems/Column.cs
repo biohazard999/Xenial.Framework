@@ -5,15 +5,14 @@
 using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
-
 using DevExpress.Data;
 using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 
+using Xenial.Data;
 using Xenial.Framework.Utils.Slugger;
 using Xenial.Utils;
-using Xenial.Data;
 
 namespace Xenial.Framework.Layouts.ColumnItems
 {

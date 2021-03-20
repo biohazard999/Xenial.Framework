@@ -1,7 +1,7 @@
-﻿using DevExpress.ExpressApp.Model;
-
-using System;
+﻿using System;
 using System.Linq;
+
+using DevExpress.ExpressApp.Model;
 
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items.Base;

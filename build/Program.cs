@@ -71,16 +71,16 @@ namespace Xenial.Build
                 () => RunAsync("dotnet", $"pack ./lic/Xenial.Framework.Licensing.sln  -c {Configuration} {logOptions("pack.lic")} {GetProperties()}")
             );
 
-            Target("lint", DependsOn("pack.lic", "ensure-tools")
-            // ,() => RunAsync("dotnet", $"format --exclude ext --check --verbosity diagnostic")
+            Target("lint", DependsOn("pack.lic", "ensure-tools"),
+                () => RunAsync("dotnet", $"format --exclude ext --check --verbosity diagnostic")
             );
 
             Target("restore", DependsOn("pack.lic", "lint"),
                 () => RunAsync("dotnet", $"restore {logOptions("restore")} {GetProperties()}")
             );
 
-            Target("format", DependsOn("ensure-tools", "restore")
-            // ,() => RunAsync("dotnet", $"format --exclude ext")
+            Target("format", DependsOn("ensure-tools"),
+                () => RunAsync("dotnet", $"format --exclude ext")
             );
 
             Target("build", DependsOn("restore"),

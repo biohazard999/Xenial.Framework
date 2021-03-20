@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Bogus;
 
-using DevExpress.ExpressApp.Model;
-
-using Xenial.Framework.Layouts.ColumnItems;
-
-using static Xenial.Tasty;
-using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
-using Xenial.Framework.Tests.Assertions;
 using DevExpress.Data;
 using DevExpress.ExpressApp.Editors;
+using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
+
+using Xenial.Framework.Layouts.ColumnItems;
+using Xenial.Framework.Tests.Assertions;
+
+using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
+using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.ColumnItems.Properties
 {

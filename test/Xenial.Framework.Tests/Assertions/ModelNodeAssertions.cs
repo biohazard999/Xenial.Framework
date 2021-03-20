@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-
 using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.Utils;
-
-using Shouldly;
-
-using Xenial.Data;
-using Xenial.Utils;
-using Xenial.Framework.Tests.Assertions.Xml;
 using DevExpress.ExpressApp.Model.NodeGenerators;
+using DevExpress.ExpressApp.Utils;
+using Shouldly;
+using Xenial.Data;
+using Xenial.Framework.Tests.Assertions.Xml;
+using Xenial.Utils;
 
 namespace Xenial.Framework.Tests.Assertions
 {

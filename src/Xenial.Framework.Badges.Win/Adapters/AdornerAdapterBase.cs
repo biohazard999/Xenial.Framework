@@ -1,15 +1,13 @@
-﻿
-using DevExpress.ExpressApp.Actions;
-using DevExpress.ExpressApp.SystemModule;
-using DevExpress.Utils.VisualEffects;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-using Xenial.Framework.Badges.Win.Helpers;
+using DevExpress.ExpressApp.Actions;
+using DevExpress.ExpressApp.SystemModule;
+using DevExpress.Utils.VisualEffects;
 
+using Xenial.Framework.Badges.Win.Helpers;
 using static Xenial.Framework.Badges.Win.Adapters.ActionItemBadgeFactory;
 
 namespace Xenial.Framework.Badges.Win.Adapters

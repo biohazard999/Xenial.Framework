@@ -1,16 +1,16 @@
-﻿using DevExpress.ExpressApp.SystemModule;
-using DevExpress.ExpressApp.Win.Templates.Navigation;
-using DevExpress.Utils.VisualEffects;
-using DevExpress.XtraNavBar;
-using DevExpress.XtraNavBar.Forms;
-using DevExpress.XtraNavBar.ViewInfo;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using DevExpress.ExpressApp.SystemModule;
+using DevExpress.ExpressApp.Win.Templates.Navigation;
+using DevExpress.Utils.VisualEffects;
+using DevExpress.XtraNavBar;
+using DevExpress.XtraNavBar.Forms;
+using DevExpress.XtraNavBar.ViewInfo;
 
 using Xenial.Framework.Badges.Win.Helpers;
 
