@@ -15,7 +15,7 @@ You don't need to learn any new concepts if you are already familiar with XAF, n
 
 #### Flexible
 
-We provide solutions at any level of the stack, you can use the *whole* package, but your are no forced to.
+We provide solutions at any level of the stack, you can use the *whole* package, but your are not forced to.
 
 #### Focused
 
