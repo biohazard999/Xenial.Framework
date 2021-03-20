@@ -104,10 +104,9 @@ namespace Xenial.Framework.Badges.Win.Adapters
                                     var rect = accordionElementBaseViewInfo.TextBounds;
                                     if (needCalc || badgeViewInfo.Cache is null)
                                     {
-                                        using (var graphics = accordionControl.CreateGraphics())
-                                        {
-                                            badgeViewInfo.Calc(new GraphicsCache(new DXPaintEventArgs(graphics)), rect);
-                                        }
+                                        using var graphics = accordionControl.CreateGraphics();
+                                        using var cache = new GraphicsCache(new DXPaintEventArgs(graphics));
+                                        badgeViewInfo.Calc(cache, rect);
                                     }
 
                                     var height = badgeViewInfo.Bounds.Height;
@@ -238,10 +237,9 @@ namespace Xenial.Framework.Badges.Win.Adapters
                                 {
                                     if (badgeViewInfo.Cache is null)
                                     {
-                                        using (var graphics = accordionControl.CreateGraphics())
-                                        {
-                                            badgeViewInfo.Calc(new GraphicsCache(new DXPaintEventArgs(graphics)), popupRect);
-                                        }
+                                        using var graphics = accordionControl.CreateGraphics();
+                                        using var cache = new GraphicsCache(new DXPaintEventArgs(graphics));
+                                        badgeViewInfo.Calc(cache, popupRect);
                                     }
 
                                     var width = badgeViewInfo.Bounds.Width;

@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "vuepress dev"
+    "start": "vuepress dev --open",
+    "build": "vuepress build && cpy '**/*.*' '../../../artifacts/docs.xenial.io' --parents --cwd='./.vuepress/dist/'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "cpy-cli": "^3.1.1",
     "vuepress": "^1.8.2",
     "vuepress-plugin-global-variables": "^0.2.0"
   },

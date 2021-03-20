@@ -190,15 +190,15 @@ namespace Xenial.Build
             Target("demos", DependsOn("pack", "publish:framework.featurecenter.xenial.io", "publish:Xenial.FeatureCenter.Win"));
 
             Target("docs:prepare",
-                () => RunAsync("restore.bat", workingDirectory: "tools")
+                () => RunAsync("npm", windowsName: "npm.cmd", workingDirectory: "docs", args: "ci")
             );
 
             Target("docs", DependsOn("docs:prepare"),
-                () => RunAsync(@"tools\packages\docfx.console\tools\docfx.exe")
+                () => RunAsync("npm", windowsName: "npm.cmd", workingDirectory: "docs", args: "run build")
             );
 
-            Target("docs.serve", DependsOn("ensure-tools"),
-                () => RunAsync("dotnet", @"serve -S -d artifacts\docs.xenial.io")
+            Target("docs:serve", DependsOn("docs:prepare"),
+                () => RunAsync("npm", windowsName: "npm.cmd", workingDirectory: "docs", args: "start")
             );
 
             Target("deploy.nuget", DependsOn("ensure-tools"), async () =>

@@ -1,5 +1,4 @@
 ﻿<Project>
-  
   <PropertyGroup>
     <Product>Xenial.Framework</Product>
     <MinVerTagPrefix>v</MinVerTagPrefix>
@@ -14,7 +13,6 @@
     <Net5Version>net5.0</Net5Version>
     <NetBlazorLibVersion>$(NetStandard2_1Version);$(Net5Version)</NetBlazorLibVersion>
     <NetBlazorAppVersion>$(Net5Version)</NetBlazorAppVersion>
-    
     <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version)</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
@@ -39,58 +37,52 @@
     <Nullable>enable</Nullable>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeFormatting.ruleset</CodeAnalysisRuleSet>
-    
-    <DxVersion>20.2.5</DxVersion>
+    <DxVersion>20.2.6</DxVersion>
     <!-- <XenialVersion>20204.0.1</XenialVersion> -->
     <XenialVersion>$(PackageVersion)</XenialVersion>
     <DxPackageVersion>$(DxVersion)</DxPackageVersion>
-    <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>    
-    <XenialDemoPackageVersion></XenialDemoPackageVersion>
+    <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>
+    <XenialDemoPackageVersion>
+    </XenialDemoPackageVersion>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <RazorLangVersion>3.0</RazorLangVersion>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
     <TargetFrameworks>$(NetStandardVersion);$(Net5Version)</TargetFrameworks>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
     <DefineConstants>$(DefineConstants);FULL_FRAMEWORK</DefineConstants>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(TargetFramework)' == '$(Net5Version)'">
     <DefineConstants>$(DefineConstants);NET5</DefineConstants>
   </PropertyGroup>
-  
   <PropertyGroup Condition="$(DxVersion) &lt;= 20.2.4">
     <DefineConstants>$(DefineConstants);DX_LTE_20_2_4</DefineConstants>
   </PropertyGroup>
-
   <PropertyGroup Condition="$(DxVersion) &lt;= 20.2.5">
     <DefineConstants>$(DefineConstants);DX_LTE_20_2_5</DefineConstants>
   </PropertyGroup>
-
   <PropertyGroup Condition="$(DxVersion) &gt; 20.2.4">
     <DefineConstants>$(DefineConstants);DX_GT_20_2_4</DefineConstants>
   </PropertyGroup>
-
   <PropertyGroup Condition="$(DxVersion) &gt; 20.2.5">
     <DefineConstants>$(DefineConstants);DX_GT_20_2_5</DefineConstants>
   </PropertyGroup>
-
-
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
     <None Include="$(MSBuildThisFileDirectory)\LICENSE.md" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectCapability Include="DynamicDependentFile" />
     <ProjectCapability Include="DynamicFileNesting" />
   </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
-    
+  <ItemGroup>
+    <PackageReference Include="Packaging.Targets">
+      <Version>0.1.189-*</Version>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>

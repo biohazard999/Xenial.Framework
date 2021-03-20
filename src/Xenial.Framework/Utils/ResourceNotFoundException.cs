@@ -2,6 +2,7 @@
 using System.Reflection;
 
 #pragma warning disable CA1032 //By design
+#pragma warning disable CA2237 //By design
 
 namespace Xenial.Framework.Utils
 {

@@ -216,7 +216,7 @@ namespace Xenial.Framework.MsBuild
 
             //syntaxWriter.WriteLine("System.Console.WriteLine(\"INIT XENIAL LICENSE\");");
 
-            foreach (var xenialAssembly in context.Compilation.ReferencedAssemblyNames.Where(i => i.Name.StartsWith("Xenial.Framework")))
+            foreach (var xenialAssembly in context.Compilation.ReferencedAssemblyNames.Where(i => i.Name.StartsWith("Xenial.Framework", StringComparison.InvariantCultureIgnoreCase)))
             {
                 syntaxWriter.WriteLine($"{xenialAssembly.Name}.XenialLicenseCheck.LoadLicense(\"{license}\");");
             }

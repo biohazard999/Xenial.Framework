@@ -2,6 +2,7 @@ module.exports = {
     title: "Xenial.Framework",
     description: "Easy. Flexible. Focused.",
     serviceWorker: true,
+    host: "127.0.0.1",
     themeConfig: {
         logo: '/images/logo.svg',
         lastUpdated: 'Last Updated',

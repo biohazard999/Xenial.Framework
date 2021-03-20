@@ -394,11 +394,11 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 {
                     while (true)
                     {
-                        await Task.Delay(navBarControl.OptionsNavPane.AnimationFramesCount);
+                        await Task.Delay(navBarControl.OptionsNavPane.AnimationFramesCount).ConfigureAwait(true);
 
                         if (!navBarControl.OptionsNavPane.IsAnimationInProgress)
                         {
-                            await Task.Delay(navBarControl.OptionsNavPane.AnimationFramesCount);
+                            await Task.Delay(navBarControl.OptionsNavPane.AnimationFramesCount).ConfigureAwait(true);
                             break;
                         }
                     }

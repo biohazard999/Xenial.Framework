@@ -99,7 +99,7 @@ namespace Xenial.Framework.LicGen
 
             var manifestResourceStreamName = $"{GetType().Assembly.GetName().Name}.XenialLicenseCheck.template.cs";
             var checkStream = GetType().Assembly.GetManifestResourceStream(manifestResourceStreamName);
-            var reader = new StreamReader(checkStream);
+            using var reader = new StreamReader(checkStream);
             var checkTemplate = reader.ReadToEnd();
             var syntax = checkTemplate
                 .Replace("__NAMESPACE__", context.Compilation.AssemblyName)

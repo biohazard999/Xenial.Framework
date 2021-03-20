@@ -61,7 +61,7 @@ Do you want to download and install it now?
                             File.Move(installerTempPath, installerPath);
                             using (var installerStream = File.OpenWrite(installerPath))
                             {
-                                await httpClient.DownloadFileAsync(WebView2RuntimeInstallerUrl, installerStream);
+                                await httpClient.DownloadFileAsync(WebView2RuntimeInstallerUrl, installerStream).ConfigureAwait(false);
                             }
 
                             var proc = Process.Start(installerPath, "/install");

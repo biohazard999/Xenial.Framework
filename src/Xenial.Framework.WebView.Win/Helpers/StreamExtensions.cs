@@ -168,7 +168,7 @@ namespace Scissors.Utils.Io
             {
                 token.ThrowIfCancellationRequested();
 
-                var read = await sourceStream.ReadAsync(buffer, 0, buffer.Length, token);
+                var read = await sourceStream.ReadAsync(buffer, 0, buffer.Length, token).ConfigureAwait(false);
 
                 var isMoreToRead = read != 0;
 

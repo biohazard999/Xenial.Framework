@@ -108,7 +108,7 @@ namespace Xenial.Framework.WebView.Win.Editors
         {
             CoreWebView2Ready -= XenialWebView2_CoreWebView2Ready;
             isReady = true;
-            await this.EnsureCoreWebView2AndInstallAsync();
+            await this.EnsureCoreWebView2AndInstallAsync().ConfigureAwait(true);
             NavigateToHtmlContent();
         }
 

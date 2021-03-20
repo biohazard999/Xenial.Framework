@@ -8,6 +8,7 @@
     <IsPackable>false</IsPackable>
     <PublishTrimmed>true</PublishTrimmed>
     <Nullable>disable</Nullable>
+    <NoWarn>$(NoWarn);CA1310;CA1303;CA1309;CA1307;CA1014</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

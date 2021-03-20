@@ -1,4 +1,5 @@
-﻿#if !NET5
+﻿#pragma warning disable CA1812
+#if !NET5
 
 using System.ComponentModel;
 

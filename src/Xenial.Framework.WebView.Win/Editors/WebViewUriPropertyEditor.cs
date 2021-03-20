@@ -45,7 +45,7 @@ namespace Xenial.Framework.WebView.Win.Editors
         protected override bool IsMemberSetterRequired() => false;
 
         private async void WebViewUriPropertyEditor_ControlCreated(object sender, EventArgs e)
-            => await Control.EnsureCoreWebView2AndInstallAsync();
+            => await Control.EnsureCoreWebView2AndInstallAsync().ConfigureAwait(false);
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.

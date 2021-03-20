@@ -3,6 +3,8 @@
 
   <PropertyGroup>
     <XenialDebug>false</XenialDebug>
+    <!-- TODO: Nuget Signiture Check -->
+    <NoWarn>$(NoWarn);NU3034</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
