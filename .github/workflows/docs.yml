@@ -40,12 +40,16 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@4.0.0
       with:
         # ftp server
-        server: ${{ secrets.FTP_HOST }}
+        server: $FTP_HOST
         # ftp username
-        username: ${{ secrets.FTP_USER }}
+        username: $FTP_USER
         # ftp password
-        password: ${{ secrets.FTP_PASS }}
+        password: $FTP_PASS
         # Folder to upload from, must end with trailing slash /
         local-dir: artifacts/docs.xenial.io/
         # How verbose should the information be - warn, info, debug
         log-level: verbose
+      env:
+        FTP_HOST: ${{ secrets.FTP_HOST }}
+        FTP_USER: ${{ secrets.FTP_USER }}
+        FTP_PASS: ${{ secrets.FTP_PASS }}
