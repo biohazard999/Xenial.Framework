@@ -20,18 +20,6 @@
         "rimraf"
       ]
     },
-    "dotnet-toast": {
-      "version": "1.0.0",
-      "commands": [
-        "toast"
-      ]
-    },
-    "wyam.tool": {
-      "version": "2.2.9",
-      "commands": [
-        "wyam"
-      ]
-    },
     "thirdlicense": {
       "version": "1.1.0",
       "commands": [
