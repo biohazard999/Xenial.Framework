@@ -5,7 +5,7 @@ title: Introduction
 # Introduction
 
 **Xenial.Framework** is a set of powerful modules for [DevExpress expressAppFramework](https://www.devexpress.com/XAF).  
-Handcrafted after 10 years experience with the framework, from small applications to large scale ERP systems with dozens of developers, it helps you build robust, state of the art applications quickly and allow you to scale your future development efforts easily, without getting in your way.
+Handcrafted after 10 years experience with the framework, from small applications to large scale systems with dozens of developers, it helps you build robust, state of the art applications quickly and allow you to scale your future development efforts easily, without getting in your way.
 
 There are a couple of key concepts we follow:
 
@@ -19,7 +19,7 @@ We provide solutions at any level of the stack, you can use the *whole* package,
 
 #### Focused
 
-Features are developed with years of experience, solving most (ERP) development challenges at it's core.
+Features are developed with years of experience, solving most (LOB) development challenges at it's core.
 
 ## Key Concepts
 
