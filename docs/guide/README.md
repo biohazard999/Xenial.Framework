@@ -22,3 +22,9 @@ We provide solutions at any level of the stack, you can use the *whole* package,
 Features are developed with years of experience, solving most (ERP) development challenges at it's core.
 
 ## Key Concepts
+
+<div style="text-align: center">
+
+![Xenial Venn diagram](/images/xenial_venn_small.svg)
+
+</div>
