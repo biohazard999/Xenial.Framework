@@ -190,7 +190,7 @@ namespace Xenial.Build
             Target("demos", DependsOn("pack", "publish:framework.featurecenter.xenial.io", "publish:Xenial.FeatureCenter.Win"));
 
             Target("docs:prepare",
-                () => RunAsync("npm", windowsName: "npm.cmd", workingDirectory: "docs", args: "ci")
+                () => RunAsync("npm", windowsName: "npm.cmd", workingDirectory: "docs", args: "install")
             );
 
             Target("docs", DependsOn("docs:prepare"),
