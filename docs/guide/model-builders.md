@@ -1,5 +1,6 @@
 ---
 title: ModelBuilders
+sidebarDepth: 5
 ---
 
 # ModelBuilders
@@ -44,8 +45,49 @@ In you [platform agnostic module](https://docs.devexpress.com/eXpressAppFramewor
 
 ::: tip
 In your project this normally is called `MyApplication.Module.csproj`.  
-You of course can use the [NuGet Package Manager Dialog in Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio)
+You of course can use the [NuGet Package Manager Dialog in Visual Studio](https://docs.microsoft.com/en-us/nuget/consume-packages/install-use-packages-visual-studio).  
+Usage in platform specific module is of course supported, but we will focus on the platform agnostic perspective in this guide.
 :::
 
 ## Usage
 
+There are several ways to use `ModelBuilers` in your application. From a fluent inline approach to complete [buddy type](https://stackoverflow.com/a/38373456/2075758).
+
+Imaging we have the following [XPO business class](https://docs.devexpress.com/eXpressAppFramework/113640/getting-started/in-depth-tutorial-winforms-aspnet/business-model-design/business-model-design-with-express-persistent-objects) based on the Contact/Task Management XAF Demo.
+
+<<< @/guide/samples/DemoTaskBeforeModelBuilder.cs
+
+::: tip
+EntityFramework classes should also work fine, but arn't officially supported yet.
+:::
+
+### Inline approach
+
+The first way you can leverage `ModelBuilders` in your code is inline. This approach is very useful if you apply just a couple of attributes to your model. It's a quick and dirty way without going through the ceremony of writing a buddy type for your class. 
+
+#### Class Level
+
+We will focus now on class level attributes using the inline approach.
+
+<<< @/guide/samples/DemoTaskBeforeModelBuilder.cs{10-11}
+
+To replace those 2 attributes, we need to override the `CustomizeTypesInfo` method and use the static `ModelBuilder.Create<T>()` method to create an inline model builder. It's important to call the `Build` method at the end, to refresh the `ITypeInfo` instance.
+
+But first we need to import the correct namespace by using the `using Xenial.Framework.ModelBuilders;` statement.
+
+<<< @/guide/samples/DemoTaskModelBuilderInline.cs{9,21-24}
+
+We use the built in methods `WithDefaultClassOptions` and `HasCaption` to apply those attributes to our business class. Now we can remove the attributes from our code.
+
+<<< @/guide/samples/DemoTaskHighlightAfterModelBuilderClass.cs{10-11}
+
+
+### Naming conventions
+
+The naming convention tries to be self explanatory.  
+If the attribute is singular and describes *an attribute of* a business object it starts with the term `Has`.  
+If the attribute is plural or describes *behavior of* a business object it starts with the term `With`.
+
+::: tip
+There are a lot of built in attributes provided by Xenial.  If you are missing one, that should be built into the framework, [let us know](https://github.com/xenial-io/Xenial.Framework/issues/)!
+:::
