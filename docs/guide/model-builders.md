@@ -81,6 +81,25 @@ We use the built in methods `WithDefaultClassOptions` and `HasCaption` to apply 
 
 <<< @/guide/samples/DemoTaskHighlightAfterModelBuilderClass.cs{10-11}
 
+#### Property Level
+
+Next topic is how we apply attributes on property level using the inline approach.
+
+<<< @/guide/samples/DemoTaskBeforeModelBuilder.cs{18}
+
+To replace the tooltip attribute, we need to override the `CustomizeTypesInfo` method and use the static `ModelBuilder.Create<T>()` method to create an inline model builder. It returns an instance of a `ModelBuilder` that we can use to apply property attributes as well. We use the `builder.For(member => member.MemberName)` linq like syntax to provide a refactor and type save way to specify a property of our business object.
+
+Make sure we need import the correct namespace by using the `using Xenial.Framework.ModelBuilders;` statement like in the last chapter.
+
+<<< @/guide/samples/DemoTaskModelBuilderInlineProperties.cs{9,23-24}
+
+We use the built in method `HasTooltip` to apply the attribute to our business classes property. Now we can remove the attribute from our code.
+
+<<< @/guide/samples/DemoTaskHighlightAfterModelBuilderClassProperties.cs{18}
+
+#### Summary
+
+Because we use imperative code instead of pure attributes we can apply attributes even to code, which is in a different assembly (we may not have code access to). It's of course possible to use every language feature C# provides to increase maintainability (string interpolation, etc).
 
 ### Naming conventions
 
