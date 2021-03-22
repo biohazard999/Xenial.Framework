@@ -66,6 +66,13 @@ namespace MailClient.Module
                 .RemoveXafViewsFromApplicationModel()
                 .RemoveXpoViewsFromApplicationModel();
 
+            var builder = ModelBuilder.Create<MailBaseObject>(typesInfo);
+
+            builder.For(m => m.IsDeleted)
+                .HasTooltip("");
+
+            builder.Build();
+
             ModelBuilder.Create<MailBaseObject>(typesInfo).GenerateNoViews().Build();
             ModelBuilder.Create<MailBaseObjectId>(typesInfo).GenerateNoViews().Build();
 
