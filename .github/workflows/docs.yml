@@ -16,8 +16,10 @@ jobs:
         git fetch --prune --unshallow
 
     - name: Setup Node.js environment
-      uses: actions/setup-node@v2.1.2
-
+      uses: actions/setup-node@v2.1.5
+      with:
+        node-version: 12.x
+      
     - name: Setup .NET5
       uses: actions/setup-dotnet@v1
       with:
