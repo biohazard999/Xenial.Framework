@@ -101,6 +101,12 @@ We use the built in method `HasTooltip` to apply the attribute to our business c
 
 Because we use imperative code instead of pure attributes we can apply attributes even to code, which is in a different assembly (we may not have code access to). It's of course possible to use every language feature C# provides to increase maintainability (string interpolation, etc).
 
+Our final code looks like this:
+
+<<< @/guide/samples/DemoTaskModelBuilderInlineSummary.cs
+
+<<< @/guide/samples/DemoTaskModelBuilderInlineSummaryBuilder.cs
+
 ### Naming conventions
 
 The naming convention tries to be self explanatory.  
