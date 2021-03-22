@@ -2,6 +2,8 @@
 title: Installation
 ---
 
+# Installation
+
 <code-group>
 <code-block title=".NET CLI">
 

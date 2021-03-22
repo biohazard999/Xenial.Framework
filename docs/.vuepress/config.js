@@ -25,17 +25,46 @@ module.exports = {
             { text: 'Guide', link: '/guide/' },
             { text: 'Blog', link: 'https://blog.xenial.io/tags/Xenial/' },
             { text: 'Support', link: 'https://github.com/xenial-io/Xenial.Framework/issues/' },
+            { text: 'Demo', link: 'https://framework.featurecenter.xenial.io/' },
             { text: 'Buy', link: 'https://stage.xenial.io/pricing/' },
         ],
-        sidebar: [
-            '/',
-            '/guide/',
-            '/installation/'
-        ]
+        sidebar: {
+            '/guide/': [
+                {
+                    title: 'Guide',
+                    collapsable: false,
+                    children: [
+                        '',
+                        'module-structure',
+                        'model-builders'
+                    ]
+                },
+                {
+                    title: 'Installation',
+                    collapsable: false,
+                    children: [
+                        'installation'
+                    ]
+                },
+                {
+                    title: 'Modules',
+                    collapsable: false,
+                    children: [
+                        'installation'
+                    ]
+                },
+                {
+                    title: 'Lab',
+                    collapsable: false,
+                    children: [
+                        'installation'
+                    ]
+                }
+            ]
+        }
     },
     markdown: {
-        lineNumbers: true,
-        toc: { includeLevel: [1, 2] },
+        lineNumbers: true
     },
     plugins: [
         ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag } }],

@@ -23,8 +23,15 @@ Features are developed with years of experience, solving most (LOB) development 
 
 ## Key Concepts
 
+Xenial.Framework supports both the [ModelEditor](https://docs.devexpress.com/eXpressAppFramework/112582/concepts/application-model/model-editor) and code-centric approaches and uses all the basic primitives that XAF provides. We also provide a convention based framework that helps you and your team to create your own domain specific rules, resulting in more consistent applications with a less configuration heavy approach.
+
+::: tip
+You can mix and match all approaches and use the right tool for a particular problem
+:::
+
 <div style="text-align: center">
 
 ![Xenial Venn diagram](/images/xenial_venn_small.svg)
 
 </div>
+
