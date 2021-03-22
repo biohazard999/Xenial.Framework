@@ -19,5 +19,8 @@
   },
   "dependencies": {
     "vuepress-plugin-code-copy": "^1.0.6"
+  },
+  "optionalDependencies": {
+    "fsevents": "*"
   }
 }
