@@ -13,7 +13,12 @@ namespace MainDemo.Module.BusinessObjects
         public DemoTask(Session session) : base(session) { }
 
         [Association("Contact-DemoTask")]
-        public XPCollection<Contact> Contacts 
-            => GetCollection<Contact>(nameof(Contacts));
+        public XPCollection<Contact> Contacts
+        {
+            get
+            {
+                return GetCollection<Contact>(nameof(Contacts));
+            }
+        }
     }
 }

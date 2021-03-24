@@ -31,12 +31,20 @@ module.exports = {
         sidebar: {
             '/guide/': [
                 {
-                    title: 'Guide',
+                    title: 'Overview',
                     collapsable: false,
                     children: [
                         '',
                         'module-structure',
-                        'model-builders'
+                    ]
+                },
+                {
+                    title: 'ModelBuilders',
+                    collapsable: false,
+                    children: [
+                        ['model-builders', 'Introduction'],
+                        ['model-builders-inline', 'Inline approach'],
+                        ['model-builders-buddy', 'Buddy class approach'],
                     ]
                 },
                 {
@@ -68,6 +76,8 @@ module.exports = {
     },
     plugins: [
         ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag } }],
-        ['vuepress-plugin-code-copy', true]
+        ['vuepress-plugin-code-copy', true],
+        ['@vuepress/back-to-top'],
+        ['@vuepress/nprogress']
     ],
 }

@@ -21,7 +21,7 @@ namespace MyApplication.Module
             var builder = ModelBuilder.Create<DemoTask>(typesInfo)
                 .WithDefaultClassOptions()
                 .HasCaption("Task");
-            
+
             builder
                 .For(m => m.Contacts)
                 .HasTooltip("View, assign or remove contacts for the current task");
