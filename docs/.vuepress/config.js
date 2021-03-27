@@ -45,6 +45,7 @@ module.exports = {
                         ['model-builders', 'Introduction'],
                         ['model-builders-inline', 'Inline approach'],
                         ['model-builders-buddy', 'Buddy class approach'],
+                        ['model-builders-managers', 'Managers'],
                     ]
                 },
                 {

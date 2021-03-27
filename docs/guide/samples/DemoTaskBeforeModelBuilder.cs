@@ -6,7 +6,7 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
 
-namespace MainDemo.Module.BusinessObjects 
+namespace MainDemo.Module.BusinessObjects
 {
     [DefaultClassOptions]
     [ModelDefault("Caption", "Task")]
