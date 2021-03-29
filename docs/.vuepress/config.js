@@ -47,6 +47,7 @@ module.exports = {
                         ['model-builders-buddy', 'Buddy class approach'],
                         ['model-builders-managers', 'BuilderManagers'],
                         ['model-builders-conventions', 'Conventions'],
+                        ['model-builders-advanced', 'Advanced'],
                     ]
                 },
                 {
