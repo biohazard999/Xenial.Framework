@@ -58,7 +58,7 @@ Imaging we have the following [XPO business class](https://docs.devexpress.com/e
 <<< @/guide/samples/DemoTaskBeforeModelBuilder.cs
 
 ::: tip
-EntityFramework classes should also work fine, but arn't officially supported yet.
+NonPersistent classes and EntityFramework do also work, but for simplicity we will focus on XPO business objects in this docs.
 :::
 
 ### Naming conventions
@@ -68,5 +68,5 @@ If the attribute is singular and describes *an attribute of* a business object i
 If the attribute is plural or describes *behavior of* a business object it starts with the term `With`.
 
 ::: tip
-There are a lot of built in attributes provided by Xenial.  If you are missing one, that should be built into the framework, [let us know](https://github.com/xenial-io/Xenial.Framework/issues/)!
+There are a lot of [Built-in Attributes](/guide/model-builders-built-in.md) provided by Xenial.  If you are missing one, that should be built into the framework, [let us know](https://github.com/xenial-io/Xenial.Framework/issues/)!
 :::

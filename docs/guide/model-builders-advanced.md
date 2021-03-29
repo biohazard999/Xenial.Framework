@@ -58,7 +58,7 @@ Combining multiple attributes is not that hard, but there is a catch here. This 
 
 ::: tip
 We use that internally for example to combine the visibility properties like `NotVisibleInAnyView()`.  
-See [Built in Attributes](/guide/model-builders-built-in.md) for more information.
+See [Built-in Attributes](/guide/model-builders-built-in.md) for more information.
 :::
 
 ## Type safe
