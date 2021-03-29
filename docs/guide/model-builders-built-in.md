@@ -51,8 +51,11 @@ title: ModelBuilders - Built-in Attributes
 | `AllowingNothing()`                               | `NotAllowingDelete`<br>`NotAllowingEdit`<br>`NotAllowingNew`      |
 
 
-#### Xenial specific
+### Xenial specific
 
 | Xenial Extension                      | XAF Attribute                                                     |
 | ------------------------------------- |------------------------------------------------------------------ |
 | `IsSingleton()`                       | `SingletonAttribute`<br>`NotAllowingDelete`<br>`NotAllowingNew`   |
+
+## Property Attributes
+

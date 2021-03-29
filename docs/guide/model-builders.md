@@ -51,7 +51,7 @@ Usage in platform specific module is of course supported, but we will focus on t
 
 ## Usage
 
-There are several ways to use `ModelBuilers` in your application. From a fluent inline approach to complete [buddy type](https://stackoverflow.com/a/38373456/2075758).
+There are several ways to use `ModelBuilders` in your application. From a fluent inline approach to complete [buddy type](https://stackoverflow.com/a/38373456/2075758).
 
 Imaging we have the following [XPO business class](https://docs.devexpress.com/eXpressAppFramework/113640/getting-started/in-depth-tutorial-winforms-aspnet/business-model-design/business-model-design-with-express-persistent-objects) based on the Contact/Task Management XAF Demo.
 
