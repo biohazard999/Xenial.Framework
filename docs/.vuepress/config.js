@@ -20,6 +20,10 @@ module.exports = {
         editLinkText: 'Help us improve this page!',
         searchPlaceholder: 'Search...',
         smoothScroll: true,
+        algolia: {
+            apiKey: '82712b6e9d51edab5ef22e17d2eaac0c',
+            indexName: 'xenial'
+        },
         nav: [
             { text: 'Home', link: '/' },
             { text: 'Guide', link: '/guide/' },
