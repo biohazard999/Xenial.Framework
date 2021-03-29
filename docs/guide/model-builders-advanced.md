@@ -106,3 +106,10 @@ IPropertyBuilder<DateTime, TClassType>
 :::
 
 ## Advanced builders
+
+For more advanced builders (like for example the convention builder) you can work with the primitives `IBuilder`.  
+
+We don't provide an example, but you can look into the sources, and tests. Let us know in the [issues](https://github.com/xenial-io/Xenial.Framework/issues/) if you have any problems.
+
+<<< @../../src/Xenial.Framework/ModelBuilders/ModelBuilder.ForAllProperties.cs
+<<< @../../src/Xenial.Framework/ModelBuilders/PropertyBuilder.Aggregated.cs
