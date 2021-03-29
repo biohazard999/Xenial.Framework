@@ -4,7 +4,11 @@ using Xenial.Framework.ModelBuilder;
 
 namespace MainDemo.Module.BusinessObjects
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(
+        AttributeTargets.Class | AttributeTargets.Property, 
+        AllowMultiple = false, 
+        Inherited = false
+    )]
     public sealed class ExportFormatAttribute : Attribute
     {
         public string Format { get; }

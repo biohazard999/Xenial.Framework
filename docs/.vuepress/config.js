@@ -79,7 +79,6 @@ module.exports = {
     },
     plugins: [
         ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag } }],
-        ['vuepress-plugin-code-copy', true],
         ['@vuepress/back-to-top'],
         ['@vuepress/nprogress']
     ],

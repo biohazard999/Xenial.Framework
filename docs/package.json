@@ -23,8 +23,7 @@
   },
   "dependencies": {
     "clipboard": "^2.0.8",
-    "prismjs": "^1.23.0",
-    "vuepress-plugin-code-copy": "^1.0.6"
+    "prismjs": "^1.23.0"
   },
   "optionalDependencies": {
     "fsevents": "*"
