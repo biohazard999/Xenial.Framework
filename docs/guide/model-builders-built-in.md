@@ -36,17 +36,17 @@ title: ModelBuilders - Built-in Attributes
 
 | Extension                             | Attribute                                                         |
 | ------------------------------------- |------------------------------------------------------------------ |
-| `HasImage()`                          | [`ImageNameAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.ImageNameAttribute)                                              |
-| `IsCreatableItem()`                   | [`CreatableItemAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.CreatableItemAttribute)                                          |
+| `WithDefaultClassOptions()`           | [`DefaultClassOptionsAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.DefaultClassOptionsAttribute)                                    |
 | `HasDefaultProperty()`                | `DefaultPropertyAttribute`<br>[`XafDefaultPropertyAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.DC.XafDefaultPropertyAttribute)       |
 | `HasFriendlyKeyProperty()`            | [`FriendlyKeyPropertyAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.FriendlyKeyPropertyAttribute)                                    |
+| `HasImage()`                          | [`ImageNameAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.ImageNameAttribute)                                              |
+| `HasNavigationItem()`                 | [`NavigationItemAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.NavigationItemAttribute)                                         |
 | `HasObjectCaptionFormat()`            | [`ObjectCaptionFormatAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.ObjectCaptionFormatAttribute)                                    |
+| `IsCreatableItem()`                   | [`CreatableItemAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.CreatableItemAttribute)                                          |
 | `IsVisibleInReports()`                | [`VisibleInReportsAttribute(true)`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.VisibleInReportsAttribute)                                 |
 | `IsNotVisibleInReports()`             | `VisibleInReportsAttribute(false)`                                |
 | `IsVisibleInDashboards()`             | [`VisibleInDashboardsAttribute(true)`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.VisibleInDashboardsAttribute)                              |
 | `IsNotVisibleInDashboards()`          | `VisibleInDashboardsAttribute(false)`                             |
-| `WithDefaultClassOptions()`           | [`DefaultClassOptionsAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.DefaultClassOptionsAttribute)                                    |
-| `HasNavigationItem()`                 | [`NavigationItemAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.NavigationItemAttribute)                                         |
 | `WithDefaultListViewOptions()`        | [`DefaultListViewOptionsAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.DefaultListViewOptionsAttribute)                                 |
 
 #### Xenial specific
