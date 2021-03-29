@@ -29,6 +29,8 @@ title: ModelBuilders - Built-in Attributes
 | `NotAllowingNew()`                                | `ModelDefaultAttribute("AllowNew", "False")`                      |
 | `AllowingDelete()`                                | `ModelDefaultAttribute("AllowDelete", "True")`                    |
 | `NotAllowingDelete()`                             | `ModelDefaultAttribute("AllowDelete", "False")`                   |
+| `AllowingEverything()`                            | `AllowingDelete`<br>`AllowingEdit`<br>`AllowingNew`               |
+| `AllowingNothing()`                               | `NotAllowingDelete`<br>`NotAllowingEdit`<br>`NotAllowingNew`      |
 
 ### Behavior
 
@@ -51,4 +53,4 @@ title: ModelBuilders - Built-in Attributes
 
 | Extension                             | Attribute                                                         |
 | ------------------------------------- |------------------------------------------------------------------ |
-| `IsSingleton()`                       | `SingletonAttribute`                                              |
+| `IsSingleton()`                       | `SingletonAttribute`<br>`NotAllowingDelete`<br>`NotAllowingNew`   |
