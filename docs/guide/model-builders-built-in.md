@@ -8,7 +8,7 @@ title: ModelBuilders - Built-in Attributes
 
 ### Behavior
 
-| Extension                             | Attribute                                                         |
+| Xenial Extension                      | XAF Attribute                                                     |
 | ------------------------------------- |------------------------------------------------------------------ |
 | `WithDefaultClassOptions()`           | [`DefaultClassOptionsAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.DefaultClassOptionsAttribute)                                    |
 | `HasCaption()`                        | [`ModelDefaultAttribute("Caption")`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.Model.ModelDefaultAttribute)                                |
@@ -27,7 +27,7 @@ title: ModelBuilders - Built-in Attributes
 
 ### ModelDefault
 
-| Extension                                         | Attribute                                                         |
+| Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `WithModelDefault()`                              | [`ModelDefaultAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.Model.ModelDefaultAttribute)                                          |
 | `HasDefaultDetailViewImage()`                     | `ModelDefaultAttribute("DefaultDetailViewImage")`                 |
@@ -53,6 +53,6 @@ title: ModelBuilders - Built-in Attributes
 
 #### Xenial specific
 
-| Extension                             | Attribute                                                         |
+| Xenial Extension                      | XAF Attribute                                                     |
 | ------------------------------------- |------------------------------------------------------------------ |
 | `IsSingleton()`                       | `SingletonAttribute`<br>`NotAllowingDelete`<br>`NotAllowingNew`   |
