@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+using DevExpress.ExpressApp.Model;
 
 namespace Xenial.Framework.ModelBuilders
 {
@@ -11,43 +10,51 @@ namespace Xenial.Framework.ModelBuilders
         /// <summary>
         /// The caption
         /// </summary>
-        public const string Caption = nameof(Caption);
+        public const string Caption = nameof(IModelCommonMemberViewItem.Caption);
+
         /// <summary>
         /// The is password
         /// </summary>
-        public const string IsPassword = nameof(IsPassword);
+        public const string IsPassword = nameof(IModelCommonMemberViewItem.IsPassword);
+
         /// <summary>
         /// The tool tip
         /// </summary>
-        public const string ToolTip = nameof(ToolTip);
+        public const string ToolTip = nameof(IModelCommonMemberViewItem.ToolTip);
+
         /// <summary>
         /// The display format
         /// </summary>
-        public const string DisplayFormat = nameof(DisplayFormat);
+        public const string DisplayFormat = nameof(IModelCommonMemberViewItem.DisplayFormat);
+
         /// <summary>
         /// The property editor type
         /// </summary>
-        public const string PropertyEditorType = nameof(PropertyEditorType);
+        public const string PropertyEditorType = nameof(IModelCommonMemberViewItem.PropertyEditorType);
+
         /// <summary>
         /// The predefined values
         /// </summary>
-        public const string PredefinedValues = nameof(PredefinedValues);
+        public const string PredefinedValues = nameof(IModelCommonMemberViewItem.PredefinedValues);
+
         /// <summary>
         /// The lookup property
         /// </summary>
-        public const string LookupProperty = nameof(LookupProperty);
+        public const string LookupProperty = nameof(IModelCommonMemberViewItem.LookupProperty);
 
         /// <summary>
         /// The allow edit
         /// </summary>
-        public const string AllowEdit = nameof(AllowEdit);
+        public const string AllowEdit = nameof(IModelCommonMemberViewItem.AllowEdit);
+
         /// <summary>
         /// The allow new
         /// </summary>
-        public const string AllowNew = nameof(AllowNew);
+        public const string AllowNew = nameof(IModelView.AllowNew);
+
         /// <summary>
         /// The allow delete
         /// </summary>
-        public const string AllowDelete = nameof(AllowDelete);
+        public const string AllowDelete = nameof(IModelView.AllowDelete);
     }
 }
