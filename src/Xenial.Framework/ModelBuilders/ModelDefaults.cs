@@ -1,4 +1,4 @@
-using DevExpress.ExpressApp.Model;
+﻿using DevExpress.ExpressApp.Model;
 
 namespace Xenial.Framework.ModelBuilders
 {
