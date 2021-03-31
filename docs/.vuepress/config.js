@@ -56,6 +56,13 @@ module.exports = {
                     ]
                 },
                 {
+                    title: 'DetailViewLayoutBuilders',
+                    collapsable: false,
+                    children: [
+                        ['layout-builders', 'Introduction'],
+                    ]
+                },
+                {
                     title: 'Installation',
                     collapsable: false,
                     children: [
