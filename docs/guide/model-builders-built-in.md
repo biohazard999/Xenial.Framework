@@ -83,7 +83,14 @@ title: ModelBuilders - Built-in Attributes
 | `AllowingNothing()`                               | `NotAllowingDelete`<br>`NotAllowingEdit`<br>`NotAllowingNew`      |
 | `UsingEditorAlias`                                | [`EditorAliasAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.EditorAliasAttribute)                 |
 | `UsingPropertyEditor`                                | [`ModelDefaultAttribute("PropertyEditorType")`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.Model.IModelCommonMemberViewItem.PropertyEditorType)                 |
-| ``                            | [``]()                 |
+| `IsVisibleInDetailView`                                | [`VisibleInDetailViewAttribute(true)`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.VisibleInDetailViewAttribute)                 |
+| `IsNotVisibleInDetailView`                                | [`VisibleInDetailViewAttribute(false)`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.VisibleInDetailViewAttribute)                 |
+| `IsVisibleInListView`                                | [`VisibleInListViewAttribute(true)`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.VisibleInListViewAttribute)                 |
+| `IsNotVisibleInListView`                                | [`VisibleInListViewAttribute(false)`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.VisibleInListViewAttribute)                 |
+| `IsVisibleInLookupListView`                                | [`VisibleInLookupListViewAttribute(true)`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.VisibleInLookupListViewAttribute)                 |
+| `IsNotVisibleInLookupListView`                                | [`VisibleInLookupListViewAttribute(false)`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.VisibleInLookupListViewAttribute)                 |
+| `IsVisibleInAnyView()`                            | `IsVisibleInDetailView`<br>`IsVisibleInListView`<br>`IsVisibleInLookupListView`               |
+| `IsNotVisibleInAnyView()`                               | `IsNotVisibleInDetailView`<br>`IsNotVisibleInListView`<br>`IsNotVisibleInLookupListView`      |
 
 ### Domain-Extensions `string`
 
@@ -96,28 +103,27 @@ title: ModelBuilders - Built-in Attributes
 | `UsingPopupCriteriaPropertyEditor`                            | [`EditorAliasAttribute("PopupCriteriaPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113564/concepts/business-model-design/data-types-supported-by-built-in-editors/criteria-properties)<br>[`CriteriaOptionsAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.Editors.CriteriaOptionsAttribute)                 |
 | `IsPassword`                            | [`ModelDefaultAttribute("IsPassword", "True")`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.Editors.PropertyEditor.IsPassword)                 |
 | `WithPredefinedValues`                            | [`ModelDefaultAttribute("PredefinedValues")`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.Model.IModelCommonMemberViewItem.PredefinedValues)                 |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `bool` & `bool?`
 
 | Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingBooleanPropertyEditor`                            | [`EditorAliasAttribute("BooleanPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113540/concepts/business-model-design/data-types-supported-by-built-in-editors/boolean-properties)                 |
-| ``                            | [``]()                 |
+| `WithCaptions`                            | [`CaptionsForBoolValuesAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.CaptionsForBoolValuesAttribute)                 |
+| `WithImages`                            | [`ImagesForBoolValuesAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.ImagesForBoolValuesAttribute)                 |
+
 
 ### Domain-Extensions `int` & `int?`
 
 | Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingIntegerPropertyEditor`                            | [`EditorAliasAttribute("IntegerPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113532/concepts/business-model-design/data-types-supported-by-built-in-editors/numeric-properties#integerpropertyeditor)                 |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `decimal` & `decimal?`
 
 | Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingDecimalPropertyEditor`                            | [`EditorAliasAttribute("DecimalPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113532/concepts/business-model-design/data-types-supported-by-built-in-editors/numeric-properties#decimalpropertyeditor)                 |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `double` & `double?`
 
@@ -130,49 +136,42 @@ title: ModelBuilders - Built-in Attributes
 | Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingFloatPropertyEditor`                            | [`EditorAliasAttribute("FloatPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113532/concepts/business-model-design/data-types-supported-by-built-in-editors/numeric-properties#floatpropertyeditor)                 |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `long` & `long?`
 
 | Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingLongPropertyEditor`                            | [`EditorAliasAttribute("IntegerPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113532/concepts/business-model-design/data-types-supported-by-built-in-editors/numeric-properties#longpropertyeditor)                 |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `byte` & `byte?`
 
 | Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingBytePropertyEditor`                            | [`EditorAliasAttribute("BytePropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113532/concepts/business-model-design/data-types-supported-by-built-in-editors/numeric-properties#bytepropertyeditor)                 |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `DateTime` & `DateTime?`
 
 | Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingDateTimePropertyEditor`                            | [`EditorAliasAttribute("DateTimePropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113536/concepts/business-model-design/data-types-supported-by-built-in-editors/date-and-time-properties#datepropertyeditor)                 |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `TimeSpan` & `TimeSpan?`
 
 | Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingTimeSpanPropertyEditor`                            | [`EditorAliasAttribute("TimeSpanPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113536/concepts/business-model-design/data-types-supported-by-built-in-editors/date-and-time-properties#timespanpropertyeditor)                 |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `byte[]` & `byte[]?`
 
 | Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingImagePropertyEditor`                            | [`EditorAliasAttribute("ImagePropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113544/concepts/business-model-design/data-types-supported-by-built-in-editors/blob-image-properties) <br> [`ImageEditorAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.ImageEditorAttribute)                |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `enum` & `enum?`
 
 | Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingEnumPropertyEditor`                            | [`EditorAliasAttribute("EnumPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113552/concepts/business-model-design/data-types-supported-by-built-in-editors/enumeration-properties)                 |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `object` & `object?`
 
@@ -182,7 +181,6 @@ title: ModelBuilders - Built-in Attributes
 | `UsingLookupPropertyEditor`                            | [`EditorAliasAttribute("LookupPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113572/concepts/business-model-design/data-types-supported-by-built-in-editors/reference-foreign-key-complex-type-properties#lookuppropertyeditor)                 |
 | `UsingObjectPropertyEditor`                            | [`EditorAliasAttribute("ObjectPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113572/concepts/business-model-design/data-types-supported-by-built-in-editors/reference-foreign-key-complex-type-properties#objectpropertyeditor)                 |
 | `UsingDefaultPropertyEditor`                            | [`EditorAliasAttribute("DefaultPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.Editors.EditorAliases.DefaultPropertyEditor)                 |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `Type` & `Type?`
 
@@ -190,11 +188,9 @@ title: ModelBuilders - Built-in Attributes
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingTypePropertyEditor`                            | [`EditorAliasAttribute("TypePropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113579/concepts/business-model-design/data-types-supported-by-built-in-editors/type-properties)                 |
 | `UsingVisibleInReportsTypePropertyEditor`                            | [`EditorAliasAttribute("VisibleInReportsTypePropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113579/concepts/business-model-design/data-types-supported-by-built-in-editors/type-properties)                 |
-| ``                            | [``]()                 |
 
 ### Domain-Extensions `System.Drawing.Color` & `System.Drawing.Color?`
 
 | Xenial Extension                                  | XAF Attribute                                                     |
 | ------------------------------------------------- |------------------------------------------------------------------ |
 | `UsingColorPropertyEditor`                            | [`EditorAliasAttribute("ColorPropertyEditor")`](https://docs.devexpress.com/eXpressAppFramework/113658/concepts/business-model-design/data-types-supported-by-built-in-editors/color-properties)                 |
-| ``                            | [``]()                 |
