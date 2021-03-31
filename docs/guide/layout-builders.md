@@ -4,7 +4,7 @@ title: DetailViewLayoutBuilders - Introduction
 
 # DetailViewLayoutBuilders - Introduction
 
-DetailView LayoutBuilders are a way of defining `DetailViews` in code. They are a domain specific language (DSL) to build your Views in code rather than using the `ModelEditor`. As always in `Xenial.Framework` there are several ways to define them and how to tell the framework when to consume them. They are an addition to the `ModelEditor based approach`, because it operates a couple of levels below the differences layer.
+DetailView LayoutBuilders are a way of defining `DetailViews` in code. They are a domain specific language (DSL) to build your Views in code rather than using the `ModelEditor`. As always in `Xenial.Framework` there are several ways to define them and how to tell the framework when to consume them. They are an **addition** to the `ModelEditor based approach`, because it operates a couple of levels below the differences layer.
 
 DetailView LayoutBuilders are one of the many `NonVisual Components` of Xenial.Framework and designed around best practices and working most efficiently in a team, however there are several benefits for smaller teams and projects as well.
 
