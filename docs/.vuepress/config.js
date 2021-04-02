@@ -92,6 +92,7 @@ module.exports = {
     plugins: [
         ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag } }],
         ['@vuepress/back-to-top'],
-        ['@vuepress/nprogress']
+        ['@vuepress/nprogress'],
+        ['@vuepress/medium-zoom']
     ],
 }

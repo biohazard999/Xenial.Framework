@@ -47,3 +47,17 @@ Usage in platform specific module is of course supported, but we will focus on t
 :::
 
 ## Usage
+
+To get you starting quickly there is simplified registration pattern, as well as a more advanced one. If you prefer to use [ModelBuilders](/guide/model-builders.md) there is also optimized integration provided.
+
+Let's imagine a simple `Person` class as a sample we want to build a `DetailView` layout for:
+
+<<< @/guide/samples/layout-builders-simple/Person.cs
+
+This will result in the following **default** layout:
+
+![Person Default Layout](/images/guide/layout-builders/person-default-layout.png)
+
+This is the **target** layout we want to build:
+
+![Person Target Layout](/images/guide/layout-builders/person-target-layout.png)

@@ -12,6 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "@vuepress/plugin-back-to-top": "^1.8.2",
+    "@vuepress/plugin-medium-zoom": "^1.8.2",
     "@vuepress/plugin-nprogress": "^1.8.2",
     "chokidar": "^2.1.8",
     "cpy-cli": "^3.1.1",
