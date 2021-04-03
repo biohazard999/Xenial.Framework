@@ -60,6 +60,7 @@ module.exports = {
                     collapsable: false,
                     children: [
                         ['layout-builders', 'Introduction'],
+                        ['layout-builders-simple-registration', 'Simple Registration'],
                     ]
                 },
                 {

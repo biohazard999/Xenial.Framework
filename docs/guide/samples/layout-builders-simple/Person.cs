@@ -16,6 +16,21 @@ namespace MainDemo.Module.BusinessObjects
 
         public Person(Session session) : base(session) { }
 
+        public override void AfterConstruction()
+        {
+            base.AfterConstruction();
+            Address1 = new Address(Session)
+            {
+                Person = this,
+                Type = "Primary"
+            };
+            Address2 = new Address(Session)
+            {
+                Person = this,
+                Type = "Secondary"
+            };
+        }
+
         [Persistent]
         public string FirstName
         {
@@ -59,6 +74,7 @@ namespace MainDemo.Module.BusinessObjects
         }
 
         [Persistent]
+        [ExpandObjectMembers(ExpandObjectMembers.InDetailView)]
         public Address Address1
         {
             get => address1;
@@ -66,6 +82,7 @@ namespace MainDemo.Module.BusinessObjects
         }
 
         [Persistent]
+        [ExpandObjectMembers(ExpandObjectMembers.InDetailView)]
         public Address Address2
         {
             get => address2;
