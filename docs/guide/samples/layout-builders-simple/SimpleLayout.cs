@@ -10,10 +10,10 @@ namespace MainDemo.Module.BusinessObjects
 {
     [Persistent]
     [DefaultClassOptions]
-    [DetailViewLayoutBuilder(nameof(BuildMyDetailViewLayout))]
+    [DetailViewLayoutBuilder]
     public class Person : XPObject
     {
-        public static Layout BuildMyDetailViewLayout()
+        public static Layout BuildLayout()
         {
             return new Layout
             {
