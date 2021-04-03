@@ -41,6 +41,22 @@ Don't panic on this very verbose and long syntax. We will go through the basics 
 
 ![Person Result Layout](/images/guide/layout-builders/person-result-layout-simple.png)
 
+## Layout-Code-Review
+
+The `Layout` class is the container for the layout. It serves as a generic container for all kind of `LayoutNodes`.
+
+```cs{3}
+    public static Layout BuildLayout()
+    {
+        return new Layout
+        {
+            /* ... */
+        }
+    }
+```
+
+## Refactoring
+
 ## Other registrations
 
 If you don't like the convention based `BuildLayout`, you also can provide an custom method name by passing it as a parameter to the `DetailViewLayoutBuilderAttribute`.
