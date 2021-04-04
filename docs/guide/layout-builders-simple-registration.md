@@ -55,7 +55,47 @@ The `Layout` class is the container for the layout. It serves as a generic conta
     }
 ```
 
+::: tip
+Since C#6 we can use [Expression-bodied members](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/statements-expressions-operators/expression-bodied-members) to shorten the syntax to:
+
+```cs
+public static Layout BuildLayout() => new Layout {};
+```
+:::
+
+The basic building blocks for defining layouts are the `VerticalLayoutGroupItem` and `HorizontalLayoutGroupItem` classes. To define tabbed layouts we use the `LayoutTabbedGroupItem` and `LayoutTabGroupItem` classes. A special node is the `LayoutEmptySpaceItem` to specify free room. Let's look at how this layout is structured:
+
+* <code style='color: red; background-color: transparent;'>VerticalLayoutGroupItem</code> specifies a `LayoutGroupItem` with *vertical aligned children*
+* <code style='color: green; background-color: transparent;'>HorizontalLayoutGroupItem</code> specifies a `LayoutGroupItem` with *horizontal aligned children*
+* <code style='color: blue; background-color: transparent;'>LayoutTabbedGroupItem</code> A specialized container that holds tabs.
+* <code style='color: limegreen; background-color: transparent;'>LayoutTabGroupItem</code> A container that represents a tab. By default *children are aligned vertical*
+* <code style='color: gray; background-color: transparent;'>LayoutEmptySpaceItem</code> A special node that takes up the *remaining* empty space.
+
+![Person Layout Structure](/images/guide/layout-builders/person-result-layout-simple-analyze.png)
+
+By default each node in a container takes up space evenly. So if you define 2 elements they will take up 50% each, for 3 they will take 33%, for 4 25% and so on. You can override this behavior by defining the `RelativeSize` of a node. The `LayoutEmptySpaceItem` acts like any node, so it follows the rules mentioned earlier, but it also acts as a *layout stretching* mechanism for tab pages, because XAF tries to shrink them by default. 
+
+::: tip
+You can specify any valid `double` value for the `RelativeSize`, but using percentage values turned out to be most consistent.  
+:::
+
+The only thing left is the `LayoutPropertyEditorItem`. In the constructor your can specify the ID of the `IModelPropertyEditor` node in the detail view. Because we used the [`ExpandObjectMembersAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.ExpandObjectMembersAttribute), XAF will generate separate property editors for the specified nested objects for example `Address1.Street`.
+
+::: tip
+There are several properties that you can specify like `CaptionLocation` and `Caption`, `MinSize`, `MaxSize` etc.  
+For group nodes you can use the `Children` property to initialize them, or use the default `Add` method called by the initializer, if you don't need to specify any properties.
+:::
+
 ## Refactoring
+
+The code so far looks not that bad, but as you clearly can see we are repeating our selfs with the `Address` pages. Because we are using regular C# to define the layout, we can extract this part into a separate method and call it with `Address1` and `Address2`.
+
+<<< @/guide/samples/layout-builders-simple/SimpleLayoutRefactor.cs{56,61,72-101}
+
+::: tip
+Using string interpolation to specify the property names and stay refactoring safe is not mandatory but recommended.  
+By using the base class `LayoutItem` as a return value helps reducing maintenance costs in the future, because you can change the internals of the `CreateAddressGroup` method, without the need of updating it's usage.
+:::
 
 ## Other registrations
 

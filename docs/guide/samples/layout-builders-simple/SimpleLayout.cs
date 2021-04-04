@@ -13,110 +13,101 @@ namespace MainDemo.Module.BusinessObjects
     [DetailViewLayoutBuilder]
     public class Person : XPObject
     {
-        public static Layout BuildLayout()
+        public static Layout BuildMyDetailViewLayout()
         {
             return new Layout
             {
-                new VerticalLayoutGroupItem
+                new HorizontalLayoutGroupItem
                 {
                     Caption = "Person",
                     ShowCaption = true,
                     RelativeSize = 25,
                     Children =
                     {
+                        new LayoutPropertyEditorItem(nameof(Image))
+                        {
+                            ShowCaption = false,
+                            RelativeSize = 10
+                        },
                         new HorizontalLayoutGroupItem
                         {
-                            new LayoutPropertyEditorItem(nameof(Image))
+                            new VerticalLayoutGroupItem
                             {
-                                ShowCaption = false,
-                                RelativeSize = 10
-                            },
-                            new HorizontalLayoutGroupItem
-                            {
-                                new VerticalLayoutGroupItem
+                                new LayoutPropertyEditorItem(nameof(FullName)),
+                                new HorizontalLayoutGroupItem
                                 {
-                                    new LayoutPropertyEditorItem(nameof(FullName)),
-                                    new HorizontalLayoutGroupItem
-                                    {
-                                        new LayoutPropertyEditorItem(nameof(FirstName)),
-                                        new LayoutPropertyEditorItem(nameof(LastName)),
-                                    },
-                                    new HorizontalLayoutGroupItem
-                                    {
-                                        new LayoutPropertyEditorItem(nameof(Email)),
-                                        new LayoutPropertyEditorItem(nameof(Phone)),
-                                    },
-                                    new LayoutEmptySpaceItem(),
-                                }
+                                    new LayoutPropertyEditorItem(nameof(FirstName)),
+                                    new LayoutPropertyEditorItem(nameof(LastName)),
+                                },
+                                new HorizontalLayoutGroupItem
+                                {
+                                    new LayoutPropertyEditorItem(nameof(Email)),
+                                    new LayoutPropertyEditorItem(nameof(Phone)),
+                                },
+                                new LayoutEmptySpaceItem(),
                             }
                         }
                     }
                 },
                 new LayoutTabbedGroupItem
                 {
-                    new LayoutTabGroupItem("Primary Address")
+                    new LayoutTabGroupItem("Primary Address", FlowDirection.Horizontal)
                     {
-                        new HorizontalLayoutGroupItem
+                        new VerticalLayoutGroupItem
                         {
-                            new VerticalLayoutGroupItem
+                            new LayoutPropertyEditorItem($"{nameof(Address1)}.{nameof(Address.Street)}")
                             {
-                                new LayoutPropertyEditorItem($"{nameof(Address1)}.{nameof(Address.Street)}")
+                                CaptionLocation = Locations.Top
+                            },
+                            new HorizontalLayoutGroupItem
+                            {
+                                new LayoutPropertyEditorItem($"{nameof(Address1)}.{nameof(Address.City)}")
                                 {
                                     CaptionLocation = Locations.Top
                                 },
-                                new HorizontalLayoutGroupItem
-                                {
-                                    new LayoutPropertyEditorItem($"{nameof(Address1)}.{nameof(Address.City)}")
-                                    {
-                                        CaptionLocation = Locations.Top
-                                    },
-                                    new LayoutPropertyEditorItem($"{nameof(Address1)}.{nameof(Address.ZipPostal)}")
-                                    {
-                                        CaptionLocation = Locations.Top
-                                    },
-                                },
-                                new LayoutPropertyEditorItem($"{nameof(Address1)}.{nameof(Address.StateProvince)}")
+                                new LayoutPropertyEditorItem($"{nameof(Address1)}.{nameof(Address.ZipPostal)}")
                                 {
                                     CaptionLocation = Locations.Top
                                 },
-                                new LayoutPropertyEditorItem($"{nameof(Address1)}.{nameof(Address.Country)}")
-                                {
-                                    CaptionLocation = Locations.Top
-                                },
+                            },
+                            new LayoutPropertyEditorItem($"{nameof(Address1)}.{nameof(Address.StateProvince)}")
+                            {
+                                CaptionLocation = Locations.Top
+                            },
+                            new LayoutPropertyEditorItem($"{nameof(Address1)}.{nameof(Address.Country)}")
+                            {
+                                CaptionLocation = Locations.Top
                             },
                             new LayoutEmptySpaceItem(),
                         },
                         new LayoutEmptySpaceItem(),
                     },
-                    new LayoutTabGroupItem("Secondary Address")
+                    new LayoutTabGroupItem("Secondary Address", FlowDirection.Horizontal)
                     {
-                        new HorizontalLayoutGroupItem
+                        new VerticalLayoutGroupItem
                         {
-                            new VerticalLayoutGroupItem
+                            new LayoutPropertyEditorItem($"{nameof(Address2)}.{nameof(Address.Street)}")
                             {
-                                new LayoutPropertyEditorItem($"{nameof(Address2)}.{nameof(Address.Street)}")
+                                CaptionLocation = Locations.Top
+                            },
+                            new HorizontalLayoutGroupItem
+                            {
+                                new LayoutPropertyEditorItem($"{nameof(Address2)}.{nameof(Address.City)}")
                                 {
                                     CaptionLocation = Locations.Top
                                 },
-                                new HorizontalLayoutGroupItem
-                                {
-                                    new LayoutPropertyEditorItem($"{nameof(Address2)}.{nameof(Address.City)}")
-                                    {
-                                        CaptionLocation = Locations.Top
-                                    },
-                                    new LayoutPropertyEditorItem($"{nameof(Address2)}.{nameof(Address.ZipPostal)}")
-                                    {
-                                        CaptionLocation = Locations.Top
-                                    },
-                                },
-                                new LayoutPropertyEditorItem($"{nameof(Address2)}.{nameof(Address.StateProvince)}")
+                                new LayoutPropertyEditorItem($"{nameof(Address2)}.{nameof(Address.ZipPostal)}")
                                 {
                                     CaptionLocation = Locations.Top
                                 },
-                                new LayoutPropertyEditorItem($"{nameof(Address2)}.{nameof(Address.Country)}")
-                                {
-                                    CaptionLocation = Locations.Top
-                                },
+                            },
+                            new LayoutPropertyEditorItem($"{nameof(Address2)}.{nameof(Address.StateProvince)}")
+                            {
+                                CaptionLocation = Locations.Top
+                            },
+                            new LayoutPropertyEditorItem($"{nameof(Address2)}.{nameof(Address.Country)}")
+                            {
+                                CaptionLocation = Locations.Top
                             },
                             new LayoutEmptySpaceItem(),
                         },
