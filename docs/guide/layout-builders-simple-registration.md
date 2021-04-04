@@ -1,10 +1,10 @@
 ---
-title: DetailViewLayoutBuilders - Simple registration
+title: DetailViewLayoutBuilders - Simple Layout
 ---
 
-# DetailViewLayoutBuilders - Simple registration
+# DetailViewLayoutBuilders - Simple Layout
 
-Because `Xenial.Framework` is designed to be flexible and tries to minimize your overhead let's start with the first way of using `LayoutBuilders` with the `simple registration` approach.  
+Because `Xenial.Framework` is designed to be flexible and tries to minimize your overhead let's start with the first way of using `LayoutBuilders` with the `simple layout` approach.  
 
 But before we dig into the details of building a layout, we need to tell XAF to use the `LayoutBuilders`.  
 For this we need to override the `AddGeneratorUpdaters` in our platform agnostic module and call the `updaters.UseDetailViewLayoutBuilders()` extension method.
@@ -23,7 +23,7 @@ After registering our builder and restart the application we should see an empty
 ![Person Void Layout](/images/guide/layout-builders/person-void-layout.png)
 
 ::: tip
-If you don't like this convention there are [some overloads for stricter](#other-registrations) registration patterns.
+If you don't like this convention, there are [some overloads for stricter](#other-registrations) registration patterns.
 :::
 
 ::: warning
