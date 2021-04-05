@@ -54,3 +54,4 @@ You can mix an match between both initializer and functional style. Whatever mak
 Currently we used the `LayoutBuilder<T>` as an instance, and used the *convention based* registration pattern for the builder. By inheriting from `LayoutBuilder<T>` and using the `typed` overload of the `DetailViewLayoutBuilder` we can reduce additional noise from the syntax.  
 First we need to inherit from the `LayoutBuilder<T>` class and change our registration.
 
+<<< @/guide/samples/layout-builders-advanced/BuilderInherit.cs
