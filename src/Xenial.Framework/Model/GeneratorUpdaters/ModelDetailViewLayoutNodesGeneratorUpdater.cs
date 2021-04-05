@@ -78,8 +78,19 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                                     var method = attribute.GeneratorType.GetMethod(attribute.BuildLayoutMethodName);
                                     if (method is not null)
                                     {
-                                        var @delegate = Delegate.CreateDelegate(typeof(BuildLayoutFunctor), method);
-                                        attribute.BuildLayoutDelegate = (BuildLayoutFunctor)@delegate;
+                                        if (method.IsStatic)
+                                        {
+                                            var @delegate = Delegate.CreateDelegate(typeof(BuildLayoutFunctor), method);
+                                            attribute.BuildLayoutDelegate = (BuildLayoutFunctor)@delegate;
+                                        }
+                                        else
+                                        {
+                                            //TODO: Cleanup instance and factory
+                                            var generatorInstance = Activator.CreateInstance(attribute.GeneratorType);
+
+                                            var @delegate = Delegate.CreateDelegate(typeof(BuildLayoutFunctor), generatorInstance, method);
+                                            attribute.BuildLayoutDelegate = (BuildLayoutFunctor)@delegate;
+                                        }
                                     } //TODO: ERROR HANDLING
                                 }
                             }
