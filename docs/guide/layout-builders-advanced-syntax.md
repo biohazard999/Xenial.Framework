@@ -36,14 +36,12 @@ However, this time we are not using the initializer syntax and hand craft our ob
 The layout builder has a lot of methods and overloads that accepts some basic parameters like `Caption` and `ImageName` first, followed by a `params LayoutItemNode[] nodes`, as well as a callback method `Action<TNodeType>`.  
 That allows us to use a more compact syntax, without loosing any functionality over the traditional initializer syntax.
 
+> In this sample the parameters `m` and `e` are used, where `m` is short for `Member` and `e` for `Editor`.  
+This is a best practice convention, but you can use what ever name you want.
+
 <<< @/guide/samples/layout-builders-advanced/BuilderInstance.cs
 
 The beauty of this approach is, that IntelliSense guides you building your layout and you don't need to remember all the type names. It is a much denser syntax, but can be a little bit *chatty* with braces sometimes.
-
-::: tip
-In this sample the parameters `m` and `e` are used, where `m` is short for `Member` and `e` for `Editor`.  
-This is a best practice convention, but you can use what ever name you want.
-:::
 
 ::: tip
 You can mix an match between both initializer and functional style. Whatever makes you and your team more happy.  
@@ -51,7 +49,7 @@ You can mix an match between both initializer and functional style. Whatever mak
 
 ## Inherit from `LayoutBuilder<T>` 
 
-Currently we used the `LayoutBuilder<T>` as an instance, and used the *convention based* registration pattern for the builder. By inheriting from `LayoutBuilder<T>` and using the `typed` overload of the `DetailViewLayoutBuilder` we can reduce additional noise from the syntax.  
+Currently we used the `LayoutBuilder<T>` as an instance, and used the *convention based* registration pattern for the builder. By inheriting from `LayoutBuilder<T>` and using the `typed` overload of the `DetailViewLayoutBuilderAttribute` we can reduce additional noise from the syntax.  
 First we need to inherit from the `LayoutBuilder<T>` class and change our registration.
 
 <<< @/guide/samples/layout-builders-advanced/BuilderInherit.cs
