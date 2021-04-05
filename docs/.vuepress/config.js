@@ -61,7 +61,7 @@ module.exports = {
                     children: [
                         ['layout-builders', 'Introduction'],
                         ['layout-builders-simple-registration', 'Simple Layout'],
-                        ['layout-builders-advanved-syntax', 'Advanced Syntax'],
+                        ['layout-builders-advanved-syntax', 'LayoutBuilder<T> Syntax'],
                     ]
                 },
                 {

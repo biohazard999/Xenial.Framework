@@ -29,23 +29,20 @@ namespace MainDemo.Module.BusinessObjects
                             ShowCaption = false,
                             RelativeSize = 10
                         },
-                        new HorizontalLayoutGroupItem
+                        new VerticalLayoutGroupItem
                         {
-                            new VerticalLayoutGroupItem
+                            new LayoutPropertyEditorItem(nameof(FullName)),
+                            new HorizontalLayoutGroupItem
                             {
-                                new LayoutPropertyEditorItem(nameof(FullName)),
-                                new HorizontalLayoutGroupItem
-                                {
-                                    new LayoutPropertyEditorItem(nameof(FirstName)),
-                                    new LayoutPropertyEditorItem(nameof(LastName)),
-                                },
-                                new HorizontalLayoutGroupItem
-                                {
-                                    new LayoutPropertyEditorItem(nameof(Email)),
-                                    new LayoutPropertyEditorItem(nameof(Phone)),
-                                },
-                                new LayoutEmptySpaceItem(),
-                            }
+                                new LayoutPropertyEditorItem(nameof(FirstName)),
+                                new LayoutPropertyEditorItem(nameof(LastName)),
+                            },
+                            new HorizontalLayoutGroupItem
+                            {
+                                new LayoutPropertyEditorItem(nameof(Email)),
+                                new LayoutPropertyEditorItem(nameof(Phone)),
+                            },
+                            new LayoutEmptySpaceItem(),
                         }
                     }
                 },
