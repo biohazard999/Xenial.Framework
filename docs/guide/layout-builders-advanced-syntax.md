@@ -15,7 +15,7 @@ As a quick reminder our final layout should look like in the past example:
 
 The registration in the module is exactly the same as in the last chapter, we need to tell XAF to use the `LayoutBuilders`.  
 For this we need to override the `AddGeneratorUpdaters` in our platform agnostic module and call the `updaters.UseDetailViewLayoutBuilders()` extension method.  
-Nothing additional is needed to use the advanced syntax
+Nothing additional is needed to use the `LayoutBuilder<T>` syntax.
 
 <<< @/guide/samples/layout-builders-simple/RegisterInModule.cs{8,12}
 

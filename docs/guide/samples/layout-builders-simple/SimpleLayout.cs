@@ -13,7 +13,7 @@ namespace MainDemo.Module.BusinessObjects
     [DetailViewLayoutBuilder]
     public class Person : XPObject
     {
-        public static Layout BuildMyDetailViewLayout()
+        public static Layout BuildLayout()
         {
             return new Layout
             {

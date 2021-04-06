@@ -62,6 +62,7 @@ module.exports = {
                         ['layout-builders', 'Introduction'],
                         ['layout-builders-simple-registration', 'Simple Layout'],
                         ['layout-builders-advanced-syntax', 'LayoutBuilder<T> Syntax'],
+                        ['layout-builders-record-syntax', 'Record Syntax'],
                     ]
                 },
                 {
