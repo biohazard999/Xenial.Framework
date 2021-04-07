@@ -23,6 +23,11 @@ But the best way to use this feature is by creating a `Directory.Build.props` fi
 
 For more information on this topic [please look at the Microsoft Documentation](https://docs.microsoft.com/de-de/dotnet/csharp/language-reference/configure-language-version#configure-multiple-projects)
 
+::: tip
+After adding the `Directory.Build.props` it may be necessary to add the file to your solution file.  
+Also make sure to close VisualStudio, delete all `bin` and `obj` folders and restart `VisualStudio` to make sure the compiler was picked up correctly.
+:::
+
 ::: warning
 You can also use records in projects < `net5` (.NET4xxx, .NETStandard2.0, etc...). Although it is not officially supported by Microsoft, you can enable this feature by adding a class called `IsExternalInit` in your project:
 
