@@ -24,9 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="DownloadWindowsFormsDemoWindowController.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="DownloadWindowsFormsDemoWindowController.cs" />
   </ItemGroup>
   
 </Project>
