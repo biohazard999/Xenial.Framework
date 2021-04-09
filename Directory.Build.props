@@ -11,7 +11,7 @@
     <NetStandard2_1Version>netstandard2.1</NetStandard2_1Version>
     <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
     <Net5Version>net5.0</Net5Version>
-    <NetBlazorLibVersion>$(NetStandard2_1Version);$(Net5Version)</NetBlazorLibVersion>
+    <NetBlazorLibVersion>$(Net5Version)</NetBlazorLibVersion>
     <NetBlazorAppVersion>$(Net5Version)</NetBlazorAppVersion>
     <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version)</TargetFrameworks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
@@ -37,10 +37,11 @@
     <Nullable>enable</Nullable>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeFormatting.ruleset</CodeAnalysisRuleSet>
-    <DxVersion>20.2.6</DxVersion>
-    <!-- <XenialVersion>20204.0.1</XenialVersion> -->
+    <DxVersion>21.1.1</DxVersion>
     <XenialVersion>$(PackageVersion)</XenialVersion>
-    <DxPackageVersion>$(DxVersion)</DxPackageVersion>
+    <AspNetCoreVersion>5.0.2</AspNetCoreVersion>
+    <!-- <DxPackageVersion>$(DxVersion)</DxPackageVersion> -->
+    <DxPackageVersion>21.1.2-pre-21089</DxPackageVersion>
     <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>
     <XenialDemoPackageVersion>
     </XenialDemoPackageVersion>
@@ -67,6 +68,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(DxVersion) &gt; 20.2.5">
     <DefineConstants>$(DefineConstants);DX_GT_20_2_5</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.1.1">
+    <DefineConstants>$(DefineConstants);DX_GT_21_1_1</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
