@@ -190,15 +190,15 @@ namespace Xenial.Build
             Target("demos", DependsOn("pack", "publish:framework.featurecenter.xenial.io", "publish:Xenial.FeatureCenter.Win"));
 
             Target("docs:prepare",
-                () => RunAsync("npm", windowsName: "npm.cmd", workingDirectory: "docs", args: "ci")
+                () => RunAsync("npm", windowsName: "cmd", workingDirectory: "docs", args: "ci", windowsArgs: "/c npm ci")
             );
 
             Target("docs", DependsOn("docs:prepare"),
-                () => RunAsync("npm", windowsName: "npm.cmd", workingDirectory: "docs", args: "run build")
+                () => RunAsync("npm", windowsName: "cmd", workingDirectory: "docs", args: "run build", windowsArgs: "/c npm run build")
             );
 
             Target("docs:serve", DependsOn("docs:prepare"),
-                () => RunAsync("npm", windowsName: "npm.cmd", workingDirectory: "docs", args: "start")
+                () => RunAsync("npm", windowsName: "cmd", workingDirectory: "docs", args: "start", windowsArgs: "/c npm start")
             );
 
             Target("deploy.nuget", DependsOn("ensure-tools"), async () =>
