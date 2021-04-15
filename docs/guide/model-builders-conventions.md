@@ -1,7 +1,7 @@
 ---
 title: ModelBuilders - Conventions
 ---
-<!--here's a quick comment-->
+
 # ModelBuilders - Conventions
 
 Because `ModelBuilders` work with the powerful [XAF TypesInfo system](https://docs.devexpress.com/eXpressAppFramework/113669/concepts/business-model-design/types-info-subsystem) we can apply metadata in an imperative way.
