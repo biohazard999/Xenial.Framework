@@ -147,6 +147,12 @@ git merge upstream/main
 ```
 
 ::: tip
+If you already cloned the repository, missed some step just as a reminder here: you must have configured your `upstream` at this stage:
+
+```cmd
+git remote add upstream https://github.com/xenial-io/Xenial.Framework.git
+```
+
 Learn more about [keeping repositories in sync over at github docs](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/syncing-a-fork).
 ::: 
 
