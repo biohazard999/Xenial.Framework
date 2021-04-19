@@ -70,7 +70,7 @@ module.exports = {
                     title: 'Contribute',
                     collapsable: false,
                     children: [
-                        ['contribute-docs', 'Contribute Documentation'],
+                        ['contribute-docs', 'Contribute Documentation (online)'],
                         ['contribute-docs-local', 'Contribute Documentation (locally)']
                     ]
                 },
