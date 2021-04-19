@@ -158,6 +158,10 @@ Learn more about [keeping repositories in sync over at github docs](https://docs
 
 Afterwards you can [edit the documentation](#editing-the-documentation) as [you learned earlier](#editing-the-documentation).
 
+::: tip PRO TIP
+If you want to automate the process of having your fork in sync automatically, you may want to use [pull bot](https://github.com/apps/pull)
+:::
+
 ## Creating a pull request
 
 The last step missing is [creating a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork).
