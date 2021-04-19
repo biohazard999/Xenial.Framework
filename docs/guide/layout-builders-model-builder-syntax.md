@@ -4,28 +4,26 @@ title: 'DetailViewLayoutBuilders - ModelBuilder Syntax'
 
 # DetailViewLayoutBuilders - `ModelBuilder` Syntax
 
-If you are using [ModelBuilders](/guide/modelbuilders.md) we of course provide deep integration here as well.
+LayoutBuilders are fully integrated into [ModelBuilders](/guide/modelbuilders.md).
 
 ## Registration
 
-The registration in the module is exactly the same as in the last chapter, we need to tell XAF to use the `LayoutBuilders`.  
-For this we need to override the `AddGeneratorUpdaters` in our platform agnostic module and call the `updaters.UseDetailViewLayoutBuilders()` extension method.  
-Nothing additional is needed to use the record syntax.
+Registration is exactly the same as before, override the `AddGeneratorUpdaters` in the platform agnostic module and call the `updaters.UseDetailViewLayoutBuilders()` extension method.
 
 <<< @/guide/samples/layout-builders-simple/RegisterInModule.cs{8,12}
 
 ## Build the Layout
 
-As we learned in the [ModelBuilders](/guide/modelbuilders.md) chapter how to integrate them, we will use the fluent syntax and use the `WithDetailViewLayout` for this sample.
+As with [ModelBuilders](/guide/modelbuilders.md) this example will use  fluent syntax combined with the `WithDetailViewLayout`.
 
-> The overload `WithDetailViewLayout` takes an signature of `BuildLayoutFunctor` which is a method that just returns a `Layout` object. The second overload provides us handily a [`LayoutBuilder<Person>`](/guide/layout-builders-advanced-syntax.md). That way we don't need to create the builder our self.
+> The overload `WithDetailViewLayout` takes a signature of `BuildLayoutFunctor` which is a method that just returns a `Layout` object. The second overload provides a [`LayoutBuilder<T>`](/guide/layout-builders-advanced-syntax.md) obviating the need to create the builder independently.
 
 <<< @/guide/samples/layout-builders-model-builders/Module.cs{27,28}
 
-Because we use `ModelBuilders` to add the attribute to our `Person` class, we don't need to specify anything special:
+As  `ModelBuilders` are used to add the attribute tothe `Person` class, there is no requirement to specify anything special:
 
 <<< @/guide/samples/layout-builders-simple/Person.cs
 
 ::: tip
-This is the optimal way of adding Layouts to your classes you don't have source access to or want to keep your model clean from attributes.
+This is the optimal way to add Layouts to to classes to which source access unavailable or when it is desirable to keep the model clean from attributes.
 :::
