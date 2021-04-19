@@ -9,7 +9,7 @@ if defined DEVEXPRESS_NUGET_FEED (
 ) ELSE (
     echo %%DEVEXPRESS_NUGET_FEED%% is not set, setting it to %DEVEXPRESS_NUGET_FEED_DEFAULT%
     echo %%DEVEXPRESS_NUGET_FEED%% is local source you only will be able to build docs
-    setx /M DEVEXPRESS_NUGET_FEED %DEVEXPRESS_NUGET_FEED_DEFAULT%
+    setx DEVEXPRESS_NUGET_FEED %DEVEXPRESS_NUGET_FEED_DEFAULT%
     echo Refreshing EnvironmentVariables
     call refreshenv.bat
 )
