@@ -1,4 +1,4 @@
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) ![Xenial.Framework](https://github.com/xenial-io/Xenial.Framework/workflows/Xenial.Framework/badge.svg) ![Nuget](https://img.shields.io/nuget/v/Xenial.Framework)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) [![Join the chat at https://gitter.im/Xenial-Framework/community](https://badges.gitter.im/Xenial-Framework/community.svg)](https://gitter.im/Xenial-Framework/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Xenial.Framework](https://github.com/xenial-io/Xenial.Framework/workflows/Xenial.Framework/badge.svg) ![Nuget](https://img.shields.io/nuget/v/Xenial.Framework)
 
 <img src="img/logo.svg" width="100px" />
 
