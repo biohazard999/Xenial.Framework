@@ -1,8 +1,10 @@
+using DevExpress.Persistent.Base;
 using DevExpress.Xpo;
 
 namespace MainDemo.Module.BusinessObjects
 {
     [Persistent]
+    [DefaultClassOptions]
     public class Person : XPObject
     {
         private string firstName;
@@ -60,14 +62,14 @@ namespace MainDemo.Module.BusinessObjects
         }
 
         [Persistent]
-        public string Email 
+        public string Email
         {
             get => email;
             set => SetPropertyValue(nameof(Email), ref email, value);
         }
 
         [Persistent]
-        public byte[] Image 
+        public byte[] Image
         {
             get => image;
             set => SetPropertyValue(nameof(Image), ref image, value);
@@ -104,6 +106,7 @@ namespace MainDemo.Module.BusinessObjects
     public class Address : XPObject
     {
         private Person person;
+        private string type;
         private string street;
         private string city;
         private string stateProvince;
@@ -118,6 +121,13 @@ namespace MainDemo.Module.BusinessObjects
         {
             get => person;
             set => SetPropertyValue(nameof(Person), ref person, value);
+        }
+
+        [Persistent]
+        public string Type
+        {
+            get => type;
+            set => SetPropertyValue(nameof(Type), ref type, value);
         }
 
         [Persistent]
