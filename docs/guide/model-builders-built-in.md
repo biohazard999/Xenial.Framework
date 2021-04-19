@@ -4,7 +4,9 @@ title: ModelBuilders - Built-in Attributes
 
 # ModelBuilders - Built-in Attributes
 
-There are a lot of built in extension methods for almost all built-in attributes of XAF. This is a translation table between the extension methods and the corresponding implementation of XAF.
+Xenial.Framework ModelBuilders have extension methods for almost all of the built-in attributes of XAF. 
+
+This table below maps the ModelBuilder extentions to the corresponding implementation in XAF.
 
 ::: tip
 If you are [missing an attribute let us know](https://github.com/xenial-io/Xenial.Framework/issues)!  
