@@ -4,45 +4,49 @@ title: ModelBuilders - Inline approach
 
 # ModelBuilders - Inline approach
 
-The first way you can leverage `ModelBuilders` in your code is inline. This approach is very useful if you apply just a couple of attributes to your model. It's a quick and dirty way without going through the ceremony of writing a buddy type for your class. 
+This approach is very useful when applying  just a couple of attributes to a business object. It is both quick and it avoids the requirement to create an additional  (buddy)class.
 
 ## Class Level
 
-We will focus now on class level attributes using the inline approach.
+The following code samples illustrate the use of inline ModelBuilders to replace Class Level attributes.
 
 <<< @/guide/samples/DemoTaskBeforeModelBuilder.cs{11-12}
 
-To replace those 2 attributes, we need to override the `CustomizeTypesInfo` method and use the static `ModelBuilder.Create<T>()` method to create an inline model builder. It's important to call the `Build` method at the end, to refresh the `ITypeInfo` instance.
+In order to replace the two class level attributes it is necessary to override the 'CustomTypesInfo' method utilising the 'ModelBuilder.Create<T>()' method to create and inline 'ModelBuilder'.
+    
+::: tip
+It is a requirement that the 'ModelBuilder' 'Build' method is called at the end in order to refresh the 'ITypesInfo' instance.
+:::
 
 But first we need to import the correct namespace by using the `using Xenial.Framework.ModelBuilders;` statement.
 
 <<< @/guide/samples/model-builder-inline/DemoTaskModelBuilderInline.cs{9,21-24}
 
-We use the built in methods `WithDefaultClassOptions` and `HasCaption` to apply those attributes to our business class. Now we can remove the attributes from our code.
+Using the built in methods `WithDefaultClassOptions` and `HasCaption` those attributes can be applied to the business class and once done the attributes themselves can be removed from the business object's code. 
 
 <<< @/guide/samples/DemoTaskHighlightAfterModelBuilderClass.cs{11-12}
 
 ## Property Level
 
-Next topic is how we apply attributes on property level using the inline approach.
+Property level attributes require a slightly different approach.
 
 <<< @/guide/samples/DemoTaskBeforeModelBuilder.cs{17}
 
-To replace the tooltip attribute, we need to override the `CustomizeTypesInfo` method and use the static `ModelBuilder.Create<T>()` method to create an inline model builder. It returns an instance of a `ModelBuilder` that we can use to apply property attributes as well. We use the `builder.For(member => member.MemberName)` linq like syntax to provide a refactor and type save way to specify a property of our business object.
+Once again the 'CustomizeTypesInfo' is overidden but in this instance the static `ModelBuilder.Create<T>()` method is called to create an inline model builder. It returns an instance of a `ModelBuilder` that can be used to apply property attributes as well. Use the `builder.For(member => member.MemberName)` linq like syntax to provide a refactor and type safe way to specify the property of the business object for which the attribute is to be removed.
 
-Make sure we need import the correct namespace by using the `using Xenial.Framework.ModelBuilders;` statement like in the last chapter.
+As before add a reference to the  correct namespace by using the `using Xenial.Framework.ModelBuilders;` statement.
 
 <<< @/guide/samples/model-builder-inline/DemoTaskModelBuilderInlineProperties.cs{9,23-24}
 
-We use the built in method `HasTooltip` to apply the attribute to our business classes property. Now we can remove the attribute from our code.
+Use the built in method `HasTooltip` to apply the attribute to the business class property. Once done the attribute can be removed from the code.
 
 <<< @/guide/samples/DemoTaskHighlightAfterModelBuilderClassProperties.cs{17}
 
 ## Summary
 
-Because we use imperative code instead of pure attributes we can apply attributes even to code, which is in a different assembly (we may not have code access to). It's of course possible to use every language feature C# provides to increase maintainability (string interpolation, etc).
+The use of 'imperative' code over traditional attributes allows attributes to be applied to code which may be in different assembly and potentially inaccesible, whilst retain all the advantages profferd by C# to increase maintainability (string interpolation, etc).
 
-Our final code looks like this:
+On completion the business object's code will be as follows:
 
 <<< @/guide/samples/DemoTaskModelBuilderModelSummary.cs
 
