@@ -44,7 +44,7 @@ In your [platform agnostic module](https://docs.devexpress.com/eXpressAppFramewo
 </code-group>
 
 ::: tip INFORMATION
-By convention the platform agnostic module is usually named <Your Application>.Module.
+By convention the platform agnostic module is usually named `<Your Application>.Module`.
 If you're unfamiliar with the Command Line Interface (cli) you can always use the Nuget package manager.
 Whilst the Xenial.Framework can of course be used in platform specific modules, for the purposes of this documentation emphasis will be given to its use in the platform agnostic module of your project.
 :::
