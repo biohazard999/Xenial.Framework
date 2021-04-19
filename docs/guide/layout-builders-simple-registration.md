@@ -90,7 +90,7 @@ For group nodes you can use the `Children` property to initialize them, or use t
 
 The code so far looks not that bad, but as you clearly can see we are repeating our selfs with the `Address` pages. Because we are using regular C# to define the layout, we can extract this part into a separate method and call it with `Address1` and `Address2`.
 
-<<< @/guide/samples/layout-builders-simple/SimpleLayoutRefactor.cs{56,61,72-101}
+<<< @/guide/samples/layout-builders-simple/SimpleLayoutRefactor.cs{53,58,69-98}
 
 ::: tip
 Using string interpolation to specify the property names and stay refactoring safe is not mandatory but recommended.  
