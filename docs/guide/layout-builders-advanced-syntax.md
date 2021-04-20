@@ -15,7 +15,7 @@ By way of a quick reminder the illustration below shows what the final layout sh
 ## Registration
 
 As before the first task is to tell XAF to use the `LayoutBuilders`.  
-To do this it is necessary to override the `AddGeneratorUpdaters` in the platform agnostic module and call the `updaters.UseDetailViewLayoutBuilders()` extension method.
+Override the `AddGeneratorUpdaters` in the platform agnostic module and call the `updaters.UseDetailViewLayoutBuilders()` extension method.
 
 <<< @/guide/samples/layout-builders-simple/RegisterInModule.cs{8,12}
 
@@ -48,7 +48,8 @@ It is perfectly acceptable to mix both initializer and functional style to suit 
 
 ## Inherit from `LayoutBuilder<T>` 
 
-Thus far the `LayoutBuilder<T>` has been used as an instance utilising the *convention based* registration pattern for the builder. By inheriting from `LayoutBuilder<T>` and using the `typed` overload of the `DetailViewLayoutBuilderAttribute` it is possible to reduce additional noise from the syntax.  
-To do this it is necessary to inherit from the `LayoutBuilder<T>` class and change the registration as illustrated below.
+Thus far the `LayoutBuilder<T>` has been used as an instance utilizing the *convention based* registration pattern for the builder. 
+
+By inheriting from `LayoutBuilder<T>` and using the `typed` overload of the `DetailViewLayoutBuilderAttribute` it is possible to reduce additional noise from the syntax.  This is achieved by inheriting from the `LayoutBuilder<T>` class and changing the registration as shown below.
 
 <<< @/guide/samples/layout-builders-advanced/BuilderInherit.cs

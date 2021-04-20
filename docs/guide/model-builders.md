@@ -46,19 +46,20 @@ In your [platform agnostic module](https://docs.devexpress.com/eXpressAppFramewo
 ::: tip INFORMATION
 By convention the platform agnostic module is usually named `<Your Application>.Module`.
 If you're unfamiliar with the Command Line Interface (cli) you can always use the Nuget package manager.
+
 Whilst the Xenial.Framework can of course be used in platform specific modules, for the purposes of this documentation emphasis will be given to its use in the platform agnostic module of your project.
 :::
 
 ## Using ModelBuilders
 
-There are several ways to use `ModelBuilders` in your application ranging  a fluent inline approach to a complete [buddy type](https://stackoverflow.com/a/38373456/2075758) ( essentially a secondary utility class that specifies the metadata for a business object).
+There are several ways to use `ModelBuilders` in your application ranging from a fluent inline approach to a complete [buddy type](https://stackoverflow.com/a/38373456/2075758) ( essentially a secondary utility class that specifies the metadata for a business object).
 
 To illustrate these approaches to using ModelBuilders consider the following [XPO business class](https://docs.devexpress.com/eXpressAppFramework/113640/getting-started/in-depth-tutorial-winforms-aspnet/business-model-design/business-model-design-with-express-persistent-objects) based on the Contact/Task Management XAF Demo.
 
 <<< @/guide/samples/DemoTaskBeforeModelBuilder.cs
 
 ::: tip INFORMATION
-Xenial.Framework ModelBuilders can also be used inNonPersistent classes and EntityFramework classes but for for the clarity this documentation will concentrate on expressPersistentObjects (XPO) business objects..
+Xenial.Framework ModelBuilders can also be used in NonPersistent classes and EntityFramework classes but for clarity this documentation will concentrate on expressPersistentObjects (XPO) business objects..
 :::
 
 ### Naming Conventions

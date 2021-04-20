@@ -4,7 +4,7 @@ title: 'DetailViewLayoutBuilders - Record Syntax'
 
 # DetailViewLayoutBuilders - `Record` Syntax
 
-C#9 [introduced a new record syntax](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/records#:~:text=C%23%209%20introduces%20records%2C%20a,types%20use%20value%2Dbased%20equality.) which has been implemented within Xenial>Framework LayoutBuilders ensuring that layouts can be built using `with` expressions. Although not very different from initalizers they make it possible to create a copy of a given record, which is particularly beneficial to a clean fluent syntax in combination with a **functional style** API.
+C#9 [introduced a new record syntax](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/records#:~:text=C%23%209%20introduces%20records%2C%20a,types%20use%20value%2Dbased%20equality.) which has been implemented within Xenial.Framework LayoutBuilders ensuring that layouts can be built using `with` expressions. Although not very different from initalizers they make it possible to create a copy of a given record, which is particularly beneficial to a clean fluent syntax in combination with a **functional style** API.
 
 ## Setting the compiler options
 
@@ -58,7 +58,7 @@ Microsoft has done a great job trying not to break any existing client project, 
 
 ## Registration
 
-Registration is exactly the same as shown in previous examples, override the `AddGeneratorUpdaters` in the platform agnostic module and call the `updaters.UseDetailViewLayoutBuilders()` extension method.
+Registration is exactly the same as in the previous examples, override the `AddGeneratorUpdaters` in the platform agnostic module and call the `updaters.UseDetailViewLayoutBuilders()` extension method.
 
 <<< @/guide/samples/layout-builders-simple/RegisterInModule.cs{8,12}
 

@@ -4,7 +4,7 @@ title: ModelBuilders - Inline approach
 
 # ModelBuilders - Inline approach
 
-This approach is very useful when applying  just a couple of attributes to a business object. It is both quick and it avoids the requirement to create an additional  (buddy)class.
+This approach is very useful when applying  just a couple of attributes to a business object. It is both quick and avoids the requirement to create an additional  (buddy)class.
 
 ## Class Level
 
@@ -12,17 +12,17 @@ The following code samples illustrate the use of inline ModelBuilders to replace
 
 <<< @/guide/samples/DemoTaskBeforeModelBuilder.cs{11-12}
 
-In order to replace the two class level attributes it is necessary to override the 'CustomTypesInfo' method utilising the 'ModelBuilder.Create<T>()' method to create and inline 'ModelBuilder'.
+In order to replace the two class level attributes it is necessary to override the 'CustomTypesInfo' method utilising the 'ModelBuilder.Create<T>()' method to create an inline 'ModelBuilder'.
     
 ::: tip
 It is a requirement that the 'ModelBuilder' 'Build' method is called at the end in order to refresh the 'ITypesInfo' instance.
 :::
 
-But first we need to import the correct namespace by using the `using Xenial.Framework.ModelBuilders;` statement.
+Before anything else import the correct namespace by using the `using Xenial.Framework.ModelBuilders;` statement.
 
 <<< @/guide/samples/model-builder-inline/DemoTaskModelBuilderInline.cs{9,21-24}
 
-Using the built in methods `WithDefaultClassOptions` and `HasCaption` those attributes can be applied to the business class and once done the attributes themselves can be removed from the business object's code. 
+Using the 'ModelBuilder' built-in methods `WithDefaultClassOptions` and `HasCaption` those attributes can be applied to the business class and once that has been done the attributes themselves can be removed from the business object's code. 
 
 <<< @/guide/samples/DemoTaskHighlightAfterModelBuilderClass.cs{11-12}
 
@@ -44,7 +44,7 @@ Use the built in method `HasTooltip` to apply the attribute to the business clas
 
 ## Summary
 
-The use of 'imperative' code over traditional attributes allows attributes to be applied to code which may be in different assembly and potentially inaccesible, whilst retain all the advantages profferd by C# to increase maintainability (string interpolation, etc).
+The use of 'imperative' code over traditional attributes allows attributes to be applied to code which may be in a different assembly and potentially inaccesible, whilst retaining all the advantages profferd by C# to increase maintainability (string interpolation, etc).
 
 On completion the business object's code will be as follows:
 

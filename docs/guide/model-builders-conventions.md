@@ -14,8 +14,8 @@ All of the language features of C# (if statements, foreach loops, string interpo
 
 The ability to build metadata on the fly opens up a range of possibilities for advanced scenarios such as reading that metadata directly from a configuration file, database, or other runtime modifications.
 
-::: warning
-Because XAF reads metadata at application startup you need to restart the application to apply the changes.
+::: CAUTION
+XAF reads metadata at application startup, as a result in order to to able to see any of the changes that have been made the application must be restarted in order to apply them.
 :::
 
 ## Imperative advanced example
@@ -36,7 +36,7 @@ The code above illustrates the extraordinary power of ModelBuilders but it also 
 <<< @/guide/samples/model-builder-convention/Sensor.ModelBuilder.ForProperties.cs{15-21}
 
 ::: tip
-This is especially useful if you only want to apply an attribute to selected properties.
+This is particularly useful if an attribute should only be applied to selected properties.
 :::
 
 ## ConventionBuilder - ForAllProperties
@@ -49,12 +49,12 @@ The code belows illustrates how to set the `AllowEdit` property to false on all 
 
 
 ::: tip
-You also can use the shorthand `NotAllowingEdit()` to achieve the same result.
+The same result can be achieved with the shorthand `NotAllowingEdit()`.
 :::
 
 ## ConventionBuilder - Except
 
-If the desired result is to apply an attribute to most but notall of the properties of the business object then the framework has the `Except` method that can be applied to 
+If the desired result is to apply an attribute to most but not all of the properties of the business object then the framework has the `Except` method that can be applied to 
 `ForAllProperties` which acts acts as a filter. The code below illustrates how only properties `Value2` and `Value4` should be editable, with the rest being un-editable.
 
 <<< @/guide/samples/model-builder-convention/Sensor.ModelBuilder.ForAllProperties.Except.cs{16-19}

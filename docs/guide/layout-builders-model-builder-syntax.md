@@ -20,10 +20,10 @@ As with [ModelBuilders](/guide/modelbuilders.md) this example will use  fluent s
 
 <<< @/guide/samples/layout-builders-model-builders/Module.cs{27,28}
 
-As  `ModelBuilders` are used to add the attribute tothe `Person` class, there is no requirement to specify anything special:
+As  `ModelBuilders` are used to add the attribute to the `Person` class, there is no requirement to specify anything special:
 
 <<< @/guide/samples/layout-builders-simple/Person.cs
 
 ::: tip
-This is the optimal way to add Layouts to to classes to which source access unavailable or when it is desirable to keep the model clean from attributes.
+This is the optimal way to add Layouts to to classes to which source access is either unavailable or when it is desirable to keep the model clean from attributes.
 :::
