@@ -4,9 +4,12 @@ title: DetailViewLayoutBuilders - Introduction
 
 # DetailViewLayoutBuilders - Introduction
 
-DetailView LayoutBuilders are a way of defining `DetailViews` in code. They are a domain specific language (DSL) to build your Views in code rather than using the `ModelEditor`. As always in `Xenial.Framework` there are several ways to define them and how to tell the framework when to consume them. They are an **addition** to the `ModelEditor based approach`, because it operates a couple of levels below the differences layer.
+DetailView LayoutBuilders are a way of defining `DetailViews` in code. They are a domain specific language (DSL) to build  Views in code rather than using the `ModelEditor`. As always in `Xenial.Framework` there are several ways to define them and how to tell the framework when to consume them. They are an **addition** to the `ModelEditor based approach`, because they operate below the differences layer. <!-- differences layer could probably benefit from some additional description or a link to the XAF documentation -->
 
+<!-- replace this line with its equivalent from the model builders into, remembering to substitute layout builders for model builders -->
 DetailView LayoutBuilders are one of the many `NonVisual Components` of Xenial.Framework and designed around best practices and working most efficiently in a team, however there are several benefits for smaller teams and projects as well.
+
+<!-- replace the installation section below with the one from patch 1)
 
 ## Installation
 
@@ -48,16 +51,16 @@ Usage in platform specific module is of course supported, but we will focus on t
 
 ## Usage
 
-To get you starting quickly there is simplified registration pattern, as well as a more advanced one. If you prefer to use [ModelBuilders](/guide/model-builders.md) there is also optimized integration provided.
+Xenial>Framework provides both a simple and advanced registration patter for LayoutBuilders as well as one specially optimsed for use within ModelBuilders.
 
-Let's imagine a simple `Person` class as a sample we want to build a `DetailView` layout for:
+All of the LayoutBuilder examples in this documention will be based upon the simple 'Perso' business object in the code below.
 
 <<< @/guide/samples/layout-builders-simple/Person.cs
 
-This will result in the following **default** layout:
+The standard  **default** layout that would be produced by XAF is illustrated below;
 
 ![Person Default Layout](/images/guide/layout-builders/person-default-layout.png)
 
-This is the **target** layout we want to build:
+The **target** layout that the code examples of LayoutBuilders in ensuing sections will aim to create is illustrated below;
 
 ![Person Target Layout](/images/guide/layout-builders/person-target-layout.png)

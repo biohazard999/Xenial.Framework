@@ -112,7 +112,7 @@ git commit -m "docs: your commit message"
 The `docs:` prefix in the commit message helps with generating a semantic changelog.
 :::
 
-After commiting you need to push your changes to your repository. This can be done also via VSCode:
+After committing you need to push your changes to your repository. This can be done also via VSCode:
 
 ![Sync the repository](/images/guide/contribute/sync-repo.png)
 
@@ -132,7 +132,12 @@ First you make sure that your repository has no uncommitted changes
 ```cmd
 git status
 
-
+# 
+# On branch main
+# Your branch is up to date with 'origin/main'.
+# 
+# nothing to commit, working tree clean
+# 
 ```
 
 ```cmd
@@ -140,3 +145,36 @@ git fetch upstream
 git checkout main
 git merge upstream/main
 ```
+
+::: tip
+If you already cloned the repository, missed some step just as a reminder here: you must have configured your `upstream` at this stage:
+
+```cmd
+git remote add upstream https://github.com/xenial-io/Xenial.Framework.git
+```
+
+Learn more about [keeping repositories in sync over at github docs](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/syncing-a-fork).
+::: 
+
+Afterwards you can [edit the documentation](#editing-the-documentation) as [you learned earlier](#editing-the-documentation).
+
+::: tip PRO TIP
+If you want to automate the process of having your fork in sync automatically, you may want to use [pull bot](https://github.com/apps/pull)
+:::
+
+## Creating a pull request
+
+The last step missing is [creating a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork).
+
+Navigate to your fork on github. For example `https://github.com/YOUR_GITHUB_NAME/Xenial.Framework`. Afterwards github normally will guide you through the process of creating a pull request by clicking on the `Pull request` link.
+
+![Clicking the Pull request link](/images/guide/contribute/pull-request-1.png)
+
+Make sure your source branch and the target branch is correct. By default this should be `main`. If you are a more advanced git user, you of course can create a separate branch. 
+
+![Creating the pull request and making sure branches are set correctly](/images/guide/contribute/pull-request-2.png)
+
+Afterwards you need to create the pull request:
+
+![Create the pull request](/images/guide/contribute/pull-request-3.png)
+
