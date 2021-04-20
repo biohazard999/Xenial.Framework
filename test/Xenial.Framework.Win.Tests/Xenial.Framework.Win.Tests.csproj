@@ -1,12 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
-    <UseWindowsForms>true</UseWindowsForms>
+    <!--<UseWindowsForms>true</UseWindowsForms>-->
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
+     <ProjectReference Include="..\..\src\Xenial.Framework.Win\Xenial.Framework.Win.csproj" /> 
   </ItemGroup>
  
 </Project>
