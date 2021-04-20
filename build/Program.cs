@@ -91,9 +91,9 @@ namespace Xenial.Build
                 () => RunAsync("dotnet", $"build {sln} --no-restore -c {ConfigurationDebug} {logOptions("build.debug")} {GetProperties(ConfigurationDebug)}")
             );
 
-            Target("test", DependsOn("build"), async () =>
+            Target("test:base", DependsOn("build"), async () =>
             {
-                var (fullFramework, netcore, net5) = FindTfms();
+                var (fullFramework, netcore, net5, _) = FindTfms();
 
                 var tfms = RuntimeInformation
                             .IsOSPlatform(OSPlatform.Windows)
@@ -106,6 +106,23 @@ namespace Xenial.Build
 
                 await Task.WhenAll(tests);
             });
+
+            Target("test:win", DependsOn("build"), async () =>
+            {
+                var (fullFramework, _, _, winVersion) = FindTfms();
+
+                var tfms = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                            ? new[] { fullFramework, winVersion }
+                            : new string[0] { };
+
+                var tests = tfms
+                    .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Framework.Win.Tests/Xenial.Framework.Win.Tests.csproj --no-build --no-restore --framework {tfm} -c {Configuration} {GetProperties()}"))
+                    .ToArray();
+
+                await Task.WhenAll(tests);
+            });
+
+            Target("test", DependsOn("test:base", "test:win"));
 
             Target("lic", DependsOn("test"),
                 async () =>
