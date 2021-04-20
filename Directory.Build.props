@@ -7,13 +7,13 @@
     <Copyright>Copyright $([System.Char]::ConvertFromUtf32(169)) Xenial, Manuel Grundner 2019-$([System.DateTime]::Today.ToString('yyyy'))</Copyright>
     <Authors>Xenial, Manuel Grundner</Authors>
     <FullFrameworkVersion>net462</FullFrameworkVersion>
+    <WindowsFrameworkVersion>net5.0-windows</WindowsFrameworkVersion>
     <NetStandardVersion>netstandard2.0</NetStandardVersion>
     <NetStandard2_1Version>netstandard2.1</NetStandard2_1Version>
     <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
     <Net5Version>net5.0</Net5Version>
     <NetBlazorLibVersion>$(Net5Version)</NetBlazorLibVersion>
     <NetBlazorAppVersion>$(Net5Version)</NetBlazorAppVersion>
-    <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version)</TargetFrameworks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -47,6 +47,13 @@
     </XenialDemoPackageVersion>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <RazorLangVersion>3.0</RazorLangVersion>
+    <!-- Xenial Default Package Version -->
+    <XenialTFMs>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version)</XenialTFMs>
+    <XenialWinTFMs>$(FullFrameworkVersion);$(WindowsFrameworkVersion)</XenialWinTFMs>
+    <XenialBlazorTFMs>$(NetBlazorLibVersion)</XenialBlazorTFMs>
+
+    <TargetFrameworks>$(XenialTFMs)</TargetFrameworks>
+
   </PropertyGroup>
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
     <TargetFrameworks>$(NetStandardVersion);$(Net5Version)</TargetFrameworks>
