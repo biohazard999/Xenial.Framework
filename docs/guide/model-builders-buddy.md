@@ -26,8 +26,7 @@ With that done, as with the inline approach, it is necessary to register the `Mo
 <<< @/guide/samples/DemoTaskHighlightAfterModelBuilderClass.cs{11-12}
 
 ::: tip
-By following the recommended naming covention of `ModelClass.ModelBuilder.cs` for  these model builders and applying the suffix ModelBuilder to the original class name  
-one can make full use of file naming in VisualStudio.
+By following the recommended naming covention of `ModelClass.ModelBuilder.cs` for  these model builders and applying the suffix ModelBuilder to the original class name it becomes possible to make full use of file naming in Visual Studio.
 :::
 
 ## Property Level

@@ -101,7 +101,8 @@ The example above doesn't use a contraint, rather it uses the type itself. There
 
 
 ::: tip
-Because of a restriction in the C# compiler Xenial.Framework provides two date overloads, one for nullable dates and the other for non nullable dates.  
+Because of a restriction in the C# compiler Xenial.Framework provides two date overloads, one for nullable dates and the other for non nullable dates. 
+ 
 Whilst it may seem onerous at first to have to differentiate between the two it will soon become apparent that it confers benefits that wouldn't be possible with just a single overload for all dates.
 :::
 

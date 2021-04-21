@@ -25,5 +25,5 @@ As  `ModelBuilders` are used to add the attribute to the `Person` class, there i
 <<< @/guide/samples/layout-builders-simple/Person.cs
 
 ::: tip
-This is the optimal way to add Layouts to to classes to which source access is either unavailable or when it is desirable to keep the model clean from attributes.
+This is the optimal way to add Layouts to classes to which source access is either unavailable or when it is desirable to keep the model clean from attributes.
 :::
