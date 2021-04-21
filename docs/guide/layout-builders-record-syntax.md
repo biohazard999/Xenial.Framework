@@ -69,14 +69,14 @@ As this uses C#9 it is now possible to use the [`Target-typed new expressions fe
 
 <<< @/guide/samples/layout-builders-records/RecordLayout.cs
 
-Although the syntax is a lot longer than the fluent builder syntax, it is a little more structured. It's combining both the power of `expression trees` to specify type safe layouts, as well as a familiar syntax comparable to initializers. It is however a more verbose (language limitations require the need to specify the `Children` directly, which is not needed with normal initializer syntax), so it's use is only recommend when there is a need to specify properties and children at the same time, or when using leaf node types (for example property editors).
+Although the syntax is a lot longer than the fluent builder syntax, it is a little more structured. It's combining both the power of `expression trees` to specify type safe layouts, as well as a familiar syntax comparable to initializers. It is however a more verbose (language limitations require the need to specify the `Children` directly, which is not needed with normal initializer syntax), so it's use is only recommended when there is a need to specify properties and children at the same time, or when using leaf node types (for example property editors).
 
 ## A mixed sample
 
 <<< @/guide/samples/layout-builders-records/RecordLayoutMixed.cs
 
 ::: warning
-This sample works without issue but mixixing syntax styles is not recommended and although  it works from a technical standpoint, it adds complexity and harms readability. 
+This sample works without issue but mixing syntax styles is not recommended and although  it works from a technical standpoint, it adds complexity and harms readability. 
  
 Wherever possible coding styles and conventions should be clearly defined and adhered to. 
 :::
