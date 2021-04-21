@@ -31,7 +31,7 @@ To apply a caption to those properties in an efficient 'imperative' way a `for l
 
 ## ConventionBuilder - ForProperties
 
-The code above illustrates the extraordinary power of ModelBuilders but it also demonstrates the ease with which it's possible to create code that could, at some point in the future, become very difficult to refactor. To mitigate this Xenial.Framework has the `ForProperties` construct that can accept a range of properties.
+The code above illustrates not only the extraordinary power of ModelBuilders but it also demonstrates the ease with which it's possible to create code that could, at some point in the future, become very difficult to refactor. To mitigate this Xenial.Framework has the `ForProperties` construct that can accept a range of properties.
 
 <<< @/guide/samples/model-builder-convention/Sensor.ModelBuilder.ForProperties.cs{15-21}
 
@@ -52,10 +52,11 @@ The code belows illustrates how to set the `AllowEdit` property to false on all 
 The same result can be achieved with the shorthand `NotAllowingEdit()`.
 :::
 
+<!-- Perhaps a small example of the above would be in order here -->
+
 ## ConventionBuilder - Except
 
-If the desired result is to apply an attribute to most but not all of the properties of the business object then the framework has the `Except` method that can be applied to 
-`ForAllProperties` which acts acts as a filter. The code below illustrates how only properties `Value2` and `Value4` should be editable, with the rest being un-editable.
+If the desired result is to apply an attribute to most but not all of the properties of the business object then the framework has the `Except` method that can be applied to `ForAllProperties` which acts acts as a filter. The code below illustrates how only properties `Value2` and `Value4` should be editable, with the rest being un-editable.
 
 <<< @/guide/samples/model-builder-convention/Sensor.ModelBuilder.ForAllProperties.Except.cs{16-19}
 
