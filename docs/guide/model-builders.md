@@ -52,7 +52,7 @@ Whilst the Xenial.Framework can of course be used in platform specific modules, 
 
 ## Using ModelBuilders
 
-There are several ways to use `ModelBuilders` in your application ranging from a fluent inline approach to a complete [buddy type](https://stackoverflow.com/a/38373456/2075758) ( essentially a secondary utility class that specifies the metadata for a business object).
+There are several ways to use `ModelBuilders` in your application ranging from a fluent inline approach to a complete [buddy type](https://stackoverflow.com/a/38373456/2075758) (essentially a secondary utility class that specifies the metadata for a business object).
 
 To illustrate these approaches to using ModelBuilders consider the following [XPO business class](https://docs.devexpress.com/eXpressAppFramework/113640/getting-started/in-depth-tutorial-winforms-aspnet/business-model-design/business-model-design-with-express-persistent-objects) based on the Contact/Task Management XAF Demo.
 

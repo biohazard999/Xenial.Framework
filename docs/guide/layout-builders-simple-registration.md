@@ -98,7 +98,7 @@ The last thing to examine is the `LayoutPropertyEditorItem`.
 In the constructor it is possible to specify the ID of the `IModelPropertyEditor` node in the Detail View. Because of the use of the [`ExpandObjectMembersAttribute`](https://docs.devexpress.com/eXpressAppFramework/DevExpress.Persistent.Base.ExpandObjectMembersAttribute), XAF will generate separate property editors for the specified nested objects, for example `Address1.Street`.
 
 ::: tip
-There are several properties that can specified like `CaptionLocation` and `Caption`, `MinSize`, `MaxSize` etc.  
+There are several properties that can be specified like `CaptionLocation` and `Caption`, `MinSize`, `MaxSize` etc.  
 
 For group nodes use the `Children` property to initialize them, or use the default `Add` method called by the initializer, if there isn't a requirement to specify any properties.
 :::

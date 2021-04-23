@@ -46,7 +46,7 @@ Use the built in method `HasTooltip` to apply the attribute to the business clas
 
 ## Summary
 
-The use of 'imperative' code over traditional attributes allows attributes to be applied to code which may be in a different assembly and potentially inaccesible, whilst retaining all the advantages profferd by C# to increase maintainability (string interpolation, etc).
+The use of 'imperative' code over traditional attributes allows attributes to be applied to code which may be in a different assembly and potentially inaccesible, whilst retaining all the advantages proffered by C# to increase maintainability (string interpolation, etc).
 
 On completion the business object's code will be as follows:
 
