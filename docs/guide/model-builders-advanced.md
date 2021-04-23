@@ -4,7 +4,7 @@ title: ModelBuilders - Advanced
 
 # ModelBuilders - Advanced
 
-The documentation on `ModelBuilders` has, thus far,  concentrated on the different ways in which they can be utilized in code. What has not be touched upon as yet is their support for Domain Specific Language (DSL) within individual projects. 
+The documentation on `ModelBuilders` has, thus far,  concentrated on the different ways in which they can be utilized in code. What has not been touched upon as yet is their support for Domain Specific Language (DSL) within individual projects. 
 
 Whilst it is neither complicated or difficult to implement their use with DSL, it does require a basic understanding of C# generics and concepts such as type inference and generic constraints.
 
