@@ -4,7 +4,7 @@ title: 'DetailViewLayoutBuilders - LayoutBuilder<T> Syntax'
 
 # DetailViewLayoutBuilders - `LayoutBuilder<T>` Syntax
 
-The last section demonstrated that layouts are essentially domain specific language which can, through the power of C#, produce in code pixel perfect results which are both refactor safe and have a consistent look and feel.
+The last section demonstrated that layouts are essentially domain specific language which can, through the power of C#, produce in code, pixel perfect results which are both refactor safe and have a consistent look and feel.
 
 Whilst the basic layout building blocks can be verbose `Xenial.Framework` does provide a more robust and IntelliSence driven way to craft layouts in code.
 
@@ -14,7 +14,7 @@ By way of a quick reminder the illustration below shows what the final layout sh
 
 ## Registration
 
-As before the first task is to tell XAF to use the `LayoutBuilders`.
+As before the first task is to tell XAF to use the `DetailViewLayoutBuilders`.
 
 Override the `AddGeneratorUpdaters` in the platform agnostic module and call the `updaters.UseDetailViewLayoutBuilders()` extension method.
 

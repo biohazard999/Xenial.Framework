@@ -4,7 +4,7 @@ title: DetailViewLayoutBuilders - Simple Layout
 
 # DetailViewLayoutBuilders - Simple Layout
 
-As has been stated `Xenial.Framework` is designed to be flexible and  to minimize overheads. This is exemplified by the `simple layout` approach of `LayoutBuilders`.  
+As has been stated `Xenial.Framework` is designed to be flexible and  to minimize overheads. This is exemplified by the `simple layout` approach of `DetailViewLayoutBuilders`.  
 
 The first task is to tell XAF to use the `LayoutBuilders`.  
 
@@ -20,7 +20,7 @@ The `DetailViewLayoutBuilderAttribute` defines the method and type that is respo
 
 <<< @/guide/samples/layout-builders-simple/RegisterSimple1.cs{11,14-17}
 
-After registering the builder and restarting the application (recall that XAF requires an application restart to register and apply changes to metadata) there is now an empty layout because as yet there is no code within the `LayoutBuilders` to construct the view.
+After registering the builder and restarting the application (recall that XAF requires an application restart to register and apply changes to metadata) there is now an empty layout because as yet there is no code within the `DetailViewLayoutBuilders` to construct the view.
 
 ![Person Void Layout](/images/guide/layout-builders/person-void-layout.png)
 
@@ -40,9 +40,9 @@ All the components used to build the layout are normal C# classes and have been 
 
 <<< @/guide/samples/layout-builders-simple/SimpleLayout.cs
 
-This may appear to be a very verbose and long syntax pattern. There are more compact and [advanced syntax](/guide/layout-builders-advanced-registration.md) patterns, see the [reference for the used classes](/guide/layout-builders-reference.md) for more details. 
+This may appear to be a very verbose and long syntax pattern (Xenial.Framework does provide amore compact and [advanced syntax](/guide/layout-builders-advanced-registration.md) patterns, see the [reference for the used classes](/guide/layout-builders-reference.md) for more details) which will be examined in greater detail shortly. 
 
-In the next section it will be examined in detail but before that examine the result:
+Before that examination look at the result:
 
 ![Person Result Layout](/images/guide/layout-builders/person-result-layout-simple.png)
 
@@ -99,6 +99,7 @@ In the constructor it is possible to specify the ID of the `IModelPropertyEditor
 
 ::: tip
 There are several properties that can specified like `CaptionLocation` and `Caption`, `MinSize`, `MaxSize` etc.  
+
 For group nodes use the `Children` property to initialize them, or use the default `Add` method called by the initializer, if there isn't a requirement to specify any properties.
 :::
 
@@ -124,7 +125,8 @@ If the convention based `BuildLayout` is not suitable , there is the option to p
 The creation of layouts in code can lead to large code files. Layout code can be moved to a separate file using the [`partial class` pattern](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods).  
 :::
 
-LayoutBuilders can be created in a separate class if, for example, there is a requirement to split XPO/XAF into separate assemblies, by providing the type of the class:
+`DetailViewLayoutBuilders`
+ can be created in a separate class if, for example, there is a requirement to split XPO/XAF into separate assemblies, by providing the type of the class:
 
 <<< @/guide/samples/layout-builders-simple/RegisterSimple3.cs{11,14-20}
 

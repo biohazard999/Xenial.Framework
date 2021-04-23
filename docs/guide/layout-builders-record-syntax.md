@@ -23,12 +23,15 @@ By far the best way to use this feature is to create a `Directory.Build.props` f
 
 For more information on this topic [please look at the Microsoft Documentation](https://docs.microsoft.com/de-de/dotnet/csharp/language-reference/configure-language-version#configure-multiple-projects)
 
+<!--Can't help but think that it should be solution folder NOT file -->
+
 ::: tip
-After adding the `Directory.Build.props` it may be necessary to add the file to the solution file.  
+After adding the `Directory.Build.props` it may be necessary to add the file to the solution file. 
+
 To ensure that the compiler is picked up correctly close VisualStudio, delete all `bin` and `obj` folders and then restart `VisualStudio`.
 :::
 
-::: warning
+::: warning CAUTION
 Whilst it is possible to use this in projects targeting .net frameworks below `net5` (by adding a class called `IsExternalInit` in the project) it is not officially supported by Microsoft:
 
 ```cs
@@ -69,14 +72,14 @@ As this uses C#9 it is now possible to use the [`Target-typed new expressions fe
 
 <<< @/guide/samples/layout-builders-records/RecordLayout.cs
 
-Although the syntax is a lot longer than the fluent builder syntax, it is a little more structured. It's combining both the power of `expression trees` to specify type safe layouts, as well as a familiar syntax comparable to initializers. It is however a more verbose (language limitations require the need to specify the `Children` directly, which is not needed with normal initializer syntax), so it's use is only recommended when there is a need to specify properties and children at the same time, or when using leaf node types (for example property editors).
+Although the syntax is a lot longer than the fluent builder syntax, it is a little more structured. It's combining both the power of `expression trees` to specify type safe layouts, as well as a familiar syntax comparable to initializers. However it is more verbose (language limitations require the need to specify the `Children` directly, which is not needed with normal initializer syntax) so it's use is only recommended when there is a need to specify properties and children at the same time, or when using leaf node types (for example property editors).
 
 ## A mixed sample
 
 <<< @/guide/samples/layout-builders-records/RecordLayoutMixed.cs
 
 ::: warning
-This sample works without issue but mixing syntax styles is not recommended and although  it works from a technical standpoint, it adds complexity and harms readability. 
+Whilst this sample works without issue mixing syntax styles is not recommended. It may work from a technical standpoint but it adds complexity and harms readability. 
  
 Wherever possible coding styles and conventions should be clearly defined and adhered to. 
 :::
