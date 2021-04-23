@@ -49,6 +49,10 @@ namespace Xenial.Build
                 ? "Xenial.Framework.sln"
                 : "Xenial.Framework.CrossPlatform.slnf";
 
+            Console.WriteLine($"Is platform windows? {RuntimeInformation.IsOSPlatform(OSPlatform.Windows)}");
+            Console.WriteLine($"Platform: {System.OperatingSystem}");
+            Console.WriteLine($"SLN: {sln}");
+
             var featureCenterBlazorDir = "./demos/FeatureCenter/Xenial.FeatureCenter.Blazor.Server";
             var featureCenterBlazor = Path.Combine(featureCenterBlazorDir, "Xenial.FeatureCenter.Blazor.Server.csproj");
 
