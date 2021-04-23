@@ -4,7 +4,9 @@ title: ModelBuilders - Buddy class approach
 
 # ModelBuilders - Buddy class approach
 
-The second way to leverage `ModelBuilders` in code is through the use of 'buddy' classes. This should be considered the prefered approach for model builders as it realises the power of generics ensuring more robust code and substantially easier refactoring. It requires more effort because of the need to write a second class but in doing so it becomes possible to take full advantage of the power bestowed by C#.
+The second way to leverage `ModelBuilders` in code is through the use of 'buddy' classes. This is the recommended way to use `ModelBuilders`.
+
+Although requiring the addition of a second class (the 'buddy') it ensures that all the C# language features, especially generics, along with Visual Studio Intellisense and refactoring, can be used to their fullest extent leading to better productivity gains for teams and individuals. 
 
 As in the documentation on the inline approach the same basic business object will be used as an example.
 
