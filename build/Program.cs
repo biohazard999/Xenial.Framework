@@ -76,15 +76,15 @@ namespace Xenial.Build
             );
 
             Target("lint", DependsOn("pack.lic", "ensure-tools"),
-                () => RunAsync("dotnet", $"format --exclude ext --check --verbosity diagnostic")
+                () => RunAsync("dotnet", $"format {sln} --exclude ext --check --verbosity diagnostic")
             );
 
             Target("restore", DependsOn("pack.lic", "lint"),
-                () => RunAsync("dotnet", $"restore {logOptions("restore")} {GetProperties()}")
+                () => RunAsync("dotnet", $"restore {sln} {logOptions("restore")} {GetProperties()}")
             );
 
             Target("format", DependsOn("ensure-tools"),
-                () => RunAsync("dotnet", $"format --exclude ext")
+                () => RunAsync("dotnet", $"format {sln} --exclude ext")
             );
 
             Target("build", DependsOn("restore"),
@@ -117,7 +117,7 @@ namespace Xenial.Build
 
                 var tfms = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                             ? new[] { fullFramework, winVersion }
-                            : new string[0] { };
+                            : Array.Empty<string>();
 
                 var tests = tfms
                     .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Framework.Win.Tests/Xenial.Framework.Win.Tests.csproj --no-build --no-restore --framework {tfm} -c {Configuration} {GetProperties()}"))
