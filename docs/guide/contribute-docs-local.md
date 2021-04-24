@@ -45,7 +45,6 @@ If you do not have a [Git Hub account](https://github.com/join) this would be th
 ::: warning CAUTION
 When setting up a new Git Hub account choose your username carefully. It is notoriously difficult to change at a later date.
 :::
-:::
 
 ## Clone the sources
 
