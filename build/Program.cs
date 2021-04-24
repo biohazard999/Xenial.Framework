@@ -47,7 +47,7 @@ namespace Xenial.Build
             var sln = RuntimeInformation
                 .IsOSPlatform(OSPlatform.Windows)
                 ? "Xenial.Framework.sln"
-                : "Xenial.Framework.CrossPlatform.slnf";
+                : "Xenial.Framework.CrossPlatform.sln";
 
             Console.WriteLine($"Is platform windows? {RuntimeInformation.IsOSPlatform(OSPlatform.Windows)}");
             Console.WriteLine($"Platform: {System.Environment.OSVersion.Platform}");
