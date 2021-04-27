@@ -10,7 +10,7 @@ Details of the latest version of Xenial.Framework and the XAF framework versions
 
 <!--Insert suitable link to a page on the Xenial site in the sentence above.  Alternatively if there is no plan to keep a changelog delete the sentence above -->
 
-## Creating a new Winforms XAF project
+## Creating a new WinForms XAF project
 
 Create a new project in Visual Studio selecting the DevExpress V20.2 XAF Solution Wizard as the project type. Xenial.Framework can be used in the Community Edition of Visual Studio, there is no requirement for it to be used in either the professional or Enterprise versions.  The illustrations below were taken from Visual Studio 2019 Enterprise.
 
@@ -20,7 +20,7 @@ Create a new project in Visual Studio selecting the DevExpress V20.2 XAF Solutio
 
 
 
-Select Winforms as the project type.
+Select WinForms as the project type.
 
 
 
@@ -36,7 +36,7 @@ Select XPO for the ORM and then click finish.
 
 
 
-The wizard will then create the sution which, when finished,  will contain three projects.
+The wizard will then create the solution which, when finished, will contain three projects.
 
 
 
@@ -46,7 +46,7 @@ The wizard will then create the sution which, when finished,  will contain three
 
 
 
-## Adding Xenial.Framework to the project
+## Adding Xenial.Framework to the WinForms project
 
 
 Xenial.Framework can be added to the XAF solution created by the wizard using either the visual tools that Visual Studio provides or by using the command line.
@@ -101,3 +101,34 @@ At the PM> prompt type `dotnet add package Xenial.Framework --version 0.0.54`
 Xenial.Framework has now been installed into the solution.
 
 
+
+
+
+## Creating a new Blazor XAF project
+
+
+As before create a new project in Visual Studio, this time selecting the DevExpress V20.2 XAF.Blazor Solution Wizard as the project type.
+
+![New Project 11  ](/images/guide/overview/newProject11.png)
+
+
+Select XPO as the ORM to use and click Install.
+
+
+![New Project 10  ](/images/guide/overview/newProject10.png)
+
+
+Upon completion of the wizard the created solution will contain three projects.
+
+
+![New Project 12  ](/images/guide/overview/newProject12.png)
+
+
+
+## Adding Xenial.Framework to the Blazor project
+
+
+Follow the same steps as outlined above for adding the Xenial.Framework to a WinForms Project taking care to ensure that the correct agnostic project is selected.
+
+
+![New Project 13  ](/images/guide/overview/newProject13.png)
