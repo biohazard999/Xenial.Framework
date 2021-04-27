@@ -46,8 +46,6 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
             {
                 if (modelViewLayout.Parent is IModelDetailView modelDetailView)
                 {
-                    //TODO: check IModelObjectGeneratedView
-
                     if (modelDetailView.Equals(modelDetailView.ModelClass.DefaultDetailView))
                     {
                         //TODO: multiple views and attributes
