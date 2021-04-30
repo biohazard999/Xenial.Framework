@@ -40,6 +40,7 @@ module.exports = {
                     children: [
                         '',
                         'module-structure',
+                        ['getting-started', 'Getting Started']
                     ]
                 },
                 {
