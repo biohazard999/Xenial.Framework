@@ -4,7 +4,7 @@ title: Getting Started
 # Getting Started
 
 
-Xenial.Framework supports DevExpress expressApplicationFramework (XAF) solutions that target both WinForms and Blazor and is available as a Nuget package. At the time of writing this documentation the minimum supported version of the XAF framework is Version 20.2.6 with the latest version of the Xenial.Framework being 0.0.54.
+Xenial.Framework supports DevExpress expressApplicationFramework (XAF) solutions that target both WinForms and Blazor and is available as a Nuget package. At the time of writing this documentation the minimum supported version of the XAF framework is Version **{{ $var['dxVersion'] }}** with the latest version of the Xenial.Framework being [**{{ $var['xenialVersion'] }}**](https://www.nuget.org/packages/Xenial.Framework).
 
 Details of the latest version of Xenial.Framework and the XAF framework versions that it supports can be found [here]
 

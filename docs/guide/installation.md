@@ -4,6 +4,8 @@ title: Installation
 
 # Installation
 
+[`Xenial.Framework` can be found on nuget](https://www.nuget.org/packages/Xenial.Framework).
+
 <code-group>
 <code-block title=".NET CLI">
 
