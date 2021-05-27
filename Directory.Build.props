@@ -40,8 +40,8 @@
     <DxVersion>21.1.3</DxVersion>
     <XenialVersion>$(PackageVersion)</XenialVersion>
     <AspNetCoreVersion>5.0.2</AspNetCoreVersion>
-    <!-- <DxPackageVersion>$(DxVersion)</DxPackageVersion> -->
-    <DxPackageVersion>[21.1.3]</DxPackageVersion>
+    <!-- <DxPackageVersion>[21.1.3-beta]</DxPackageVersion> -->
+    <DxPackageVersion>[$(DxVersion)]</DxPackageVersion>
     <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>
     <XenialDemoPackageVersion>
     </XenialDemoPackageVersion>
@@ -55,6 +55,7 @@
     <TargetFrameworks>$(XenialTFMs)</TargetFrameworks>
 
   </PropertyGroup>
+
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
     <TargetFrameworks>$(NetStandardVersion);$(Net5Version)</TargetFrameworks>
   </PropertyGroup>
