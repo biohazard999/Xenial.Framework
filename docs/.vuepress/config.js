@@ -1,9 +1,19 @@
 const git = require('git-rev-sync');
+const fs = require('fs');
+const parser = require('xml2json');
+
 let gitTag = git.tag();
 
 if (gitTag) {
     gitTag = gitTag.substring(1);
 }
+
+const directoryBuildPropsPath = `${process.cwd()}/../Directory.Build.props`;
+console.log(`Reading Directory.Build.props from ${directoryBuildPropsPath}`);
+const directoryBuildProps = fs.readFileSync(directoryBuildPropsPath);
+const json = JSON.parse(parser.toJson(directoryBuildProps));
+const dxVersion = json.Project.PropertyGroup.filter(o => o.DxVersion !== undefined).map(o => o.DxVersion)[0];
+console.log("DXVersion", dxVersion);
 
 module.exports = {
     title: "Xenial.Framework",
@@ -40,6 +50,7 @@ module.exports = {
                     children: [
                         '',
                         'module-structure',
+                        ['getting-started', 'Getting Started']
                     ]
                 },
                 {
@@ -102,7 +113,7 @@ module.exports = {
         lineNumbers: true
     },
     plugins: [
-        ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag } }],
+        ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag, dxVersion } }],
         ['@vuepress/back-to-top'],
         ['@vuepress/nprogress'],
         ['@vuepress/medium-zoom']

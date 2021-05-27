@@ -2,11 +2,10 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
-    <!--<UseWindowsForms>true</UseWindowsForms>-->
   </PropertyGroup>
 
   <ItemGroup>
-     <ProjectReference Include="..\..\src\Xenial.Framework.Win\Xenial.Framework.Win.csproj" /> 
+     <ProjectReference Include="..\..\src\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
   </ItemGroup>
- 
+
 </Project>
