@@ -156,15 +156,10 @@ namespace Xenial.Build
                     // Filter files that are cross platform
                     if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
-                        using var slnFilter = File.OpenRead(sln);
-                        var filter = await JsonDocument.ParseAsync(slnFilter);
-                        var solution = filter.RootElement.GetProperty("solution");
-                        var projects = solution.GetProperty("projects");
-
-                        var items = projects.EnumerateArray();
-                        var srcFilter = items.Select(s => s.GetString()).Where(s => s.StartsWith("src")).ToList();
-
-                        files = files.Where(f => srcFilter.Contains(f.ProjectName));
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("No need to pack on other platforms than windows");
+                        Console.ResetColor();
+                        return;
                     }
 
                     var tasks = files.Select(proj => RunAsync("dotnet", $"thirdlicense --project {proj.ProjectName} --output {proj.ThirdPartyName}"));
