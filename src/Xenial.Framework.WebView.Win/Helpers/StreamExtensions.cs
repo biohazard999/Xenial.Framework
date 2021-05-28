@@ -15,6 +15,7 @@ namespace Scissors.Utils.Io
     {
 
 
+        /// <summary>   (Immutable) the default buffer size. </summary>
         public const int DefaultBufferSize = 8192;
 
         /// <summary>
