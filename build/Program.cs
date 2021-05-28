@@ -171,11 +171,11 @@ namespace Xenial.Build
                 }
             );
 
-            Target("pack", DependsOn("lic"),
+            Target("pack:nuget", DependsOn("lic"),
                 () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {GetProperties()}")
             );
 
-            Target("pack:zip", //DependsOn("pack"),
+            Target("pack:zip", DependsOn("pack:nuget"),
                 () =>
                 {
                     var (fullFramework, _, net5, _, netstandardVersion) = FindTfms();
@@ -213,6 +213,8 @@ namespace Xenial.Build
                     }
                 }
             );
+
+            Target("pack", DependsOn("pack:nuget", "pack:zip"));
 
             Target("publish:Xenial.FeatureCenter.Win", DependsOn("pack"), async () =>
             {
