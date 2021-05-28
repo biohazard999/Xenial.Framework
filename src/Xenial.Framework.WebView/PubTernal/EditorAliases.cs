@@ -8,6 +8,7 @@ namespace Xenial.Framework.WebView.PubTernal
     {
         /// <summary>
         /// (Immutable)
+        /// (Immutable)
         /// The web view uri editor.
         /// </summary>
 
@@ -15,6 +16,7 @@ namespace Xenial.Framework.WebView.PubTernal
         public const string WebViewUriPropertyEditor = "Xenial.WebViewUriPropertyEditor";
 
         /// <summary>
+        /// (Immutable)
         /// (Immutable)
         /// The web view HTML string property editor.
         /// </summary>

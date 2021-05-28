@@ -37,10 +37,6 @@ namespace Xenial.Framework.ModelBuilders
         /// <param name="layoutBuilder">    The layout builder. </param>
         ///
         /// <returns>   IModelBuilder&lt;TClassType&gt;. </returns>
-        ///
-        /// ### <exception cref="ArgumentNullException">    layoutBuilder. </exception>
-        ///
-        /// ### <exception cref="ArgumentNullException">    modelBuilder. </exception>
 
         public static IModelBuilder<TClassType> WithDetailViewLayout<TClassType>(
           this IModelBuilder<TClassType> modelBuilder,

@@ -67,10 +67,6 @@ namespace Xenial.Framework.Layouts
         ///
         /// <param name="generatorType">            Type of the generator. </param>
         /// <param name="buildLayoutMethodName">    Name of the build layout method. </param>
-        ///
-        /// ### <exception cref="ArgumentNullException">    generatorType. </exception>
-        ///
-        /// ### <exception cref="ArgumentNullException">    buildLayoutMethodName. </exception>
 
         public DetailViewLayoutBuilderAttribute(Type generatorType, string buildLayoutMethodName)
             => (GeneratorType, BuildLayoutMethodName)

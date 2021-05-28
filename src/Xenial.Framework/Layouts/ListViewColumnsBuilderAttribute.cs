@@ -36,10 +36,6 @@ namespace Xenial.Framework.Layouts
         ///
         /// <param name="generatorType">            Type of the generator. </param>
         /// <param name="buildColumnsMethodName">   Name of the build columns method. </param>
-        ///
-        /// ### <exception cref="ArgumentNullException">    generatorType. </exception>
-        ///
-        /// ### <exception cref="ArgumentNullException">    buildLayoutMethodName. </exception>
 
         public ListViewColumnsBuilderAttribute(Type generatorType, string buildColumnsMethodName)
             => (GeneratorType, BuildColumnsMethodName)

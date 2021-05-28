@@ -68,8 +68,6 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
         ///                                                 invalid. </exception>
         ///
         /// <returns>   IComponentAdapter. </returns>
-        ///
-        /// ### <exception cref="NotImplementedException">  . </exception>
 
         protected override IComponentAdapter CreateComponentAdapter()
         {
@@ -354,8 +352,6 @@ namespace DevExpress.ExpressApp.Editors
         /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
         ///
         /// <returns>   EditorDescriptorsFactory. </returns>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> editorDescriptorsFactory. </exception>
 
         public static EditorDescriptorsFactory UseTokenObjectsPropertyEditorsBlazor(this EditorDescriptorsFactory editorDescriptorsFactory)
         {
@@ -380,8 +376,6 @@ namespace DevExpress.ExpressApp.Editors
         /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
         ///
         /// <returns>   EditorDescriptorsFactory. </returns>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> editorDescriptorsFactory. </exception>
 
         public static EditorDescriptorsFactory UseTokenObjectsPropertyEditorsBlazor<T>(this EditorDescriptorsFactory editorDescriptorsFactory)
         {
@@ -413,8 +407,6 @@ namespace DevExpress.ExpressApp.Editors
         /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
         ///
         /// <returns>   EditorDescriptorsFactory. </returns>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> editorDescriptorsFactory. </exception>
 
         public static EditorDescriptorsFactory UseTokenObjectsPropertyEditorsForTypeBlazor<T>(this EditorDescriptorsFactory editorDescriptorsFactory)
         {

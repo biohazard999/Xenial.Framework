@@ -147,8 +147,6 @@ namespace Xenial.Framework.Layouts.Items
         /// true if <paramref name="item">item</paramref> is found in the
         /// <see cref="T:System.Collections.Generic.ICollection`1"></see>; otherwise, false.
         /// </returns>
-        ///
-        /// ### <exception cref="NotImplementedException">  . </exception>
 
         public bool Contains(T item) => innerList.Contains(item);
 
@@ -164,16 +162,12 @@ namespace Xenial.Framework.Layouts.Items
         ///                             The <see cref="T:System.Array"></see> must have zero-based
         ///                             indexing. </param>
         /// <param name="arrayIndex">   The zero-based index in array at which copying begins. </param>
-        ///
-        /// ### <exception cref="NotImplementedException">  . </exception>
 
         public void CopyTo(T[] array, int arrayIndex) => innerList.CopyTo(array, arrayIndex);
 
         /// <summary>   Returns an enumerator that iterates through the collection. </summary>
         ///
         /// <returns>   An enumerator that can be used to iterate through the collection. </returns>
-        ///
-        /// ### <exception cref="NotImplementedException">  . </exception>
 
         public IEnumerator<T> GetEnumerator() => innerList.GetEnumerator();
 
@@ -191,8 +185,6 @@ namespace Xenial.Framework.Layouts.Items
         /// also returns false if <paramref name="item">item</paramref> is not found in the original
         /// <see cref="T:System.Collections.Generic.ICollection`1"></see>.
         /// </returns>
-        ///
-        /// ### <exception cref="NotImplementedException">  . </exception>
 
         public bool Remove(T item) => innerList.Remove(item);
 

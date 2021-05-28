@@ -48,8 +48,6 @@ namespace Xenial.Framework.WebView.Win.Helpers
         /// <param name="bufferSize">       (Optional) Size of the buffer. </param>
         ///
         /// <returns>   The download file. </returns>
-        ///
-        /// ### <exception cref="Exception">    . </exception>
 
         public static async Task<Stream> DownloadFileAsync(
             this HttpClient client,

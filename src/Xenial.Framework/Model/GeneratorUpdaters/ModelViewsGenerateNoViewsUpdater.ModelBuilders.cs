@@ -66,8 +66,6 @@ namespace Xenial.Framework.ModelBuilders
         /// <param name="viewId">       The view identifier. </param>
         ///
         /// <returns>   IModelBuilder&lt;TClassType&gt;. </returns>
-        ///
-        /// ### <exception cref="ArgumentNullException">    viewId. </exception>
 
         public static IModelBuilder<TClassType> GenerateNoView<TClassType>(
            this IModelBuilder<TClassType> modelBuilder,
@@ -85,10 +83,6 @@ namespace Xenial.Framework.ModelBuilders
         /// <param name="modelBuilder"> The model builder. </param>
         ///
         /// <returns>   IModelBuilder&lt;TClassType&gt;. </returns>
-        ///
-        /// ### <exception cref="ArgumentNullException">    modelBuilder. </exception>
-        ///
-        /// ### <exception cref="ArgumentNullException">    viewId. </exception>
 
         public static IModelBuilder<TClassType> GenerateNoViews<TClassType>(this IModelBuilder<TClassType> modelBuilder)
             => modelBuilder

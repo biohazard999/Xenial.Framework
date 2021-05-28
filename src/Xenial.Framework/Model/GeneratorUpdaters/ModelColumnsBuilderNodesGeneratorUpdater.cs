@@ -11,8 +11,7 @@ using static Xenial.Framework.Model.GeneratorUpdaters.ModelColumnsBuilderNodesGe
 namespace Xenial.Framework.Model.GeneratorUpdaters
 {
     /// <summary>
-    /// Class ModelColumnsBuilderNodesGeneratorUpdater. This class cannot be inherited. Implements
-    /// the
+    /// Class ModelColumnsBuilderNodesGeneratorUpdater. This class cannot be inherited. Implements the
     /// <see cref="DevExpress.ExpressApp.Model.ModelNodesGeneratorUpdater{DevExpress.ExpressApp.Model.NodeGenerators.ModelListViewColumnsNodesGenerator}" />
     /// </summary>
     ///

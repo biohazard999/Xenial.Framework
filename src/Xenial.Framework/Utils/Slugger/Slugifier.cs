@@ -24,9 +24,6 @@ namespace Xenial.Framework.Utils.Slugger
         /// <summary>   Initializes a new instance of the <see cref="Slugifier"/> class. </summary>
         ///
         /// <param name="config">   The configuration. </param>
-        ///
-        /// ### <exception cref="ArgumentNullException">    config - can't be null use default config or
-        ///                                                 empty constructor. </exception>
 
         public Slugifier(SlugifierConfig config)
             => Config = config ?? throw new ArgumentNullException(nameof(config), "can't be null use default config or empty constructor.");

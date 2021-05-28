@@ -119,8 +119,6 @@ namespace Xenial.Framework.WebView.Blazor.Editors
         ///                                             null. </exception>
         ///
         /// <param name="componentModel">   The component model. </param>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> componentModel. </exception>
 
         public WebViewUriComponentAdapter(WebViewUriInputModel componentModel)
         {
@@ -240,8 +238,6 @@ namespace DevExpress.ExpressApp.Editors
         /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
         ///
         /// <returns>   EditorDescriptorsFactory. </returns>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> editorDescriptorsFactory. </exception>
 
         public static EditorDescriptorsFactory UseWebViewUriPropertyEditorsBlazor(this EditorDescriptorsFactory editorDescriptorsFactory)
         {

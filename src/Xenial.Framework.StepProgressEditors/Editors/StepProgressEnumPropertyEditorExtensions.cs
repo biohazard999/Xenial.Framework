@@ -14,8 +14,6 @@ namespace DevExpress.ExpressApp.Editors
         /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
         ///
         /// <returns>   EditorDescriptorsFactory. </returns>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> editorDescriptorsFactory. </exception>
 
         public static EditorDescriptorsFactory UseStepProgressEnumPropertyEditors(this EditorDescriptorsFactory editorDescriptorsFactory)
         {
@@ -38,8 +36,6 @@ namespace DevExpress.ExpressApp.Editors
         /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
         ///
         /// <returns>   EditorDescriptorsFactory. </returns>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> editorDescriptorsFactory. </exception>
 
         public static EditorDescriptorsFactory UseStepProgressEnumPropertyEditor<TPropertyType>(this EditorDescriptorsFactory editorDescriptorsFactory)
             where TPropertyType : Enum

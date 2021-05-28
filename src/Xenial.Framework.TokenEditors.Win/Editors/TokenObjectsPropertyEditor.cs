@@ -94,8 +94,6 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
         /// <summary>   Creates the control core. </summary>
         ///
         /// <returns>   System.Object. </returns>
-        ///
-        /// ### <exception cref="System.NotImplementedException">   . </exception>
 
         protected override object CreateControlCore() => new XenialTokenObjectsEdit();
 
@@ -201,6 +199,7 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
         static XenialRepositoryItemTokenObjectsEdit() => RegisterCustomEdit();
 
         /// <summary>
+        /// (Immutable)
         /// (Immutable)
         /// The custom edit name.
         /// </summary>
@@ -500,8 +499,6 @@ namespace DevExpress.ExpressApp.Editors
         /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
         ///
         /// <returns>   EditorDescriptorsFactory. </returns>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> editorDescriptorsFactory. </exception>
 
         public static EditorDescriptorsFactory UseTokenObjectsPropertyEditorsWin(this EditorDescriptorsFactory editorDescriptorsFactory)
         {
@@ -526,8 +523,6 @@ namespace DevExpress.ExpressApp.Editors
         /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
         ///
         /// <returns>   EditorDescriptorsFactory. </returns>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> editorDescriptorsFactory. </exception>
 
         public static EditorDescriptorsFactory UseTokenObjectsPropertyEditorsWin<T>(this EditorDescriptorsFactory editorDescriptorsFactory)
         {
@@ -559,8 +554,6 @@ namespace DevExpress.ExpressApp.Editors
         /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
         ///
         /// <returns>   EditorDescriptorsFactory. </returns>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> editorDescriptorsFactory. </exception>
 
         public static EditorDescriptorsFactory UseTokenObjectsPropertyEditorsForTypeWin<T>(this EditorDescriptorsFactory editorDescriptorsFactory)
         {

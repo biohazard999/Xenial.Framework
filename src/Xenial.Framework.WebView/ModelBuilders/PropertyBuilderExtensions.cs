@@ -13,8 +13,6 @@ namespace Xenial.Framework.ModelBuilders
         /// <param name="builder">  The builder. </param>
         ///
         /// <returns>   IPropertyBuilder&lt;Uri, TClassType&gt;. </returns>
-        ///
-        /// ### <exception cref="ArgumentNullException">    builder. </exception>
 
         public static IPropertyBuilder<Uri?, TClassType> UseWebViewUriPropertyEditor<TClassType>(this IPropertyBuilder<Uri?, TClassType> builder)
             => builder.UsingEditorAlias(WebViewEditorAliases.WebViewUriPropertyEditor);

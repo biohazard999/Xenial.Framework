@@ -23,8 +23,6 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
         /// </summary>
         ///
         /// <param name="options">  The options. </param>
-        ///
-        /// ### <exception cref="ArgumentNullException">    options. </exception>
 
         public ModelAppOptionsNodesGeneratorUpdater(AppOptions options)
             => Options = options ?? throw new ArgumentNullException(nameof(options));

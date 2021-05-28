@@ -15,6 +15,7 @@ namespace Scissors.Utils.Io
     {
         /// <summary>
         /// (Immutable)
+        /// (Immutable)
         /// The default buffer size.
         /// </summary>
 

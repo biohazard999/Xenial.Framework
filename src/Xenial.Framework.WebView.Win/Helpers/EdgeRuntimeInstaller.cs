@@ -20,10 +20,9 @@ namespace Xenial.Framework.WebView.Win.Helpers
     {
         /// <summary>
         /// (Immutable)
+        /// (Immutable)
         /// Gets the web view2 runtime installer URL.
         /// </summary>
-        ///
-        /// ### <returns>   The web view2 runtime installer URL. </returns>
 
         public static readonly string WebView2RuntimeInstallerUrl = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
 

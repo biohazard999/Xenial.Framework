@@ -14,9 +14,7 @@ using Locations = DevExpress.Persistent.Base.Locations;
 
 namespace Xenial.Framework.Layouts.Items
 {
-    /// <summary>
-    /// (Immutable) a layout tabbed group item. This record cannot be inherited.
-    /// </summary>
+    /// <summary>   (Immutable) a layout tabbed group item. This record cannot be inherited. </summary>
 
     [XenialCheckLicence]
     public sealed partial record LayoutTabbedGroupItem : LayoutItem<LayoutTabGroupItem>,

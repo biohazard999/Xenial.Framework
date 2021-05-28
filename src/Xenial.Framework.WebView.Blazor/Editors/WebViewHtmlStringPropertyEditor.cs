@@ -131,8 +131,6 @@ namespace Xenial.Framework.WebView.Blazor.Editors
         ///                                             null. </exception>
         ///
         /// <param name="componentModel">   The component model. </param>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> componentModel. </exception>
 
         public WebViewHtmlStringComponentAdapter(WebViewHtmlStringInputModel componentModel)
         {

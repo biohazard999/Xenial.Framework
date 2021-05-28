@@ -9,9 +9,7 @@
 
         public int IndentLength { get; set; } = 2;
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this object use self closing tags.
-        /// </summary>
+        /// <summary>   Gets or sets a value indicating whether this object use self closing tags. </summary>
         ///
         /// <value> True if use self closing tags, false if not. </value>
 

@@ -27,8 +27,6 @@ namespace Xenial.Framework.Model.Core
         /// <param name="propertyName"> Name of the property. </param>
         ///
         /// <returns>   <c>true</c> if the specified node is visible; otherwise, <c>false</c>. </returns>
-        ///
-        /// ### <exception cref="NotImplementedException">  . </exception>
 
         public override bool IsVisible(IModelNode node, string propertyName)
         {
@@ -68,8 +66,6 @@ namespace Xenial.Framework.Model.Core
         /// <param name="node"> The node. </param>
         ///
         /// <returns>   Type. </returns>
-        ///
-        /// ### <exception cref="NotImplementedException">  . </exception>
 
         protected static Type? FindEditorType(IModelNode node)
         {

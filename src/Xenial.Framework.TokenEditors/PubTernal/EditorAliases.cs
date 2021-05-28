@@ -9,6 +9,7 @@ namespace Xenial.Framework.TokenEditors.PubTernal
     {
         /// <summary>
         /// (Immutable)
+        /// (Immutable)
         /// The token objects property editor.
         /// </summary>
 
@@ -16,6 +17,7 @@ namespace Xenial.Framework.TokenEditors.PubTernal
         public const string TokenObjectsPropertyEditor = "Xenial.TokenObjectsPropertyEditor";
 
         /// <summary>
+        /// (Immutable)
         /// (Immutable)
         /// The token string property editor.
         /// </summary>

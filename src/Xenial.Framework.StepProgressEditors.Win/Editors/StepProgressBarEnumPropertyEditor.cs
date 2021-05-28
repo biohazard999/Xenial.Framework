@@ -238,8 +238,6 @@ namespace DevExpress.ExpressApp.Editors
         /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
         ///
         /// <returns>   EditorDescriptorsFactory. </returns>
-        ///
-        /// ### <exception cref="System.ArgumentNullException"> editorDescriptorsFactory. </exception>
 
         public static EditorDescriptorsFactory UseStepProgressEnumPropertyEditorsWin(this EditorDescriptorsFactory editorDescriptorsFactory)
         {

@@ -8,6 +8,7 @@ namespace Xenial.Framework.StepProgressEditors.PubTernal
     {
         /// <summary>
         /// (Immutable)
+        /// (Immutable)
         /// The step progress enum property editor.
         /// </summary>
 

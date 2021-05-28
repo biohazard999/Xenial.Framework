@@ -43,8 +43,6 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
         ///                                                 invalid. </exception>
         ///
         /// <value> The ca 1725. </value>
-        ///
-        /// ### <param name="modelNode">    A ModelNode Application Model node to be updated. </param>
 
 #pragma warning disable CA1725 //match identitfier of base class -> would conflict with nodes
         public override void UpdateNode(ModelNode modelNode)

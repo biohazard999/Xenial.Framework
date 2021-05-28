@@ -87,8 +87,6 @@ namespace DevExpress.ExpressApp.SystemModule
         /// <param name="options">              The options. </param>
         ///
         /// <returns>   IModelNavigationItem. </returns>
-        ///
-        /// ### <exception cref="ArgumentNullException">    options. </exception>
 
         public static IModelNavigationItem SetXenialStaticBadgeProperties(this IModelNavigationItem modelNavigationItem, Action<IXenialModelBadgeStaticTextItem> options)
         {

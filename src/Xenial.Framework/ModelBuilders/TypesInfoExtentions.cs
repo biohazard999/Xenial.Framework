@@ -18,10 +18,6 @@ namespace DevExpress.ExpressApp.DC
         /// <param name="typesInfo">    The types information. </param>
         ///
         /// <returns>   TModelBuilder. </returns>
-        ///
-        /// ### <exception cref="InvalidOperationException">    Cannot create ModelBuilder of Type
-        ///                                                     '{typeof(TModelBuilder)}' because no TypeInfo
-        ///                                                     for Type '{builderForType}' could be found. </exception>
 
         public static TModelBuilder CreateModelBuilder<TModelBuilder>(this ITypesInfo typesInfo)
         {
