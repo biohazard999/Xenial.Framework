@@ -198,12 +198,6 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
     {
         static XenialRepositoryItemTokenObjectsEdit() => RegisterCustomEdit();
 
-        /// <summary>
-        /// (Immutable)
-        /// (Immutable)
-        /// The custom edit name.
-        /// </summary>
-
         public const string XenialTokenObjectsEditName = nameof(XenialTokenObjectsEdit);
         private IObjectSpace? objectSpace;
         private IMemberInfo? memberInfo;

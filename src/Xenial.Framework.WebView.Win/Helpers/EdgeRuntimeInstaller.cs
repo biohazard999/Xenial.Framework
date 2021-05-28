@@ -18,11 +18,6 @@ namespace Xenial.Framework.WebView.Win.Helpers
     /// <summary>   Class EdgeRuntimeInstaller. </summary>
     public static class WebView2RuntimeInstaller
     {
-        /// <summary>
-        /// (Immutable)
-        /// (Immutable)
-        /// Gets the web view2 runtime installer URL.
-        /// </summary>
 
         public static readonly string WebView2RuntimeInstallerUrl = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
 

@@ -50,11 +50,6 @@ namespace Xenial.Framework.WebView.Win.Editors
         private async void WebViewUriPropertyEditor_ControlCreated(object? sender, EventArgs e)
             => await Control.EnsureCoreWebView2AndInstallAsync().ConfigureAwait(false);
 
-        /// <summary>   Releases unmanaged and - optionally - managed resources. </summary>
-        ///
-        /// <param name="disposing">    <c>true</c> to release both managed and unmanaged resources;
-        ///                                                         <c>false</c> to release only unmanaged
-        ///                                                         resources. </param>
 
         protected override void Dispose(bool disposing)
         {

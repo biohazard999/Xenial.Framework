@@ -13,11 +13,7 @@ namespace Scissors.Utils.Io
     /// <summary>   Extension methods for the System.IO.Stream class. </summary>
     public static class StreamExtensions
     {
-        /// <summary>
-        /// (Immutable)
-        /// (Immutable)
-        /// The default buffer size.
-        /// </summary>
+
 
         public const int DefaultBufferSize = 8192;
 
