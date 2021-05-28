@@ -8,8 +8,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Utils
 {
+    /// <summary>   A resource utility facts. </summary>
     public static class ResourceUtilFacts
     {
+        /// <summary>   Resource extentions tests. </summary>
         public static void ResourceExtentionsTests() => Describe(nameof(ResourceUtil), () =>
         {
             var resourceNames = new[]

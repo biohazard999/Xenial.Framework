@@ -15,8 +15,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
+    /// <summary>   A layout empty space item facts. </summary>
     public static class LayoutEmptySpaceItemFacts
     {
+        /// <summary>   Layout empty space item tests. </summary>
         public static void LayoutEmptySpaceItemTests() => Describe(nameof(LayoutEmptySpaceItem), () =>
         {
             var faker = new Faker();

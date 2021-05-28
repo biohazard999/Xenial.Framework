@@ -7,6 +7,7 @@ using System.Xml;
 
 namespace Xenial.Framework.Tests.Assertions.Xml
 {
+    /// <summary>   An XML formatter. </summary>
     public class XmlFormatter
     {
         private int currentAttributeSpace;
@@ -23,6 +24,13 @@ namespace Xenial.Framework.Tests.Assertions.Xml
             xmlDocument.LoadXml(input);
             return xmlDocument;
         }
+
+        /// <summary>   Formats. </summary>
+        ///
+        /// <param name="input">                The input. </param>
+        /// <param name="formattingOptions">    (Optional) Options for controlling the formatting. </param>
+        ///
+        /// <returns>   The formatted value. </returns>
 
         public string Format(string input, XmlFormatterOptions? formattingOptions = null)
         {
@@ -63,6 +71,12 @@ namespace Xenial.Framework.Tests.Assertions.Xml
             }
             return stringBuilder.ToString();
         }
+
+        /// <summary>   Minimizes. </summary>
+        ///
+        /// <param name="xmlString">    The XML string. </param>
+        ///
+        /// <returns>   A string. </returns>
 
         public static string Minimize(string xmlString)
         {

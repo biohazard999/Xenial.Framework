@@ -32,6 +32,13 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 return FindViewItems(modelNode.Parent);
             }
 
+            /// <summary>   Creates view layout element. </summary>
+            ///
+            /// <param name="parentNode">           The parent node. </param>
+            /// <param name="layoutViewItemNode">   The layout view item node. </param>
+            ///
+            /// <returns>   The new view layout element. </returns>
+
             protected override IModelLayoutViewItem? CreateViewLayoutElement(IModelNode parentNode, LayoutViewItem layoutViewItemNode)
             {
                 var modelLayoutViewItem = parentNode.AddNode<IModelLayoutViewItem>(layoutViewItemNode.Id);

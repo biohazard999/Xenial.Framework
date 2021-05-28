@@ -6,8 +6,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.ModelBuilders
 {
+    /// <summary>   A builder manager facts. </summary>
     public static class BuilderManagerFacts
     {
+        /// <summary>   Builder manager tests. </summary>
         public static void BuilderManagerTests() => Describe(nameof(BuilderManager), () =>
         {
             It("calls first builder", () =>

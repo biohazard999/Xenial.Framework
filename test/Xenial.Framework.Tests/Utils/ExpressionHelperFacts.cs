@@ -9,15 +9,31 @@ using static Xenial.Tasty;
 
 namespace Xenial.Utils.Tests
 {
+    /// <summary>   An expression helper facts. </summary>
     public static class ExpressionHelperFacts
     {
         private class TargetClass
         {
+            /// <summary>   Gets or sets a. </summary>
+            ///
+            /// <value> a. </value>
+
             public TargetClass A { get; set; }
+
+            /// <summary>   Gets or sets the b. </summary>
+            ///
+            /// <value> The b. </value>
+
             public TargetClass B { get; set; }
+
+            /// <summary>   Gets or sets the c. </summary>
+            ///
+            /// <value> The c. </value>
+
             public TargetClass C { get; set; }
         }
 
+        /// <summary>   Expression helper tests. </summary>
         public static void ExpressionHelperTests() => Describe(nameof(ExpressionHelper), () =>
         {
             _ = new TargetClass(); //Fix CA1812

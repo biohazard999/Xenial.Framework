@@ -12,9 +12,24 @@
 
 @code
 {
+    /// <summary>	Gets or sets the component model. </summary>
+    ///
+    /// <value>	The component model. </value>
+
     [Parameter]
     public WebViewUriInputModel? ComponentModel { get; set; }
+
+    /// <summary>	Creates a new RenderFragment. </summary>
+    ///
+    /// <param name="componentModel">	The component model. </param>
+    ///
+    /// <returns>	A RenderFragment. </returns>
+
     public static RenderFragment Create(WebViewUriInputModel componentModel) => @<WebViewUriComponent ComponentModel="@componentModel" />;
+
+    /// <summary>	Values changed. </summary>
+    ///
+    /// <param name="value">	The value. </param>
 
     void ValuesChanged(Uri? value)
     {
@@ -25,6 +40,13 @@
     }
 
 #if NET5_0
+
+    /// <summary>	Executes the 'after render asynchronous' action. </summary>
+    ///
+    /// <param name="firstRender">	True to first render. </param>
+    ///
+    /// <returns>	A Task. </returns>
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);

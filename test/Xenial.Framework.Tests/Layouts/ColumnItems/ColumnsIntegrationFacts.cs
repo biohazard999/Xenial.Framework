@@ -10,8 +10,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.ColumnItems
 {
+    /// <summary>   The columns integration facts. </summary>
     public static class ColumnsIntegrationFacts
     {
+        /// <summary>   Columns integration tests. </summary>
         public static void ColumnsIntegrationTests() => Describe("Columns integration", () =>
         {
             It("should work with fluent syntax", () =>

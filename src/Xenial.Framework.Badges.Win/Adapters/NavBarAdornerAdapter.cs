@@ -21,6 +21,13 @@ namespace Xenial.Framework.Badges.Win.Adapters
         private readonly NavBarControl navBarControl;
         private readonly Dictionary<NavPaneForm, AdornerUIManager> navePaneFormCollection = new();
         private readonly Dictionary<NavPaneForm, List<(NavBarItemLink navBarItemLink, Badge badge)>> navePaneFormBadgeCollection = new();
+
+        /// <summary>   Gets the default target element. </summary>
+        ///
+        /// <value> The default target element. </value>
+        ///
+        /// <seealso cref="Xenial.Framework.Badges.Win.Adapters.AdornerAdapterBase.DefaultTargetElement"/>
+
         protected override Control DefaultTargetElement => navBarControl;
 
         public NavBarAdornerAdapter(NavBarControl navBarControl) : base(new AdornerUIManager())
@@ -29,7 +36,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             navBarControl.Disposed += NavBarControl_Disposed;
         }
 
-        private void NavBarControl_Disposed(object sender, EventArgs e)
+        private void NavBarControl_Disposed(object? sender, EventArgs e)
         {
             navBarControl.Disposed -= NavBarControl_Disposed;
             Dispose();
@@ -47,7 +54,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             navBarControl.MouseMove -= MouseMove;
             navBarControl.MouseMove += MouseMove;
 
-            void MouseMove(object sender, MouseEventArgs e)
+            void MouseMove(object? sender, MouseEventArgs e)
             {
                 if (e.Button == MouseButtons.Left)
                 {
@@ -76,7 +83,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             navBarControl.Resize -= NeedInvoke;
             navBarControl.Resize += NeedInvoke;
 
-            void NeedInvoke(object sender, EventArgs e)
+            void NeedInvoke(object? sender, EventArgs e)
                 => BeginInvokeUpdateBadges();
 
             BeginInvokeAction(() => UpdateBadges(true));
@@ -228,7 +235,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             }
         }
 
-        private void UpdateItemBadge(
+        private static void UpdateItemBadge(
             NavLinkInfoArgs navBarItemLinkViewInfo,
             NavBarItemLink navBarItemLink,
             Badge navBarItemBadge,
@@ -276,7 +283,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             navPaneForm.Shown -= NeedInvoke;
             navPaneForm.Shown += NeedInvoke;
 
-            void navPaneFormDisposed(object sender, EventArgs e)
+            void navPaneFormDisposed(object? sender, EventArgs e)
             {
                 navPaneForm.Resize -= NeedInvoke;
                 navPaneForm.Disposed -= navPaneFormDisposed;
@@ -292,7 +299,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 navePaneFormBadgeCollection.Remove(navPaneForm);
             }
 
-            void NeedInvoke(object sender, EventArgs e)
+            void NeedInvoke(object? sender, EventArgs e)
             {
                 BeginInvokeAction(() =>
                 {
@@ -323,8 +330,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 });
             }
 
-            AdornerUIManager adornerUIManager;
-            if (!navePaneFormCollection.TryGetValue(navPaneForm, out adornerUIManager) && adornerUIManager is null)
+            if (!navePaneFormCollection.TryGetValue(navPaneForm, out var adornerUIManager) && adornerUIManager is null)
             {
                 adornerUIManager = new AdornerUIManager();
                 DisposableList.Add(adornerUIManager);

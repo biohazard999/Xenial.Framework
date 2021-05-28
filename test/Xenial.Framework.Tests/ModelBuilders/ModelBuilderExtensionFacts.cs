@@ -15,8 +15,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.ModelBuilders
 {
+    /// <summary>   A model builder extension facts. </summary>
     public static class ModelBuilderExtensionFacts
     {
+        /// <summary>   Model builder extension tests. </summary>
         public static void ModelBuilderExtensionTests() => Describe(nameof(ModelBuilderExtensions), () =>
         {
             static (IModelBuilder<ModelBuilderTarget>, Faker faker) CreateBuilder()

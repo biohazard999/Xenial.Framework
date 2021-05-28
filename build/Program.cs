@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+
+using GlobExpressions;
 
 using Xenial.Delicious.Beer.Json;
 using Xenial.Delicious.Beer.Recipes;
@@ -33,7 +36,7 @@ namespace Xenial.Build
                 branch = "main";
             }
 
-            var artifactsDirectors = Path.GetFullPath("./artifacts");
+            var artifactsDirectory = Path.GetFullPath("./artifacts");
 
             const string PleaseSet = "PLEASE SET BEFORE USE";
             var PublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3VFauRJrFzuZveL+J/naEs+CrNLBrc/sSDihdkUTo3Np/o4IoM8fxR6kYHIdH/7LXfXltFRREkv2ceTN8gyZuw==";
@@ -97,7 +100,7 @@ namespace Xenial.Build
 
             Target("test:base", DependsOn("build"), async () =>
             {
-                var (fullFramework, netcore, net5, _) = FindTfms();
+                var (fullFramework, netcore, net5, _, _) = FindTfms();
 
                 var tfms = RuntimeInformation
                             .IsOSPlatform(OSPlatform.Windows)
@@ -113,7 +116,7 @@ namespace Xenial.Build
 
             Target("test:win", DependsOn("build"), async () =>
             {
-                var (fullFramework, _, _, winVersion) = FindTfms();
+                var (fullFramework, _, _, winVersion, _) = FindTfms();
 
                 var tfms = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                             ? new[] { fullFramework, winVersion }
@@ -168,9 +171,50 @@ namespace Xenial.Build
                 }
             );
 
-            Target("pack", DependsOn("lic"),
+            Target("pack:nuget", DependsOn("lic"),
                 () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {GetProperties()}")
             );
+
+            Target("pack:zip", DependsOn("pack:nuget"),
+                () =>
+                {
+                    var (fullFramework, _, net5, _, netstandardVersion) = FindTfms();
+
+                    foreach (var tfm in new[] { fullFramework, net5, netstandardVersion })
+                    {
+                        var basePath = Path.GetFullPath("./src");
+                        var targetDirectory = Path.Combine(artifactsDirectory, "bin", tfm);
+
+                        if (!Directory.Exists(targetDirectory))
+                        {
+                            Directory.CreateDirectory(targetDirectory);
+                        }
+
+                        foreach (var file in Glob.Files(basePath, $"**/bin/Release/{tfm}/Xenial.*.{{dll,xml}}").Where(f => !f.Contains("Xenial.Framework.Lab")))
+                        {
+                            var sourceFileName = Path.Combine(basePath, file);
+                            var targetFileName = Path.Combine(targetDirectory, Path.GetFileName(file));
+                            Console.WriteLine($"{sourceFileName} -> {targetFileName}");
+                            File.Copy(sourceFileName, targetFileName, true);
+                        }
+                        var zipFileName = $"{targetDirectory}.zip";
+
+                        if (File.Exists(zipFileName))
+                        {
+                            File.Delete(zipFileName);
+                        }
+
+                        ZipFile.CreateFromDirectory(targetDirectory, zipFileName);
+
+                        if (Directory.Exists(targetDirectory))
+                        {
+                            Directory.Delete(targetDirectory, true);
+                        }
+                    }
+                }
+            );
+
+            Target("pack", DependsOn("pack:nuget", "pack:zip"));
 
             Target("publish:Xenial.FeatureCenter.Win", DependsOn("pack"), async () =>
             {
@@ -178,7 +222,7 @@ namespace Xenial.Build
 
                 await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false");
 
-                await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.AnyCPU /p:PackageDir={artifactsDirectors}");
+                await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.AnyCPU /p:PackageDir={artifactsDirectory}");
             });
 
             BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Server", "framework.featurecenter.xenial.io")

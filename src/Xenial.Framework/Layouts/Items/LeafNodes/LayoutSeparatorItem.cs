@@ -2,9 +2,7 @@
 
 namespace Xenial.Framework.Layouts.Items.LeafNodes
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary>   (Immutable) a layout separator item. </summary>
     [XenialCheckLicence]
     public partial record LayoutSeparatorItem : LayoutViewItemNode
     {

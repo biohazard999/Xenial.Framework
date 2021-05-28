@@ -9,9 +9,7 @@ using System.Text;
 
 namespace Xenial.Framework.Layouts.Items.Base
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary>   (Immutable) a layout. </summary>
     [XenialCheckLicence]
     public partial record Layout : LayoutItem
     {

@@ -18,6 +18,7 @@ namespace DevExpress.Persistent.Base
         /// <summary>
         /// <para>Initializes a new instance of the <see cref="WebViewUriEditorAttribute"/> class.</para>
         /// </summary>
+
         public WebViewUriEditorAttribute() : base(WebViewEditorAliases.WebViewUriPropertyEditor) { }
     }
 
@@ -34,6 +35,7 @@ namespace DevExpress.Persistent.Base
         /// <summary>
         /// <para>Initializes a new instance of the <see cref="WebViewUriEditorAttribute"/> class.</para>
         /// </summary>
+
         public WebViewHtmlStringEditorAttribute() : base(WebViewEditorAliases.WebViewHtmlStringPropertyEditor) { }
     }
 }

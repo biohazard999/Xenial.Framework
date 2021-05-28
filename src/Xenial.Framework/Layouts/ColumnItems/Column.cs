@@ -23,15 +23,24 @@ namespace Xenial.Framework.Layouts.ColumnItems
     public partial record Column<TModelClass>(string PropertyName) : Column(PropertyName)
         where TModelClass : class
     {
+        /// <summary>   Gets the expression helper. </summary>
+        ///
+        /// <value> The expression helper. </value>
+
         protected static ExpressionHelper<TModelClass> ExpressionHelper { get; } = Xenial.Utils.ExpressionHelper.Create<TModelClass>();
+
+        /// <summary>   Creates a new Column&lt;TModelClass&gt; </summary>
+        ///
+        /// <typeparam name="TProperty">    Type of the property. </typeparam>
+        /// <param name="expression">   The expression. </param>
+        ///
+        /// <returns>   A Column&lt;TModelClass&gt; </returns>
 
         public static Column<TModelClass> Create<TProperty>(Expression<Func<TModelClass, TProperty>> expression)
             => new(ExpressionHelper.Property(expression));
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary>   (Immutable) a column. </summary>
     [XenialCheckLicence]
     public partial record Column
     {

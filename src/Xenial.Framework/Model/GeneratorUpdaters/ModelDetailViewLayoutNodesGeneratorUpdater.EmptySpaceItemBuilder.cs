@@ -15,6 +15,13 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
         internal class EmptySpaceItemBuilder
             : ModelViewLayoutElementFactory<IModelLayoutViewItem, LayoutEmptySpaceItem>
         {
+            /// <summary>   Creates view layout element. </summary>
+            ///
+            /// <param name="parentNode">           The parent node. </param>
+            /// <param name="emptySpaceItemNode">   The empty space item node. </param>
+            ///
+            /// <returns>   The new view layout element. </returns>
+
             protected override IModelLayoutViewItem? CreateViewLayoutElement(IModelNode parentNode, LayoutEmptySpaceItem emptySpaceItemNode)
             {
                 var modelLayoutViewItem = parentNode.AddNode<IModelLayoutViewItem>(emptySpaceItemNode.Id);

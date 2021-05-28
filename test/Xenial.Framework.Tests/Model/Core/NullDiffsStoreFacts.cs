@@ -8,8 +8,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Model.Core
 {
+    /// <summary>   A null diffs store facts. </summary>
     public static class NullDiffsStoreFacts
     {
+        /// <summary>   Null diffs store tests. </summary>
         public static void NullDiffsStoreTests() => Describe(nameof(NullDiffsStore), () =>
         {
             var sut = new NullDiffsStore(typeof(NullDiffsStoreFacts).Assembly);

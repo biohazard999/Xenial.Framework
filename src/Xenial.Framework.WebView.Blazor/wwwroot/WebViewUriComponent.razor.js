@@ -1,18 +1,45 @@
 ﻿class XFrameBypass extends HTMLElement {
+
+  /// <summary> Observed attributes. </summary>
+  ///
+  /// <returns> A get. </returns>
+
   static get observedAttributes() {
     return ['src', 'style']
   }
+  /// <summary> Default constructor. </summary>
   constructor() {
+
+    /// <summary>   Supers this object. </summary>
+    ///
+    /// <returns>   . </returns>
+
     super()
     let style = this.attributes['style'];
     if (style && style.textContent) {
       style = style.textContent;
+
+    /// <summary>   Gets the else. </summary>
+    ///
+    /// <value> . </value>
+
     } else {
       style = '';
     }
 
+    /// <summary>   Attach shadow. </summary>
+    ///
+    /// <param name="{ mode">   The mode. </param>
+    ///
+    /// <returns>   . </returns>
+
     this.attachShadow({ mode: 'open' }).innerHTML = `<iframe style='${style}'></iframe>`
   }
+
+  /// <summary> Callback, called when the connected. </summary>
+  ///
+  /// <returns> . </returns>
+
   connectedCallback() {
     setTimeout(() => {
       const iframe = this.shadowRoot.querySelector('iframe');
@@ -30,6 +57,14 @@
       }
     });
   }
+
+  /// <summary> Callback, called when the attribute changed. </summary>
+  ///
+  /// <param name="name">       The name. </param>
+  /// <param name="oldValue">   The old value. </param>
+  /// <param name="newValue">   The new value. </param>
+  ///
+  /// <returns> . </returns>
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'src') {
@@ -51,6 +86,13 @@
     }
 
   }
+
+  /// <summary> Loads the given document. </summary>
+  ///
+  /// <param name="url">        URL of the resource. </param>
+  /// <param name="options">    Options for controlling the operation. </param>
+  ///
+  /// <returns> . </returns>
 
   load(url, options) {
     if (url && url.textContent) {
@@ -140,6 +182,14 @@
     }).catch(e => console.error('Cannot load X-Frame-Bypass:', e))
   }
 
+  /// <summary> Fetches a proxy. </summary>
+  ///
+  /// <param name="url">        URL of the resource. </param>
+  /// <param name="options">    Options for controlling the operation. </param>
+  /// <param name="i">          Zero-based index of the. </param>
+  ///
+  /// <returns> The proxy. </returns>
+
   fetchProxy(url, options, i) {
     const proxies = (options || {}).proxies || [
       'https://cors-anywhere.herokuapp.com/',
@@ -157,6 +207,10 @@
     })
   }
 }
+
+/// <summary>   Loads web view URI component. </summary>
+///
+/// <returns>   The web view URI component. </returns>
 
 export function loadWebViewUriComponent() {
   console.log("loading WebViewUriComponent");

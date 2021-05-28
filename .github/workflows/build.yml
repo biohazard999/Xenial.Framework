@@ -54,7 +54,13 @@ jobs:
       if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
       with:
         name: nuget
-        path: artifacts/nuget/
+        path: artifacts/nuget/*
+
+    - uses: actions/upload-artifact@v2
+      if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
+      with:
+        name: nuget
+        path: artifacts/bin/*
 
     - name: publish:publish:framework.featurecenter.xenial.io
       if: runner.os == 'Windows'
@@ -93,13 +99,13 @@ jobs:
         prerelease: false
 
     - name: Upload Release Asset
-      id: upload-release-asset 
+      id: upload-release-asset
       if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
         asset_path: ./artifacts/Xenial.FeatureCenter.Win.${{ steps.get_version.outputs.VERSION }}.AnyCPU.zip
         asset_name: Xenial.FeatureCenter.Win.${{ steps.get_version.outputs.VERSION }}.AnyCPU.zip
         asset_content_type: application/zip

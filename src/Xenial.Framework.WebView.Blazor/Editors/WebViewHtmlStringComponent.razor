@@ -10,9 +10,24 @@
 
 @code
 {
+    /// <summary>	Gets or sets the component model. </summary>
+    ///
+    /// <value>	The component model. </value>
+
     [Parameter]
     public WebViewHtmlStringInputModel? ComponentModel { get; set; }
+
+    /// <summary>	Creates a new RenderFragment. </summary>
+    ///
+    /// <param name="componentModel">	The component model. </param>
+    ///
+    /// <returns>	A RenderFragment. </returns>
+
     public static RenderFragment Create(WebViewHtmlStringInputModel componentModel) => @<WebViewHtmlStringComponent ComponentModel="@componentModel" />;
+
+    /// <summary>	Values changed. </summary>
+    ///
+    /// <param name="value">	The value. </param>
 
     void ValuesChanged(string? value)
     {

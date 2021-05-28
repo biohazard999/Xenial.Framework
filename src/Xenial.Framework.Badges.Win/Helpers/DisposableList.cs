@@ -8,6 +8,10 @@ namespace Xenial.Framework.Badges.Win.Helpers
     {
         private bool disposedValue;
 
+        /// <summary>   Gets the actions. </summary>
+        ///
+        /// <value> The actions. </value>
+
         public DisposableActionList Actions { get; }
 
         public DisposableList()

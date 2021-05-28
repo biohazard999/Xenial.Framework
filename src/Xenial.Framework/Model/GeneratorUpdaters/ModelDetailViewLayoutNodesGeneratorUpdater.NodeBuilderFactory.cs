@@ -66,12 +66,6 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
             where TModelViewItem : IModelViewItem
             where TLayoutItemLeaf : LayoutItemLeaf
         {
-            /// <summary>
-            /// Creates the view item.
-            /// </summary>
-            /// <param name="modelViewItems">The model view items.</param>
-            /// <param name="layoutItemLeaf">The layout item leaf.</param>
-            /// <returns>System.Nullable&lt;TModelViewItem&gt;.</returns>
             TModelViewItem? CreateViewItem(IModelViewItems modelViewItems, TLayoutItemLeaf layoutItemLeaf);
         }
 
@@ -95,6 +89,13 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
                 }
                 return null;
             }
+
+            /// <summary>   Creates view layout element. </summary>
+            ///
+            /// <param name="parentNode">       The parent node. </param>
+            /// <param name="layoutItemNode">   The layout item node. </param>
+            ///
+            /// <returns>   The new view layout element. </returns>
 
             protected abstract TModelViewLayoutElement? CreateViewLayoutElement(IModelNode parentNode, TLayoutItemNode layoutItemNode);
         }

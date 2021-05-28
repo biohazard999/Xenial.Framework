@@ -8,8 +8,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.ModelBuilders
 {
+    /// <summary>   A property builder facts. </summary>
     public static class PropertyBuilderFacts
     {
+        /// <summary>   Property builder tests. </summary>
         public static void PropertyBuilderTests() => Describe(nameof(PropertyBuilder), () =>
         {
             IModelBuilder<ModelBuilderTarget> CreateBuilder() => ModelBuilder.Create<ModelBuilderTarget>(new TypesInfo());

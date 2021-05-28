@@ -12,11 +12,13 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests
 {
+    /// <summary>   A module type list extentions facts. </summary>
     public static class ModuleTypeListExtentionsFacts
     {
         private class TestModule : ModuleBase { }
         private class TestModule1 : ModuleBase { }
 
+        /// <summary>   Module type list extentions tests. </summary>
         public static void ModuleTypeListExtentionsTests() => Describe(nameof(ModuleTypeListExtentions), () =>
         {
             _ = new TestModule(); //Fix CA1812

@@ -10,10 +10,15 @@ using DevExpress.XtraLayout;
 
 namespace Xenial.Framework.Lab.Win
 {
+    /// <summary>   A controller for handling extended layouts. </summary>
+    ///
+    /// <seealso cref="ViewController{DetailView}"/>
+
     public class ExtendedLayoutController : ViewController<DetailView>
     {
         private readonly List<System.Windows.Forms.Control> controls = new();
 
+        /// <summary>   Executes the 'activated' action. </summary>
         protected override void OnActivated()
         {
             base.OnActivated();

@@ -10,8 +10,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
+    /// <summary>   A layout integration facts. </summary>
     public static class LayoutIntegrationFacts
     {
+        /// <summary>   Layout integration tests. </summary>
         public static void LayoutIntegrationTests() => Describe("Layout integration", () =>
         {
             It("should work with fluent syntax", () =>

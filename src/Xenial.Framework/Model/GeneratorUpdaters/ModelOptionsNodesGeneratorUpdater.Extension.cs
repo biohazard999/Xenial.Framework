@@ -9,12 +9,16 @@ namespace DevExpress.ExpressApp.Model.Core
     /// </summary>
     public static partial class ModelNodesGeneratorUpdaterLayoutBuilderExtentions
     {
-        /// <summary>
-        /// Uses the application options.
-        /// </summary>
-        /// <param name="updaters">The updaters.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>ModelNodesGeneratorUpdaters.</returns>
+        /// <summary>   Uses the application options. </summary>
+        ///
+        /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
+        ///                                             null. </exception>
+        ///
+        /// <param name="updaters"> The updaters. </param>
+        /// <param name="options">  The options. </param>
+        ///
+        /// <returns>   ModelNodesGeneratorUpdaters. </returns>
+
         public static ModelNodesGeneratorUpdaters UseApplicationOptions(this ModelNodesGeneratorUpdaters updaters, ApplicationOptions options)
         {
             _ = updaters ?? throw new ArgumentNullException(nameof(updaters));
@@ -23,12 +27,16 @@ namespace DevExpress.ExpressApp.Model.Core
             return updaters;
         }
 
-        /// <summary>
-        /// Uses the application options.
-        /// </summary>
-        /// <param name="updaters">The updaters.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>ModelNodesGeneratorUpdaters.</returns>
+        /// <summary>   Uses the application options. </summary>
+        ///
+        /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
+        ///                                             null. </exception>
+        ///
+        /// <param name="updaters"> The updaters. </param>
+        /// <param name="options">  The options. </param>
+        ///
+        /// <returns>   ModelNodesGeneratorUpdaters. </returns>
+
         public static ModelNodesGeneratorUpdaters UseApplicationOptions(this ModelNodesGeneratorUpdaters updaters, Func<ApplicationOptions, ApplicationOptions> options)
         {
             _ = options ?? throw new ArgumentNullException(nameof(options));

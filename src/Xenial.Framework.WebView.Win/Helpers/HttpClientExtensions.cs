@@ -11,40 +11,44 @@ using Scissors.Utils.Io;
 
 namespace Xenial.Framework.WebView.Win.Helpers
 {
-    /// <summary>
-    /// Provides HttpClientExtensions for the System.Net.Http.HttpClient
-    /// </summary>
+    /// <summary>   Provides HttpClientExtensions for the System.Net.Http.HttpClient. </summary>
     public static class HttpClientExtensions
     {
-        /// <summary>
-        /// Downloads the file asynchronous and returns a MemoryStream.
-        /// </summary>
-        /// <param name="client">The client.</param>
-        /// <param name="url">The URL.</param>
-        /// <param name="progress">The progress.</param>
-        /// <param name="token">The token.</param>
-        /// <param name="bufferSize">Size of the buffer.</param>
-        /// <returns></returns>
+        /// <summary>   Downloads the file asynchronous and returns a MemoryStream. </summary>
+        ///
+        /// <param name="client">       The client. </param>
+        /// <param name="url">          The URL. </param>
+        /// <param name="progress">     (Optional) The progress. </param>
+        /// <param name="token">        (Optional) The token. </param>
+        /// <param name="bufferSize">   (Optional) Size of the buffer. </param>
+        ///
+        /// <returns>   The download file. </returns>
+
         public static async Task<MemoryStream> DownloadFileAsync(
             this HttpClient client,
             string url,
             IProgress<CopyStreamProgressInfo>? progress = null,
             CancellationToken token = default,
             int bufferSize = StreamExtensions.DefaultBufferSize
-        ) => (MemoryStream)await client.DownloadFileAsync(url, new MemoryStream(), progress, token, bufferSize);
+        ) => (MemoryStream)await client.DownloadFileAsync(url, new MemoryStream(), progress, token, bufferSize).ConfigureAwait(false);
 
         /// <summary>
-        /// Downloads the file asynchronous and returns the given Stream.
-        /// Rewinds the stream if it is seekable.
+        /// Downloads the file asynchronous and returns the given Stream. Rewinds the stream if it is
+        /// seekable.
         /// </summary>
-        /// <param name="client">The client.</param>
-        /// <param name="url">The URL.</param>
-        /// <param name="streamToWrite">The stream to write.</param>
-        /// <param name="progress">The progress.</param>
-        /// <param name="token">The token.</param>
-        /// <param name="bufferSize">Size of the buffer.</param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
+        ///
+        /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
+        ///                                             null. </exception>
+        ///
+        /// <param name="client">           The client. </param>
+        /// <param name="url">              The URL. </param>
+        /// <param name="streamToWrite">    The stream to write. </param>
+        /// <param name="progress">         (Optional) The progress. </param>
+        /// <param name="token">            (Optional) The token. </param>
+        /// <param name="bufferSize">       (Optional) Size of the buffer. </param>
+        ///
+        /// <returns>   The download file. </returns>
+
         public static async Task<Stream> DownloadFileAsync(
             this HttpClient client,
             string url,
@@ -54,13 +58,16 @@ namespace Xenial.Framework.WebView.Win.Helpers
             int bufferSize = StreamExtensions.DefaultBufferSize
         )
         {
-            var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, token);
+            _ = client ?? throw new ArgumentNullException(nameof(client));
+            _ = streamToWrite ?? throw new ArgumentNullException(nameof(streamToWrite));
 
-            _ = await response.Content.ReadAsStringAsync(); //Read Headers, Body will be empty
+            var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+
+            _ = await response.Content.ReadAsStringAsync().ConfigureAwait(false); //Read Headers, Body will be empty
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"The request returned with HTTP status code {response.StatusCode}");
+                response.EnsureSuccessStatusCode();
             }
 
             var totalBytes = response.Content.Headers.ContentLength ?? -1L;
@@ -70,9 +77,9 @@ namespace Xenial.Framework.WebView.Win.Helpers
                 streamToWrite.SetLength(totalBytes);
             }
 
-            using var stream = await response.Content.ReadAsStreamAsync();
+            using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-            var resultStream = await stream.CopyToAsyncWithProgress(streamToWrite, progress, token, bufferSize, totalBytes);
+            var resultStream = await stream.CopyToAsyncWithProgress(streamToWrite, progress, token, bufferSize, totalBytes).ConfigureAwait(false);
 
             if (resultStream.CanSeek)
             {
