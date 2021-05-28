@@ -12,9 +12,7 @@ using ToolTipIconType = DevExpress.Persistent.Base.ToolTipIconType;
 
 namespace Xenial.Framework.Layouts.Items
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary>   (Immutable) a layout group item. </summary>
     [XenialCheckLicence]
     public partial record LayoutGroupItem
         : LayoutItem,

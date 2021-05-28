@@ -15,10 +15,17 @@ namespace Xenial.Framework.Badges.Win.Adapters
 {
     internal abstract class AdornerAdapterBase : IAdornerAdapter
     {
+        /// <summary>   (Immutable) collection of badges. </summary>
         protected readonly Dictionary<ChoiceActionItem, Badge> BadgeCollection = new();
+        /// <summary>   (Immutable) list of disposables. </summary>
         protected readonly DisposableList DisposableList = new();
+        /// <summary>   (Immutable) manager for adorner user interface. </summary>
         protected readonly AdornerUIManager AdornerUIManager;
         private bool disposedValue;
+
+        /// <summary>   Gets the default target element. </summary>
+        ///
+        /// <value> The default target element. </value>
 
         protected abstract Control DefaultTargetElement { get; }
 
@@ -80,6 +87,15 @@ namespace Xenial.Framework.Badges.Win.Adapters
             Dispose();
         }
 
+        /// <summary>
+        /// Releases the unmanaged resources used by the
+        /// Xenial.Framework.Badges.Win.Adapters.AdornerAdapterBase and optionally releases the managed
+        /// resources.
+        /// </summary>
+        ///
+        /// <param name="disposing">    True to release both managed and unmanaged resources; false to
+        ///                             release only unmanaged resources. </param>
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -101,7 +117,19 @@ namespace Xenial.Framework.Badges.Win.Adapters
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Releases the unmanaged resources used by the
+        /// Xenial.Framework.Badges.Win.Adapters.AdornerAdapterBase and optionally releases the managed
+        /// resources.
+        /// </summary>
+        ///
+        /// <param name="disposeAction">    The dispose action. </param>
+
         protected void Dispose(Action disposeAction) => DisposableList.Actions.Add(disposeAction);
+
+        /// <summary>   Executes the action on a different thread, asynchronously. </summary>
+        ///
+        /// <param name="action">   The action. </param>
 
         protected void BeginInvokeAction(Action action)
         {

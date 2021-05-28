@@ -22,11 +22,13 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.ModelBuilders
 {
+    /// <summary>   A property builder extensions facts. </summary>
     public static class PropertyBuilderExtensionsFacts
     {
         private static (IModelBuilder<ModelBuilderTarget>, Faker faker) CreateBuilder()
                  => (ModelBuilder.Create<ModelBuilderTarget>(new TypesInfo()), new Faker());
 
+        /// <summary>   Property builder extensions tests. </summary>
         public static void PropertyBuilderExtensionsTests() => Describe(nameof(PropertyBuilderExtensions), () =>
         {
             Describe(nameof(ModelDefaultAttribute), () =>

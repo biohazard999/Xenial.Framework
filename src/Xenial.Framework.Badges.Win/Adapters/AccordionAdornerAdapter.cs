@@ -21,6 +21,12 @@ namespace Xenial.Framework.Badges.Win.Adapters
         private readonly Dictionary<AccordionControlForm, AdornerUIManager> accordionControlFormCollection = new();
         private readonly Dictionary<ChoiceActionItem, AccordionControlElement> popupAccordionElementCollection = new();
 
+        /// <summary>   Gets the default target element. </summary>
+        ///
+        /// <value> The default target element. </value>
+        ///
+        /// <seealso cref="Xenial.Framework.Badges.Win.Adapters.AdornerAdapterBase.DefaultTargetElement"/>
+
         protected override Control DefaultTargetElement => accordionControl;
 
         internal AccordionAdornerAdapter(AccordionControl accordionControl) : base(new AdornerUIManager())

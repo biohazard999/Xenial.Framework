@@ -8,8 +8,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
+    /// <summary>   A general layout facts. </summary>
     public static class GeneralLayoutFacts
     {
+        /// <summary>   General layout tests. </summary>
         public static void GeneralLayoutTests() => Describe(nameof(LayoutItemNode), () =>
         {
             It("When adding a child, parent is set", () =>

@@ -18,21 +18,57 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.ColumnItems
 {
+    /// <summary>   A simple business object. This class cannot be inherited. </summary>
     [DomainComponent]
     [ListViewColumnsBuilder(typeof(SimpleBusinessObjectColumnsBuilder))]
     public sealed class SimpleBusinessObject
     {
+        /// <summary>   Gets or sets the string property. </summary>
+        ///
+        /// <value> The string property. </value>
+
         public string? StringProperty { get; set; }
+
+        /// <summary>   Gets or sets a value indicating whether the property. </summary>
+        ///
+        /// <value> True if property, false if not. </value>
+
         public bool BoolProperty { get; set; }
+
+        /// <summary>   Gets or sets the nullable bool property. </summary>
+        ///
+        /// <value> The nullable bool property. </value>
+
         public bool? NullableBoolProperty { get; set; }
+
+        /// <summary>   Gets or sets the integer property. </summary>
+        ///
+        /// <value> The integer property. </value>
+
         public int IntegerProperty { get; set; }
+
+        /// <summary>   Gets or sets the nullable integer property. </summary>
+        ///
+        /// <value> The nullable integer property. </value>
+
         public int? NullableIntegerProperty { get; set; }
+
+        /// <summary>   Gets or sets the object property. </summary>
+        ///
+        /// <value> The object property. </value>
+
         public object? ObjectProperty { get; set; }
     }
 
+    /// <summary>   A simple business object columns builder. </summary>
     public static class SimpleBusinessObjectColumnsBuilder
     {
         internal static bool BuildColumnsWasCalled;
+
+        /// <summary>   Builds the columns. </summary>
+        ///
+        /// <returns>   The Columns. </returns>
+
         public static Columns BuildColumns()
         {
             BuildColumnsWasCalled = true;
@@ -45,13 +81,25 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems
         }
     }
 
+    /// <summary>
+    /// A simple business object with static builder. This class cannot be inherited.
+    /// </summary>
+
     [DomainComponent]
     [ListViewColumnsBuilder(nameof(BuildExoticColumns))]
     public sealed class SimpleBusinessObjectWithStaticBuilder
     {
+        /// <summary>   Gets or sets the string property. </summary>
+        ///
+        /// <value> The string property. </value>
+
         public string? StringProperty { get; set; }
 
         internal static bool BuildExoticColumnsWasCalled;
+
+        /// <summary>   Builds exotic columns. </summary>
+        ///
+        /// <returns>   The Columns. </returns>
 
         public static Columns BuildExoticColumns()
         {
@@ -60,11 +108,19 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems
         }
     }
 
+    /// <summary>
+    /// A simple business object with static builder convention. This class cannot be inherited.
+    /// </summary>
+
     [DomainComponent]
     [ListViewColumnsBuilder]
     public sealed class SimpleBusinessObjectWithStaticBuilderConvention
     {
         internal static bool BuildColumnsWasCalled;
+
+        /// <summary>   Builds the columns. </summary>
+        ///
+        /// <returns>   The Columns. </returns>
 
         public static Columns BuildColumns()
         {
@@ -73,8 +129,10 @@ namespace Xenial.Framework.Tests.Layouts.ColumnItems
         }
     }
 
+    /// <summary>   A basic columns facts. </summary>
     public static class BasicColumnsFacts
     {
+        /// <summary>   Basic columns tests. </summary>
         public static void BasicColumnsTests() => Describe("Basic Columns", () =>
         {
             It($"creates {nameof(IModelApplication)}", () =>

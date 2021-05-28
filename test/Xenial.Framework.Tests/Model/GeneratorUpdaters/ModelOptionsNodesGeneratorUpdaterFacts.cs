@@ -21,8 +21,10 @@ using Locations = DevExpress.Persistent.Base.Locations;
 
 namespace Xenial.Framework.Tests.Model.GeneratorUpdaters
 {
+    /// <summary>   A model options nodes generator updater facts. </summary>
     public static class ModelOptionsNodesGeneratorUpdaterFacts
     {
+        /// <summary>   Model options nodes generator updater tests. </summary>
         public static void ModelOptionsNodesGeneratorUpdaterTests() => Describe(nameof(ModelOptionsNodesGeneratorUpdater), () =>
         {
             static T CreateInstance<T>(params object[] args)

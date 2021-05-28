@@ -6,9 +6,7 @@ using Xenial.Framework.Utils.Slugger;
 
 namespace Xenial.Framework.Layouts.Items.Base
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary>   (Immutable) a layout item node. </summary>
     [XenialCheckLicence]
     public abstract partial record LayoutItemNode
     {

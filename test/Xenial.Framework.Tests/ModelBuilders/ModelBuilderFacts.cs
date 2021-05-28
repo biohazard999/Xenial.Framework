@@ -16,8 +16,10 @@ using static Xenial.Tasty;
 namespace Xenial.Framework.Tests.ModelBuilders
 {
 
+    /// <summary>   A model builder facts. </summary>
     public static class ModelBuilderFacts
     {
+        /// <summary>   Model builder tests. </summary>
         public static void ModelBuilderTests() => Describe(nameof(ModelBuilder), () =>
         {
             static (ModelBuilder<ModelBuilderTarget>, ITypeInfo) CreateBuilder()

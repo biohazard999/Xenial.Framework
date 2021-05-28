@@ -15,6 +15,13 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
         internal class LayoutGroupItemBuilder
             : ModelViewLayoutElementFactory<IModelLayoutGroup, LayoutGroupItem>
         {
+            /// <summary>   Creates view layout element. </summary>
+            ///
+            /// <param name="parentNode">       The parent node. </param>
+            /// <param name="groupItemNode">    The group item node. </param>
+            ///
+            /// <returns>   The new view layout element. </returns>
+
             protected override IModelLayoutGroup? CreateViewLayoutElement(IModelNode parentNode, LayoutGroupItem groupItemNode)
             {
                 var modelLayoutGroup = parentNode.AddNode<IModelLayoutGroup>(groupItemNode.Id);

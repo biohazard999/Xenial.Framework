@@ -18,8 +18,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
+    /// <summary>   A layout group item facts. </summary>
     public static partial class LayoutGroupItemFacts
     {
+        /// <summary>   Layout group item tests. </summary>
         public static void LayoutGroupItemTests() => Describe(nameof(LayoutGroupItem), () =>
         {
             var faker = new Faker();

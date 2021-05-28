@@ -21,8 +21,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
+    /// <summary>   A layout property editor item facts. </summary>
     public static class LayoutPropertyEditorItemFacts
     {
+        /// <summary>   Layout property editor item tests. </summary>
         public static void LayoutPropertyEditorItemTests() => Describe(nameof(LayoutPropertyEditorItem), () =>
         {
             var faker = new Faker();

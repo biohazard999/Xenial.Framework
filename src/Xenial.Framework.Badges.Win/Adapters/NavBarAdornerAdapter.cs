@@ -21,6 +21,13 @@ namespace Xenial.Framework.Badges.Win.Adapters
         private readonly NavBarControl navBarControl;
         private readonly Dictionary<NavPaneForm, AdornerUIManager> navePaneFormCollection = new();
         private readonly Dictionary<NavPaneForm, List<(NavBarItemLink navBarItemLink, Badge badge)>> navePaneFormBadgeCollection = new();
+
+        /// <summary>   Gets the default target element. </summary>
+        ///
+        /// <value> The default target element. </value>
+        ///
+        /// <seealso cref="Xenial.Framework.Badges.Win.Adapters.AdornerAdapterBase.DefaultTargetElement"/>
+
         protected override Control DefaultTargetElement => navBarControl;
 
         public NavBarAdornerAdapter(NavBarControl navBarControl) : base(new AdornerUIManager())

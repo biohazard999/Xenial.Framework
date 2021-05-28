@@ -17,25 +17,67 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
+    /// <summary>   A simple business object. This class cannot be inherited. </summary>
     [DomainComponent]
     [DetailViewLayoutBuilder(typeof(SimpleBusinessObjectLayoutBuilder))]
     public sealed class SimpleBusinessObject
     {
+        /// <summary>   Gets or sets the string property. </summary>
+        ///
+        /// <value> The string property. </value>
+
         public string? StringProperty { get; set; }
+
+        /// <summary>   Gets or sets a value indicating whether the property. </summary>
+        ///
+        /// <value> True if property, false if not. </value>
+
         public bool BoolProperty { get; set; }
+
+        /// <summary>   Gets or sets the nullable bool property. </summary>
+        ///
+        /// <value> The nullable bool property. </value>
+
         public bool? NullableBoolProperty { get; set; }
+
+        /// <summary>   Gets or sets the integer property. </summary>
+        ///
+        /// <value> The integer property. </value>
+
         public int IntegerProperty { get; set; }
+
+        /// <summary>   Gets or sets the nullable integer property. </summary>
+        ///
+        /// <value> The nullable integer property. </value>
+
         public int? NullableIntegerProperty { get; set; }
+
+        /// <summary>   Gets or sets the object property. </summary>
+        ///
+        /// <value> The object property. </value>
+
         public object? ObjectProperty { get; set; }
     }
+
+    /// <summary>
+    /// A simple business object with static builder. This class cannot be inherited.
+    /// </summary>
 
     [DomainComponent]
     [DetailViewLayoutBuilder(nameof(BuildExoticLayout))]
     public sealed class SimpleBusinessObjectWithStaticBuilder
     {
+        /// <summary>   Gets or sets the string property. </summary>
+        ///
+        /// <value> The string property. </value>
+
         public string? StringProperty { get; set; }
 
         internal static bool BuildExoticLayoutWasCalled;
+
+        /// <summary>   Builds exotic layout. </summary>
+        ///
+        /// <returns>   A Layout. </returns>
 
         public static Layout BuildExoticLayout()
         {
@@ -44,11 +86,19 @@ namespace Xenial.Framework.Tests.Layouts.Items
         }
     }
 
+    /// <summary>
+    /// A simple business object with static builder convention. This class cannot be inherited.
+    /// </summary>
+
     [DomainComponent]
     [DetailViewLayoutBuilder]
     public sealed class SimpleBusinessObjectWithStaticBuilderConvention
     {
         internal static bool BuildLayoutWasCalled;
+
+        /// <summary>   Builds the layout. </summary>
+        ///
+        /// <returns>   A Layout. </returns>
 
         public static Layout BuildLayout()
         {
@@ -57,9 +107,15 @@ namespace Xenial.Framework.Tests.Layouts.Items
         }
     }
 
+    /// <summary>   A simple business object layout builder. </summary>
     public static class SimpleBusinessObjectLayoutBuilder
     {
         internal static bool BuildLayoutWasCalled;
+
+        /// <summary>   Builds the layout. </summary>
+        ///
+        /// <returns>   A Layout. </returns>
+
         public static Layout BuildLayout()
         {
             BuildLayoutWasCalled = true;
@@ -72,8 +128,10 @@ namespace Xenial.Framework.Tests.Layouts.Items
         }
     }
 
+    /// <summary>   A basic layout facts. </summary>
     public static class BasicLayoutFacts
     {
+        /// <summary>   Basic layout tests. </summary>
         public static void BasicLayoutTests() => Describe("Basic Layouts", () =>
         {
             It($"creates {nameof(IModelApplication)}", () =>

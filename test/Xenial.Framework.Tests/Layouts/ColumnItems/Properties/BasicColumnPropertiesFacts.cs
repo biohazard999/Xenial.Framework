@@ -18,8 +18,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.ColumnItems.Properties
 {
+    /// <summary>   A basic column properties facts. </summary>
     public static class BasicColumnPropertiesFacts
     {
+        /// <summary>   Column properties tests. </summary>
         public static void ColumnPropertiesTests() => Describe(nameof(Column), () =>
         {
             var faker = new Faker();

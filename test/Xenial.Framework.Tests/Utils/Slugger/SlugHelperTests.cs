@@ -9,8 +9,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Utils.Slugger
 {
+    /// <summary>   A sluger facts. </summary>
     public static class SlugerFacts
     {
+        /// <summary>   Slugger tests. </summary>
         public static void SluggerTests() => Describe(nameof(Slugger), () =>
         {
             It("empty config", () =>

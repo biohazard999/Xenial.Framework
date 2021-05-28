@@ -16,6 +16,15 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
         internal class TabbedGroupItemBuilder
             : ModelViewLayoutElementFactory<IModelTabbedGroup, LayoutTabbedGroupItem>
         {
+            /// <summary>   Creates view layout element. </summary>
+            ///
+            /// <param name="parentNode">           The parent node. </param>
+            /// <param name="tabbedGroupItemNode">  The layout item node. </param>
+            ///
+            /// <returns>   The new view layout element. </returns>
+            ///
+            /// <seealso cref="Xenial.Framework.Model.GeneratorUpdaters.ModelDetailViewLayoutNodesGeneratorUpdater.ModelViewLayoutElementFactory{IModelTabbedGroup,LayoutTabbedGroupItem}.CreateViewLayoutElement(IModelNode,LayoutTabbedGroupItem)"/>
+
             protected override IModelTabbedGroup? CreateViewLayoutElement(IModelNode parentNode, LayoutTabbedGroupItem tabbedGroupItemNode)
             {
                 var modelTabbedGroup = parentNode.AddNode<IModelTabbedGroup>(tabbedGroupItemNode.Id);

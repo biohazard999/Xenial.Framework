@@ -11,10 +11,23 @@ using Xenial.Framework.Tests.Layouts.Items;
 
 namespace Xenial.Framework.Tests.Layouts
 {
+    /// <summary>
+    /// A layout property editor item business object. This class cannot be inherited.
+    /// </summary>
+
     [DomainComponent]
     public sealed class LayoutPropertyEditorItemBusinessObject
     {
+        /// <summary>   Gets or sets the string property. </summary>
+        ///
+        /// <value> The string property. </value>
+
         public string? StringProperty { get; set; }
+
+        /// <summary>   Gets or sets the property. </summary>
+        ///
+        /// <value> The bool property. </value>
+
         public bool? BoolProperty { get; set; }
     }
 

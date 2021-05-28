@@ -9,8 +9,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
+    /// <summary>   A layout tabbed group item facts. </summary>
     public static partial class LayoutTabbedGroupItemFacts
     {
+        /// <summary>   Layout tabbed group item child tests. </summary>
         public static void LayoutTabbedGroupItemChildTests() => Describe(nameof(LayoutTabbedGroupItem), () =>
         {
             Describe("Children", () =>

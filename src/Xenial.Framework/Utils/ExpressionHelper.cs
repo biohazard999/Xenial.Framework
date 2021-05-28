@@ -6,21 +6,23 @@ using Xenial.Data;
 
 namespace Xenial.Utils
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary>   An expression helper. </summary>
     public static class ExpressionHelper
     {
-        /// <summary>
-        /// Static Factory method to create
-        /// </summary>
+        /// <summary>   Static Factory method to create. </summary>
+        ///
+        /// <typeparam name="TObj"> Type of the object. </typeparam>
+        ///
+        /// <returns>   An ExpressionHelper&lt;TObj&gt; </returns>
+
         public static ExpressionHelper<TObj> Create<TObj>() => new();
 
-        /// <summary>
-        /// Gets the member expression.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns></returns>
+        /// <summary>   Gets the member expression. </summary>
+        ///
+        /// <param name="expression">   The expression. </param>
+        ///
+        /// <returns>   The member expression. </returns>
+
         public static MemberExpression? GetMemberExpression(Expression? expression)
         {
             if (expression is MemberExpression memberExpression)
@@ -45,11 +47,12 @@ namespace Xenial.Utils
             return null;
         }
 
-        /// <summary>
-        /// Gets the property path.
-        /// </summary>
-        /// <param name="expr">The expr.</param>
-        /// <returns></returns>
+        /// <summary>   Gets the property path. </summary>
+        ///
+        /// <param name="expr"> The expr. </param>
+        ///
+        /// <returns>   The property path. </returns>
+
         public static string GetPropertyPath(Expression? expr)
         {
             var path = new StringBuilder();

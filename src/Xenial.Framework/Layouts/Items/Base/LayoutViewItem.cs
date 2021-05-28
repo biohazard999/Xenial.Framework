@@ -13,9 +13,7 @@ using ToolTipIconType = DevExpress.Persistent.Base.ToolTipIconType;
 
 namespace Xenial.Framework.Layouts.Items.Base
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary>   (Immutable) a layout view item. </summary>
     [XenialCheckLicence]
     public partial record LayoutViewItem
         : LayoutViewItemNode,

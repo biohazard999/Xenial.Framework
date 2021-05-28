@@ -11,8 +11,10 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
+    /// <summary>   A tree builder facts. </summary>
     public static class TreeBuilderFacts
     {
+        /// <summary>   Tree builder tests. </summary>
         public static void TreeBuilderTests() => Describe("layout tree", () =>
         {
             It("builds simple tree structure with record syntax", () =>

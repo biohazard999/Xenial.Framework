@@ -36,6 +36,12 @@ const clearBadges = () => {
   }
 }
 
+/// <summary>   Xenial attach badges. </summary>
+///
+/// <param name="items">    The items. </param>
+///
+/// <returns>   A function. </returns>
+
 export function xenialAttachBadges(items) {
   const xenialStyles = document.getElementById("xenialBadgesStyles");
 
@@ -127,6 +133,10 @@ export function xenialAttachBadges(items) {
     });
   }
 }
+
+/// <summary>   Xenial deattach badges. </summary>
+///
+/// <returns>   A function. </returns>
 
 export function xenialDeattachBadges() {
 
