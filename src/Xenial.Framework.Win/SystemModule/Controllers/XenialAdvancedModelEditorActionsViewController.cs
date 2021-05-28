@@ -72,7 +72,7 @@ namespace Xenial.Framework.Win.SystemModule
             OpenViewInModelEditorSimpleAction.CustomizeControl += OpenViewInModelEditorAction_CustomizeControl;
         }
 
-        private void OpenViewInModelEditorAction_CustomizeControl(object sender, CustomizeControlEventArgs e)
+        private void OpenViewInModelEditorAction_CustomizeControl(object? sender, CustomizeControlEventArgs e)
         {
             if (e.Control is SimpleButton simpleButton)
             {
@@ -120,7 +120,7 @@ namespace Xenial.Framework.Win.SystemModule
             editModelAction = null;
         }
 
-        private void EditModelAction_Changed(object sender, ActionChangedEventArgs e)
+        private void EditModelAction_Changed(object? sender, ActionChangedEventArgs e)
         {
             if (e.ChangedPropertyType == ActionChangedType.Active
                 || e.ChangedPropertyType == ActionChangedType.Enabled

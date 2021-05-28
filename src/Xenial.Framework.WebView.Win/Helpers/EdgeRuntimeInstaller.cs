@@ -70,12 +70,9 @@ Do you want to download and install it now?
                     });
                 }
 
-                await installerTask;
             }
-            else
-            {
-                await installerTask;
-            }
+
+            await installerTask.ConfigureAwait(false);
 
             return true;
         }
@@ -90,12 +87,12 @@ Do you want to download and install it now?
             _ = control ?? throw new ArgumentNullException(nameof(control));
             try
             {
-                await control.EnsureCoreWebView2Async();
+                await control.EnsureCoreWebView2Async().ConfigureAwait(false);
             }
             catch (EdgeNotFoundException ex)
             {
                 Tracing.LogError(new Guid("369655EA-E64B-45C6-8481-6098F7D96183"), ex);
-                if (await DownloadAndInstallWebView2Runtime())
+                if (await DownloadAndInstallWebView2Runtime().ConfigureAwait(false))
                 {
                     static void SetPrivateFieldValue<T>(object obj, string propName, T val)
                     {
@@ -114,14 +111,18 @@ Do you want to download and install it now?
                     SetPrivateFieldValue<Task?>(control, "_initTask", null);
                     try
                     {
-                        await control.EnsureCoreWebView2Async();
+                        await control.EnsureCoreWebView2Async().ConfigureAwait(false);
                     }
                     catch (COMException ex2) { HandleCOMException(control, ex2); }
+#pragma warning disable CA1031 // Do not catch general exception types
                     catch (Exception ex2) { HandleGenericException(control, ex2); }
+#pragma warning restore CA1031 // Do not catch general exception types
                 }
             }
             catch (COMException ex) { HandleCOMException(control, ex); }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex) { HandleGenericException(control, ex); }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             static void HandleCOMException(WebView2 ctrl, COMException ex)
             {

@@ -31,7 +31,7 @@ namespace Xenial.Framework.WebView.Win.Helpers
             IProgress<CopyStreamProgressInfo>? progress = null,
             CancellationToken token = default,
             int bufferSize = StreamExtensions.DefaultBufferSize
-        ) => (MemoryStream)await client.DownloadFileAsync(url, new MemoryStream(), progress, token, bufferSize);
+        ) => (MemoryStream)await client.DownloadFileAsync(url, new MemoryStream(), progress, token, bufferSize).ConfigureAwait(false);
 
         /// <summary>
         /// Downloads the file asynchronous and returns the given Stream.
@@ -54,13 +54,16 @@ namespace Xenial.Framework.WebView.Win.Helpers
             int bufferSize = StreamExtensions.DefaultBufferSize
         )
         {
-            var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, token);
+            _ = client ?? throw new ArgumentNullException(nameof(client));
+            _ = streamToWrite ?? throw new ArgumentNullException(nameof(streamToWrite));
 
-            _ = await response.Content.ReadAsStringAsync(); //Read Headers, Body will be empty
+            var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+
+            _ = await response.Content.ReadAsStringAsync().ConfigureAwait(false); //Read Headers, Body will be empty
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"The request returned with HTTP status code {response.StatusCode}");
+                response.EnsureSuccessStatusCode();
             }
 
             var totalBytes = response.Content.Headers.ContentLength ?? -1L;
@@ -70,9 +73,9 @@ namespace Xenial.Framework.WebView.Win.Helpers
                 streamToWrite.SetLength(totalBytes);
             }
 
-            using var stream = await response.Content.ReadAsStreamAsync();
+            using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-            var resultStream = await stream.CopyToAsyncWithProgress(streamToWrite, progress, token, bufferSize, totalBytes);
+            var resultStream = await stream.CopyToAsyncWithProgress(streamToWrite, progress, token, bufferSize, totalBytes).ConfigureAwait(false);
 
             if (resultStream.CanSeek)
             {

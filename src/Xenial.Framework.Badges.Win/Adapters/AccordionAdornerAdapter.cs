@@ -43,7 +43,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             accordionControl.MouseUp -= NeedInvoke;
             accordionControl.MouseUp += NeedInvoke;
 
-            void MouseMove(object sender, MouseEventArgs e)
+            void MouseMove(object? sender, MouseEventArgs e)
             {
                 if (e.Button == MouseButtons.Left)
                 {
@@ -63,7 +63,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             accordionControl.Resize -= NeedInvoke;
             accordionControl.Resize += NeedInvoke;
 
-            void NeedInvoke(object sender, EventArgs e)
+            void NeedInvoke(object? sender, EventArgs e)
                 => BeginInvokeUpdateBadges();
 
             BeginInvokeUpdateBadges();
@@ -148,7 +148,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 Dispose(() => popupForm.Disposed -= PopupFormDisposed);
                 popupForm.Disposed -= PopupFormDisposed;
                 popupForm.Disposed += PopupFormDisposed;
-                void PopupFormDisposed(object sender, EventArgs e)
+                void PopupFormDisposed(object? sender, EventArgs e)
                 {
                     popupForm.Disposed -= PopupFormDisposed;
                     accordionControlFormCollection.Remove(popupForm);
@@ -172,7 +172,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             popupForm.FormClosed += PopupForm_Deactivate;
         }
 
-        private void PopupForm_Shown(object sender, EventArgs e)
+        private void PopupForm_Shown(object? sender, EventArgs e)
         {
             if (sender is AccordionControlForm popupForm)
             {
@@ -202,15 +202,15 @@ namespace Xenial.Framework.Badges.Win.Adapters
                             {
                                 adornerPopupManager.EndUpdate();
                             }
-                            UpdatePopupBadges(popupForm, popupAccordion, adornerPopupManager);
+                            UpdatePopupBadges(popupAccordion, adornerPopupManager);
                         });
 
-                    UpdatePopupBadges(popupForm, popupAccordion, adornerPopupManager);
+                    UpdatePopupBadges(popupAccordion, adornerPopupManager);
                 }
             }
         }
 
-        private void UpdatePopupBadges(AccordionControlForm popupForm, AccordionControl popupAccordion, AdornerUIManager adornerPopupManager)
+        private void UpdatePopupBadges(AccordionControl popupAccordion, AdornerUIManager adornerPopupManager)
         {
             adornerPopupManager.BeginUpdate();
             try
@@ -272,7 +272,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             }
         }
 
-        private void PopupForm_Deactivate(object sender, EventArgs e)
+        private void PopupForm_Deactivate(object? sender, EventArgs e)
         {
             popupAccordionElementCollection.Clear();
             if (sender is AccordionControlForm popupForm)

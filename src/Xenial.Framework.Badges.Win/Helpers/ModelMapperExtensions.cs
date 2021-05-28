@@ -81,17 +81,20 @@ namespace Xenial.Framework.Badges.Win.Helpers
                 {
                     static GetAccordionControlForm CreateGetter(FieldInfo field)
                     {
-                        var methodName = field.ReflectedType.FullName + ".get_" + field.Name;
+                        var methodName = $"{field?.ReflectedType?.FullName}.get_{field?.Name}";
                         var setterMethod = new DynamicMethod(methodName, typeof(AccordionControlForm), new Type[1] { typeof(AccordionControl) }, true);
                         var gen = setterMethod.GetILGenerator();
-                        if (field.IsStatic)
+                        if (field?.IsStatic == true)
                         {
                             gen.Emit(OpCodes.Ldsfld, field);
                         }
                         else
                         {
-                            gen.Emit(OpCodes.Ldarg_0);
-                            gen.Emit(OpCodes.Ldfld, field);
+                            if (field is not null)
+                            {
+                                gen.Emit(OpCodes.Ldarg_0);
+                                gen.Emit(OpCodes.Ldfld, field);
+                            }
                         }
                         gen.Emit(OpCodes.Ret);
                         return (GetAccordionControlForm)setterMethod.CreateDelegate(typeof(GetAccordionControlForm));

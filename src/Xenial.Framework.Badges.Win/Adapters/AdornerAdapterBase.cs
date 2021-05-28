@@ -8,6 +8,7 @@ using DevExpress.ExpressApp.SystemModule;
 using DevExpress.Utils.VisualEffects;
 
 using Xenial.Framework.Badges.Win.Helpers;
+
 using static Xenial.Framework.Badges.Win.Adapters.ActionItemBadgeFactory;
 
 namespace Xenial.Framework.Badges.Win.Adapters
@@ -73,7 +74,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             }
         }
 
-        private void DefaultTargetElement_Disposed(object sender, EventArgs e)
+        private void DefaultTargetElement_Disposed(object? sender, EventArgs e)
         {
             Disable();
             Dispose();
@@ -85,6 +86,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             {
                 if (disposing)
                 {
+                    Disable();
                     AdornerUIManager.Owner = null;
                     AdornerUIManager.Dispose();
                 }
@@ -116,7 +118,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 DefaultTargetElement.HandleCreated -= HandleCreated;
                 DefaultTargetElement.HandleCreated += HandleCreated;
 
-                void HandleCreated(object s, EventArgs e)
+                void HandleCreated(object? s, EventArgs e)
                 {
                     DefaultTargetElement.HandleCreated -= HandleCreated;
                     BeginInvokeAction(action);

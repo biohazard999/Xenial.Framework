@@ -43,12 +43,12 @@ namespace Xenial.Framework.Badges.Win
             }
         }
 
-        private void ShowNavigationItemAction_CustomizeControl(object sender, CustomizeControlEventArgs e)
+        private void ShowNavigationItemAction_CustomizeControl(object? sender, CustomizeControlEventArgs e)
         {
             var showNavigationItemController = Frame.GetController<ShowNavigationItemController>();
             if (showNavigationItemController is not null)
             {
-                static IAdornerAdapter? FindAdornerAdapter(object control)
+                static IAdornerAdapter? FindAdornerAdapter(object? control)
                     => control switch
                     {
                         AccordionControl accordionControl => new AccordionAdornerAdapter(accordionControl),
