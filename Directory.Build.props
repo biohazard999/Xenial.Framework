@@ -37,7 +37,7 @@
     <Nullable>enable</Nullable>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeFormatting.ruleset</CodeAnalysisRuleSet>
-    <DxVersion>21.1.4</DxVersion>
+    <DxVersion>21.1.6</DxVersion>
     <XenialVersion>$(PackageVersion)</XenialVersion>
     <AspNetCoreVersion>5.0.2</AspNetCoreVersion>
     <!-- <DxPackageVersion>[21.1.3-beta]</DxPackageVersion> -->
@@ -85,6 +85,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(DxVersion) &gt; 21.1.3">
     <DefineConstants>$(DefineConstants);DX_GT_21_1_3</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.1.4">
+    <DefineConstants>$(DefineConstants);DX_GT_21_1_4</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.1.5">
+    <DefineConstants>$(DefineConstants);DX_GT_21_1_5</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.1.6">
+    <DefineConstants>$(DefineConstants);DX_GT_21_1_6</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
