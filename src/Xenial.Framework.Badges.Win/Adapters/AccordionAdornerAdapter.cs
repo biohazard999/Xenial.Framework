@@ -112,6 +112,8 @@ namespace Xenial.Framework.Badges.Win.Adapters
                                     {
                                         using var graphics = accordionControl.CreateGraphics();
                                         using var cache = new GraphicsCache(new DXPaintEventArgs(graphics));
+
+                                        badgeViewInfo.EnsureProperties();
                                         badgeViewInfo.Calc(cache, rect);
                                     }
 
