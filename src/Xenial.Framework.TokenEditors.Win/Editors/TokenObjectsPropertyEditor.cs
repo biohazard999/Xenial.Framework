@@ -129,7 +129,7 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
             }
         }
 
-        private void TokenItem_Validating(object sender, CancelEventArgs e)
+        private void TokenItem_Validating(object? sender, CancelEventArgs? e)
         {
             if (objectSpace is not null
                 && sender is XenialTokenObjectsEdit edit
@@ -342,8 +342,9 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
         /// <param name="e">    The <see cref="DevExpress.XtraEditors.TokenEditTokenAddedEventArgs"/>
         ///                     instance containing the event data. </param>
 
-        protected override void RaiseTokenAdded(TokenEditTokenAddedEventArgs e)
+        protected override void RaiseTokenAdded(TokenEditTokenAddedEventArgs? e)
         {
+            _ = e ?? throw new ArgumentNullException(nameof(e));
             base.RaiseTokenAdded(e);
             WasModified = true;
             if (OwnerEdit.EditValue is BindingList<object> list
@@ -376,8 +377,9 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
         /// <param name="e">    The <see cref="DevExpress.XtraEditors.TokenEditTokenRemovedEventArgs"/>
         ///                     instance containing the event data. </param>
 
-        protected override void RaiseTokenRemoved(TokenEditTokenRemovedEventArgs e)
+        protected override void RaiseTokenRemoved(TokenEditTokenRemovedEventArgs? e)
         {
+            _ = e ?? throw new ArgumentNullException(nameof(e));
             base.RaiseTokenRemoved(e);
             WasModified = true;
             if (OwnerEdit.EditValue is BindingList<object> list
