@@ -25,6 +25,7 @@ namespace Xenial.Framework.ModelBuilders
 
         public AggregatedPropertyBuilder<object?, TClassType> ForProperties(params Expression<Func<TClassType, object?>>[] propertyExpressions)
         {
+            _ = propertyExpressions ?? throw new ArgumentNullException(nameof(propertyExpressions));
             var propertyBuilderList = new List<IPropertyBuilder<object?, TClassType>>();
 
             foreach (var propertyExpression in propertyExpressions)
@@ -73,12 +74,11 @@ namespace Xenial.Framework.ModelBuilders
 
         public AggregatedPropertyBuilder<TPropertyType?, TClassType> ForProperties<TPropertyType>(params Expression<Func<TClassType, TPropertyType?>>[] propertyExpressions)
         {
+            _ = propertyExpressions ?? throw new ArgumentNullException(nameof(propertyExpressions));
             var propertyBuilderList = new List<IPropertyBuilder<TPropertyType?, TClassType>>();
 
             foreach (var propertyExpression in propertyExpressions)
             {
-                _ = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpressions));
-
                 var propertyName = ExpressionHelper.Property(propertyExpression);
                 if (propertyName is not null)
                 {

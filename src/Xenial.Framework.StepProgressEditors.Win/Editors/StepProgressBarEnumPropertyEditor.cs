@@ -180,8 +180,9 @@ namespace Xenial.Framework.StepProgressEditors.Win.Editors
         /// <param name="e">    The <see cref="System.Windows.Forms.MouseEventArgs"/> instance containing
         ///                     the event data. </param>
 
-        protected override void OnMouseMove(MouseEventArgs e)
+        protected override void OnMouseMove(MouseEventArgs? e)
         {
+            _ = e ?? throw new ArgumentNullException(nameof(e));
             var info = CalcHitInfo(e.Location);
             if (info.InItem)
             {
@@ -204,8 +205,9 @@ namespace Xenial.Framework.StepProgressEditors.Win.Editors
         /// <param name="e">    The <see cref="System.Windows.Forms.MouseEventArgs"/> instance containing
         ///                     the event data. </param>
 
-        protected override void OnMouseClick(MouseEventArgs e)
+        protected override void OnMouseClick(MouseEventArgs? e)
         {
+            _ = e ?? throw new ArgumentNullException(nameof(e));
             var info = CalcHitInfo(e.Location);
             if (info.InItem)
             {

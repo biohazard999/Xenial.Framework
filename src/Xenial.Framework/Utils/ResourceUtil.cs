@@ -29,7 +29,7 @@ namespace Xenial.Framework.Utils
             var assembly = type.Assembly;
             var name = type.Assembly.GetName().Name;
 
-#if NET5
+#if NET5_0_OR_GREATER
             path = path
                 .Replace("/", ".", StringComparison.InvariantCultureIgnoreCase)
                 .Replace("\\", ".", StringComparison.InvariantCultureIgnoreCase);

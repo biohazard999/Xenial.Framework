@@ -9,6 +9,8 @@ using DevExpress.XtraNavBar;
 using Xenial.Framework.Badges.Win.Adapters;
 using Xenial.Framework.Badges.Win.Helpers;
 
+#pragma warning disable CA2000
+
 namespace Xenial.Framework.Badges.Win
 {
     /// <summary>

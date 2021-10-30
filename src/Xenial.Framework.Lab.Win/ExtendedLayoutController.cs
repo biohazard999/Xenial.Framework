@@ -48,7 +48,7 @@ namespace Xenial.Framework.Lab.Win
             {
                 View.ControlsCreated -= View_ControlsCreated;
                 View.ControlsCreated += View_ControlsCreated;
-                void View_ControlsCreated(object sender, EventArgs e)
+                void View_ControlsCreated(object? sender, EventArgs? e)
                 {
                     View.ControlsCreated -= View_ControlsCreated;
                     if (View.IsControlCreated && View.Control is XafLayoutControl xafLayoutControl)

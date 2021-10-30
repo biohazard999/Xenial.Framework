@@ -28,6 +28,8 @@ namespace Xenial.Framework.ModelBuilders
         )
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            _ = propertyExpressions ?? throw new ArgumentNullException(nameof(propertyExpressions));
+
             var propertyBuilders = builder.PropertyBuilders.ToList();
             foreach (var propertyExpression in propertyExpressions)
             {

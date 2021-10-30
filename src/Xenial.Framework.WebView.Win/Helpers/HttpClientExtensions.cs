@@ -26,7 +26,7 @@ namespace Xenial.Framework.WebView.Win.Helpers
 
         public static async Task<MemoryStream> DownloadFileAsync(
             this HttpClient client,
-            string url,
+            Uri url,
             IProgress<CopyStreamProgressInfo>? progress = null,
             CancellationToken token = default,
             int bufferSize = StreamExtensions.DefaultBufferSize
@@ -51,7 +51,7 @@ namespace Xenial.Framework.WebView.Win.Helpers
 
         public static async Task<Stream> DownloadFileAsync(
             this HttpClient client,
-            string url,
+            Uri url,
             Stream streamToWrite,
             IProgress<CopyStreamProgressInfo>? progress = null,
             CancellationToken token = default,

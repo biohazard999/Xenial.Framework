@@ -186,7 +186,7 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
             }
         }
 
-        private void InitTokensEditValue(RepositoryItemTokenEdit tokenEdit, string value)
+        private static void InitTokensEditValue(RepositoryItemTokenEdit tokenEdit, string value)
         {
             tokenEdit.Tokens.BeginUpdate();
             try
