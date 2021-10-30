@@ -23,7 +23,6 @@ namespace Xenial.Framework.Win.Model
         /// <param name="instance"> The instance. </param>
         ///
         /// <returns>   UIType. </returns>
-
         public static UIType Get_UIType(IModelOptionsWin instance)
         {
             _ = instance ?? throw new ArgumentNullException(nameof(instance));
@@ -57,7 +56,6 @@ namespace DevExpress.ExpressApp.DC
         /// <param name="uiType">       Type of the UI. </param>
         ///
         /// <returns>   CustomLogics. </returns>
-
         public static CustomLogics UseUiType(this CustomLogics customLogics, UIType uiType)
         {
             _ = customLogics ?? throw new ArgumentNullException(nameof(customLogics));
