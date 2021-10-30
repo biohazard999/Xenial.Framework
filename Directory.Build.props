@@ -7,7 +7,8 @@
     <Copyright>Copyright $([System.Char]::ConvertFromUtf32(169)) Xenial, Manuel Grundner 2019-$([System.DateTime]::Today.ToString('yyyy'))</Copyright>
     <Authors>Xenial, Manuel Grundner</Authors>
     <FullFrameworkVersion>net462</FullFrameworkVersion>
-    <WindowsFrameworkVersion>net5.0-windows</WindowsFrameworkVersion>
+    <WindowsFrameworkVersion5>net5.0-windows</WindowsFrameworkVersion5>
+    <WindowsFrameworkVersion6>net6.0-windows</WindowsFrameworkVersion6>
     <NetStandardVersion>netstandard2.0</NetStandardVersion>
     <NetStandard2_1Version>netstandard2.1</NetStandard2_1Version>
     <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
@@ -50,7 +51,8 @@
     <RazorLangVersion>3.0</RazorLangVersion>
     <!-- Xenial Default Package Version -->
     <XenialTFMs>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version);$(Net6Version)</XenialTFMs>
-    <XenialWinTFMs>$(FullFrameworkVersion);$(WindowsFrameworkVersion)</XenialWinTFMs>
+    <WindowsFrameworkVersion>$(WindowsFrameworkVersion6)</WindowsFrameworkVersion>
+    <XenialWinTFMs>$(FullFrameworkVersion);$(WindowsFrameworkVersion5);$(WindowsFrameworkVersion6)</XenialWinTFMs>
     <XenialBlazorTFMs>$(NetBlazorLibVersion)</XenialBlazorTFMs>
 
     <TargetFrameworks>$(XenialTFMs)</TargetFrameworks>
