@@ -339,7 +339,7 @@ namespace Xenial.Build
                             || trimmed.StartsWith("else if")
                             || trimmed.StartsWith("using (")
                             || trimmed.StartsWith("else  if")
-                            || trimmed.Contains(";")
+                            || trimmed.Contains(';')
                             || trimmed.StartsWith("public") //method signature
                             || trimmed.StartsWith("private") //method signature
                             || trimmed.StartsWith("protected") //method signature
