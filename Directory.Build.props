@@ -12,6 +12,7 @@
     <NetStandard2_1Version>netstandard2.1</NetStandard2_1Version>
     <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
     <Net5Version>net5.0</Net5Version>
+    <Net6Version>net6.0</Net6Version>
     <NetBlazorLibVersion>$(Net5Version)</NetBlazorLibVersion>
     <NetBlazorAppVersion>$(Net5Version)</NetBlazorAppVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
@@ -48,7 +49,7 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <RazorLangVersion>3.0</RazorLangVersion>
     <!-- Xenial Default Package Version -->
-    <XenialTFMs>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version)</XenialTFMs>
+    <XenialTFMs>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version);$(Net6Version)</XenialTFMs>
     <XenialWinTFMs>$(FullFrameworkVersion);$(WindowsFrameworkVersion)</XenialWinTFMs>
     <XenialBlazorTFMs>$(NetBlazorLibVersion)</XenialBlazorTFMs>
 
