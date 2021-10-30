@@ -9,6 +9,10 @@
     <TargetFrameworks>$(Net5Version);$(NetCoreVersion);$(FullFrameworkVersion)</TargetFrameworks>
     <NoWarn>CA1014;$(NoWarn)</NoWarn>
     <CheckXenialLicense>false</CheckXenialLicense>
+
+    <!-- https://andrewlock.net/fixing-the-error-program-has-more-than-one-entry-point-defined-for-console-apps-containing-xunit-tests/ -->
+    <GenerateProgramFile>false</GenerateProgramFile>
+
   </PropertyGroup>
 	
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
