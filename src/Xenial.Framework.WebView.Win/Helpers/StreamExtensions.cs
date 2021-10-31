@@ -13,8 +13,6 @@ namespace Scissors.Utils.Io
     /// <summary>   Extension methods for the System.IO.Stream class. </summary>
     public static class StreamExtensions
     {
-
-
         /// <summary>   (Immutable) the default buffer size. </summary>
         public const int DefaultBufferSize = 8192;
 
@@ -28,7 +26,7 @@ namespace Scissors.Utils.Io
         /// <param name="sourceStream"> The source stream. </param>
         /// <param name="targetStream"> The target stream. </param>
         /// <param name="progress">     (Optional) The progress. </param>
-        /// <param name="token">        (Optional) The token. </param>
+        /// <param name="cancellationToken">        (Optional) The token. </param>
         /// <param name="bufferSize">   (Optional) Size of the buffer. </param>
         /// <param name="totalBytes">   (Optional) The total number of bytes. </param>
         ///
@@ -38,9 +36,9 @@ namespace Scissors.Utils.Io
             this Stream sourceStream,
             Stream targetStream,
             IProgress<CopyStreamProgressInfo>? progress = null,
-            CancellationToken token = default(CancellationToken),
             int bufferSize = DefaultBufferSize,
-            long totalBytes = -1L
+            long totalBytes = -1L,
+            CancellationToken cancellationToken = default
         )
         {
             _ = sourceStream ?? throw new ArgumentNullException(nameof(sourceStream));
@@ -62,7 +60,7 @@ namespace Scissors.Utils.Io
             var maxBytesPerSecond = 0d;
             do
             {
-                token.ThrowIfCancellationRequested();
+                cancellationToken.ThrowIfCancellationRequested();
 
                 var read = sourceStream.Read(buffer, 0, buffer.Length);
 
@@ -126,7 +124,7 @@ namespace Scissors.Utils.Io
         /// <param name="sourceStream"> The source stream. </param>
         /// <param name="targetStream"> The target stream. </param>
         /// <param name="progress">     (Optional) The progress. </param>
-        /// <param name="token">        (Optional) The token. </param>
+        /// <param name="cancellationToken">        (Optional) The token. </param>
         /// <param name="bufferSize">   (Optional) Size of the buffer. </param>
         /// <param name="totalBytes">   (Optional) The total number of bytes. </param>
         ///
@@ -136,8 +134,8 @@ namespace Scissors.Utils.Io
             this Stream sourceStream,
             Stream targetStream,
             IProgress<CopyStreamProgressInfo>? progress = null,
-            CancellationToken token = default(CancellationToken),
-            int bufferSize = DefaultBufferSize, long totalBytes = -1L
+            int bufferSize = DefaultBufferSize, long totalBytes = -1L,
+            CancellationToken cancellationToken = default
         )
         {
             _ = sourceStream ?? throw new ArgumentNullException(nameof(sourceStream));
@@ -163,15 +161,23 @@ namespace Scissors.Utils.Io
 
             while (true)
             {
-                token.ThrowIfCancellationRequested();
-
-                var read = await sourceStream.ReadAsync(buffer, 0, buffer.Length, token).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+#if NET5_0_OR_GREATER
+                var bufferAsMemory = buffer.AsMemory(0, buffer.Length);
+                var read = await sourceStream.ReadAsync(bufferAsMemory, cancellationToken).ConfigureAwait(false);
+#else
+                var read = await sourceStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+#endif
 
                 var isMoreToRead = read != 0;
 
                 if (isMoreToRead)
                 {
-                    await targetStream.WriteAsync(buffer, 0, read, token).ConfigureAwait(false);
+#if NET5_0_OR_GREATER
+                    await targetStream.WriteAsync(bufferAsMemory, cancellationToken).ConfigureAwait(false);
+#else
+                    await targetStream.WriteAsync(buffer, 0, read, cancellationToken).ConfigureAwait(false);
+#endif
                 }
 
                 totalRead += read;
