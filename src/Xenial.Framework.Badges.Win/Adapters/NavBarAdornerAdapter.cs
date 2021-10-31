@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -400,11 +401,13 @@ namespace Xenial.Framework.Badges.Win.Adapters
                 {
                     while (true)
                     {
-                        await Task.Delay(navBarControl.OptionsNavPane.AnimationFramesCount).ConfigureAwait(true);
+                        await Task.Delay(navBarControl.OptionsNavPane.AnimationFramesCount)
+                            .ConfigureAwait(true);
 
                         if (!navBarControl.OptionsNavPane.IsAnimationInProgress)
                         {
-                            await Task.Delay(navBarControl.OptionsNavPane.AnimationFramesCount).ConfigureAwait(true);
+                            await Task.Delay(navBarControl.OptionsNavPane.AnimationFramesCount)
+                                .ConfigureAwait(true);
                             break;
                         }
                     }
@@ -412,7 +415,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
                     {
                         BeginInvokeUpdateBadges();
                     }
-                }, TaskCreationOptions.AttachedToParent);
+                }, CancellationToken.None, TaskCreationOptions.AttachedToParent, TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
     }
