@@ -242,7 +242,7 @@ namespace Xenial.Framework.Badges.Win.Adapters
             Badge navBarItemBadge,
             NavGroupInfoArgs navBarGroupViewInfo)
         {
-            if (navBarItemLinkViewInfo is not null && navBarItemLink.Group is NavBarGroup)
+            if (navBarItemLinkViewInfo is not null && navBarItemLink.Group is not null)
             {
                 var useText = UseText(navBarItemLink);
 

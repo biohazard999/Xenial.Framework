@@ -70,6 +70,6 @@ namespace Xenial.Framework.WebView.Win.Helpers
         /// <returns>   The new progress. </returns>
 
         public static Progress<CopyStreamProgressInfo> CreateProgress()
-            => new Progress<CopyStreamProgressInfo>();
+            => new();
     }
 }

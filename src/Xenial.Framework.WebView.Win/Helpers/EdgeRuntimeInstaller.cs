@@ -22,7 +22,7 @@ namespace Xenial.Framework.WebView.Win.Helpers
         /// <summary>   (Immutable) URL of the web view 2 runtime installer. </summary>
         public static readonly string WebView2RuntimeInstallerUrl = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
 
-        private static readonly object locker = new object();
+        private static readonly object locker = new();
 
         private static Task? installerTask;
 
