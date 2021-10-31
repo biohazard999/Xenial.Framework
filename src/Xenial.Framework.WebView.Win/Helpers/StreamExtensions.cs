@@ -6,9 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Xenial.Framework.WebView.Win.Helpers;
-
-namespace Scissors.Utils.Io
+namespace Xenial.Framework.WebView.Win.Helpers
 {
     /// <summary>   Extension methods for the System.IO.Stream class. </summary>
     public static class StreamExtensions
@@ -91,7 +89,7 @@ namespace Scissors.Utils.Io
                         {
                             BytesDownloaded = totalRead,
                             TotalBytes = totalBytes,
-                            Percent = (totalRead * 1d) / (totalBytes * 1d) * 100,
+                            Percent = totalRead * 1d / (totalBytes * 1d) * 100,
                             Elapsed = totalWatch.Elapsed,
                             BufferSize = bufferSize,
                             CurrentBytesPerSecond = bytesPerSecond,
@@ -209,7 +207,7 @@ namespace Scissors.Utils.Io
                         {
                             BytesDownloaded = totalRead,
                             TotalBytes = totalBytes,
-                            Percent = (totalRead * 1d) / (totalBytes * 1d) * 100,
+                            Percent = totalRead * 1d / (totalBytes * 1d) * 100,
                             Elapsed = totalWatch.Elapsed,
                             BufferSize = bufferSize,
                             CurrentBytesPerSecond = currentBytesPerSecond,

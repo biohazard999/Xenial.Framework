@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
-using Scissors.Utils.Io;
+using System.Threading.Tasks;
 
 namespace Xenial.Framework.WebView.Win.Helpers
 {
