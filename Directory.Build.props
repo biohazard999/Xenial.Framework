@@ -57,6 +57,12 @@
 
     <TargetFrameworks>$(XenialTFMs)</TargetFrameworks>
 
+    <!-- Enable Deterministic build -->
+    <!-- https://newbedev.com/is-it-possible-to-remove-the-full-paths-from-net-assemblies-created-with-dotnet-build -->
+    <Deterministic>true</Deterministic>
+    <DeterministicSourcePaths>true</DeterministicSourcePaths>
+    <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))=./</PathMap>
+
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
