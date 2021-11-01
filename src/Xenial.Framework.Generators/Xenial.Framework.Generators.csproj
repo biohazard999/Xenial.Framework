@@ -10,7 +10,7 @@
     <IncludeSymbols>False</IncludeSymbols>
     <SymbolPackageFormat></SymbolPackageFormat>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <!--<IncludeBuildOutput>false</IncludeBuildOutput>-->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
