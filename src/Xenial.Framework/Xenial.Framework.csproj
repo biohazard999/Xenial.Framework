@@ -11,7 +11,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj"
                       OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false" />
+                      ReferenceOutputAssembly="false"
+                      PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
