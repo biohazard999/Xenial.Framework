@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30428.66
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31825.309
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BBC9F78B-FCA3-4E8B-BE69-DFF8533377E7}"
 	ProjectSection(SolutionItems) = preProject
@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		global.json = global.json
 		nuget.config = nuget.config
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.WebView.Win", "src\Xenial.Framework.WebView.Win\Xenial.Framework.WebView.Win.csproj", "{A15EF953-29DA-4E15-94BB-1BBDF97CA1DE}"
@@ -80,9 +81,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Badges", "Badges", "{95170A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lab", "Lab", "{3250CF49-8628-4C4F-88ED-27DD99F2D420}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Framework.Generators", "src\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj", "{A3583567-D561-4C6F-96E3-E76B0F0D9A64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Generators", "src\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj", "{A3583567-D561-4C6F-96E3-E76B0F0D9A64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Framework.Generators.Tests", "test\Xenial.Framework.Generators.Tests\Xenial.Framework.Generators.Tests.csproj", "{AF944FE3-0000-4400-907E-0681F92C3D3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Generators.Tests", "test\Xenial.Framework.Generators.Tests\Xenial.Framework.Generators.Tests.csproj", "{AF944FE3-0000-4400-907E-0681F92C3D3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
