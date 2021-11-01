@@ -347,6 +347,8 @@ namespace Xenial.Build
                 }
             });
 
+            Target("local", DependsOn("build:debug"));
+
             Target("default", DependsOn("test"));
 
             await RunTargetsAndExitAsync(args);
