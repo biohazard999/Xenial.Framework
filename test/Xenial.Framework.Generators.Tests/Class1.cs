@@ -1,7 +1,6 @@
-﻿namespace Xenial.Framework.Generators.Tests
-{
-    public class Class1
-    {
+﻿namespace Xenial.Framework.Generators.Tests;
 
-    }
+public class Class1
+{
+
 }

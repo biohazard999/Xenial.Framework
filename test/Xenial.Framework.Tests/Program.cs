@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CA1812
+
+using System;
 using System.Threading.Tasks;
 
 using Xenial.Framework.Tests;
