@@ -4,7 +4,6 @@
     <_TFM>netstandard2.0</_TFM>
     <TargetFrameworks>$(_TFM)</TargetFrameworks>
     <TargetFramework>$(_TFM)</TargetFramework>
-    <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <DevelopmentDependency>true</DevelopmentDependency>
     <IncludeSource>False</IncludeSource>
