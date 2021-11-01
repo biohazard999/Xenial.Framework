@@ -6,7 +6,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <TargetFrameworks>$(Net5Version);$(NetCoreVersion);$(FullFrameworkVersion)</TargetFrameworks>
+    <TargetFrameworks>$(Net6Version);$(Net5Version);$(NetCoreVersion);$(FullFrameworkVersion)</TargetFrameworks>
     <NoWarn>CA1014;$(NoWarn)</NoWarn>
     <CheckXenialLicense>false</CheckXenialLicense>
 
