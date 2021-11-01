@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using Xenial.Framework.Tests;
 using Xenial.Framework.Tests.Layouts.ColumnItems;
 using Xenial.Framework.Tests.Layouts.ColumnItems.Properties;
 using Xenial.Framework.Tests.Layouts.Items;
@@ -13,58 +14,49 @@ using Xenial.Utils.Tests;
 
 using static Xenial.Tasty;
 
-namespace Xenial.Framework.Tests
+Describe(nameof(Xenial), () =>
 {
-    class Program
+    NullDiffsStoreFacts.NullDiffsStoreTests();
+    ModelOptionsNodesGeneratorUpdaterFacts.ModelOptionsNodesGeneratorUpdaterTests();
+    ModuleTypeListExtentionsFacts.ModuleTypeListExtentionsTests();
+    ExpressionHelperFacts.ExpressionHelperTests();
+
+    ModelBuilderFacts.ModelBuilderTests();
+    ModelBuilderExtensionFacts.ModelBuilderExtensionTests();
+    PropertyBuilderFacts.PropertyBuilderTests();
+    PropertyBuilderExtensionsFacts.PropertyBuilderExtensionsTests();
+
+    BuilderManagerFacts.BuilderManagerTests();
+    XafBuilderManagerFacts.XafBuilderManagerTests();
+
+    SlugerFacts.SluggerTests();
+    ResourceUtilFacts.ResourceExtentionsTests();
+
+    Describe("Layouts", () =>
     {
-        static async Task<int> Main(string[] args)
-        {
-            Describe(nameof(Xenial), () =>
-            {
-                NullDiffsStoreFacts.NullDiffsStoreTests();
-                ModelOptionsNodesGeneratorUpdaterFacts.ModelOptionsNodesGeneratorUpdaterTests();
-                ModuleTypeListExtentionsFacts.ModuleTypeListExtentionsTests();
-                ExpressionHelperFacts.ExpressionHelperTests();
+        GeneralLayoutFacts.GeneralLayoutTests();
 
-                ModelBuilderFacts.ModelBuilderTests();
-                ModelBuilderExtensionFacts.ModelBuilderExtensionTests();
-                PropertyBuilderFacts.PropertyBuilderTests();
-                PropertyBuilderExtensionsFacts.PropertyBuilderExtensionsTests();
+        BasicLayoutFacts.BasicLayoutTests();
+        LayoutPropertyEditorItemFacts.LayoutPropertyEditorItemTests();
+        LayoutEmptySpaceItemFacts.LayoutEmptySpaceItemTests();
 
-                BuilderManagerFacts.BuilderManagerTests();
-                XafBuilderManagerFacts.XafBuilderManagerTests();
+        LayoutGroupItemFacts.LayoutGroupItemTests();
+        LayoutGroupItemFacts.LayoutGroupItemChildrenTests();
+        LayoutTabGroupItemFacts.LayoutTabGroupItemTests();
+        LayoutTabbedGroupItemFacts.LayoutTabbedGroupItemTests();
+        LayoutTabbedGroupItemFacts.LayoutTabbedGroupItemChildTests();
 
-                SlugerFacts.SluggerTests();
-                ResourceUtilFacts.ResourceExtentionsTests();
+        TreeBuilderFacts.TreeBuilderTests();
 
-                Describe("Layouts", () =>
-                {
-                    GeneralLayoutFacts.GeneralLayoutTests();
+        LayoutIntegrationFacts.LayoutIntegrationTests();
+    });
 
-                    BasicLayoutFacts.BasicLayoutTests();
-                    LayoutPropertyEditorItemFacts.LayoutPropertyEditorItemTests();
-                    LayoutEmptySpaceItemFacts.LayoutEmptySpaceItemTests();
+    Describe("Columns", () =>
+    {
+        BasicColumnsFacts.BasicColumnsTests();
+        ColumnsIntegrationFacts.ColumnsIntegrationTests();
+        BasicColumnPropertiesFacts.ColumnPropertiesTests();
+    });
+});
 
-                    LayoutGroupItemFacts.LayoutGroupItemTests();
-                    LayoutGroupItemFacts.LayoutGroupItemChildrenTests();
-                    LayoutTabGroupItemFacts.LayoutTabGroupItemTests();
-                    LayoutTabbedGroupItemFacts.LayoutTabbedGroupItemTests();
-                    LayoutTabbedGroupItemFacts.LayoutTabbedGroupItemChildTests();
-
-                    TreeBuilderFacts.TreeBuilderTests();
-
-                    LayoutIntegrationFacts.LayoutIntegrationTests();
-                });
-
-                Describe("Columns", () =>
-                {
-                    BasicColumnsFacts.BasicColumnsTests();
-                    ColumnsIntegrationFacts.ColumnsIntegrationTests();
-                    BasicColumnPropertiesFacts.ColumnPropertiesTests();
-                });
-            });
-
-            return await Run(args);
-        }
-    }
-}
+return await Run(args);
