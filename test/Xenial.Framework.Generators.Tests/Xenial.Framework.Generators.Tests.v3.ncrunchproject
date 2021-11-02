@@ -1,7 +1,7 @@
 ﻿<ProjectConfiguration>
   <Settings>
     <CustomBuildProperties>
-      <Value>TargetFramework = netstandard2.0</Value>
+      <Value>TargetFramework = net6.0</Value>
     </CustomBuildProperties>
     <InstrumentOutputAssembly>False</InstrumentOutputAssembly>
   </Settings>
