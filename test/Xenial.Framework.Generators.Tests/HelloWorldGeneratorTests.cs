@@ -11,11 +11,12 @@ using Xunit;
 
 namespace Xenial.Framework.Generators.Tests
 {
-
     [UsesVerify]
     public class HelloWorldGeneratorTests
     {
-        //static HelloWorldGeneratorTests() => VerifySourceGenerators.Enable();
+#if FULL_FRAMEWORK || NETCOREAPP3_1
+        static HelloWorldGeneratorTests() => VerifySourceGenerators.Enable();
+#endif
 
         [Fact]
         public async Task Run()
@@ -26,8 +27,9 @@ namespace Xenial.Framework.Generators.Tests
             GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
 
             driver = driver.RunGenerators(compilation);
-
-            await Verifier.Verify(driver);
+            var settings = new VerifySettings();
+            settings.UniqueForTargetFrameworkAndVersion();
+            await Verifier.Verify(driver, settings);
         }
     }
 }
