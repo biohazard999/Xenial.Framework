@@ -21,7 +21,7 @@
   </ItemGroup>
   
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <PackageReference Remove="Xenial.Framework.LicGen" />
     <PackageReference Remove="Xenial.Framework.MsBuild" />
     <PackageReference Remove="Microsoft.SourceLink.GitHub" />
@@ -29,6 +29,6 @@
     <PackageReference Remove="Packaging.Targets" />
     <PackageReference Remove="Standard.Licensing" />
     
-  </ItemGroup>
+  </ItemGroup>-->
 
 </Project>
