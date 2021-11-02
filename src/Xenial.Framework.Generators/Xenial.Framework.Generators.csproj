@@ -19,16 +19,12 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" PrivateAssets="All" />
   </ItemGroup>
-  
 
-  <!--<ItemGroup>
+  <!-- To debug Generators we cannot reference other generators, because they will result in a deadlock -->
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <PackageReference Remove="Xenial.Framework.LicGen" />
     <PackageReference Remove="Xenial.Framework.MsBuild" />
-    <PackageReference Remove="Microsoft.SourceLink.GitHub" />
-    <PackageReference Remove="MinVer" />
-    <PackageReference Remove="Packaging.Targets" />
     <PackageReference Remove="Standard.Licensing" />
-    
-  </ItemGroup>-->
+  </ItemGroup>
 
 </Project>
