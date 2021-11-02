@@ -3,12 +3,14 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
     <TargetFramework>net6.0</TargetFramework>
-    <OutputType>Library</OutputType>
+    <!--<OutputType>Library</OutputType>-->
+    <UseTastyNamedPipeServerTransport>false</UseTastyNamedPipeServerTransport>
+    <UseTastyNamedPipeClientTransport>false</UseTastyNamedPipeClientTransport>
   </PropertyGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Compile Remove="_DuckTyping.cs" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
@@ -22,14 +24,14 @@
 
   <ItemGroup>
     <!--<PackageReference Remove="Xenial.Tasty" />-->
-    <PackageReference Remove="Packaging.Targets" />
-    <PackageReference Remove="Bogus" />
-    <PackageReference Remove="FakeItEasy" />
-    <PackageReference Remove="Shouldly" />
-    <PackageReference Include="coverlet.collector" Version="3.1.0">
+    <!--<PackageReference Remove="Packaging.Targets" />-->
+    <!--<PackageReference Remove="Bogus" />-->
+    <!--<PackageReference Remove="FakeItEasy" />
+    <PackageReference Remove="Shouldly" />-->
+    <!--<PackageReference Include="coverlet.collector" Version="3.1.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    </PackageReference>-->
   </ItemGroup>
 
 </Project>
