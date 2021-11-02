@@ -37,6 +37,12 @@
       "commands": [
         "dotnet-zip"
       ]
+    },
+    "diffenginetray": {
+      "version": "8.2.0",
+      "commands": [
+        "DiffEngineTray"
+      ]
     }
   }
 }

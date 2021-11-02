@@ -19,9 +19,16 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" PrivateAssets="All" />
   </ItemGroup>
+  
 
-  <!-- <ItemGroup>
+  <ItemGroup>
     <PackageReference Remove="Xenial.Framework.LicGen" />
-  </ItemGroup> -->
+    <PackageReference Remove="Xenial.Framework.MsBuild" />
+    <PackageReference Remove="Microsoft.SourceLink.GitHub" />
+    <PackageReference Remove="MinVer" />
+    <PackageReference Remove="Packaging.Targets" />
+    <PackageReference Remove="Standard.Licensing" />
+    
+  </ItemGroup>
 
 </Project>

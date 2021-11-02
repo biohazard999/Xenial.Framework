@@ -3,6 +3,8 @@
 using System;
 using System.Threading.Tasks;
 
+using Shouldly;
+
 using Xenial.Framework.Tests;
 using Xenial.Framework.Tests.Layouts.ColumnItems;
 using Xenial.Framework.Tests.Layouts.ColumnItems.Properties;
@@ -13,6 +15,8 @@ using Xenial.Framework.Tests.ModelBuilders;
 using Xenial.Framework.Tests.Utils;
 using Xenial.Framework.Tests.Utils.Slugger;
 using Xenial.Utils.Tests;
+
+using Xunit;
 
 using static Xenial.Tasty;
 
@@ -62,3 +66,11 @@ Describe(nameof(Xenial), () =>
 });
 
 return await Run(args);
+
+//Waiting for NRE to resolve `https://github.com/xenial-io/Tasty/issues/129`
+//public class XUnitAdapter
+//{
+//    [Fact]
+//    public async Task TastyXUnitAdapterTests() =>
+//        (await Run()).ShouldBe(0);
+//}
