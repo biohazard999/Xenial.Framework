@@ -12,10 +12,10 @@ using Xunit;
 namespace Xenial.Framework.Generators.Tests;
 
 [UsesVerify]
-public class HelloWorldGeneratorTests
+public class XPBuilderGeneratorTests
 {
 #if FULL_FRAMEWORK || NETCOREAPP3_1
-        static HelloWorldGeneratorTests() => VerifySourceGenerators.Enable();
+    static XPBuilderGeneratorTests() => VerifySourceGenerators.Enable();
 #endif
 
     [Fact]
