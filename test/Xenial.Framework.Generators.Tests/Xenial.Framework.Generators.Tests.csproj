@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+
   </PropertyGroup>
 
 
@@ -15,4 +16,5 @@
     <ProjectReference Include="..\..\src\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" />
   </ItemGroup>
 
+  
 </Project>
