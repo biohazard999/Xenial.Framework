@@ -33,6 +33,18 @@ namespace Xenial.Framework.Generators
                         return;
                     }
                 }
+                else
+                {
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            GeneratorDiagnostics.MsBuildInvalidBooleanProperty(
+                                generateXenialXpoBuilderAttributeMSBuildProperty,
+                                generateXenialXpoBuilderAttrStr
+                            )
+                            , null
+                        ));
+                    return;
+                }
             }
 
             var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));

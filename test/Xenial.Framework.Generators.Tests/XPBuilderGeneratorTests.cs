@@ -73,5 +73,23 @@ public class XpoBuilderGeneratorTests
         settings.UniqueForTargetFrameworkAndVersion();
         await Verifier.Verify(driver, settings);
     }
+
+    [Fact]
+    public async Task DoesEmitDiagnosticIfNotBoolean()
+    {
+        var compilation = CSharpCompilation.Create(compilationName);
+        XenialXpoBuilderGenerator generator = new();
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            new[] { generator },
+            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new CompilerAnalyzerConfigOptions(xpoBuilderBuildPropertyName, "ABC"))
+        );
+
+        driver = driver.RunGenerators(compilation);
+        var settings = new VerifySettings();
+        settings.UniqueForTargetFrameworkAndVersion();
+        await Verifier.Verify(driver, settings);
+    }
 }
 
