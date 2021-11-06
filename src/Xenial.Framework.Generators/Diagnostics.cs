@@ -12,7 +12,7 @@ namespace Xenial.Framework.Generators
 
 #pragma warning disable RS2008 // Enable analyzer release tracking
 #pragma warning disable RS1033 // Define diagnostic description correctly
-        internal static DiagnosticDescriptor MsBuildInvalidBooleanProperty(string msBuildPropertyName, string actualValue) => new(
+        internal static DiagnosticDescriptor InvalidBooleanMsBuildProperty(string msBuildPropertyName, string actualValue) => new(
             "XENGEN0010",
             $"Could not parse boolean MSBUILD variable ({msBuildPropertyName})",
             $"Could not parse boolean MSBUILD variable ({msBuildPropertyName}), make sure it's in a boolean format. Actual value: {actualValue}",

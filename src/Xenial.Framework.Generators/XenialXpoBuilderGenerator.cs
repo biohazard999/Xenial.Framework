@@ -37,7 +37,7 @@ namespace Xenial.Framework.Generators
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            GeneratorDiagnostics.MsBuildInvalidBooleanProperty(
+                            GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
                                 generateXenialXpoBuilderAttributeMSBuildProperty,
                                 generateXenialXpoBuilderAttrStr
                             )
