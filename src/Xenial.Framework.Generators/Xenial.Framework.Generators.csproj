@@ -21,13 +21,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" PrivateAssets="All" />
   </ItemGroup>
 
-  <!-- To debug Generators we cannot reference other generators, because they will result in a deadlock -->
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <PackageReference Remove="Xenial.Framework.LicGen" />
-    <PackageReference Remove="Xenial.Framework.MsBuild" />
-    <PackageReference Remove="Standard.Licensing" />
-  </ItemGroup>
-
   <ItemGroup>
     <!-- Package the generator in the analyzer directory of the nuget package -->
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
