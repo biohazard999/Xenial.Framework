@@ -67,32 +67,6 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
         var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
 
-        foreach (var additionalText in context.AdditionalFiles)
-        {
-            var options = context.AnalyzerConfigOptions.GetOptions(additionalText);
-            if (options is not null && options.TryGetValue(markAsXenialImageSourceMetadataAttribute, out var markedAsImageSourceStr))
-            {
-                if (bool.TryParse(markedAsImageSourceStr, out var markedAsImageSource))
-                {
-                    if (markedAsImageSource)
-                    {
-
-                    }
-                }
-                else
-                {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create(
-                            GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            markAsXenialImageSourceMetadataAttribute,
-                            markedAsImageSourceStr
-                        ), null)
-                    );
-                }
-
-            }
-        }
-
         foreach (var @class in syntaxReceiver.Classes)
         {
             if (!@class.Modifiers.Any(mod => mod.Text == Token(SyntaxKind.PartialKeyword).Text))
@@ -105,6 +79,40 @@ public class XenialImageNamesGenerator : ISourceGenerator
             }
         }
     }
+
+    private static IEnumerable<ImageInformation> GetImages(GeneratorExecutionContext context)
+    {
+        foreach (var additionalText in context.AdditionalFiles)
+        {
+            var options = context.AnalyzerConfigOptions.GetOptions(additionalText);
+            if (options is not null && options.TryGetValue(markAsXenialImageSourceMetadataAttribute, out var markedAsImageSourceStr))
+            {
+                if (bool.TryParse(markedAsImageSourceStr, out var markedAsImageSource))
+                {
+                    if (markedAsImageSource)
+                    {
+                        var path = additionalText.Path;
+                        var fileName = Path.GetFileName(path);
+                        var name = Path.GetFileNameWithoutExtension(path);
+                        var extension = Path.GetExtension(path);
+
+                        yield return new ImageInformation(path, fileName, name, extension);
+                    }
+                }
+                else
+                {
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
+                            markAsXenialImageSourceMetadataAttribute,
+                            markedAsImageSourceStr
+                        ), null)
+                    );
+                }
+            }
+        }
+    }
+
 
     private static Compilation GenerateAttribute(GeneratorExecutionContext context)
     {
@@ -155,3 +163,5 @@ public class XenialImageNamesGenerator : ISourceGenerator
         return compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
     }
 }
+
+public record ImageInformation(string Path, string FileName, string Name, string Extension) { }

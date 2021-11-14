@@ -174,7 +174,7 @@ public class ImageNamesGeneratorTests
 
         XenialImageNamesGenerator generator = new();
 
-        var mockAdditionalText = new MockAdditionalText();
+        var mockAdditionalText = new MockAdditionalText("Images/MyPicture.png");
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
@@ -215,6 +215,8 @@ public class MockAnalyzerConfigOptions : AnalyzerConfigOptions
 
 public class MockAdditionalText : AdditionalText
 {
+    public MockAdditionalText(string path) => Path = path;
+
     public override string Path { get; }
 
     public override SourceText? GetText(CancellationToken cancellationToken = default) => throw new System.NotImplementedException();
