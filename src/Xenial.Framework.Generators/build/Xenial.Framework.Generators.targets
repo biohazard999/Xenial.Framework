@@ -6,6 +6,10 @@
       <XenialAttributesModifier Condition="'$(XenialAttributesModifier)' == ''">private</XenialAttributesModifier>
     </PropertyGroup>
 
+    <ItemGroup>
+      <CompilerVisibleProperty Include="XenialAttributesModifier" />
+    </ItemGroup>
+
   </Target>
 
 </Project>

@@ -8,7 +8,7 @@ namespace Xenial.Framework.Generators
 {
     public static class AttributeModifiers
     {
-        public const string InternalModifier = "internal2";
+        public const string InternalModifier = "internal";
         public const string PublicModifier = "public";
 
         private const string xenialAttributesModifierMSBuildProperty = "XenialAttributesModifier";
