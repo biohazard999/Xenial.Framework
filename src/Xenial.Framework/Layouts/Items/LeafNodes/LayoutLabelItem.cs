@@ -3,7 +3,7 @@
 namespace Xenial.Framework.Layouts.Items.LeafNodes
 {
     /// <summary>   (Immutable) a layout label item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutLabelItem : LayoutViewItemNode
     {
         /// <summary>   Gets the text. </summary>

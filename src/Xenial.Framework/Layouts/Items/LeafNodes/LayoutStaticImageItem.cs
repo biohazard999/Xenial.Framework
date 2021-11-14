@@ -9,7 +9,7 @@ using Xenial.Framework.Layouts.Items.Base;
 namespace Xenial.Framework.Layouts.Items.LeafNodes
 {
     /// <summary>   (Immutable) a layout static image item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutStaticImageItem : LayoutViewItem
     {
         /// <summary>   Gets the name of the image. </summary>

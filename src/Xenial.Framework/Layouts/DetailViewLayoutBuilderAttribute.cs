@@ -27,7 +27,7 @@ namespace Xenial.Framework.Layouts
     /// <seealso cref="System.Attribute"/>
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial class DetailViewLayoutBuilderAttribute : Attribute
     {
         /// <summary>

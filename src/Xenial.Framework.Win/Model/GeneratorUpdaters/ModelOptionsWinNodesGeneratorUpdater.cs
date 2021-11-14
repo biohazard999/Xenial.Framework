@@ -13,7 +13,7 @@ namespace Xenial.Framework.Win.Model.GeneratorUpdaters
     /// <seealso cref="ModelOptionsNodesGeneratorUpdater"/>
     /// <seealso cref="Xenial.Framework.Model.GeneratorUpdaters.ModelOptionsNodesGeneratorUpdater"/>
 
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial class ModelOptionsWinNodesGeneratorUpdater : ModelOptionsNodesGeneratorUpdater
     {
         private new ApplicationWinOptions Options => (ApplicationWinOptions)base.Options;

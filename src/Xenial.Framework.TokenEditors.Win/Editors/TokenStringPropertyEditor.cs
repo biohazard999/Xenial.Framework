@@ -20,7 +20,7 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
     /// <seealso cref="DXPropertyEditor"/>
     /// <seealso cref="DevExpress.ExpressApp.Win.Editors.DXPropertyEditor"/>
 
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial class TokenStringPropertyEditor : DXPropertyEditor
     {
         /// <summary>

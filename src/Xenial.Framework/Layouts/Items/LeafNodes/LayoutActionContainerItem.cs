@@ -14,7 +14,7 @@ using Xenial.Framework.Layouts.Items.Base;
 namespace Xenial.Framework.Layouts.Items.LeafNodes
 {
     /// <summary>   (Immutable) a layout action container item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutActionContainerItem(string ActionContainerId) : LayoutViewItem(ActionContainerId)
     {
         /// <summary>   Gets or sets the paint style. </summary>

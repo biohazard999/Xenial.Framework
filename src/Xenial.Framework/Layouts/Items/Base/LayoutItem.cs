@@ -17,7 +17,7 @@ namespace Xenial.Framework.Layouts.Items.Base
     /// <summary>
     /// 
     /// </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public abstract partial record LayoutItem<T>
         : LayoutItemNode,
         IEnumerableLayoutItemNode<T>,
@@ -146,7 +146,7 @@ namespace Xenial.Framework.Layouts.Items.Base
     }
 
     /// <summary>   (Immutable) a layout item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutItem : LayoutItem<LayoutItemNode>, ILayoutItemNodeWithAlign
     {
         /// <summary>   Gets or sets the horizontal align. </summary>

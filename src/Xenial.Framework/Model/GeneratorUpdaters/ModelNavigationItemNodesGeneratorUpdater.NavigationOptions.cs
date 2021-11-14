@@ -8,7 +8,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
     /// <summary>
     /// 
     /// </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record NavigationOptions
     {
         /// <summary>   Gets or sets the startup navigation item identifier. </summary>

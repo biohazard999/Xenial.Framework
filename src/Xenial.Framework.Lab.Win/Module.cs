@@ -7,7 +7,7 @@ using DevExpress.ExpressApp.Win.SystemModule;
 
 namespace Xenial.Framework.Lab.Win
 {
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial class XenialLabWindowsFormsModule : XenialModuleBase
     {
         /// <summary>   Gets required module types core. </summary>

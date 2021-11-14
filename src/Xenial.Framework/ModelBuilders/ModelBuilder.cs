@@ -73,7 +73,7 @@ namespace Xenial.Framework.ModelBuilders
     /// 
     /// </summary>
     /// <typeparam name="TClassType"></typeparam>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial class ModelBuilder<TClassType> : BuilderManager, ITypeInfoProvider, IModelBuilder<TClassType>
     {
         /// <summary>   Initializes a new instance of the <see cref="ModelBuilder{T}"/> class. </summary>

@@ -17,7 +17,7 @@ namespace Xenial.Framework.Layouts
     /// <summary>
     /// 
     /// </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial class LayoutBuilder<TModelClass> : LayoutBuilder
         where TModelClass : class
     {
@@ -48,7 +48,7 @@ namespace Xenial.Framework.Layouts
     /// <summary>
     /// 
     /// </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial class LayoutBuilder
     {
         #region Leaf Items

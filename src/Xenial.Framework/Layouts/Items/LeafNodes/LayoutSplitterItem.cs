@@ -3,7 +3,7 @@
 namespace Xenial.Framework.Layouts.Items.LeafNodes
 {
     /// <summary>   (Immutable) a layout splitter item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutSplitterItem : LayoutViewItemNode
     {
     }

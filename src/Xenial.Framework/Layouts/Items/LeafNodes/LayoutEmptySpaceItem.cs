@@ -3,7 +3,7 @@
 namespace Xenial.Framework.Layouts.Items.LeafNodes
 {
     /// <summary>   (Immutable) a layout empty space item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutEmptySpaceItem : LayoutItemLeaf
     {
         /// <summary>   Creates this instance. </summary>

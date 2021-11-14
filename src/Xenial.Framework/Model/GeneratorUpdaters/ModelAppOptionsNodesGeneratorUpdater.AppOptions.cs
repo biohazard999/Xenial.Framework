@@ -7,7 +7,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
     /// <summary>
     /// Class ApplicationOptions.
     /// </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record AppOptions
     {
         /// <summary>   Gets or sets the title. </summary>

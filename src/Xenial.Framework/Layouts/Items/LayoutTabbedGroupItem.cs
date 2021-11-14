@@ -16,7 +16,7 @@ namespace Xenial.Framework.Layouts.Items
 {
     /// <summary>   (Immutable) a layout tabbed group item. This record cannot be inherited. </summary>
 
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial record LayoutTabbedGroupItem : LayoutItem<LayoutTabGroupItem>,
         ILayoutElementWithCaption,
         ILayoutElementWithCaptionOptions

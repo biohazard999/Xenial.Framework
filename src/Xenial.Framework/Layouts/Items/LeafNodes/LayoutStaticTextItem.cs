@@ -7,7 +7,7 @@ using Xenial.Framework.Layouts.Items.Base;
 namespace Xenial.Framework.Layouts.Items.LeafNodes
 {
     /// <summary>   (Immutable) a layout static text item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutStaticTextItem : LayoutViewItem
     {
         /// <summary>   Gets the text. </summary>

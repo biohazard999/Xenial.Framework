@@ -13,7 +13,7 @@ using Xenial.Framework.Layouts.Items.Base;
 namespace Xenial.Framework.Layouts.Items.LeafNodes
 {
     /// <summary>   (Immutable) a layout property editor item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutPropertyEditorItem(string PropertyEditorId) : LayoutViewItem(PropertyEditorId)
     {
         /// <summary>   Creates the specified property editor identifier. </summary>
@@ -53,7 +53,7 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes
     /// <summary>
     /// 
     /// </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutPropertyEditorItem<TModelClass>(string ViewItemId) : LayoutPropertyEditorItem(ViewItemId)
         where TModelClass : class
     {

@@ -1,6 +1,5 @@
-﻿using Microsoft.CodeAnalysis.Diagnostics;
-
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 internal sealed class CompilerAnalyzerConfigOptions : AnalyzerConfigOptions
 {

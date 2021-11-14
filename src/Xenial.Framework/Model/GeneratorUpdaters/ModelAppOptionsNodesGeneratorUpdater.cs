@@ -13,7 +13,7 @@ namespace Xenial.Framework.Model.GeneratorUpdaters
     ///
     /// <seealso cref="ModelNodesGeneratorUpdater{ModelOptionsNodesGenerator}"/>
 
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial class ModelAppOptionsNodesGeneratorUpdater : ModelNodesGeneratorUpdater<ModelOptionsNodesGenerator>
     {
         private AppOptions Options { get; }

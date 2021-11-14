@@ -6,7 +6,7 @@ using DevExpress.ExpressApp.Layout;
 namespace Xenial.Framework.Layouts.Items.Base
 {
     /// <summary>   (Immutable) a layout item leaf. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutItemLeaf : LayoutItemNodeWithAlign
     {
         /// <summary>   Gets or sets the maximum size. </summary>

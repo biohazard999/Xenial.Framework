@@ -7,7 +7,7 @@ using Xenial.Framework.Utils.Slugger;
 namespace Xenial.Framework.Layouts.Items.Base
 {
     /// <summary>   (Immutable) a layout item node. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public abstract partial record LayoutItemNode
     {
         private static SlugifierConfig CreateDefaultSlugifierConfig() => new()

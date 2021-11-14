@@ -9,7 +9,7 @@ namespace Xenial.Framework.Model.Core
     ///
     /// <seealso cref="ModelStoreBase"/>
 
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial class NullDiffsStore : ModelStoreBase
     {
         private readonly Assembly assembly;

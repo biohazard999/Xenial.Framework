@@ -20,7 +20,7 @@ namespace Xenial.Framework.Badges.Win
     ///
     /// <seealso cref="XenialBadgesNavigationWindowControllerBase"/>
 
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial class XenialBadgesWindowsFormsNavigationWindowController : XenialBadgesNavigationWindowControllerBase
     {
         private readonly DisposableList disposables = new();

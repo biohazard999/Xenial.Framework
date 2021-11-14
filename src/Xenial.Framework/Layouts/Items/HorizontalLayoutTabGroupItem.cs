@@ -7,7 +7,7 @@ using DevExpress.ExpressApp.Layout;
 namespace Xenial.Framework.Layouts.Items
 {
     /// <summary>   (Immutable) a horizontal layout tab group item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record HorizontalLayoutTabGroupItem : LayoutTabGroupItem
     {
         /// <summary>   Creates this instance. </summary>

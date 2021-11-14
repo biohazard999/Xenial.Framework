@@ -12,7 +12,7 @@ using Xenial.Framework.Layouts.Items.Base;
 namespace Xenial.Framework.Layouts.Items.LeafNodes
 {
     /// <summary>   (Immutable) a layout dashboard view item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutDashboardViewItem(string DashboardViewId) : LayoutViewItem(DashboardViewId)
     {
         /// <summary>   Gets or sets the criteria operator. </summary>

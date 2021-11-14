@@ -8,7 +8,7 @@ using DevExpress.ExpressApp.Model;
 namespace Xenial.Framework.Layouts.Items.Base
 {
     /// <summary>   (Immutable) a layout view item node. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public abstract partial record LayoutViewItemNode : LayoutItemLeaf
     {
         /// <summary>   Gets or sets the view item options. </summary>

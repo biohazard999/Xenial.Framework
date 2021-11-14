@@ -8,7 +8,7 @@ using Xenial.Framework.Layouts.Items.Base;
 namespace Xenial.Framework.Layouts.Items
 {
     /// <summary>   (Immutable) a horizontal layout group item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record HorizontalLayoutGroupItem : LayoutGroupItem
     {
         private const FlowDirection defaultFlowDirection = FlowDirection.Horizontal;

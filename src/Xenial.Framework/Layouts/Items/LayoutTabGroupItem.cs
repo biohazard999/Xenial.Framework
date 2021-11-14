@@ -16,7 +16,7 @@ using ToolTipIconType = DevExpress.Persistent.Base.ToolTipIconType;
 namespace Xenial.Framework.Layouts.Items
 {
     /// <summary>   (Immutable) a layout tab group item. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record LayoutTabGroupItem
         : LayoutItem,
         ILayoutElementWithCaptionOptions,

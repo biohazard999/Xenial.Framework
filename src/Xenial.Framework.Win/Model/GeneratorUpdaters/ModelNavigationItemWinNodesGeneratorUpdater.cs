@@ -13,7 +13,7 @@ namespace Xenial.Framework.Win.Model.GeneratorUpdaters
     /// <seealso cref="ModelNavigationItemNodesGeneratorUpdater"/>
     /// <seealso cref="Xenial.Framework.Model.GeneratorUpdaters.ModelNavigationItemNodesGeneratorUpdater"/>
 
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial class ModelNavigationItemWinNodesGeneratorUpdater : ModelNavigationItemNodesGeneratorUpdater
     {
         private new NavigationWinOptions Options => (NavigationWinOptions)base.Options;

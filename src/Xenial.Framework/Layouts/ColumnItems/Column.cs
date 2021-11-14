@@ -19,7 +19,7 @@ namespace Xenial.Framework.Layouts.ColumnItems
     /// <summary>
     /// 
     /// </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record Column<TModelClass>(string PropertyName) : Column(PropertyName)
         where TModelClass : class
     {
@@ -41,7 +41,7 @@ namespace Xenial.Framework.Layouts.ColumnItems
     }
 
     /// <summary>   (Immutable) a column. </summary>
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public partial record Column
     {
         private static SlugifierConfig CreateDefaultSlugifierConfig() => new()

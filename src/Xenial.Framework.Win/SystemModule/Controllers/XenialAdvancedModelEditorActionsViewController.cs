@@ -17,7 +17,7 @@ namespace Xenial.Framework.Win.SystemModule
     ///
     /// <seealso cref="ViewController"/>
 
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial class XenialAdvancedModelEditorActionsViewController : ViewController
     {
         private const string actionCategory = "Diagnostic";
