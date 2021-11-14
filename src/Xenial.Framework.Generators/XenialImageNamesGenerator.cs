@@ -2,13 +2,18 @@
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using Xenial.Framework.MsBuild;
+
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Xenial.Framework.Generators;
 
@@ -20,17 +25,57 @@ public class XenialImageNamesGenerator : ISourceGenerator
     private const string xenialImageNamesAttributeFullName = $"{xenialNamespace}.{xenialImageNamesAttributeName}";
     private const string generateXenialImageNamesAttributeMSBuildProperty = $"Generate{xenialImageNamesAttributeName}";
 
+    public void Initialize(GeneratorInitializationContext context)
+        => context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
+
+    /// <summary>
+    /// Receives all the classes that have the Xenial.XenialImageNamesAttribute set.
+    /// </summary>
+    internal class SyntaxReceiver : ISyntaxContextReceiver
+    {
+        public List<ClassDeclarationSyntax> Classes { get; } = new();
+
+        /// <summary>
+        /// Called for every syntax node in the compilation, we can inspect the nodes and save any information useful for generation
+        /// </summary>
+        public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
+        {
+            if (context.Node is ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclarationSyntax)
+            {
+                var classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclarationSyntax);
+
+                if (classSymbol is not null)
+                {
+                    Classes.Add(classDeclarationSyntax);
+                }
+            }
+        }
+    }
+
     public void Execute(GeneratorExecutionContext context)
     {
+        if (context.SyntaxContextReceiver is not SyntaxReceiver syntaxReceiver)
+        {
+            return;
+        }
+
         context.CancellationToken.ThrowIfCancellationRequested();
 
         var compilation = GenerateAttribute(context);
 
         var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
-    }
 
-    public void Initialize(GeneratorInitializationContext context)
-    {
+        foreach (var @class in syntaxReceiver.Classes)
+        {
+            if (!@class.Modifiers.Any(mod => mod.Text == Token(SyntaxKind.PartialKeyword).Text))
+            {
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        GeneratorDiagnostics.ClassNeedsToBePartial(xenialImageNamesAttributeFullName),
+                        @class.GetLocation()
+                ));
+            }
+        }
     }
 
     private static Compilation GenerateAttribute(GeneratorExecutionContext context)

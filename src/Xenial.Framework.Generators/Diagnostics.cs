@@ -21,5 +21,15 @@ namespace Xenial.Framework.Generators
             isEnabledByDefault: true,
             description: $"Could not parse boolean MSBUILD variable ({msBuildPropertyName}), make sure it's in a boolean format. Actual value: {actualValue}"
         );
+
+        internal static DiagnosticDescriptor ClassNeedsToBePartial(string attributeName) => new(
+            "XENGEN0100",
+            $"The class using the [{attributeName}] needs to be partial",
+            $"The class using the [{attributeName}] needs to be partial",
+            category,
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true,
+            description: $"The class using the [{attributeName}] needs to be partial"
+        );
     }
 }
