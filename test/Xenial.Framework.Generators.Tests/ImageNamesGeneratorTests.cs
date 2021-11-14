@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis;
@@ -159,6 +160,64 @@ public class ImageNamesGeneratorTests
         settings.UniqueForTargetFrameworkAndVersion();
         await Verifier.Verify(driver, settings);
     }
+
+
+    [Fact]
+    public async Task BasicConstantGeneration()
+    {
+        var compilation = CSharpCompilation.Create(compilationName);
+
+        var syntax = @"namespace MyProject { [Xenial.XenialImageNames] public partial class BasicImageNames { } }";
+
+
+        compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, new CSharpParseOptions(LanguageVersion.Default)));
+
+        XenialImageNamesGenerator generator = new();
+
+        var mockAdditionalText = new MockAdditionalText();
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            new[] { generator },
+            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new CompilerAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
+                .WithAdditionalTreeOptions(ImmutableDictionary<object, AnalyzerConfigOptions>.Empty.Add(mockAdditionalText, new MockAnalyzerConfigOptions("XenialImageNames", "true"))),
+            additionalTexts: new[]
+            {
+                mockAdditionalText
+            }
+        );
+
+        driver = driver.RunGenerators(compilation);
+        var settings = new VerifySettings();
+        settings.UniqueForTargetFrameworkAndVersion();
+        await Verifier.Verify(driver, settings);
+    }
+}
+
+public class MockAnalyzerConfigOptions : AnalyzerConfigOptions
+{
+    private readonly string key;
+    private readonly string value;
+
+    public MockAnalyzerConfigOptions(string key, string value) => (this.key, this.value) = (key, value);
+
+    public override bool TryGetValue(string key, [NotNullWhen(true)] out string? value)
+    {
+        if (this.key == key)
+        {
+            value = this.value;
+            return true;
+        }
+        value = null;
+        return false;
+    }
+}
+
+public class MockAdditionalText : AdditionalText
+{
+    public override string Path { get; }
+
+    public override SourceText? GetText(CancellationToken cancellationToken = default) => throw new System.NotImplementedException();
 }
 
 public class NotPartialImageNames

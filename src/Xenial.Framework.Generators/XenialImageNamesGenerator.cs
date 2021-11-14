@@ -25,6 +25,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
     private const string xenialImageNamesAttributeFullName = $"{xenialNamespace}.{xenialImageNamesAttributeName}";
     private const string generateXenialImageNamesAttributeMSBuildProperty = $"Generate{xenialImageNamesAttributeName}";
 
+    private const string markAsXenialImageSourceMetadataAttribute = "XenialImageNames";
+
     public void Initialize(GeneratorInitializationContext context)
         => context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
 
@@ -64,6 +66,32 @@ public class XenialImageNamesGenerator : ISourceGenerator
         var compilation = GenerateAttribute(context);
 
         var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
+
+        foreach (var additionalText in context.AdditionalFiles)
+        {
+            var options = context.AnalyzerConfigOptions.GetOptions(additionalText);
+            if (options is not null && options.TryGetValue(markAsXenialImageSourceMetadataAttribute, out var markedAsImageSourceStr))
+            {
+                if (bool.TryParse(markedAsImageSourceStr, out var markedAsImageSource))
+                {
+                    if (markedAsImageSource)
+                    {
+
+                    }
+                }
+                else
+                {
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
+                            markAsXenialImageSourceMetadataAttribute,
+                            markedAsImageSourceStr
+                        ), null)
+                    );
+                }
+
+            }
+        }
 
         foreach (var @class in syntaxReceiver.Classes)
         {
