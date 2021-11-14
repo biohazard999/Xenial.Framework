@@ -46,8 +46,8 @@ public class XpoBuilderGeneratorTests
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new CompilerAnalyzerConfigOptions(xpoBuilderBuildPropertyName, "false"))
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(xpoBuilderBuildPropertyName, "false"))
         );
 
         driver = driver.RunGenerators(compilation);
@@ -64,8 +64,8 @@ public class XpoBuilderGeneratorTests
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new CompilerAnalyzerConfigOptions(xpoBuilderBuildPropertyName, "true"))
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(xpoBuilderBuildPropertyName, "true"))
         );
 
         driver = driver.RunGenerators(compilation);
@@ -82,8 +82,8 @@ public class XpoBuilderGeneratorTests
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new CompilerAnalyzerConfigOptions(xpoBuilderBuildPropertyName, "ABC"))
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(xpoBuilderBuildPropertyName, "ABC"))
         );
 
         driver = driver.RunGenerators(compilation);
@@ -101,9 +101,9 @@ public class XpoBuilderGeneratorTests
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
                 .WithGlobalOptions(
-                    new CompilerAnalyzerConfigOptions("build_property.XenialAttributesModifier", "public")
+                    new MockAnalyzerConfigOptions("build_property.XenialAttributesModifier", "public")
                 )
         );
 

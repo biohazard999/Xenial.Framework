@@ -49,8 +49,8 @@ public class ImageNamesGeneratorTests
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new CompilerAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
         );
 
         driver = driver.RunGenerators(compilation);
@@ -67,8 +67,8 @@ public class ImageNamesGeneratorTests
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new CompilerAnalyzerConfigOptions(imageNamesBuildPropertyName, "true"))
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "true"))
         );
 
         driver = driver.RunGenerators(compilation);
@@ -85,8 +85,8 @@ public class ImageNamesGeneratorTests
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new CompilerAnalyzerConfigOptions(imageNamesBuildPropertyName, "ABC"))
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "ABC"))
         );
 
         driver = driver.RunGenerators(compilation);
@@ -103,9 +103,9 @@ public class ImageNamesGeneratorTests
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
                 .WithGlobalOptions(
-                    new CompilerAnalyzerConfigOptions("build_property.XenialAttributesModifier", "public")
+                    new MockAnalyzerConfigOptions("build_property.XenialAttributesModifier", "public")
                 )
         );
 
@@ -130,8 +130,8 @@ public class ImageNamesGeneratorTests
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new CompilerAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
         );
 
         driver = driver.RunGenerators(compilation);
@@ -153,8 +153,8 @@ public class ImageNamesGeneratorTests
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new CompilerAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
         );
 
         driver = driver.RunGenerators(compilation);
@@ -181,8 +181,8 @@ public class ImageNamesGeneratorTests
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: CompilerAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new CompilerAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
                 .WithAdditionalTreeOptions(ImmutableDictionary<object, AnalyzerConfigOptions>.Empty.Add(mockAdditionalText, new MockAnalyzerConfigOptions("XenialImageNames", "true"))),
             additionalTexts: new[]
             {
@@ -207,35 +207,6 @@ internal static class CompilationHelpers
                 )
         );
 }
-
-public class MockAnalyzerConfigOptions : AnalyzerConfigOptions
-{
-    private readonly string key;
-    private readonly string value;
-
-    public MockAnalyzerConfigOptions(string key, string value) => (this.key, this.value) = (key, value);
-
-    public override bool TryGetValue(string key, [NotNullWhen(true)] out string? value)
-    {
-        if (this.key == key)
-        {
-            value = this.value;
-            return true;
-        }
-        value = null;
-        return false;
-    }
-}
-
-public class MockAdditionalText : AdditionalText
-{
-    public MockAdditionalText(string path) => Path = path;
-
-    public override string Path { get; }
-
-    public override SourceText? GetText(CancellationToken cancellationToken = default) => throw new System.NotImplementedException();
-}
-
 public class NotPartialImageNames
 {
 }

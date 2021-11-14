@@ -1,17 +1,18 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Xenial.Framework.Generators.Tests;
 
-internal sealed class CompilerAnalyzerConfigOptions : AnalyzerConfigOptions
+internal sealed class MockAnalyzerConfigOptions : AnalyzerConfigOptions
 {
-    public static CompilerAnalyzerConfigOptions Empty { get; } = new CompilerAnalyzerConfigOptions();
+    public static MockAnalyzerConfigOptions Empty { get; } = new MockAnalyzerConfigOptions();
 
-    private CompilerAnalyzerConfigOptions()
+    private MockAnalyzerConfigOptions()
     {
     }
 
-    public CompilerAnalyzerConfigOptions(string key, string value)
+    public MockAnalyzerConfigOptions(string key, string value)
         => (this.key, this.value) = (key, value);
 
     private readonly string? key;
