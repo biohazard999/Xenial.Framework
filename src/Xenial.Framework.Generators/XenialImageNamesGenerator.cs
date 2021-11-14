@@ -67,6 +67,11 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
         var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
 
+        if (generateXenialImageNamesAttribute is null)
+        {
+            return;
+        }
+
         foreach (var @class in syntaxReceiver.Classes)
         {
             if (!@class.Modifiers.Any(mod => mod.Text == Token(SyntaxKind.PartialKeyword).Text))
@@ -84,6 +89,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
     {
         foreach (var additionalText in context.AdditionalFiles)
         {
+            context.CancellationToken.ThrowIfCancellationRequested();
+
             var options = context.AnalyzerConfigOptions.GetOptions(additionalText);
             if (options is not null && options.TryGetValue(markAsXenialImageSourceMetadataAttribute, out var markedAsImageSourceStr))
             {

@@ -120,6 +120,8 @@ public class ImageNamesGeneratorTests
     {
         var compilation = CSharpCompilation.Create(compilationName);
 
+        compilation = compilation.AddInlineXenialImageNamesAttribute();
+
         var syntax = @"namespace MyProject { [Xenial.XenialImageNames] public class MyNonPartialClass{ } }";
 
         compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, new CSharpParseOptions(LanguageVersion.Default)));
@@ -169,6 +171,7 @@ public class ImageNamesGeneratorTests
 
         var syntax = @"namespace MyProject { [Xenial.XenialImageNames] public partial class BasicImageNames { } }";
 
+        compilation = compilation.AddInlineXenialImageNamesAttribute();
 
         compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, new CSharpParseOptions(LanguageVersion.Default)));
 
@@ -192,6 +195,17 @@ public class ImageNamesGeneratorTests
         settings.UniqueForTargetFrameworkAndVersion();
         await Verifier.Verify(driver, settings);
     }
+}
+
+internal static class CompilationHelpers
+{
+    public static CSharpCompilation AddInlineXenialImageNamesAttribute(this CSharpCompilation compilation)
+        => compilation.AddSyntaxTrees(
+            CSharpSyntaxTree.ParseText(
+                "namespace Xenial { internal class XenialImageNamesAttribute : System.Attribute { public XenialImageNamesAttribute() { } } } ",
+                new CSharpParseOptions(LanguageVersion.Default)
+                )
+        );
 }
 
 public class MockAnalyzerConfigOptions : AnalyzerConfigOptions
