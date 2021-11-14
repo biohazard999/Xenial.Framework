@@ -1,0 +1,11 @@
+﻿<Project>
+
+  <Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun">
+
+    <PropertyGroup>
+      <XenialAttributesModifier Condition="'$(XenialAttributesModifier)' == ''">private</XenialAttributesModifier>
+    </PropertyGroup>
+
+  </Target>
+
+</Project>

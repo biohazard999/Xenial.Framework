@@ -1,0 +1,7 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <XenialAttributesModifier Condition="'$(XenialAttributesModifier)' == ''">private</XenialAttributesModifier>
+  </PropertyGroup>
+
+</Project>

@@ -93,3 +93,9 @@ public class ImageNamesGeneratorTests
     }
 }
 
+public class NotPartialImageNames
+{
+}
+
+[Xenial.XenialImageNames]
+public partial class PartialImageNames { }

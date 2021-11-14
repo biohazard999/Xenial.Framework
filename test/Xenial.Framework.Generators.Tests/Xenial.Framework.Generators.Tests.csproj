@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Xenial.Framework.CompilerServices\Xenial.Framework.CompilerServices.csproj" />
     <ProjectReference Include="..\..\src\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" />
   </ItemGroup>
 
