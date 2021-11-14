@@ -1,4 +1,4 @@
-﻿//HintName: XenialImageNamesAttribute.AssemblyName.g.cs
+//HintName: XenialImageNamesAttribute.AssemblyName.g.cs
 using System;
 
 namespace Xenial

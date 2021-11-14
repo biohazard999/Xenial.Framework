@@ -6,6 +6,6 @@ namespace Xenial
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     internal sealed class XenialXpoBuilderAttribute : Attribute
     {
-        public XenialXpoBuilderAttribute() { }
+        internal XenialXpoBuilderAttribute() { }
     }
 }
