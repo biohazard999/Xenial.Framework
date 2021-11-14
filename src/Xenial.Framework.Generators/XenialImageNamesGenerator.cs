@@ -1,35 +1,35 @@
 ﻿
-using System;
-using System.IO;
-using System.Text;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 
+using System;
+using System.IO;
+using System.Text;
+
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators
 {
-
     [Generator]
-    public class XenialXpoBuilderGenerator : ISourceGenerator
+    public class XenialImageNamesGenerator : ISourceGenerator
     {
-        private const string xenialXpoBuilderAttributeName = "XenialXpoBuilderAttribute";
+        private const string xenialImageNamesAttributeName = "XenialImageNamesAttribute";
         private const string xenialNamespace = "Xenial";
-        private const string xenialXpoBuilderAttributeFullName = $"{xenialNamespace}.{xenialXpoBuilderAttributeName}";
-        private const string generateXenialXpoBuilderAttributeMSBuildProperty = $"Generate{xenialXpoBuilderAttributeName}";
+        private const string xenialImageNamesAttributeFullName = $"{xenialNamespace}.{xenialImageNamesAttributeName}";
+        private const string generateXenialImageNamesAttributeMSBuildProperty = $"Generate{xenialImageNamesAttributeName}";
 
         public void Execute(GeneratorExecutionContext context)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
 
             var compilation = context.Compilation;
-            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{generateXenialXpoBuilderAttributeMSBuildProperty}", out var generateXenialXpoBuilderAttrStr))
+            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{generateXenialImageNamesAttributeMSBuildProperty}", out var generateXenialImageNamesAttrStr))
             {
-                if (bool.TryParse(generateXenialXpoBuilderAttrStr, out var generateXenialXpoBuilderAttr))
+                if (bool.TryParse(generateXenialImageNamesAttrStr, out var generateXenialImageNamesAttr))
                 {
-                    if (!generateXenialXpoBuilderAttr)
+                    if (!generateXenialImageNamesAttr)
                     {
                         return;
                     }
@@ -39,8 +39,8 @@ namespace Xenial.Framework.Generators
                     context.ReportDiagnostic(
                         Diagnostic.Create(
                             GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                                generateXenialXpoBuilderAttributeMSBuildProperty,
-                                generateXenialXpoBuilderAttrStr
+                                generateXenialImageNamesAttributeMSBuildProperty,
+                                generateXenialImageNamesAttrStr
                             )
                             , null
                         ));
@@ -57,20 +57,20 @@ namespace Xenial.Framework.Generators
             syntaxWriter.OpenBrace();
 
             syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false)]");
-            syntaxWriter.WriteLine($"internal sealed class {xenialXpoBuilderAttributeName} : Attribute");
+            syntaxWriter.WriteLine($"internal sealed class {xenialImageNamesAttributeName} : Attribute");
             syntaxWriter.OpenBrace();
-            syntaxWriter.WriteLine($"public {xenialXpoBuilderAttributeName}() {{ }}");
+            syntaxWriter.WriteLine($"public {xenialImageNamesAttributeName}() {{ }}");
             syntaxWriter.CloseBrace();
 
             syntaxWriter.CloseBrace();
 
             var syntax = syntaxWriter.ToString();
             var source = SourceText.From(syntax, Encoding.UTF8);
-            context.AddSource($"XenialXpoBuilderAttribute.{context.Compilation.AssemblyName}.g.cs", source);
+            context.AddSource($"XenialImageNamesAttribute.{context.Compilation.AssemblyName}.g.cs", source);
 
             compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
 
-            var generateXenialXpoBuilderAttribute = compilation.GetTypeByMetadataName(xenialXpoBuilderAttributeFullName);
+            var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
 
             //            var source = @"using System;
             //public static class HelloWorld
@@ -104,32 +104,4 @@ namespace Xenial.Framework.Generators
         {
         }
     }
-
-
-    public class Class1
-    {
-        public abstract class Class1Builder<TClass, TBuilder>
-            where TClass : Class1
-            where TBuilder : Class1Builder<TClass, TBuilder>
-        {
-
-        }
-    }
-
-    public class Class2 : Class1
-    {
-        public class Class2Builder : Class2Builder<Class2, Class2Builder> { }
-        public abstract partial class Class2Builder<TClass, TBuilder> : Class1Builder<TClass, TBuilder>
-            where TClass : Class2
-            where TBuilder : Class2Builder<TClass, TBuilder>
-        {
-
-        }
-
-        public partial class Class2Builder<TClass, TBuilder>
-        {
-
-        }
-    }
-
 }

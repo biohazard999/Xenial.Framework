@@ -16,5 +16,8 @@
     <ProjectReference Include="..\..\src\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" />
   </ItemGroup>
 
-  
+  <ItemGroup>
+    <EmbeddedResource Include="Images/*.png" />
+  </ItemGroup>
+
 </Project>
