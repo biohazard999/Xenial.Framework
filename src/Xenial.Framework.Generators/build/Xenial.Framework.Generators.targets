@@ -1,6 +1,6 @@
-﻿<Project>
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun">
+  <Target Name="_InjectXenialGeneratorAttributes" BeforeTargets="PrepareForBuild;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
 
     <PropertyGroup>
       <XenialAttributesModifier Condition="'$(XenialAttributesModifier)' == ''">private</XenialAttributesModifier>
