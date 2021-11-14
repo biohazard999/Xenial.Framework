@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Images/*.png" />
+    <AdditionalFiles Include="Images/*.png" XenialImageNames="True" />
   </ItemGroup>
 
 </Project>

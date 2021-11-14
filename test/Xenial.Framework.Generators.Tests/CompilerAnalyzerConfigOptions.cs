@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
+namespace Xenial.Framework.Generators.Tests;
+
 internal sealed class CompilerAnalyzerConfigOptions : AnalyzerConfigOptions
 {
     public static CompilerAnalyzerConfigOptions Empty { get; } = new CompilerAnalyzerConfigOptions();

@@ -24,6 +24,17 @@ public class XenialImageNamesGenerator : ISourceGenerator
     {
         context.CancellationToken.ThrowIfCancellationRequested();
 
+        var compilation = GenerateAttribute(context);
+
+        var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
+    }
+
+    public void Initialize(GeneratorInitializationContext context)
+    {
+    }
+
+    private static Compilation GenerateAttribute(GeneratorExecutionContext context)
+    {
         var compilation = context.Compilation;
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{generateXenialImageNamesAttributeMSBuildProperty}", out var generateXenialImageNamesAttrStr))
         {
@@ -31,7 +42,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
             {
                 if (!generateXenialImageNamesAttr)
                 {
-                    return;
+                    return compilation;
                 }
             }
             else
@@ -44,7 +55,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
                         )
                         , null
                     ));
-                return;
+                return compilation;
             }
         }
 
@@ -68,39 +79,6 @@ public class XenialImageNamesGenerator : ISourceGenerator
         var source = SourceText.From(syntax, Encoding.UTF8);
         context.AddSource($"XenialImageNamesAttribute.{context.Compilation.AssemblyName}.g.cs", source);
 
-        compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
-
-        var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
-
-        //            var source = @"using System;
-        //public static class HelloWorld
-        //{
-        //    public static void SayHello()
-        //    {
-        //        Console.WriteLine(""Hello from generated code!"");
-        //    }
-        //}";
-        //            context.AddSource("helloWorldGenerator", SourceText.From(source, Encoding.UTF8));
-
-        //            var descriptor = new DiagnosticDescriptor(
-        //                id: "theId",
-        //                title: "the title",
-        //                messageFormat: "the message from {0}",
-        //                category: "the category",
-        //                DiagnosticSeverity.Info,
-        //                isEnabledByDefault: true);
-
-        //            var location = Location.Create(
-        //                "theFile",
-        //                new TextSpan(1, 2),
-        //                new LinePositionSpan(
-        //                    new LinePosition(1, 2),
-        //                    new LinePosition(3, 4)));
-        //            var diagnostic = Diagnostic.Create(descriptor, location, "hello world generator");
-        //            context.ReportDiagnostic(diagnostic);
-    }
-
-    public void Initialize(GeneratorInitializationContext context)
-    {
+        return compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
     }
 }

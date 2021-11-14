@@ -1,7 +1,10 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <XenialAttributesModifier Condition="'$(XenialAttributesModifier)' == ''">private</XenialAttributesModifier>
   </PropertyGroup>
+
+  <ItemGroup>
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XenialImageNames" />
+  </ItemGroup>
 
 </Project>
