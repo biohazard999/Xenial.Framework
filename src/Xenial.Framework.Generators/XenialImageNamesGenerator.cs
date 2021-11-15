@@ -271,8 +271,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
         syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} {xenialImageNamesAttributeName}() {{ }}");
 
         syntaxWriter.WriteLine();
-        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} bool Sizes {{ get; set; }}");
-        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} bool SmartComments {{ get; set; }}");
+        syntaxWriter.WriteLine($"public bool Sizes {{ get; set; }}");
+        syntaxWriter.WriteLine($"public bool SmartComments {{ get; set; }}");
 
         syntaxWriter.CloseBrace();
 

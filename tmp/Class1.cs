@@ -1,9 +1,1 @@
-﻿using Xenial;
-
-namespace tmp;
-
-[XenialImageNames]
-public partial class Class1
-{
-
-}
+﻿namespace MyProject { [Xenial.XenialImageNames(Sizes = true)] public partial class ImageNamesWithSizes { } }

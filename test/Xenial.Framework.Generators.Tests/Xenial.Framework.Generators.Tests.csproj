@@ -6,6 +6,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="Basic.Reference.Assemblies" Version="1.2.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="Verify.SourceGenerators" Version="1.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" PrivateAssets="All" />
@@ -22,4 +23,7 @@
     <AdditionalFiles Include="Images/*.png" XenialImageNames="True" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Basic.Reference.Assemblies.NetStandard20" Version="1.2.4" />
+  </ItemGroup>
 </Project>
