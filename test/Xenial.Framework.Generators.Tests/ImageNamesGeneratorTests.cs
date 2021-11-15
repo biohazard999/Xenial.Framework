@@ -251,6 +251,7 @@ public class ImageNamesGeneratorTests
     [Fact]
     public async Task SizesGeneration()
     {
+        // BEWARE: 🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉
         // For whatever weird reason, we need to generate the attribute beforehand in our tests.
         // otherwise the attributes get not "populated" correctly.
         // For this we use the generate `GenerateXenialImageNamesAttribute`
