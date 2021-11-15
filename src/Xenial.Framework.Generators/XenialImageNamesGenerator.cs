@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 using Xenial.Framework.MsBuild;
 
@@ -257,6 +258,24 @@ public class XenialImageNamesGenerator : ISourceGenerator
             }
         }
 
+        var (source, syntaxTree) = GenerateXenialImageNamesAttribute(
+            (CSharpParseOptions)context.ParseOptions,
+            context.GetDefaultAttributeModifier(),
+            context.CancellationToken
+        );
+
+        context.AddSource($"{xenialImageNamesAttributeName}.g.cs", source);
+
+        return compilation.AddSyntaxTrees(syntaxTree);
+    }
+
+    public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialImageNamesAttribute(
+        CSharpParseOptions? parseOptions = null,
+        string visiblity = "internal",
+        CancellationToken cancellationToken = default)
+    {
+        parseOptions = parseOptions ?? CSharpParseOptions.Default;
+
         var syntaxWriter = CurlyIndenter.Create();
 
         syntaxWriter.WriteLine($"using System;");
@@ -266,13 +285,13 @@ public class XenialImageNamesGenerator : ISourceGenerator
         syntaxWriter.OpenBrace();
 
         syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]");
-        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} sealed class {xenialImageNamesAttributeName} : Attribute");
+        syntaxWriter.WriteLine($"{visiblity} sealed class {xenialImageNamesAttributeName} : Attribute");
         syntaxWriter.OpenBrace();
-        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} {xenialImageNamesAttributeName}() {{ }}");
+        syntaxWriter.WriteLine($"{visiblity} {xenialImageNamesAttributeName}() {{ }}");
 
         syntaxWriter.WriteLine();
-        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} System.Boolean Sizes {{ get; set; }}");
-        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} bool SmartComments {{ get; set; }}");
+        syntaxWriter.WriteLine($"{visiblity} System.Boolean Sizes {{ get; set; }}");
+        syntaxWriter.WriteLine($"{visiblity} bool SmartComments {{ get; set; }}");
 
         syntaxWriter.CloseBrace();
 
@@ -280,9 +299,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
         var syntax = syntaxWriter.ToString();
         var source = SourceText.From(syntax, Encoding.UTF8);
-        context.AddSource($"{xenialImageNamesAttributeName}.g.cs", source);
-
-        return compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
+        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
+        return (source, syntaxTree);
     }
 
     internal static SymbolVisibility GetResultantVisibility(ISymbol symbol)

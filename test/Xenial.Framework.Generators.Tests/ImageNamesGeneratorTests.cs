@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Reflection;
@@ -250,24 +251,30 @@ public class ImageNamesGeneratorTests
     [Fact]
     public async Task SizesGeneration()
     {
-        var syntax = @"namespace MyProject { [Xenial.XenialImageNames(Sizes = true)] public partial class ImageNamesWithSizes { } }";
+        // For whatever weird reason, we need to generate the attribute beforehand in our tests.
+        // otherwise the attributes get not "populated" correctly.
+        // For this we use the generate `GenerateXenialImageNamesAttribute`
+        // method of the builder to avoid too much code duplication
+        // It's for whatever reason important that the attribute is public in our tests
+        // however in production it's works fine with internal visibility...
+        (_, var syntaxTreeAttribute) = XenialImageNamesGenerator.GenerateXenialImageNamesAttribute(
+            visiblity: "public"
+        );
 
+        var syntax = @"namespace MyProject { [Xenial.XenialImageNames(Sizes = true)] public partial class ImageNamesWithSizes { } }";
         var syntaxTree = CSharpSyntaxTree.ParseText(
                syntax,
                new CSharpParseOptions(LanguageVersion.Default),
                "ImageNamesWithSizes.cs"
-           );
+        );
 
         var compilation = CSharpCompilation.Create(
             compilationName,
-            syntaxTrees: new[] { syntaxTree },
+            syntaxTrees: new[] { syntaxTreeAttribute, syntaxTree },
             references: defaultReferenceAssemblies,
             //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
         );
-
-
-        //compilation = compilation.AddSyntaxTrees();
 
         XenialImageNamesGenerator generator = new();
 
@@ -288,6 +295,7 @@ public class ImageNamesGeneratorTests
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
             optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
                 .WithAdditionalTreeOptions(additionalTreeOptions),
                 additionalTexts: mockAdditionalTexts
         );
@@ -303,12 +311,11 @@ public class ImageNamesGeneratorTests
 internal static class CompilationHelpers
 {
     public static CSharpCompilation AddInlineXenialImageNamesAttribute(this CSharpCompilation compilation)
-        => compilation.AddSyntaxTrees(
-            CSharpSyntaxTree.ParseText(
-                "namespace Xenial { internal class XenialImageNamesAttribute : System.Attribute { public XenialImageNamesAttribute() { } } } ",
-                new CSharpParseOptions(LanguageVersion.Default)
-                )
-        );
+    {
+        (_, var syntaxTree) = XenialImageNamesGenerator.GenerateXenialImageNamesAttribute();
+
+        return compilation.AddSyntaxTrees(syntaxTree);
+    }
 
     public static (GeneratorDriver, System.Type?) CompileAndLoadType(
         this GeneratorDriver driver,
