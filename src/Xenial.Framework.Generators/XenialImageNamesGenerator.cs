@@ -20,6 +20,8 @@ namespace Xenial.Framework.Generators;
 [Generator]
 public class XenialImageNamesGenerator : ISourceGenerator
 {
+    private const string xenialDebugSourceGenerators = "XenialDebugSourceGenerators";
+
     private const string xenialImageNamesAttributeName = "XenialImageNamesAttribute";
     private const string xenialNamespace = "Xenial";
     private const string xenialImageNamesAttributeFullName = $"{xenialNamespace}.{xenialImageNamesAttributeName}";
@@ -62,6 +64,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
         }
 
         context.CancellationToken.ThrowIfCancellationRequested();
+
+        CheckForDebugger(context);
 
         var compilation = GenerateAttribute(context);
 
@@ -310,6 +314,37 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
         return visibility;
     }
+
+    private static void CheckForDebugger(GeneratorExecutionContext context)
+    {
+        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{xenialDebugSourceGenerators}", out var xenialDebugSourceGeneratorsAttrString))
+        {
+            if (bool.TryParse(xenialDebugSourceGeneratorsAttrString, out var xenialDebugSourceGeneratorsBool))
+            {
+                if (xenialDebugSourceGeneratorsBool)
+                {
+                    if (System.Diagnostics.Debugger.IsAttached)
+                    {
+                        return;
+                    }
+
+                    System.Diagnostics.Debugger.Launch();
+                }
+            }
+            else
+            {
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
+                            xenialDebugSourceGenerators,
+                            xenialDebugSourceGeneratorsAttrString
+                        )
+                        , null
+                    ));
+            }
+        }
+    }
+
 }
 
 public record ImageInformation(string Path, string FileName, string Name, string Extension) { }
