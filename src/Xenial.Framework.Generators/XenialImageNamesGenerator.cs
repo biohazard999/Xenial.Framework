@@ -84,7 +84,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
                 continue;
             }
 
-            var @attribute = GetXenialImageNamesAttribute(classSymbol, generateXenialImageNamesAttribute);
+            var @attribute = GetXenialImageNamesAttribute(@classSymbol, generateXenialImageNamesAttribute);
 
             var builder = CurlyIndenter.Create();
 
@@ -271,8 +271,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
         syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} {xenialImageNamesAttributeName}() {{ }}");
 
         syntaxWriter.WriteLine();
-        syntaxWriter.WriteLine($"public bool Sizes {{ get; set; }}");
-        syntaxWriter.WriteLine($"public bool SmartComments {{ get; set; }}");
+        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} System.Boolean Sizes {{ get; set; }}");
+        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} bool SmartComments {{ get; set; }}");
 
         syntaxWriter.CloseBrace();
 
