@@ -219,7 +219,7 @@ public class ImageNamesGeneratorTests
             new[] { generator },
             optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
                 .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
-                .WithAdditionalTreeOptions(ImmutableDictionary<object, AnalyzerConfigOptions>.Empty.Add(mockAdditionalText, new MockAnalyzerConfigOptions("XenialImageNames", "true"))),
+                .WithAdditionalTreeOptions(ImmutableDictionary<object, AnalyzerConfigOptions>.Empty.Add(mockAdditionalText, new MockAnalyzerConfigOptions("build_metadata.AdditionalFiles.XenialImageNames", "true"))),
             additionalTexts: new[]
             {
                 mockAdditionalText
