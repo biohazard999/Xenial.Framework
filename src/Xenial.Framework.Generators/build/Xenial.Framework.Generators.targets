@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <CompilerVisibleProperty Include="XenialAttributesModifier" />
+      <CompilerVisibleProperty Include="XenialDebugSourceGenerators" />
     </ItemGroup>
 
   </Target>
