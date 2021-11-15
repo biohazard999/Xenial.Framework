@@ -6,11 +6,15 @@
     <GenerateXenialModuleInitializer>false</GenerateXenialModuleInitializer>
     <GenerateXenialModuleInitializerPolyfill>false</GenerateXenialModuleInitializerPolyfill>
     <XenialAttributesModifier>public</XenialAttributesModifier>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile><!-- TODO: Generate XML-docs for generated attributes -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- TODO: Generate XML-docs for generated attributes -->
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+    <ProjectReference Include="..\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"
+                      PrivateAssets="all" />
   </ItemGroup>
 
   <!-- We need to import the props and targets directly, because the project reference above does not do that automatically -->
