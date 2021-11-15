@@ -8,9 +8,9 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
     <DevelopmentDependency>true</DevelopmentDependency>
-    <IncludeSource>False</IncludeSource>
+    <!--<IncludeSource>False</IncludeSource>
     <IncludeSymbols>False</IncludeSymbols>
-    <SymbolPackageFormat></SymbolPackageFormat>
+    <SymbolPackageFormat></SymbolPackageFormat>-->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
