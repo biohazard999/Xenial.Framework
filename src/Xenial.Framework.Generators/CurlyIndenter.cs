@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.IO;
 
 namespace Xenial.Framework.MsBuild
 {
@@ -8,6 +9,9 @@ namespace Xenial.Framework.MsBuild
     /// </summary>
     internal class CurlyIndenter
     {
+        internal static CurlyIndenter Create()
+            => new CurlyIndenter(new IndentedTextWriter(new StringWriter()));
+
         private readonly IndentedTextWriter indentedTextWriter;
 
         /// <summary>

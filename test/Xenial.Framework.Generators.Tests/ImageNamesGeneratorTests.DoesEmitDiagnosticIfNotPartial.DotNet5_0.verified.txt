@@ -5,7 +5,7 @@
       Title: The class using the [Xenial.XenialImageNamesAttribute] needs to be partial,
       Severity: Error,
       WarningLevel: 0,
-      Location: : (0,22)-(0,81),
+      Location: MyNonPartialClass.cs: (0,36)-(0,99),
       Description: The class using the [Xenial.XenialImageNamesAttribute] needs to be partial,
       MessageFormat: The class using the [Xenial.XenialImageNamesAttribute] needs to be partial,
       Message: The class using the [Xenial.XenialImageNamesAttribute] needs to be partial,
