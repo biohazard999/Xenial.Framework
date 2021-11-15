@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -232,23 +233,41 @@ public class ImageNamesGeneratorTests
         await Verifier.Verify(driver, settings);
     }
 
+    private static readonly IEnumerable<PortableExecutableReference> defaultReferenceAssemblies =
+#if NET6_0_OR_GREATER
+        ReferenceAssemblies.Net60
+#elif NET5_0_OR_GREATER
+        ReferenceAssemblies.Net50
+#elif NETCOREAPP3_1_OR_GREATER
+        ReferenceAssemblies.NetCoreApp31
+#elif FULL_FRAMEWORK
+        ReferenceAssemblies.Net461
+#else
+        ReferenceAssemblies.NetStandard20
+#endif
+        ;
+
     [Fact]
     public async Task SizesGeneration()
     {
+        var syntax = @"namespace MyProject { [Xenial.XenialImageNames(Sizes = true)] public partial class ImageNamesWithSizes { } }";
+
+        var syntaxTree = CSharpSyntaxTree.ParseText(
+               syntax,
+               new CSharpParseOptions(LanguageVersion.Default),
+               "ImageNamesWithSizes.cs"
+           );
+
         var compilation = CSharpCompilation.Create(
             compilationName,
-            references: ReferenceAssemblies.Net60,
+            syntaxTrees: new[] { syntaxTree },
+            references: defaultReferenceAssemblies,
+            //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
         );
 
-        var syntax = @"namespace MyProject { [Xenial.XenialImageNames(Sizes = true)] public partial class ImageNamesWithSizes { } }";
 
-        compilation = compilation.AddSyntaxTrees(
-            CSharpSyntaxTree.ParseText(
-                syntax,
-                new CSharpParseOptions(LanguageVersion.Default),
-                "ImageNamesWithSizes.cs"
-            ));
+        //compilation = compilation.AddSyntaxTrees();
 
         XenialImageNamesGenerator generator = new();
 
@@ -273,21 +292,11 @@ public class ImageNamesGeneratorTests
                 additionalTexts: mockAdditionalTexts
         );
 
-        driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out var compilation2, out var diag);
+        (driver, _) = driver.CompileAndLoadType(compilation, "MyProject.ImageNamesWithSizes");
 
-        var comp = (CSharpCompilation)compilation2;
-        var foo1 = comp.SyntaxTrees[0].ToString();
-        var foo2 = comp.SyntaxTrees[1].ToString();
-
-        using var stream = new MemoryStream();
-        var emitResults = compilation2.Emit(stream);
-        stream.Position = 0;
-        var assembly = Assembly.Load(stream.ToArray());
-        var method = assembly.GetType("MyProject.ImageNamesWithSizes");
-
-        //var settings = new VerifySettings();
-        //settings.UniqueForTargetFrameworkAndVersion();
-        //await Verifier.Verify(driver, settings);
+        var settings = new VerifySettings();
+        settings.UniqueForTargetFrameworkAndVersion();
+        await Verifier.Verify(driver, settings);
     }
 }
 
@@ -300,6 +309,21 @@ internal static class CompilationHelpers
                 new CSharpParseOptions(LanguageVersion.Default)
                 )
         );
+
+    public static (GeneratorDriver, System.Type?) CompileAndLoadType(
+        this GeneratorDriver driver,
+        Compilation compilation,
+        string typeToLoad
+    )
+    {
+        driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out var compilation2, out var diag);
+
+        using var stream = new MemoryStream();
+        var emitResults = compilation2.Emit(stream);
+        stream.Position = 0;
+        var assembly = Assembly.Load(stream.ToArray());
+        return (driver, assembly.GetType(typeToLoad));
+    }
 }
 public class NotPartialImageNames
 {
