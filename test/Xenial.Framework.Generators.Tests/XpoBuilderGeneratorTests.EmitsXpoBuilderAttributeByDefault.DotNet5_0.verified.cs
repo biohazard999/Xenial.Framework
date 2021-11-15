@@ -1,4 +1,4 @@
-﻿//HintName: XenialXpoBuilderAttribute.AssemblyName.g.cs
+﻿//HintName: XenialXpoBuilderAttribute.g.cs
 using System;
 
 namespace Xenial

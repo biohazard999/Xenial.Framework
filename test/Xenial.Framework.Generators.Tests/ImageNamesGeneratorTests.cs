@@ -1,13 +1,9 @@
 ﻿using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 
 using VerifyTests;
 
@@ -219,6 +215,42 @@ public class ImageNamesGeneratorTests
             new[] { generator },
             optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
                 .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
+                .WithAdditionalTreeOptions(ImmutableDictionary<object, AnalyzerConfigOptions>.Empty.Add(mockAdditionalText, new MockAnalyzerConfigOptions("build_metadata.AdditionalFiles.XenialImageNames", "true"))),
+            additionalTexts: new[]
+            {
+                mockAdditionalText
+            }
+        );
+
+        driver = driver.RunGenerators(compilation);
+        var settings = new VerifySettings();
+        settings.UniqueForTargetFrameworkAndVersion();
+        await Verifier.Verify(driver, settings);
+    }
+
+    [Fact]
+    public async Task SizesGeneration()
+    {
+        var compilation = CSharpCompilation.Create(compilationName);
+
+        var syntax = @"namespace MyProject { [Xenial.XenialImageNames(Sizes = true)] public partial class BasicImageNames { } }";
+
+        compilation = compilation.AddInlineXenialImageNamesAttribute();
+
+        compilation = compilation.AddSyntaxTrees(
+            CSharpSyntaxTree.ParseText(
+                syntax,
+                new CSharpParseOptions(LanguageVersion.Default),
+                "BasicImageNames.cs"
+            ));
+
+        XenialImageNamesGenerator generator = new();
+
+        var mockAdditionalText = new MockAdditionalText("Images/MyPicture.png");
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            new[] { generator },
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
                 .WithAdditionalTreeOptions(ImmutableDictionary<object, AnalyzerConfigOptions>.Empty.Add(mockAdditionalText, new MockAnalyzerConfigOptions("build_metadata.AdditionalFiles.XenialImageNames", "true"))),
             additionalTexts: new[]
             {

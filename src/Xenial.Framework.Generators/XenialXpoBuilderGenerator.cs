@@ -65,38 +65,11 @@ public class XenialXpoBuilderGenerator : ISourceGenerator
 
         var syntax = syntaxWriter.ToString();
         var source = SourceText.From(syntax, Encoding.UTF8);
-        context.AddSource($"XenialXpoBuilderAttribute.{context.Compilation.AssemblyName}.g.cs", source);
+        context.AddSource($"{xenialXpoBuilderAttributeName}.g.cs", source);
 
         compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
 
         var generateXenialXpoBuilderAttribute = compilation.GetTypeByMetadataName(xenialXpoBuilderAttributeFullName);
-
-        //            var source = @"using System;
-        //public static class HelloWorld
-        //{
-        //    public static void SayHello()
-        //    {
-        //        Console.WriteLine(""Hello from generated code!"");
-        //    }
-        //}";
-        //            context.AddSource("helloWorldGenerator", SourceText.From(source, Encoding.UTF8));
-
-        //            var descriptor = new DiagnosticDescriptor(
-        //                id: "theId",
-        //                title: "the title",
-        //                messageFormat: "the message from {0}",
-        //                category: "the category",
-        //                DiagnosticSeverity.Info,
-        //                isEnabledByDefault: true);
-
-        //            var location = Location.Create(
-        //                "theFile",
-        //                new TextSpan(1, 2),
-        //                new LinePositionSpan(
-        //                    new LinePosition(1, 2),
-        //                    new LinePosition(3, 4)));
-        //            var diagnostic = Diagnostic.Create(descriptor, location, "hello world generator");
-        //            context.ReportDiagnostic(diagnostic);
     }
 
     public void Initialize(GeneratorInitializationContext context)

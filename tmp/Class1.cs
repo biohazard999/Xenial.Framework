@@ -1,5 +1,9 @@
-﻿namespace tmp;
-public class Class1
+﻿using Xenial;
+
+namespace tmp;
+
+[XenialImageNames]
+public partial class Class1
 {
 
 }

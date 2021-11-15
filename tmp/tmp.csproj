@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.48">
+    <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.65">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -18,5 +18,10 @@
   <PropertyGroup>
     <XenialAttributesModifier>public</XenialAttributesModifier>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Images/*.png" />
+    <AdditionalFiles Include="Images/*.png" XenialImageNames="true" />
+  </ItemGroup>
 
 </Project>
