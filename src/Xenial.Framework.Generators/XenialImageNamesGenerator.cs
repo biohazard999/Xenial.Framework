@@ -191,6 +191,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
             context.CancellationToken.ThrowIfCancellationRequested();
 
             var options = context.AnalyzerConfigOptions.GetOptions(additionalText);
+
             if (options is not null && options.TryGetValue(markAsXenialImageSourceMetadataAttribute, out var markedAsImageSourceStr))
             {
                 if (bool.TryParse(markedAsImageSourceStr, out var markedAsImageSource))

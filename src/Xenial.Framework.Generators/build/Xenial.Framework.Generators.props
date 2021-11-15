@@ -4,6 +4,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <CompilerVisibleProperty Include="XenialImageNames" />
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XenialImageNames" />
   </ItemGroup>
 
