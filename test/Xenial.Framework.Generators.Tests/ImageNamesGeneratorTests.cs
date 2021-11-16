@@ -259,7 +259,7 @@ public class ImageNamesGeneratorTests
         // It's for whatever reason important that the attribute is public in our tests
         // however in production it's works fine with internal visibility...
         (_, var syntaxTreeAttribute) = XenialImageNamesGenerator.GenerateXenialImageNamesAttribute(
-            visiblity: "public"
+            visibility: "public"
         );
 
         var syntax = @"namespace MyProject { [Xenial.XenialImageNames(Sizes = true)] public partial class ImageNamesWithSizes { } }";
@@ -319,7 +319,7 @@ public class ImageNamesGeneratorTests
         // It's for whatever reason important that the attribute is public in our tests
         // however in production it's works fine with internal visibility...
         (_, var syntaxTreeAttribute) = XenialImageNamesGenerator.GenerateXenialImageNamesAttribute(
-            visiblity: "public"
+            visibility: "public"
         );
 
         var syntax = @"namespace MyProject { [Xenial.XenialImageNames(SmartComments = true)] public partial class ImageNamesWithSmartComments{ } }";

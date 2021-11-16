@@ -286,7 +286,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
     public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialImageNamesAttribute(
         CSharpParseOptions? parseOptions = null,
-        string visiblity = "internal",
+        string visibility = "internal",
         CancellationToken cancellationToken = default)
     {
         parseOptions = parseOptions ?? CSharpParseOptions.Default;
@@ -300,13 +300,13 @@ public class XenialImageNamesGenerator : ISourceGenerator
         syntaxWriter.OpenBrace();
 
         syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]");
-        syntaxWriter.WriteLine($"{visiblity} sealed class {xenialImageNamesAttributeName} : Attribute");
+        syntaxWriter.WriteLine($"{visibility} sealed class {xenialImageNamesAttributeName} : Attribute");
         syntaxWriter.OpenBrace();
-        syntaxWriter.WriteLine($"{visiblity} {xenialImageNamesAttributeName}() {{ }}");
+        syntaxWriter.WriteLine($"{visibility} {xenialImageNamesAttributeName}() {{ }}");
 
         syntaxWriter.WriteLine();
-        syntaxWriter.WriteLine($"{visiblity} bool {AttributeNames.Sizes} {{ get; set; }}");
-        syntaxWriter.WriteLine($"{visiblity} bool {AttributeNames.SmartComments} {{ get; set; }}");
+        syntaxWriter.WriteLine($"{visibility} bool {AttributeNames.Sizes} {{ get; set; }}");
+        syntaxWriter.WriteLine($"{visibility} bool {AttributeNames.SmartComments} {{ get; set; }}");
 
         syntaxWriter.CloseBrace();
 
