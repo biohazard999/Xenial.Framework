@@ -3,8 +3,8 @@
   <Target Name="_InjectXenialGeneratorAttributes" BeforeTargets="PrepareForBuild;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
 
     <PropertyGroup>
-      <XenialDebugSourceGenerators Condition="'$(GenerateXenialXpoBuilderAttribute)' == ''">false</XenialDebugSourceGenerators>
-      <XenialDebugSourceGenerators Condition="'$(GenerateXenialImageNamesAttribute)' == ''">false</XenialDebugSourceGenerators>
+      <GenerateXenialXpoBuilderAttribute Condition="'$(GenerateXenialXpoBuilderAttribute)' == ''">false</GenerateXenialXpoBuilderAttribute>
+      <GenerateXenialImageNamesAttribute Condition="'$(GenerateXenialImageNamesAttribute)' == ''">false</GenerateXenialImageNamesAttribute>
       
       <XenialAttributesModifier Condition="'$(XenialAttributesModifier)' == ''">internal</XenialAttributesModifier>
       <XenialDebugSourceGenerators Condition="'$(XenialDebugSourceGenerators)' == ''">false</XenialDebugSourceGenerators>
