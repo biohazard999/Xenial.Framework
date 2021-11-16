@@ -290,8 +290,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
         syntaxWriter.WriteLine($"{visiblity} {xenialImageNamesAttributeName}() {{ }}");
 
         syntaxWriter.WriteLine();
-        syntaxWriter.WriteLine($"{visiblity} System.Boolean Sizes {{ get; set; }}");
-        syntaxWriter.WriteLine($"{visiblity} bool SmartComments {{ get; set; }}");
+        syntaxWriter.WriteLine($"{visiblity} bool {AttributeNames.Sizes} {{ get; set; }}");
+        syntaxWriter.WriteLine($"{visiblity} bool {AttributeNames.SmartComments} {{ get; set; }}");
 
         syntaxWriter.CloseBrace();
 
@@ -301,6 +301,12 @@ public class XenialImageNamesGenerator : ISourceGenerator
         var source = SourceText.From(syntax, Encoding.UTF8);
         var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
         return (source, syntaxTree);
+    }
+
+    internal static class AttributeNames
+    {
+        internal const string Sizes = nameof(Sizes);
+        internal const string SmartComments = nameof(SmartComments);
     }
 
     internal static SymbolVisibility GetResultantVisibility(ISymbol symbol)
