@@ -13,7 +13,7 @@
     <ItemGroup>
       <CompilerVisibleProperty Include="GenerateXenialXpoBuilderAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialImageNamesAttribute" />
-      <CompilerVisibleProperty Include="XenialAttributesModifier" />
+      <CompilerVisibleProperty Include="XenialAttributesVisibility" />
       <CompilerVisibleProperty Include="XenialDebugSourceGenerators" />
     </ItemGroup>
 

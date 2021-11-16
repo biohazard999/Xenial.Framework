@@ -26,4 +26,5 @@
   <ItemGroup>
     <PackageReference Include="Basic.Reference.Assemblies.NetStandard20" Version="1.2.4" />
   </ItemGroup>
+
 </Project>
