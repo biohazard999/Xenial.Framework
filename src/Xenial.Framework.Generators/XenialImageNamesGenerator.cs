@@ -28,6 +28,15 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
     private const string markAsXenialImageSourceMetadataAttribute = "XenialImageNames";
 
+    private readonly string[] defaultImageSuffixes = new[]
+    {
+        "12x12",
+        "16x16",
+        "24x24",
+        "32x32",
+        "48x48",
+    };
+
     public void Initialize(GeneratorInitializationContext context)
         => context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
 
@@ -116,9 +125,16 @@ public class XenialImageNamesGenerator : ISourceGenerator
                 return;
             }
 
-            foreach (var imageInfo in GetImages(context))
+            if (sizesFeature)
             {
-                GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
+
+            }
+            else
+            {
+                foreach (var imageInfo in GetImages(context))
+                {
+                    GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
+                }
             }
 
             builder.CloseBrace();
@@ -131,6 +147,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
     private static bool SanatizeSize(GeneratorExecutionContext context, string size)
     {
+        //TODO: SanatizeSize eg. 16x16, 32x32 etc.
         if (string.IsNullOrEmpty(size))
         {
             return false;
@@ -310,6 +327,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
         var syntaxWriter = CurlyIndenter.Create();
 
         syntaxWriter.WriteLine($"using System;");
+        syntaxWriter.WriteLine($"using System.ComponentModel;");
         syntaxWriter.WriteLine();
 
         syntaxWriter.WriteLine($"namespace {xenialNamespace}");
@@ -325,6 +343,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
         //Properties need to be public in order to be used
         syntaxWriter.WriteLine($"public bool {AttributeNames.Sizes} {{ get; set; }}");
         syntaxWriter.WriteLine($"public bool {AttributeNames.SmartComments} {{ get; set; }}");
+        syntaxWriter.WriteLine("[EditorBrowsable(EditorBrowsableState.Never)]");
         syntaxWriter.WriteLine($"public string {AttributeNames.DefaultImageSize} {{ get; set; }} = \"{AttributeNames.DefaultImageSizeValue}\";");
 
 
@@ -426,7 +445,11 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
 }
 
-public record ImageInformation(string Path, string FileName, string Name, string Extension) { }
+public record ImageInformation(string Path, string FileName, string Name, string Extension)
+{
+    public bool IsSuffixed(string suffix)
+        => FileName.EndsWith(suffix, StringComparison.InvariantCulture);
+}
 
 internal enum SymbolVisibility
 {
