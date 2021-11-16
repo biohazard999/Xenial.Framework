@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.79">
+    <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.80">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

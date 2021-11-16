@@ -11,10 +11,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false"
-                      PrivateAssets="all" />
+    <None Remove="build\Xenial.Framework.CompilerServices.props" />
+    <None Remove="build\Xenial.Framework.CompilerServices.targets" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="build\Xenial.Framework.CompilerServices.props">
+      <PackagePath>build\</PackagePath>
+    </Content>
+    <Content Include="build\Xenial.Framework.CompilerServices.targets">
+      <PackagePath>build\</PackagePath>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- We need to import the props and targets directly, because the project reference above does not do that automatically -->

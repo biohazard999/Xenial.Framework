@@ -4,6 +4,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <CompilerVisibleProperty Include="GenerateXenialXpoBuilderAttribute" />
+    <CompilerVisibleProperty Include="GenerateXenialImageNamesAttribute" />
     <CompilerVisibleProperty Include="XenialImageNames" />
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XenialImageNames" />
   </ItemGroup>

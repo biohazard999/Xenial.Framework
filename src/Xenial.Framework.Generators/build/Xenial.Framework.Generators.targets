@@ -5,7 +5,7 @@
     <PropertyGroup>
       <XenialAttributesModifier Condition="'$(XenialAttributesModifier)' == ''">internal</XenialAttributesModifier>
       <XenialDebugSourceGenerators Condition="'$(XenialDebugSourceGenerators)' == ''">false</XenialDebugSourceGenerators>
-  </PropertyGroup>
+    </PropertyGroup>
 
     <ItemGroup>
       <CompilerVisibleProperty Include="XenialAttributesModifier" />
