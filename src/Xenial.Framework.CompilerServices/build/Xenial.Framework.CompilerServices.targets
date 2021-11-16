@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="_InjectXenialGeneratorAttributes" BeforeTargets="PrepareForBuild;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
+  <Target Name="InjectXenialGeneratorAttributesCompilerServices" BeforeTargets="InjectXenialGeneratorAttributes">
 
     <PropertyGroup>
       <GenerateXenialXpoBuilderAttribute Condition="'$(GenerateXenialXpoBuilderAttribute)' == ''">false</GenerateXenialXpoBuilderAttribute>

@@ -8,7 +8,7 @@ namespace Xenial
     {
         internal XenialImageNamesAttribute() { }
         
-        internal bool Sizes { get; set; }
-        internal bool SmartComments { get; set; }
+        public bool Sizes { get; set; }
+        public bool SmartComments { get; set; }
     }
 }
