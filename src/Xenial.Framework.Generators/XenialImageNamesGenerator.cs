@@ -305,8 +305,11 @@ public class XenialImageNamesGenerator : ISourceGenerator
         syntaxWriter.WriteLine($"{visibility} {xenialImageNamesAttributeName}() {{ }}");
 
         syntaxWriter.WriteLine();
-        syntaxWriter.WriteLine($"{visibility} bool {AttributeNames.Sizes} {{ get; set; }}");
-        syntaxWriter.WriteLine($"{visibility} bool {AttributeNames.SmartComments} {{ get; set; }}");
+
+        //Properties need to be public in order to be used
+        syntaxWriter.WriteLine($"public bool {AttributeNames.Sizes} {{ get; set; }}");
+        syntaxWriter.WriteLine($"public bool {AttributeNames.SmartComments} {{ get; set; }}");
+
 
         syntaxWriter.CloseBrace();
 
