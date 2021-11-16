@@ -112,7 +112,17 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
             foreach (var imageInfo in GetImages(context))
             {
+                if (@attribute.IsAttributeSet(AttributeNames.SmartComments))
+                {
+                    builder.WriteLine($"//![]({imageInfo.Path})");
+                }
+
                 builder.WriteLine($"{modifier} const string {imageInfo.Name} = \"{imageInfo.Name}\";");
+
+                if (@attribute.IsAttributeSet(AttributeNames.Sizes))
+                {
+
+                }
             }
 
             builder.CloseBrace();
@@ -386,6 +396,23 @@ public class XenialImageNamesGenerator : ISourceGenerator
         }
     }
 
+}
+
+internal static class AttributeDataExt
+{
+    internal static bool IsAttributeSet(this AttributeData attribute, string attributeName)
+    {
+        var namedArgument = attribute.NamedArguments.FirstOrDefault(argument => argument.Key == attributeName);
+
+        if (namedArgument.Key == attributeName
+            && namedArgument.Value.Kind is TypedConstantKind.Primitive
+            && namedArgument.Value.Value is bool value)
+        {
+            return value;
+        }
+
+        return false;
+    }
 }
 
 public record ImageInformation(string Path, string FileName, string Name, string Extension) { }

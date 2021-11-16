@@ -307,6 +307,66 @@ public class ImageNamesGeneratorTests
         settings.UniqueForTargetFrameworkAndVersion();
         await Verifier.Verify(driver, settings);
     }
+
+    [Fact]
+    public async Task SmartCommentsGeneration()
+    {
+        // BEWARE: 🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉
+        // For whatever weird reason, we need to generate the attribute beforehand in our tests.
+        // otherwise the attributes get not "populated" correctly.
+        // For this we use the generate `GenerateXenialImageNamesAttribute`
+        // method of the builder to avoid too much code duplication
+        // It's for whatever reason important that the attribute is public in our tests
+        // however in production it's works fine with internal visibility...
+        (_, var syntaxTreeAttribute) = XenialImageNamesGenerator.GenerateXenialImageNamesAttribute(
+            visiblity: "public"
+        );
+
+        var syntax = @"namespace MyProject { [Xenial.XenialImageNames(SmartComments = true)] public partial class ImageNamesWithSmartComments{ } }";
+        var syntaxTree = CSharpSyntaxTree.ParseText(
+               syntax,
+               new CSharpParseOptions(LanguageVersion.Default),
+               "ImageNamesWithSizes.cs"
+        );
+
+        var compilation = CSharpCompilation.Create(
+            compilationName,
+            syntaxTrees: new[] { syntaxTreeAttribute, syntaxTree },
+            references: defaultReferenceAssemblies,
+            //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        );
+
+        XenialImageNamesGenerator generator = new();
+
+        var mockAdditionalTexts = new[]
+        {
+            new MockAdditionalText("Images/MyImage.png"),
+            new MockAdditionalText("Images/MyImage_32x32.png"),
+            new MockAdditionalText("Images/MyImage_48x48.png"),
+        };
+
+        var additionalTreeOptions = ImmutableDictionary<object, AnalyzerConfigOptions>.Empty;
+
+        foreach (var mockAdditionalText in mockAdditionalTexts)
+        {
+            additionalTreeOptions = additionalTreeOptions.Add(mockAdditionalText, new MockAnalyzerConfigOptions("build_metadata.AdditionalFiles.XenialImageNames", "true"));
+        }
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            new[] { generator },
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
+                .WithAdditionalTreeOptions(additionalTreeOptions),
+                additionalTexts: mockAdditionalTexts
+        );
+
+        (driver, _) = driver.CompileAndLoadType(compilation, "MyProject.ImageNamesWithSizes");
+
+        var settings = new VerifySettings();
+        settings.UniqueForTargetFrameworkAndVersion();
+        await Verifier.Verify(driver, settings);
+    }
 }
 
 internal static class CompilationHelpers
