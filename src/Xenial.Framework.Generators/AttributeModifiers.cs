@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Microsoft.CodeAnalysis;
 
@@ -25,7 +23,7 @@ public static class AttributeModifiers
     }
 }
 
-internal static class AttributeDataExt
+internal static class AttributeDataExtensions
 {
     internal static bool IsAttributeSet(this AttributeData attribute, string attributeName)
     {

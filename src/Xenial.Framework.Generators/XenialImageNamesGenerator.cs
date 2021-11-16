@@ -108,6 +108,14 @@ public class XenialImageNamesGenerator : ISourceGenerator
                 ? "public"
                 : "internal";
 
+            var sizesFeature = attribute.IsAttributeSet(AttributeNames.Sizes);
+            var defaultSize = attribute.GetAttributeValue(AttributeNames.DefaultImageSize, AttributeNames.DefaultImageSizeValue);
+
+            if (!SanatizeSize(context, defaultSize))
+            {
+                return;
+            }
+
             foreach (var imageInfo in GetImages(context))
             {
                 GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
@@ -119,6 +127,16 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
             compilation = AddGeneratedCode(context, compilation, @class, builder);
         }
+    }
+
+    private static bool SanatizeSize(GeneratorExecutionContext context, string size)
+    {
+        if (string.IsNullOrEmpty(size))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private static void GenerateImageNameConstant(
