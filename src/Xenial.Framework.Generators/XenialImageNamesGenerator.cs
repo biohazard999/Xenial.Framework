@@ -112,17 +112,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
             foreach (var imageInfo in GetImages(context))
             {
-                if (@attribute.IsAttributeSet(AttributeNames.SmartComments))
-                {
-                    builder.WriteLine($"//![]({imageInfo.Path})");
-                }
-
-                builder.WriteLine($"{modifier} const string {imageInfo.Name} = \"{imageInfo.Name}\";");
-
-                if (@attribute.IsAttributeSet(AttributeNames.Sizes))
-                {
-
-                }
+                GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
             }
 
             builder.CloseBrace();
@@ -131,6 +121,21 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
             compilation = AddGeneratedCode(context, compilation, @class, builder);
         }
+    }
+
+    private static void GenerateImageNameConstant(
+        AttributeData attribute,
+        CurlyIndenter builder,
+        string modifier,
+        ImageInformation imageInfo
+    )
+    {
+        if (@attribute.IsAttributeSet(AttributeNames.SmartComments))
+        {
+            builder.WriteLine($"//![]({imageInfo.Path})");
+        }
+
+        builder.WriteLine($"{modifier} const string {imageInfo.Name} = \"{imageInfo.Name}\";");
     }
 
     private static Compilation AddGeneratedCode(

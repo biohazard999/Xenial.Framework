@@ -326,7 +326,7 @@ public class ImageNamesGeneratorTests
         var syntaxTree = CSharpSyntaxTree.ParseText(
                syntax,
                new CSharpParseOptions(LanguageVersion.Default),
-               "ImageNamesWithSizes.cs"
+               "ImageNamesWithSmartComments.cs"
         );
 
         var compilation = CSharpCompilation.Create(
