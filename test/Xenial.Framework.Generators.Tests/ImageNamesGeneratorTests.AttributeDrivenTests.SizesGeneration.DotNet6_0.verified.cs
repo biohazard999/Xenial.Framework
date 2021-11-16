@@ -9,5 +9,16 @@ namespace MyProject
     [CompilerGenerated]
     partial class ImageNamesWithSizes
     {
+        public const string MyImage = "MyImage";
+        
+        public partial class Size32x32
+        {
+            public const string MyImage = "MyImage_32x32";
+        }
+        
+        public partial class Size48x48
+        {
+            public const string MyImage = "MyImage_48x48";
+        }
     }
 }
