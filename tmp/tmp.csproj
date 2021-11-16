@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <XenialAttributesModifier>public</XenialAttributesModifier>
+    <!--<XenialAttributesModifier>public</XenialAttributesModifier>-->
   </PropertyGroup>
 
   <ItemGroup>

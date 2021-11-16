@@ -3,7 +3,7 @@
   <Target Name="_InjectXenialGeneratorAttributes" BeforeTargets="PrepareForBuild;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
 
     <PropertyGroup>
-      <XenialAttributesModifier Condition="'$(XenialAttributesModifier)' == ''">private</XenialAttributesModifier>
+      <XenialAttributesModifier Condition="'$(XenialAttributesModifier)' == ''">internal</XenialAttributesModifier>
       <XenialDebugSourceGenerators Condition="'$(XenialDebugSourceGenerators)' == ''">false</XenialDebugSourceGenerators>
   </PropertyGroup>
 
