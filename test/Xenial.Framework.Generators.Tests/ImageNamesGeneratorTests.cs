@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-
-using Basic.Reference.Assemblies;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

@@ -1,14 +1,14 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 
 using Xenial.Framework.MsBuild;
 
@@ -127,7 +127,39 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
             if (sizesFeature)
             {
+                var images = GetImages(context).ToList();
+                var imagesWithoutSuffix = images.Where(i => !i.IsSuffixed(defaultImageSuffixes));
+                var imagesWithSuffix = defaultImageSuffixes.Select(suffix => new
+                {
+                    suffix,
+                    images = images.Where(i => i.IsSuffixed(suffix))
+                }).Where(i => i.images.Any());
 
+                foreach (var imageInfo in imagesWithoutSuffix)
+                {
+                    GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
+                }
+
+                foreach (var imageInfoGroup in imagesWithSuffix)
+                {
+                    builder.WriteLine();
+                    builder.WriteLine($"{modifier} partial class Size{imageInfoGroup.suffix}");
+                    builder.OpenBrace();
+
+                    foreach (var imageInfo in imageInfoGroup.images)
+                    {
+                        GenerateImageNameConstant(
+                            attribute,
+                            builder,
+                            modifier,
+                            imageInfo,
+                            removeSuffix: true,
+                            suffix: imageInfoGroup.suffix
+                        );
+                    }
+
+                    builder.CloseBrace();
+                }
             }
             else
             {
@@ -160,7 +192,9 @@ public class XenialImageNamesGenerator : ISourceGenerator
         AttributeData attribute,
         CurlyIndenter builder,
         string modifier,
-        ImageInformation imageInfo
+        ImageInformation imageInfo,
+        bool removeSuffix = true,
+        string suffix = ""
     )
     {
         if (@attribute.IsAttributeSet(AttributeNames.SmartComments))
@@ -168,7 +202,16 @@ public class XenialImageNamesGenerator : ISourceGenerator
             builder.WriteLine($"//![]({imageInfo.Path})");
         }
 
-        builder.WriteLine($"{modifier} const string {imageInfo.Name} = \"{imageInfo.Name}\";");
+        static string RemoveSuffix(string imageName, string suffix)
+        {
+            if (imageName.EndsWith(suffix, StringComparison.InvariantCulture))
+            {
+                return imageName.Substring(0, imageName.Length - suffix.Length).TrimEnd('_');
+            }
+            return imageName;
+        }
+
+        builder.WriteLine($"{modifier} const string {(removeSuffix ? RemoveSuffix(imageInfo.Name, suffix) : imageInfo.Name)} = \"{imageInfo.Name}\";");
     }
 
     private static Compilation AddGeneratedCode(
@@ -448,7 +491,10 @@ public class XenialImageNamesGenerator : ISourceGenerator
 public record ImageInformation(string Path, string FileName, string Name, string Extension)
 {
     public bool IsSuffixed(string suffix)
-        => FileName.EndsWith(suffix, StringComparison.InvariantCulture);
+        => Name.EndsWith(suffix, StringComparison.InvariantCulture);
+
+    public bool IsSuffixed(string[] suffixes)
+        => suffixes.Any(IsSuffixed);
 }
 
 internal enum SymbolVisibility
