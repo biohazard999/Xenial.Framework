@@ -31,6 +31,18 @@ internal static class AttributeDataExtensions
     public static bool GetAttributeValue(this AttributeData attribute, string attributeName, bool defaultValue = false)
         => attribute.GetAttributeValue<bool>(attributeName, defaultValue);
 
+    public static string GetAttributeValue(
+        this AttributeData attribute,
+        string attributeName,
+        string defaultValue = ""
+    ) => attribute.GetAttributeValue<string>(attributeName, defaultValue) ?? string.Empty;
+
+    public static int GetAttributeValue(
+        this AttributeData attribute,
+        string attributeName,
+        int defaultValue = 0
+    ) => attribute.GetAttributeValue<int>(attributeName, defaultValue);
+
     public static TValue? GetAttributeValue<TValue>(
         this AttributeData attribute,
         string attributeName,
@@ -48,15 +60,4 @@ internal static class AttributeDataExtensions
         return defaultValue;
     }
 
-    public static string GetAttributeValue(
-        this AttributeData attribute,
-        string attributeName,
-        string defaultValue = ""
-    ) => attribute.GetAttributeValue<string>(attributeName, defaultValue) ?? string.Empty;
-
-    public static int GetAttributeValue(
-        this AttributeData attribute,
-        string attributeName,
-        int defaultValue = 0
-    ) => attribute.GetAttributeValue<int>(attributeName, defaultValue);
 }
