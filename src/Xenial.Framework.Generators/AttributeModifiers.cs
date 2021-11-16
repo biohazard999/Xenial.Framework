@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using Microsoft.CodeAnalysis;
@@ -22,4 +23,50 @@ public static class AttributeModifiers
 
         return InternalModifier;
     }
+}
+
+internal static class AttributeDataExt
+{
+    internal static bool IsAttributeSet(this AttributeData attribute, string attributeName)
+    {
+        var namedArgument = attribute.NamedArguments.FirstOrDefault(argument => argument.Key == attributeName);
+
+        if (namedArgument.Key == attributeName
+            && namedArgument.Value.Kind is TypedConstantKind.Primitive
+            && namedArgument.Value.Value is bool value)
+        {
+            return value;
+        }
+
+        return false;
+    }
+
+    public static TValue? GetAttributeValue<TValue>(
+        this AttributeData attribute,
+        string attributeName,
+        TValue? defaultValue = default)
+    {
+        var namedArgument = attribute.NamedArguments.FirstOrDefault(argument => argument.Key == attributeName);
+
+        if (namedArgument.Key == attributeName
+            && namedArgument.Value.Kind is TypedConstantKind.Primitive
+            && namedArgument.Value.Value is TValue value)
+        {
+            return value;
+        }
+
+        return defaultValue;
+    }
+
+    public static string GetAttributeValue(
+        this AttributeData attribute,
+        string attributeName,
+        string defaultValue = ""
+    ) => attribute.GetAttributeValue<string>(attributeName, defaultValue) ?? string.Empty;
+
+    public static int GetAttributeValue(
+        this AttributeData attribute,
+        string attributeName,
+        int defaultValue = 0
+    ) => attribute.GetAttributeValue<int>(attributeName, defaultValue);
 }

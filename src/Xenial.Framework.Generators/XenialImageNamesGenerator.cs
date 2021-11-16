@@ -1,6 +1,4 @@
-﻿
-
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -100,7 +98,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
             builder.WriteLine("[CompilerGenerated]");
             //We don't need to specify any other modifier
-            //because the user can decide if he want it to be instanciatable.
+            //because the user can decide if he want it to be an instance type.
             //We also don't need to specify the visibility for partial types
             builder.WriteLine($"partial class {classSymbol.Name}");
 
@@ -408,23 +406,6 @@ public class XenialImageNamesGenerator : ISourceGenerator
         }
     }
 
-}
-
-internal static class AttributeDataExt
-{
-    internal static bool IsAttributeSet(this AttributeData attribute, string attributeName)
-    {
-        var namedArgument = attribute.NamedArguments.FirstOrDefault(argument => argument.Key == attributeName);
-
-        if (namedArgument.Key == attributeName
-            && namedArgument.Value.Kind is TypedConstantKind.Primitive
-            && namedArgument.Value.Value is bool value)
-        {
-            return value;
-        }
-
-        return false;
-    }
 }
 
 public record ImageInformation(string Path, string FileName, string Name, string Extension) { }
