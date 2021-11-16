@@ -5,7 +5,7 @@
     <GenerateXenialLicense>false</GenerateXenialLicense>
     <GenerateXenialModuleInitializer>false</GenerateXenialModuleInitializer>
     <GenerateXenialModuleInitializerPolyfill>false</GenerateXenialModuleInitializerPolyfill>
-    <XenialAttributesModifier>public</XenialAttributesModifier>
+    <XenialAttributesVisibility>public</XenialAttributesVisibility>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <!-- TODO: Generate XML-docs for generated attributes -->
   </PropertyGroup>

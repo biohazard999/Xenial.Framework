@@ -94,7 +94,7 @@ public class XpoBuilderGeneratorTests
 
 
     [Fact]
-    public async Task EmitsCustomModifier()
+    public async Task EmitsCustomVisibility()
     {
         var compilation = CSharpCompilation.Create(compilationName);
         XenialXpoBuilderGenerator generator = new();
@@ -103,7 +103,7 @@ public class XpoBuilderGeneratorTests
             new[] { generator },
             optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
                 .WithGlobalOptions(
-                    new MockAnalyzerConfigOptions("build_property.XenialAttributesModifier", "public")
+                    new MockAnalyzerConfigOptions("build_property.XenialAttributesVisibility", "public")
                 )
         );
 

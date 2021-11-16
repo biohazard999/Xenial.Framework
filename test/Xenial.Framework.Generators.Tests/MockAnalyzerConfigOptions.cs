@@ -22,7 +22,12 @@ internal sealed class MockAnalyzerConfigOptions : AnalyzerConfigOptions
 #if !FULL_FRAMEWORK
         [NotNullWhen(true)]
 #endif
-    out string? value)
+    out string
+        #if !FULL_FRAMEWORK
+?
+        #endif
+        value
+)
     {
         if (this.key is not null && key is not null && this.key == key && this.value is not null)
         {

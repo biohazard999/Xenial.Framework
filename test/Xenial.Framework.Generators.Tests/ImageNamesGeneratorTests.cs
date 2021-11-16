@@ -109,7 +109,7 @@ public class ImageNamesGeneratorTests
             new[] { generator },
             optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
                 .WithGlobalOptions(
-                    new MockAnalyzerConfigOptions("build_property.XenialAttributesModifier", "public")
+                    new MockAnalyzerConfigOptions("build_property.XenialAttributesVisibility", "public")
                 )
         );
 
