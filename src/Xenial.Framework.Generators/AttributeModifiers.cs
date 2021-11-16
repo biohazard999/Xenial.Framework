@@ -14,7 +14,10 @@ public static class AttributeModifiers
 
     public static string GetDefaultAttributeModifier(this GeneratorExecutionContext context)
     {
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{xenialAttributesModifierMSBuildProperty}", out var attributeModifier))
+        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue(
+            $"build_property.{xenialAttributesModifierMSBuildProperty}",
+            out var attributeModifier)
+        )
         {
             return attributeModifier;
         }
