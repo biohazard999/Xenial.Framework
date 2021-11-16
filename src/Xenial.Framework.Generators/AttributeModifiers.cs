@@ -25,19 +25,11 @@ public static class AttributeModifiers
 
 internal static class AttributeDataExtensions
 {
-    internal static bool IsAttributeSet(this AttributeData attribute, string attributeName)
-    {
-        var namedArgument = attribute.NamedArguments.FirstOrDefault(argument => argument.Key == attributeName);
+    public static bool IsAttributeSet(this AttributeData attribute, string attributeName)
+        => attribute.GetAttributeValue(attributeName, defaultValue: false);
 
-        if (namedArgument.Key == attributeName
-            && namedArgument.Value.Kind is TypedConstantKind.Primitive
-            && namedArgument.Value.Value is bool value)
-        {
-            return value;
-        }
-
-        return false;
-    }
+    public static bool GetAttributeValue(this AttributeData attribute, string attributeName, bool defaultValue = false)
+        => attribute.GetAttributeValue<bool>(attributeName, defaultValue);
 
     public static TValue? GetAttributeValue<TValue>(
         this AttributeData attribute,
