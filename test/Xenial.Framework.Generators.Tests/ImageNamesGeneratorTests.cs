@@ -248,13 +248,13 @@ public class ImageNamesGeneratorTests
     public class AttributeDrivenTests
     {
         [Fact]
-        public async Task SizesGeneration()
+        public async Task SmartCommentsGeneration()
         {
-            var syntax = @"namespace MyProject { [Xenial.XenialImageNames(Sizes = true)] public partial class ImageNamesWithSizes { } }";
+            var syntax = @"namespace MyProject { [Xenial.XenialImageNames(SmartComments = true)] public partial class ImageNamesWithSmartComments{ } }";
             var syntaxTree = CSharpSyntaxTree.ParseText(
                    syntax,
                    new CSharpParseOptions(LanguageVersion.Default),
-                   "ImageNamesWithSizes.cs"
+                   "ImageNamesWithSmartComments.cs"
             );
 
             var compilation = CSharpCompilation.Create(
@@ -296,14 +296,15 @@ public class ImageNamesGeneratorTests
             await Verifier.Verify(driver, settings);
         }
 
+
         [Fact]
-        public async Task SmartCommentsGeneration()
+        public async Task SizesGeneration()
         {
-            var syntax = @"namespace MyProject { [Xenial.XenialImageNames(SmartComments = true)] public partial class ImageNamesWithSmartComments{ } }";
+            var syntax = @"namespace MyProject { [Xenial.XenialImageNames(Sizes = true)] public partial class ImageNamesWithSizes { } }";
             var syntaxTree = CSharpSyntaxTree.ParseText(
                    syntax,
                    new CSharpParseOptions(LanguageVersion.Default),
-                   "ImageNamesWithSmartComments.cs"
+                   "ImageNamesWithSizes.cs"
             );
 
             var compilation = CSharpCompilation.Create(
@@ -318,10 +319,10 @@ public class ImageNamesGeneratorTests
 
             var mockAdditionalTexts = new[]
             {
-            new MockAdditionalText("Images/MyImage.png"),
-            new MockAdditionalText("Images/MyImage_32x32.png"),
-            new MockAdditionalText("Images/MyImage_48x48.png"),
-        };
+                new MockAdditionalText("Images/MyImage.png"),
+                new MockAdditionalText("Images/MyImage_32x32.png"),
+                new MockAdditionalText("Images/MyImage_48x48.png"),
+            };
 
             var additionalTreeOptions = ImmutableDictionary<object, AnalyzerConfigOptions>.Empty;
 

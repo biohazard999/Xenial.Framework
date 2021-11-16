@@ -309,6 +309,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
         //Properties need to be public in order to be used
         syntaxWriter.WriteLine($"public bool {AttributeNames.Sizes} {{ get; set; }}");
         syntaxWriter.WriteLine($"public bool {AttributeNames.SmartComments} {{ get; set; }}");
+        syntaxWriter.WriteLine($"public string {AttributeNames.DefaultImageSize} {{ get; set; }} = \"{AttributeNames.DefaultImageSizeValue}\";");
 
 
         syntaxWriter.CloseBrace();
@@ -324,6 +325,9 @@ public class XenialImageNamesGenerator : ISourceGenerator
     internal static class AttributeNames
     {
         internal const string Sizes = nameof(Sizes);
+        internal const string DefaultImageSize = nameof(DefaultImageSize);
+        internal const string DefaultImageSizeValue = "16x16";
+
         internal const string SmartComments = nameof(SmartComments);
     }
 
