@@ -77,6 +77,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
         foreach (var @class in syntaxReceiver.Classes)
         {
+            context.CancellationToken.ThrowIfCancellationRequested();
+
             var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, generateXenialImageNamesAttribute);
             if (!isAttributeDeclared || semanticModel is null || @classSymbol is null)
             {
@@ -118,6 +120,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
             foreach (var imageInfo in GetImages(context))
             {
+                context.CancellationToken.ThrowIfCancellationRequested();
                 GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
             }
 
