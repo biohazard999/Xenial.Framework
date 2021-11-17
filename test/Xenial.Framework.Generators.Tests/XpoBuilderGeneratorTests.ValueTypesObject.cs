@@ -11,6 +11,7 @@ using DevExpress.Xpo;
 
 namespace Xenial.Framework.Generators.Tests
 {
+    [XenialXpoBuilder]
     public class ValueTypesXPObject : XPBaseObject
     {
         public ValueTypesXPObject(Session session) : base(session) { }
