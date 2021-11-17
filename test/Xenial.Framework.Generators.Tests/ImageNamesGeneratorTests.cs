@@ -343,6 +343,55 @@ public class ImageNamesGeneratorTests
             settings.UniqueForTargetFrameworkAndVersion();
             await Verifier.Verify(driver, settings);
         }
+
+
+        [Fact]
+        public async Task SubfolderBasic()
+        {
+            var syntax = @"namespace MyProject { [Xenial.XenialImageNames(SmartComments = true)] public partial class SubfolderImages { } }";
+            var syntaxTree = CSharpSyntaxTree.ParseText(
+                   syntax,
+                   new CSharpParseOptions(LanguageVersion.Default),
+                   "SubfolderImages.cs"
+            );
+
+            var compilation = CSharpCompilation.Create(
+                compilationName,
+                syntaxTrees: new[] { syntaxTree },
+                references: DefaultReferenceAssemblies,
+                //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+            ).AddInlineXenialImageNamesAttribute("public");
+
+            XenialImageNamesGenerator generator = new();
+
+            var mockAdditionalTexts = new[]
+            {
+                new MockAdditionalText("Images/MySimpleFolder/MyImage.png"),
+                new MockAdditionalText("Images/MoreComplex/Folder/Inside/Folder/MyImage2.png"),
+            };
+
+            var additionalTreeOptions = ImmutableDictionary<object, AnalyzerConfigOptions>.Empty;
+
+            foreach (var mockAdditionalText in mockAdditionalTexts)
+            {
+                additionalTreeOptions = additionalTreeOptions.Add(mockAdditionalText, new MockAnalyzerConfigOptions("build_metadata.AdditionalFiles.XenialImageNames", "true"));
+            }
+
+            GeneratorDriver driver = CSharpGeneratorDriver.Create(
+                new[] { generator },
+                optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                    .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
+                    .WithAdditionalTreeOptions(additionalTreeOptions),
+                    additionalTexts: mockAdditionalTexts
+            );
+
+            (driver, _) = driver.CompileAndLoadType(compilation, "MyProject.SubfolderImages");
+
+            var settings = new VerifySettings();
+            settings.UniqueForTargetFrameworkAndVersion();
+            await Verifier.Verify(driver, settings);
+        }
     }
 }
 

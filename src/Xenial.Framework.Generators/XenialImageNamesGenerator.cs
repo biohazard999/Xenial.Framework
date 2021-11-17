@@ -28,6 +28,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
     private const string markAsXenialImageSourceMetadataAttribute = "XenialImageNames";
 
+    private const string imagesBaseFolder = "Images";
+
     private readonly string[] defaultImageSuffixes = new[]
     {
         "12x12",
@@ -305,8 +307,9 @@ public class XenialImageNamesGenerator : ISourceGenerator
                         var fileName = Path.GetFileName(path);
                         var name = Path.GetFileNameWithoutExtension(path);
                         var extension = Path.GetExtension(path);
+                        var directory = Path.GetDirectoryName(path);
 
-                        yield return new ImageInformation(path, fileName, name, extension);
+                        yield return new ImageInformation(path, fileName, name, extension, directory);
                     }
                 }
                 else
@@ -407,6 +410,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
         internal const string DefaultImageSizeValue = "16x16";
 
         internal const string SmartComments = nameof(SmartComments);
+
+        internal const string SubClassFolders = nameof(SubClassFolders);
     }
 
     internal static SymbolVisibility GetResultantVisibility(ISymbol symbol)
@@ -488,7 +493,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
 }
 
-public record ImageInformation(string Path, string FileName, string Name, string Extension)
+public record struct ImageInformation(string Path, string FileName, string Name, string Extension, string Directory)
 {
     public bool IsSuffixed(string suffix)
         => Name.EndsWith(suffix, StringComparison.InvariantCulture);
