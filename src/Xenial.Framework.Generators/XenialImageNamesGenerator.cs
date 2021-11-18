@@ -77,7 +77,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
         CheckForDebugger(context);
 
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.MSBuildThisFileDirectory", out var mSBuildThisFileDirectory))
+        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.ProjectDir", out var projectDir))
         {
 
         }
