@@ -73,7 +73,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
             return;
         }
 
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_metadata.MSBuildThisFileDirectory", out var mSBuildThisFileDirectory))
+        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.MSBuildThisFileDirectory", out var mSBuildThisFileDirectory))
         {
 
         }
