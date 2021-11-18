@@ -317,7 +317,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
                         var extension = Path.GetExtension(path);
                         var directory = Path.GetDirectoryName(path);
                         var relativePath = path.StartsWith(projectDirectory, StringComparison.InvariantCulture)
-                            ? path.Substring(projectDirectory.Length - 1) : path;
+                            ? path.Substring(projectDirectory.Length) : path;
 
                         yield return new ImageInformation(
                             path,
