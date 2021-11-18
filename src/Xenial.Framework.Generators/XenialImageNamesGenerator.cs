@@ -73,14 +73,14 @@ public class XenialImageNamesGenerator : ISourceGenerator
             return;
         }
 
+        context.CancellationToken.ThrowIfCancellationRequested();
+
+        CheckForDebugger(context);
+
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.MSBuildThisFileDirectory", out var mSBuildThisFileDirectory))
         {
 
         }
-
-        context.CancellationToken.ThrowIfCancellationRequested();
-
-        CheckForDebugger(context);
 
         var compilation = GenerateAttribute(context);
 
