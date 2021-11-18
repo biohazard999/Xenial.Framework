@@ -1,5 +1,10 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <ItemGroup>
+    <CompilerVisibleProperty Include="XenialImageNames" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XenialImageNames" />
+  </ItemGroup>
+
   <Target Name="InjectXenialGeneratorAttributes" BeforeTargets="PrepareForBuild;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
 
     <PropertyGroup>
