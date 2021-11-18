@@ -325,7 +325,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
                             name,
                             extension,
                             directory,
-                            relativePath
+                            relativePath,
+                            imagesBaseFolder
                         );
                     }
                 }
@@ -526,7 +527,8 @@ public record struct ImageInformation(
     string Name,
     string Extension,
     string Directory,
-    string RelativePath)
+    string RelativePath,
+    string BaseDirectory)
 {
     public bool IsSuffixed(string suffix)
         => Name.EndsWith(suffix, StringComparison.InvariantCulture);
