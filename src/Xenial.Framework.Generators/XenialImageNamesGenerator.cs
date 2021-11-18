@@ -77,11 +77,6 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
         CheckForDebugger(context);
 
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.ProjectDir", out var projectDir))
-        {
-
-        }
-
         var compilation = GenerateAttribute(context);
 
         var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
@@ -302,6 +297,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
     private static IEnumerable<ImageInformation> GetImages(GeneratorExecutionContext context)
     {
+        var projectDirectory = GetProjectDirectory(context);
+
         foreach (var additionalText in context.AdditionalFiles)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
@@ -319,8 +316,17 @@ public class XenialImageNamesGenerator : ISourceGenerator
                         var name = Path.GetFileNameWithoutExtension(path);
                         var extension = Path.GetExtension(path);
                         var directory = Path.GetDirectoryName(path);
+                        var relativePath = path.StartsWith(projectDirectory, StringComparison.InvariantCulture)
+                            ? path.Substring(projectDirectory.Length - 1) : path;
 
-                        yield return new ImageInformation(path, fileName, name, extension, directory);
+                        yield return new ImageInformation(
+                            path,
+                            fileName,
+                            name,
+                            extension,
+                            directory,
+                            relativePath
+                        );
                     }
                 }
                 else
@@ -472,6 +478,16 @@ public class XenialImageNamesGenerator : ISourceGenerator
         return visibility;
     }
 
+    private static string GetProjectDirectory(GeneratorExecutionContext context)
+    {
+        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.ProjectDir", out var projectDir))
+        {
+            return projectDir;
+        }
+
+        return string.Empty;
+    }
+
     private static void CheckForDebugger(GeneratorExecutionContext context)
     {
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{xenialDebugSourceGenerators}", out var xenialDebugSourceGeneratorsAttrString))
@@ -504,7 +520,13 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
 }
 
-public record struct ImageInformation(string Path, string FileName, string Name, string Extension, string Directory)
+public record struct ImageInformation(
+    string Path,
+    string FileName,
+    string Name,
+    string Extension,
+    string Directory,
+    string RelativePath)
 {
     public bool IsSuffixed(string suffix)
         => Name.EndsWith(suffix, StringComparison.InvariantCulture);
