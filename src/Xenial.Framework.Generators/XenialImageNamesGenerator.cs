@@ -73,6 +73,11 @@ public class XenialImageNamesGenerator : ISourceGenerator
             return;
         }
 
+        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_metadata.MSBuildThisFileDirectory", out var mSBuildThisFileDirectory))
+        {
+
+        }
+
         context.CancellationToken.ThrowIfCancellationRequested();
 
         CheckForDebugger(context);
@@ -141,17 +146,20 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
                 foreach (var imageInfo in imagesWithoutSuffix)
                 {
+                    context.CancellationToken.ThrowIfCancellationRequested();
                     GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
                 }
 
                 foreach (var imageInfoGroup in imagesWithSuffix)
                 {
+                    context.CancellationToken.ThrowIfCancellationRequested();
                     builder.WriteLine();
                     builder.WriteLine($"{modifier} partial class Size{imageInfoGroup.suffix}");
                     builder.OpenBrace();
 
                     foreach (var imageInfo in imageInfoGroup.images)
                     {
+                        context.CancellationToken.ThrowIfCancellationRequested();
                         GenerateImageNameConstant(
                             attribute,
                             builder,
@@ -169,13 +177,9 @@ public class XenialImageNamesGenerator : ISourceGenerator
             {
                 foreach (var imageInfo in GetImages(context))
                 {
+                    context.CancellationToken.ThrowIfCancellationRequested();
                     GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
                 }
-            }
-            foreach (var imageInfo in GetImages(context))
-            {
-                context.CancellationToken.ThrowIfCancellationRequested();
-                GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
             }
 
             builder.CloseBrace();
