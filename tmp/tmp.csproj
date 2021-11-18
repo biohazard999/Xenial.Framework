@@ -6,12 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <XenialDebugSourceGenerators>false</XenialDebugSourceGenerators>
+    <XenialDebugSourceGenerators>true</XenialDebugSourceGenerators>
   </PropertyGroup>
 
   <ItemGroup>    
-    <PackageReference Include="Xenial.Framework.CompilerServices" Version="0.2.6-alpha.0.85" />
-    <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.85">
+    <!--<PackageReference Include="Xenial.Framework.CompilerServices" Version="0.2.6-alpha.0.99" />-->
+    <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.105">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -26,9 +26,4 @@
     <AdditionalFiles Include="Images/*.png" XenialImageNames="true" />
   </ItemGroup>
 
-  <ItemGroup>
-    <XenialImageNames Include="Images/**/*.png" />
-    <!--<EmbeddedResource Include="@(XenialImageNames)" />-->
-  </ItemGroup>
-  
 </Project>
