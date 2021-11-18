@@ -5,8 +5,8 @@
     <PropertyGroup>
       <GenerateXenialXpoBuilderAttribute Condition="'$(GenerateXenialXpoBuilderAttribute)' == ''">true</GenerateXenialXpoBuilderAttribute>
       <GenerateXenialImageNamesAttribute Condition="'$(GenerateXenialImageNamesAttribute)' == ''">true</GenerateXenialImageNamesAttribute>
-      
-      <XenialAttributesModifier Condition="'$(XenialAttributesModifier)' == ''">internal</XenialAttributesModifier>
+
+      <XenialAttributesVisibility Condition="'$(XenialAttributesVisibility)' == ''">internal</XenialAttributesVisibility>
       <XenialDebugSourceGenerators Condition="'$(XenialDebugSourceGenerators)' == ''">false</XenialDebugSourceGenerators>
     </PropertyGroup>
 
