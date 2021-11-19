@@ -20,6 +20,7 @@
       <CompilerVisibleProperty Include="GenerateXenialImageNamesAttribute" />
       <CompilerVisibleProperty Include="XenialAttributesVisibility" />
       <CompilerVisibleProperty Include="XenialDebugSourceGenerators" />
+      <CompilerVisibleProperty Include="LangVersion" />
     </ItemGroup>
 
   </Target>
