@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -123,6 +124,35 @@ public class ImageNamesGeneratorTests
         var compilation = CSharpCompilation.Create(compilationName).AddInlineXenialImageNamesAttribute();
 
         var syntax = @"using Xenial; namespace MyProject { [XenialImageNames(Foo = 123)] public class MyNonPartialClass{ } }";
+        var syntaxTree =
+            CSharpSyntaxTree.ParseText(
+                syntax,
+                new CSharpParseOptions(LanguageVersion.Default),
+                path: "MyNonPartialClass.cs"
+            );
+
+        compilation = compilation.AddSyntaxTrees(syntaxTree);
+
+        XenialImageNamesGenerator generator = new();
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            new[] { generator },
+            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
+        );
+
+        driver = driver.RunGenerators(compilation);
+        var settings = new VerifySettings();
+        settings.UniqueForTargetFrameworkAndVersion();
+        await Verifier.Verify(driver, settings);
+    }
+
+    [Fact]
+    public async Task DoesEmitDiagnosticIfInGlobalNamespace()
+    {
+        var compilation = CSharpCompilation.Create(compilationName).AddInlineXenialImageNamesAttribute();
+
+        var syntax = @"using Xenial; [XenialImageNames(Foo = 123)] public partial class MyGlobalClass { }";
         var syntaxTree =
             CSharpSyntaxTree.ParseText(
                 syntax,
@@ -287,7 +317,9 @@ public class ImageNamesGeneratorTests
                     additionalTexts: mockAdditionalTexts
             );
 
-            (driver, _) = driver.CompileAndLoadType(compilation, "MyProject.ImageNamesWithSizes");
+            (driver, var diagnostics, var ex, _) = driver.CompileAndLoadType(compilation, "MyProject.ImageNamesWithSizes");
+
+            VerifyDiagnostics(diagnostics, ex);
 
             var settings = new VerifySettings();
             settings.UniqueForTargetFrameworkAndVersion();
@@ -337,7 +369,9 @@ public class ImageNamesGeneratorTests
                     additionalTexts: mockAdditionalTexts
             );
 
-            (driver, _) = driver.CompileAndLoadType(compilation, "MyProject.ImageNamesWithSizes");
+            (driver, var diagnostics, var ex, _) = driver.CompileAndLoadType(compilation, "MyProject.ImageNamesWithSizes");
+
+            VerifyDiagnostics(diagnostics, ex);
 
             var settings = new VerifySettings();
             settings.UniqueForTargetFrameworkAndVersion();
@@ -346,13 +380,13 @@ public class ImageNamesGeneratorTests
 
 
         [Fact]
-        public async Task SubfolderBasic()
+        public async Task SubFolderBasic()
         {
-            var syntax = @"namespace MyProject { [Xenial.XenialImageNames(SmartComments = true)] public partial class SubfolderImages { } }";
+            var syntax = @"namespace MyProject { [Xenial.XenialImageNames(SmartComments = true)] public partial class SubFolderImages { } }";
             var syntaxTree = CSharpSyntaxTree.ParseText(
                    syntax,
                    new CSharpParseOptions(LanguageVersion.Default),
-                   "SubfolderImages.cs"
+                   "SubFolderImages.cs"
             );
 
             var compilation = CSharpCompilation.Create(
@@ -367,7 +401,8 @@ public class ImageNamesGeneratorTests
 
             var mockAdditionalTexts = new[]
             {
-                new MockAdditionalText("Images/MySimpleFolder/MyImage.png"),
+                new MockAdditionalText("Images/MyImage1.png"),
+                new MockAdditionalText("Images/MySimpleFolder/MyImage2.png"),
                 new MockAdditionalText("Images/MoreComplex/Folder/Inside/Folder/MyImage2.png"),
             };
 
@@ -386,11 +421,25 @@ public class ImageNamesGeneratorTests
                     additionalTexts: mockAdditionalTexts
             );
 
-            (driver, _) = driver.CompileAndLoadType(compilation, "MyProject.SubfolderImages");
+            (driver, var diagnostics, var ex, _) = driver.CompileAndLoadType(compilation, "MyProject.SubFolderImages");
+
+            VerifyDiagnostics(diagnostics, ex);
 
             var settings = new VerifySettings();
             settings.UniqueForTargetFrameworkAndVersion();
+
             await Verifier.Verify(driver, settings);
+        }
+
+        private static void VerifyDiagnostics(ImmutableArray<Diagnostic> diagnostics, Exception? ex)
+        {
+            if (diagnostics.Length > 0 && ex is not null)
+            {
+                throw new AggregateException(new ArgumentException(string.Join(
+                    Environment.NewLine,
+                    diagnostics.Select(diag => new DiagnosticFormatter().Format(diag))
+                )), ex);
+            }
         }
     }
 }
@@ -404,7 +453,12 @@ internal static class CompilationHelpers
         return compilation.AddSyntaxTrees(syntaxTree);
     }
 
-    public static (GeneratorDriver, System.Type?) CompileAndLoadType(
+    public static (
+        GeneratorDriver driver,
+        ImmutableArray<Diagnostic> diagnostics,
+        Exception? emitException,
+        Type? generatedType
+    ) CompileAndLoadType(
         this GeneratorDriver driver,
         Compilation compilation,
         string typeToLoad
@@ -414,14 +468,30 @@ internal static class CompilationHelpers
 
         using var stream = new MemoryStream();
         var emitResults = compilation2.Emit(stream);
-        stream.Position = 0;
-        var assembly = Assembly.Load(stream.ToArray());
-        return (driver, assembly.GetType(typeToLoad));
+        if (emitResults is not null)
+        {
+            stream.Position = 0;
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                var assembly = Assembly.Load(stream.ToArray());
+
+                return (driver, emitResults.Diagnostics, null, assembly.GetType(typeToLoad));
+            }
+            catch (Exception ex)
+            {
+                return (driver, emitResults.Diagnostics, ex, null);
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+        }
+
+        return (driver, ImmutableArray<Diagnostic>.Empty, null, null);
+
     }
 }
 public class NotPartialImageNames
 {
 }
 
-[Xenial.XenialImageNames]
+[XenialImageNames]
 public partial class PartialImageNames { }

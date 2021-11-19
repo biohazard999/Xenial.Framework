@@ -11,7 +11,7 @@
 
   <ItemGroup>    
     <!--<PackageReference Include="Xenial.Framework.CompilerServices" Version="0.2.6-alpha.0.99" />-->
-    <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.109">
+    <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.*">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -22,8 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Images/*.png" />
-    <AdditionalFiles Include="Images/*.png" XenialImageNames="true" />
+    <XenialImageNames Include="Images/*.png" />
   </ItemGroup>
 
 </Project>
