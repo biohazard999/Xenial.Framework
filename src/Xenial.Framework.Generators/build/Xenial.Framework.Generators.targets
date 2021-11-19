@@ -23,6 +23,11 @@
       <CompilerVisibleProperty Include="LangVersion" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Include="@(XenialImageNames)" />
+      <AdditionalFiles Include="@(XenialImageNames)" XenialImageNames="true" />
+    </ItemGroup>
+
   </Target>
 
 </Project>
