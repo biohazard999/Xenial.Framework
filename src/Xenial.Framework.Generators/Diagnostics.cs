@@ -31,5 +31,15 @@ namespace Xenial.Framework.Generators
             isEnabledByDefault: true,
             description: $"The class using the [{attributeName}] needs to be partial"
         );
+
+        internal static DiagnosticDescriptor ClassNeedsToBeInNamespace(string attributeName) => new(
+            "XENGEN0101",
+            $"The class using the [{attributeName}] needs to be in a namespace",
+            $"The class using the [{attributeName}] needs to be in a namespace",
+            category,
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true,
+            description: $"The class using the [{attributeName}] needs to be namespace"
+        );
     }
 }

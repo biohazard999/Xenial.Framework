@@ -107,10 +107,16 @@ public class XenialImageNamesGenerator : ISourceGenerator
             builder.WriteLine();
 
             var isGlobalNamespace = classSymbol.ContainingNamespace.ToString() == "<global namespace>";
-            if (!isGlobalNamespace)
+            if (isGlobalNamespace)
             {
-                builder.WriteLine($"namespace {@classSymbol.ContainingNamespace}");
-                builder.OpenBrace();
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        GeneratorDiagnostics.ClassNeedsToBeInNamespace(
+                        xenialImageNamesAttributeName
+                    ), @class.GetLocation())
+                );
+
+                return;
             }
 
             builder.WriteLine("[CompilerGenerated]");
@@ -183,10 +189,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
             builder.CloseBrace();
 
-            if (!isGlobalNamespace)
-            {
-                builder.CloseBrace();
-            }
+            builder.CloseBrace();
 
             compilation = AddGeneratedCode(context, compilation, @class, builder);
         }
