@@ -6,12 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <XenialDebugSourceGenerators>true</XenialDebugSourceGenerators>
+    <XenialDebugSourceGenerators>false</XenialDebugSourceGenerators>
   </PropertyGroup>
 
   <ItemGroup>    
     <!--<PackageReference Include="Xenial.Framework.CompilerServices" Version="0.2.6-alpha.0.99" />-->
-    <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.106">
+    <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.109">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

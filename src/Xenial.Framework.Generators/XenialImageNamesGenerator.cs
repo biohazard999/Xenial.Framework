@@ -106,8 +106,12 @@ public class XenialImageNamesGenerator : ISourceGenerator
             builder.WriteLine("using System.Runtime.CompilerServices;");
             builder.WriteLine();
 
-            builder.WriteLine($"namespace {@classSymbol.ContainingNamespace}");
-            builder.OpenBrace();
+            var isGlobalNamespace = classSymbol.ContainingNamespace.ToString() == "<global namespace>";
+            if (!isGlobalNamespace)
+            {
+                builder.WriteLine($"namespace {@classSymbol.ContainingNamespace}");
+                builder.OpenBrace();
+            }
 
             builder.WriteLine("[CompilerGenerated]");
             //We don't need to specify any other modifier
@@ -179,7 +183,10 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
             builder.CloseBrace();
 
-            builder.CloseBrace();
+            if (!isGlobalNamespace)
+            {
+                builder.CloseBrace();
+            }
 
             compilation = AddGeneratedCode(context, compilation, @class, builder);
         }
