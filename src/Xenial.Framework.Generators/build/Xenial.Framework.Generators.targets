@@ -6,8 +6,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="@(XenialImageNames)" />
     <AdditionalFiles Include="@(XenialImageNames)" XenialImageNames="true" />
+    <EmbeddedResource Include="@(XenialImageNames)" />
   </ItemGroup>
 
   <Target Name="InjectXenialGeneratorAttributes" BeforeTargets="PrepareForBuild;CoreCompile;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
@@ -29,8 +29,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="@(XenialImageNames)" />
       <AdditionalFiles Update="@(XenialImageNames)" XenialImageNames="true" />
+      <EmbeddedResource Update="@(XenialImageNames)" />
     </ItemGroup>
     
   </Target>
