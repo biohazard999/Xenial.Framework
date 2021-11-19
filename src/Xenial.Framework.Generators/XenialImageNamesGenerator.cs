@@ -119,6 +119,9 @@ public class XenialImageNamesGenerator : ISourceGenerator
                 return;
             }
 
+            builder.WriteLine($"namespace {@classSymbol.ContainingNamespace}");
+            builder.OpenBrace();
+
             builder.WriteLine("[CompilerGenerated]");
             //We don't need to specify any other modifier
             //because the user can decide if he want it to be an instance type.
