@@ -5,7 +5,12 @@
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XenialImageNames" />
   </ItemGroup>
 
-  <Target Name="InjectXenialGeneratorAttributes" BeforeTargets="PrepareForBuild;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
+  <ItemGroup>
+    <EmbeddedResource Include="@(XenialImageNames)" />
+    <AdditionalFiles Include="@(XenialImageNames)" XenialImageNames="true" />
+  </ItemGroup>
+
+  <Target Name="InjectXenialGeneratorAttributes" BeforeTargets="PrepareForBuild;CoreCompile;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
 
     <PropertyGroup>
       <GenerateXenialXpoBuilderAttribute Condition="'$(GenerateXenialXpoBuilderAttribute)' == ''">true</GenerateXenialXpoBuilderAttribute>
@@ -24,10 +29,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="@(XenialImageNames)" />
-      <AdditionalFiles Include="@(XenialImageNames)" XenialImageNames="true" />
+      <EmbeddedResource Update="@(XenialImageNames)" />
+      <AdditionalFiles Update="@(XenialImageNames)" XenialImageNames="true" />
     </ItemGroup>
-
+    
   </Target>
 
 </Project>
