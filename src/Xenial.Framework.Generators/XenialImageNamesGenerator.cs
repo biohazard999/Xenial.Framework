@@ -77,6 +77,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
         CheckForDebugger(context);
 
+        var features = new Features(context);
+
         var compilation = GenerateAttribute(context);
 
         var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
@@ -142,9 +144,10 @@ public class XenialImageNamesGenerator : ISourceGenerator
                 return;
             }
 
+            var images = GetImages(context, features).ToList();
+
             if (sizesFeature)
             {
-                var images = GetImages(context).ToList();
                 var imagesWithoutSuffix = images.Where(i => !i.IsSuffixed(defaultImageSuffixes));
                 var imagesWithSuffix = defaultImageSuffixes.Select(suffix => new
                 {
@@ -183,7 +186,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
             }
             else
             {
-                foreach (var imageInfo in GetImages(context))
+                foreach (var imageInfo in images)
                 {
                     context.CancellationToken.ThrowIfCancellationRequested();
                     GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
@@ -308,9 +311,9 @@ public class XenialImageNamesGenerator : ISourceGenerator
               && m.AttributeClass.ToString() == generateXenialImageNamesAttribute.ToString()
              );
 
-    private static IEnumerable<ImageInformation> GetImages(GeneratorExecutionContext context)
+    private static IEnumerable<ImageInformation> GetImages(GeneratorExecutionContext context, Features features)
     {
-        var projectDirectory = GetProjectDirectory(context);
+        var projectDirectory = features.GetProjectDirectory();
 
         foreach (var additionalText in context.AdditionalFiles)
         {
@@ -492,16 +495,6 @@ public class XenialImageNamesGenerator : ISourceGenerator
         return visibility;
     }
 
-    private static string GetProjectDirectory(GeneratorExecutionContext context)
-    {
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.ProjectDir", out var projectDir))
-        {
-            return projectDir;
-        }
-
-        return string.Empty;
-    }
-
     private static void CheckForDebugger(GeneratorExecutionContext context)
     {
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{xenialDebugSourceGenerators}", out var xenialDebugSourceGeneratorsAttrString))
@@ -532,6 +525,19 @@ public class XenialImageNamesGenerator : ISourceGenerator
         }
     }
 
+}
+
+public record Features(GeneratorExecutionContext Context)
+{
+    public string GetProjectDirectory()
+    {
+        if (Context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.ProjectDir", out var projectDir))
+        {
+            return projectDir;
+        }
+
+        return string.Empty;
+    }
 }
 
 public record struct ImageInformation(
