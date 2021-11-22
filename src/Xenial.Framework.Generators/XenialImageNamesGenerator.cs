@@ -280,15 +280,9 @@ public class XenialImageNamesGenerator : ISourceGenerator
             return (semanticModel, null, false);
         }
 
-        var isAttributeDeclared = symbol
-            .GetAttributes()
-            .Any(m =>
-                m.AttributeClass is not null
-                //We can safely compare with ToString because it represents just the NamedTypeSymbol, not the attributes or overloads
-                && m.AttributeClass.ToString() == generateXenialImageNamesAttribute.ToString()
-             );
+        var isAttributeDeclared = symbol.IsAttributeDeclared(generateXenialImageNamesAttribute);
 
-        if (isAttributeDeclared && !@class.Modifiers.Any(mod => mod.Text == Token(SyntaxKind.PartialKeyword).Text))
+        if (isAttributeDeclared && !@class.HasModifier(SyntaxKind.PartialKeyword))
         {
             context.ReportDiagnostic(
                 Diagnostic.Create(
@@ -302,14 +296,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
         return (semanticModel, symbol, isAttributeDeclared);
     }
 
-    private static AttributeData GetXenialImageNamesAttribute(
-        INamedTypeSymbol symbol,
-        INamedTypeSymbol generateXenialImageNamesAttribute
-        ) => symbol.GetAttributes().First(m =>
-              m.AttributeClass is not null
-              //We can safely compare with ToString because it represents just the NamedTypeSymbol, not the attributes or overloads
-              && m.AttributeClass.ToString() == generateXenialImageNamesAttribute.ToString()
-             );
+    private static AttributeData GetXenialImageNamesAttribute(INamedTypeSymbol symbol, INamedTypeSymbol generateXenialImageNamesAttribute)
+        => symbol.GetAttribute(generateXenialImageNamesAttribute);
 
     private static IEnumerable<ImageInformation> GetImages(GeneratorExecutionContext context, Features features)
     {

@@ -2,6 +2,8 @@
 using System.Linq;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Xenial.Framework.Generators;
 
@@ -63,4 +65,33 @@ internal static class AttributeDataExtensions
         return defaultValue;
     }
 
+}
+
+
+public static class TypeSymbolExtensions
+{
+    public static bool IsAttributeDeclared(this INamedTypeSymbol symbol, INamedTypeSymbol attributeSymbol)
+        => symbol == null ? false : symbol
+            .GetAttributes()
+            .Any(m =>
+                m.AttributeClass is not null
+                //We can safely compare with ToString because it represents just the NamedTypeSymbol, not the attributes or overloads
+                && m.AttributeClass.ToString() == attributeSymbol.ToString()
+             );
+
+    public static AttributeData GetAttribute(this INamedTypeSymbol symbol, INamedTypeSymbol attributeSymbol)
+    {
+        _ = symbol ?? throw new ArgumentNullException(nameof(symbol));
+
+        return symbol.GetAttributes().First(m =>
+            m.AttributeClass is not null
+            //We can safely compare with ToString because it represents just the NamedTypeSymbol, not the attributes or overloads
+            && m.AttributeClass.ToString() == attributeSymbol.ToString()
+        );
+    }
+
+    public static bool HasModifier(this ClassDeclarationSyntax @class, SyntaxKind kind)
+        => @class == null
+            ? false
+            : @class.Modifiers.Any(mod => mod.Text == SyntaxFactory.Token(kind).Text);
 }
