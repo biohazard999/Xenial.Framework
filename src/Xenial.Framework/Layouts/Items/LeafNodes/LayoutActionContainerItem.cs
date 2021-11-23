@@ -11,29 +11,28 @@ using DevExpress.ExpressApp.Templates;
 
 using Xenial.Framework.Layouts.Items.Base;
 
-namespace Xenial.Framework.Layouts.Items.LeafNodes
+namespace Xenial.Framework.Layouts.Items.LeafNodes;
+
+/// <summary>   (Immutable) a layout action container item. </summary>
+[XenialCheckLicense]
+public partial record LayoutActionContainerItem(string ActionContainerId) : LayoutViewItem(ActionContainerId)
 {
-    /// <summary>   (Immutable) a layout action container item. </summary>
-    [XenialCheckLicense]
-    public partial record LayoutActionContainerItem(string ActionContainerId) : LayoutViewItem(ActionContainerId)
-    {
-        /// <summary>   Gets or sets the paint style. </summary>
-        ///
-        /// <value> The paint style. </value>
+    /// <summary>   Gets or sets the paint style. </summary>
+    ///
+    /// <value> The paint style. </value>
 
-        public ActionItemPaintStyle? PaintStyle { get; set; }
+    public ActionItemPaintStyle? PaintStyle { get; set; }
 
-        /// <summary>   Gets or sets the orientation. </summary>
-        ///
-        /// <value> The orientation. </value>
+    /// <summary>   Gets or sets the orientation. </summary>
+    ///
+    /// <value> The orientation. </value>
 
-        public ActionContainerOrientation? Orientation { get; set; }
+    public ActionContainerOrientation? Orientation { get; set; }
 
-        /// <summary>   Gets or sets the action container options. </summary>
-        ///
-        /// <value> The action container options. </value>
+    /// <summary>   Gets or sets the action container options. </summary>
+    ///
+    /// <value> The action container options. </value>
 
-        public Action<IModelActionContainerViewItem>? ActionContainerOptions { get; set; }
+    public Action<IModelActionContainerViewItem>? ActionContainerOptions { get; set; }
 
-    }
 }

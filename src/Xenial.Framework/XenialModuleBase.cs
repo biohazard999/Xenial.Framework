@@ -8,80 +8,79 @@ using DevExpress.ExpressApp.Updating;
 
 using Xenial.Framework.Model.Core;
 
-namespace Xenial.Framework
+namespace Xenial.Framework;
+
+/// <summary>
+/// The base class for a Xenial module This is an empty module, so nothing will be loaded by
+/// reflection. Everything needs to be registered manually.
+/// </summary>
+///
+/// <seealso cref="ModuleBase"/>
+
+public abstract class XenialModuleBase : ModuleBase
 {
-    /// <summary>
-    /// The base class for a Xenial module This is an empty module, so nothing will be loaded by
-    /// reflection. Everything needs to be registered manually.
-    /// </summary>
+    /// <summary>   Initializes a new instance of the <see cref="XenialModuleBase"/> class. </summary>
+    protected XenialModuleBase() : this(true) { }
+
+    /// <summary>   Initializes a new instance of the <see cref="XenialModuleBase"/> class. </summary>
     ///
-    /// <seealso cref="ModuleBase"/>
+    /// <param name="useNullDiffsStore">    (Optional) if set to <c>true</c> [use null diffs store]. </param>
 
-    public abstract class XenialModuleBase : ModuleBase
+    protected XenialModuleBase(bool useNullDiffsStore = true)
     {
-        /// <summary>   Initializes a new instance of the <see cref="XenialModuleBase"/> class. </summary>
-        protected XenialModuleBase() : this(true) { }
-
-        /// <summary>   Initializes a new instance of the <see cref="XenialModuleBase"/> class. </summary>
-        ///
-        /// <param name="useNullDiffsStore">    (Optional) if set to <c>true</c> [use null diffs store]. </param>
-
-        protected XenialModuleBase(bool useNullDiffsStore = true)
+        if (useNullDiffsStore)
         {
-            if (useNullDiffsStore)
-            {
-                DiffsStore = new NullDiffsStore(GetType().Assembly);
-            }
+            DiffsStore = new NullDiffsStore(GetType().Assembly);
         }
+    }
 
-        /// <summary>   returns empty updaters. </summary>
-        ///
-        /// <param name="objectSpace">      . </param>
-        /// <param name="versionFromDB">    . </param>
-        ///
-        /// <returns>
-        /// An enumerator that allows foreach to be used to process the module updaters in this
-        /// collection.
-        /// </returns>
+    /// <summary>   returns empty updaters. </summary>
+    ///
+    /// <param name="objectSpace">      . </param>
+    /// <param name="versionFromDB">    . </param>
+    ///
+    /// <returns>
+    /// An enumerator that allows foreach to be used to process the module updaters in this
+    /// collection.
+    /// </returns>
 
-        public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB)
-            => ModuleUpdater.EmptyModuleUpdaters;
+    public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB)
+        => ModuleUpdater.EmptyModuleUpdaters;
 
-        /// <summary>   returns empty types. </summary>
-        ///
-        /// <returns>
-        /// An enumerator that allows foreach to be used to process the declared controller types in this
-        /// collection.
-        /// </returns>
+    /// <summary>   returns empty types. </summary>
+    ///
+    /// <returns>
+    /// An enumerator that allows foreach to be used to process the declared controller types in this
+    /// collection.
+    /// </returns>
 
-        protected override IEnumerable<Type> GetDeclaredControllerTypes()
-            => Type.EmptyTypes;
+    protected override IEnumerable<Type> GetDeclaredControllerTypes()
+        => Type.EmptyTypes;
 
-        /// <summary>   returns empty types. </summary>
-        ///
-        /// <returns>
-        /// An enumerator that allows foreach to be used to process the declared exported types in this
-        /// collection.
-        /// </returns>
+    /// <summary>   returns empty types. </summary>
+    ///
+    /// <returns>
+    /// An enumerator that allows foreach to be used to process the declared exported types in this
+    /// collection.
+    /// </returns>
 
-        protected override IEnumerable<Type> GetDeclaredExportedTypes()
-            => Type.EmptyTypes;
+    protected override IEnumerable<Type> GetDeclaredExportedTypes()
+        => Type.EmptyTypes;
 
-        /// <summary>   returns empty types. </summary>
-        ///
-        /// <returns>
-        /// An enumerator that allows foreach to be used to process the regular types in this collection.
-        /// </returns>
+    /// <summary>   returns empty types. </summary>
+    ///
+    /// <returns>
+    /// An enumerator that allows foreach to be used to process the regular types in this collection.
+    /// </returns>
 
-        protected override IEnumerable<Type> GetRegularTypes()
-            => Type.EmptyTypes;
+    protected override IEnumerable<Type> GetRegularTypes()
+        => Type.EmptyTypes;
 
-        /// <summary>   Registers the editor descriptors. </summary>
-        ///
-        /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
+    /// <summary>   Registers the editor descriptors. </summary>
+    ///
+    /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
 
-        protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
-        {
-        }
+    protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
+    {
     }
 }

@@ -6,123 +6,122 @@ using System.Text;
 
 using DevExpress.ExpressApp.DC;
 
-namespace Xenial.Framework.ModelBuilders
+namespace Xenial.Framework.ModelBuilders;
+
+public partial class ModelBuilder<TClassType>
 {
-    public partial class ModelBuilder<TClassType>
+    /// <summary>   Fors the properties. </summary>
+    ///
+    /// <exception cref="ArgumentNullException">        Thrown when one or more required arguments
+    ///                                                 are null. </exception>
+    /// <exception cref="InvalidOperationException">    Thrown when the requested operation is
+    ///                                                 invalid. </exception>
+    ///
+    /// <param name="propertyExpressions">  The property expressions. </param>
+    ///
+    /// <returns>
+    /// Xenial.Framework.ModelBuilders.MultiplePropertyBuilder&lt;object?, TClassType&gt;.
+    /// </returns>
+
+    public AggregatedPropertyBuilder<object?, TClassType> ForProperties(params Expression<Func<TClassType, object?>>[] propertyExpressions)
     {
-        /// <summary>   Fors the properties. </summary>
-        ///
-        /// <exception cref="ArgumentNullException">        Thrown when one or more required arguments
-        ///                                                 are null. </exception>
-        /// <exception cref="InvalidOperationException">    Thrown when the requested operation is
-        ///                                                 invalid. </exception>
-        ///
-        /// <param name="propertyExpressions">  The property expressions. </param>
-        ///
-        /// <returns>
-        /// Xenial.Framework.ModelBuilders.MultiplePropertyBuilder&lt;object?, TClassType&gt;.
-        /// </returns>
+        _ = propertyExpressions ?? throw new ArgumentNullException(nameof(propertyExpressions));
+        var propertyBuilderList = new List<IPropertyBuilder<object?, TClassType>>();
 
-        public AggregatedPropertyBuilder<object?, TClassType> ForProperties(params Expression<Func<TClassType, object?>>[] propertyExpressions)
+        foreach (var propertyExpression in propertyExpressions)
         {
-            _ = propertyExpressions ?? throw new ArgumentNullException(nameof(propertyExpressions));
-            var propertyBuilderList = new List<IPropertyBuilder<object?, TClassType>>();
+            _ = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpressions));
 
-            foreach (var propertyExpression in propertyExpressions)
+            var propertyName = ExpressionHelper.Property(propertyExpression);
+            if (propertyName is not null)
             {
-                _ = propertyExpression ?? throw new ArgumentNullException(nameof(propertyExpressions));
-
-                var propertyName = ExpressionHelper.Property(propertyExpression);
-                if (propertyName is not null)
+                var memberInfo = TypeInfo.FindMember(propertyName);
+                if (memberInfo is not null)
                 {
-                    var memberInfo = TypeInfo.FindMember(propertyName);
-                    if (memberInfo is not null)
-                    {
-                        var propertyBuilder = PropertyBuilder.PropertyBuilderFor<object?, TClassType>(memberInfo);
+                    var propertyBuilder = PropertyBuilder.PropertyBuilderFor<object?, TClassType>(memberInfo);
 
-                        Add(propertyBuilder);
+                    Add(propertyBuilder);
 
-                        propertyBuilderList.Add(propertyBuilder);
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException($"Could not create PropertyBuilder for '{TypeInfo}'.{propertyName} ");
-                    }
+                    propertyBuilderList.Add(propertyBuilder);
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Could not create PropertyBuilder for '{TypeInfo}'.{propertyExpression} ");
+                    throw new InvalidOperationException($"Could not create PropertyBuilder for '{TypeInfo}'.{propertyName} ");
                 }
             }
-
-            return new AggregatedPropertyBuilder<object?, TClassType>(this, propertyBuilderList);
+            else
+            {
+                throw new InvalidOperationException($"Could not create PropertyBuilder for '{TypeInfo}'.{propertyExpression} ");
+            }
         }
 
-        /// <summary>   Fors the properties. </summary>
-        ///
-        /// <exception cref="ArgumentNullException">        Thrown when one or more required arguments
-        ///                                                 are null. </exception>
-        /// <exception cref="InvalidOperationException">    Thrown when the requested operation is
-        ///                                                 invalid. </exception>
-        ///
-        /// <typeparam name="TPropertyType">    The type of the t property type. </typeparam>
-        /// <param name="propertyExpressions">  The property expressions. </param>
-        ///
-        /// <returns>
-        /// Xenial.Framework.ModelBuilders.MultiplePropertyBuilder&lt;TPropertyType?, TClassType&gt;.
-        /// </returns>
+        return new AggregatedPropertyBuilder<object?, TClassType>(this, propertyBuilderList);
+    }
 
-        public AggregatedPropertyBuilder<TPropertyType?, TClassType> ForProperties<TPropertyType>(params Expression<Func<TClassType, TPropertyType?>>[] propertyExpressions)
+    /// <summary>   Fors the properties. </summary>
+    ///
+    /// <exception cref="ArgumentNullException">        Thrown when one or more required arguments
+    ///                                                 are null. </exception>
+    /// <exception cref="InvalidOperationException">    Thrown when the requested operation is
+    ///                                                 invalid. </exception>
+    ///
+    /// <typeparam name="TPropertyType">    The type of the t property type. </typeparam>
+    /// <param name="propertyExpressions">  The property expressions. </param>
+    ///
+    /// <returns>
+    /// Xenial.Framework.ModelBuilders.MultiplePropertyBuilder&lt;TPropertyType?, TClassType&gt;.
+    /// </returns>
+
+    public AggregatedPropertyBuilder<TPropertyType?, TClassType> ForProperties<TPropertyType>(params Expression<Func<TClassType, TPropertyType?>>[] propertyExpressions)
+    {
+        _ = propertyExpressions ?? throw new ArgumentNullException(nameof(propertyExpressions));
+        var propertyBuilderList = new List<IPropertyBuilder<TPropertyType?, TClassType>>();
+
+        foreach (var propertyExpression in propertyExpressions)
         {
-            _ = propertyExpressions ?? throw new ArgumentNullException(nameof(propertyExpressions));
-            var propertyBuilderList = new List<IPropertyBuilder<TPropertyType?, TClassType>>();
-
-            foreach (var propertyExpression in propertyExpressions)
+            var propertyName = ExpressionHelper.Property(propertyExpression);
+            if (propertyName is not null)
             {
-                var propertyName = ExpressionHelper.Property(propertyExpression);
-                if (propertyName is not null)
+                var memberInfo = TypeInfo.FindMember(propertyName);
+                if (memberInfo is not null)
                 {
-                    var memberInfo = TypeInfo.FindMember(propertyName);
-                    if (memberInfo is not null)
-                    {
-                        var propertyBuilder = PropertyBuilder.PropertyBuilderFor<TPropertyType?, TClassType>(memberInfo);
+                    var propertyBuilder = PropertyBuilder.PropertyBuilderFor<TPropertyType?, TClassType>(memberInfo);
 
-                        Add(propertyBuilder);
+                    Add(propertyBuilder);
 
-                        propertyBuilderList.Add(propertyBuilder);
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException($"Could not create PropertyBuilder for '{TypeInfo}'.{propertyName} ");
-                    }
+                    propertyBuilderList.Add(propertyBuilder);
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Could not create PropertyBuilder for '{TypeInfo}'.{propertyExpression} ");
+                    throw new InvalidOperationException($"Could not create PropertyBuilder for '{TypeInfo}'.{propertyName} ");
                 }
             }
-
-            return new AggregatedPropertyBuilder<TPropertyType?, TClassType>(this, propertyBuilderList);
-        }
-
-        /// <summary>   Fors the type of the properties of. </summary>
-        ///
-        /// <param name="predicate">    The predicate. </param>
-        ///
-        /// <returns>
-        /// IAggregatedPropertyBuilder&lt;System.Nullable&lt;System.Object&gt;, TClassType&gt;.
-        /// </returns>
-
-        public IAggregatedPropertyBuilder<object?, TClassType> ForProperties(Func<IMemberInfo, bool> predicate)
-        {
-            var propertyBuilders = TypeInfo.Members.Where(predicate).Select(m => PropertyBuilder.PropertyBuilderFor<object?, TClassType>(m));
-
-            foreach (var propertyBuilder in propertyBuilders)
+            else
             {
-                Add(propertyBuilder);
+                throw new InvalidOperationException($"Could not create PropertyBuilder for '{TypeInfo}'.{propertyExpression} ");
             }
-
-            return new AggregatedPropertyBuilder<object?, TClassType>(this, propertyBuilders);
         }
+
+        return new AggregatedPropertyBuilder<TPropertyType?, TClassType>(this, propertyBuilderList);
+    }
+
+    /// <summary>   Fors the type of the properties of. </summary>
+    ///
+    /// <param name="predicate">    The predicate. </param>
+    ///
+    /// <returns>
+    /// IAggregatedPropertyBuilder&lt;System.Nullable&lt;System.Object&gt;, TClassType&gt;.
+    /// </returns>
+
+    public IAggregatedPropertyBuilder<object?, TClassType> ForProperties(Func<IMemberInfo, bool> predicate)
+    {
+        var propertyBuilders = TypeInfo.Members.Where(predicate).Select(m => PropertyBuilder.PropertyBuilderFor<object?, TClassType>(m));
+
+        foreach (var propertyBuilder in propertyBuilders)
+        {
+            Add(propertyBuilder);
+        }
+
+        return new AggregatedPropertyBuilder<object?, TClassType>(this, propertyBuilders);
     }
 }

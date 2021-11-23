@@ -1,9 +1,8 @@
-﻿namespace Xenial.Framework.ModelBuilders
+﻿namespace Xenial.Framework.ModelBuilders;
+
+/// <summary>   Interface for builder. </summary>
+public interface IBuilder
 {
-    /// <summary>   Interface for builder. </summary>
-    public interface IBuilder
-    {
-        /// <summary>   Builds this instance. </summary>
-        void Build();
-    }
+    /// <summary>   Builds this instance. </summary>
+    void Build();
 }

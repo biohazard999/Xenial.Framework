@@ -1,9 +1,7 @@
 ﻿
-using Microsoft.CodeAnalysis;
-
-using Microsoft.CodeAnalysis.Text;
-
 using System.Threading;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Xenial.Framework.Generators.Tests;
 

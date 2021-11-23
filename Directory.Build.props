@@ -61,6 +61,11 @@
     <!-- https://newbedev.com/is-it-possible-to-remove-the-full-paths-from-net-assemblies-created-with-dotnet-build -->
     <Deterministic>true</Deterministic>
     <DeterministicSourcePaths>true</DeterministicSourcePaths>
+
+
+    <!-- Building a 5.0 app with 6.0 SDK in VS 2019 causes analyzers to fail to load #36552 -->    
+    <!-- https://github.com/dotnet/aspnetcore/issues/36552 -->    
+   <DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
