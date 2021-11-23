@@ -12,8 +12,6 @@ using Microsoft.CodeAnalysis.Text;
 
 using Xenial.Framework.MsBuild;
 
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-
 namespace Xenial.Framework.Generators;
 
 [Generator]
@@ -29,15 +27,6 @@ public class XenialImageNamesGenerator : ISourceGenerator
     private const string markAsXenialImageSourceMetadataAttribute = "XenialImageNames";
 
     private const string imagesBaseFolder = "Images";
-
-    private readonly string[] defaultImageSuffixes = new[]
-    {
-        "12x12",
-        "16x16",
-        "24x24",
-        "32x32",
-        "48x48",
-    };
 
     public void Initialize(GeneratorInitializationContext context)
         => context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
@@ -77,7 +66,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
         CheckForDebugger(context);
 
-        var features = new Features(context);
+        var globalOptions = new GlobalOptions(context);
 
         var compilation = GenerateAttribute(context);
 
@@ -124,76 +113,25 @@ public class XenialImageNamesGenerator : ISourceGenerator
             builder.WriteLine($"namespace {@classSymbol.ContainingNamespace}");
             builder.OpenBrace();
 
-            builder.WriteLine("[CompilerGenerated]");
-            //We don't need to specify any other modifier
-            //because the user can decide if he want it to be an instance type.
-            //We also don't need to specify the visibility for partial types
-            builder.WriteLine($"partial class {classSymbol.Name}");
+            var features = new Features(@attribute);
 
-            builder.OpenBrace();
-
-            var modifier = GetResultantVisibility(classSymbol) == SymbolVisibility.Public
-                ? "public"
-                : "internal";
-
-            var sizesFeature = attribute.IsAttributeSet(AttributeNames.Sizes);
             var defaultSize = attribute.GetAttributeValue(AttributeNames.DefaultImageSize, AttributeNames.DefaultImageSizeValue);
-
-            if (!SanatizeSize(context, defaultSize))
+            if (!SanitizeSize(context, defaultSize))
             {
                 return;
             }
 
-            var images = GetImages(context, features).ToList();
+            var images = GetImages(context, globalOptions).ToList();
 
-            if (sizesFeature)
-            {
-                var imagesWithoutSuffix = images.Where(i => !i.IsSuffixed(defaultImageSuffixes));
-                var imagesWithSuffix = defaultImageSuffixes.Select(suffix => new
-                {
-                    suffix,
-                    images = images.Where(i => i.IsSuffixed(suffix))
-                }).Where(i => i.images.Any());
+            var imageClass = new ImagesClass(
+                globalOptions,
+                features,
+                classSymbol,
+                @attribute,
+                images
+            );
 
-                foreach (var imageInfo in imagesWithoutSuffix)
-                {
-                    context.CancellationToken.ThrowIfCancellationRequested();
-                    GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
-                }
-
-                foreach (var imageInfoGroup in imagesWithSuffix)
-                {
-                    context.CancellationToken.ThrowIfCancellationRequested();
-                    builder.WriteLine();
-                    builder.WriteLine($"{modifier} partial class Size{imageInfoGroup.suffix}");
-                    builder.OpenBrace();
-
-                    foreach (var imageInfo in imageInfoGroup.images)
-                    {
-                        context.CancellationToken.ThrowIfCancellationRequested();
-                        GenerateImageNameConstant(
-                            attribute,
-                            builder,
-                            modifier,
-                            imageInfo,
-                            removeSuffix: true,
-                            suffix: imageInfoGroup.suffix
-                        );
-                    }
-
-                    builder.CloseBrace();
-                }
-            }
-            else
-            {
-                foreach (var imageInfo in images)
-                {
-                    context.CancellationToken.ThrowIfCancellationRequested();
-                    GenerateImageNameConstant(attribute, builder, modifier, imageInfo);
-                }
-            }
-
-            builder.CloseBrace();
+            builder = imageClass.ToString(context, builder);
 
             builder.CloseBrace();
 
@@ -201,41 +139,15 @@ public class XenialImageNamesGenerator : ISourceGenerator
         }
     }
 
-    private static bool SanatizeSize(GeneratorExecutionContext context, string size)
+    private static bool SanitizeSize(GeneratorExecutionContext context, string size)
     {
-        //TODO: SanatizeSize eg. 16x16, 32x32 etc.
+        //TODO: SanitizeSize eg. 16x16, 32x32 etc.
         if (string.IsNullOrEmpty(size))
         {
             return false;
         }
 
         return true;
-    }
-
-    private static void GenerateImageNameConstant(
-        AttributeData attribute,
-        CurlyIndenter builder,
-        string modifier,
-        ImageInformation imageInfo,
-        bool removeSuffix = true,
-        string suffix = ""
-    )
-    {
-        if (@attribute.IsAttributeSet(AttributeNames.SmartComments))
-        {
-            builder.WriteLine($"//![]({imageInfo.Path})");
-        }
-
-        static string RemoveSuffix(string imageName, string suffix)
-        {
-            if (imageName.EndsWith(suffix, StringComparison.InvariantCulture))
-            {
-                return imageName.Substring(0, imageName.Length - suffix.Length).TrimEnd('_');
-            }
-            return imageName;
-        }
-
-        builder.WriteLine($"{modifier} const string {(removeSuffix ? RemoveSuffix(imageInfo.Name, suffix) : imageInfo.Name)} = \"{imageInfo.Name}\";");
     }
 
     private static Compilation AddGeneratedCode(
@@ -299,7 +211,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
     private static AttributeData GetXenialImageNamesAttribute(INamedTypeSymbol symbol, INamedTypeSymbol generateXenialImageNamesAttribute)
         => symbol.GetAttribute(generateXenialImageNamesAttribute);
 
-    private static IEnumerable<ImageInformation> GetImages(GeneratorExecutionContext context, Features features)
+    private static IEnumerable<ImageInformation> GetImages(GeneratorExecutionContext context, GlobalOptions features)
     {
         var projectDirectory = features.GetProjectDirectory();
 
@@ -425,64 +337,6 @@ public class XenialImageNamesGenerator : ISourceGenerator
         return (source, syntaxTree);
     }
 
-    internal static class AttributeNames
-    {
-        internal const string Sizes = nameof(Sizes);
-        internal const string DefaultImageSize = nameof(DefaultImageSize);
-        internal const string DefaultImageSizeValue = "16x16";
-
-        internal const string SmartComments = nameof(SmartComments);
-
-        internal const string SubClassFolders = nameof(SubClassFolders);
-    }
-
-    internal static SymbolVisibility GetResultantVisibility(ISymbol symbol)
-    {
-        // Start by assuming it's visible.
-        var visibility = SymbolVisibility.Public;
-
-        switch (symbol.Kind)
-        {
-            case SymbolKind.Alias:
-                // Aliases are uber private.  They're only visible in the same file that they
-                // were declared in.
-                return SymbolVisibility.Private;
-
-            case SymbolKind.Parameter:
-                // Parameters are only as visible as their containing symbol
-                return GetResultantVisibility(symbol.ContainingSymbol);
-
-            case SymbolKind.TypeParameter:
-                // Type Parameters are private.
-                return SymbolVisibility.Private;
-        }
-
-        while (symbol != null && symbol.Kind != SymbolKind.Namespace)
-        {
-            switch (symbol.DeclaredAccessibility)
-            {
-                // If we see anything private, then the symbol is private.
-                case Accessibility.NotApplicable:
-                case Accessibility.Private:
-                    return SymbolVisibility.Private;
-
-                // If we see anything internal, then knock it down from public to
-                // internal.
-                case Accessibility.Internal:
-                case Accessibility.ProtectedAndInternal:
-                    visibility = SymbolVisibility.Internal;
-                    break;
-
-                    // For anything else (Public, Protected, ProtectedOrInternal), the
-                    // symbol stays at the level we've gotten so far.
-            }
-
-            symbol = symbol.ContainingSymbol;
-        }
-
-        return visibility;
-    }
-
     private static void CheckForDebugger(GeneratorExecutionContext context)
     {
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{xenialDebugSourceGenerators}", out var xenialDebugSourceGeneratorsAttrString))
@@ -515,8 +369,136 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
 }
 
-public record Features(GeneratorExecutionContext Context)
+internal static class AttributeNames
 {
+    internal const string Sizes = nameof(Sizes);
+    internal const string DefaultImageSize = nameof(DefaultImageSize);
+    internal const string DefaultImageSizeValue = "16x16";
+
+    internal const string SmartComments = nameof(SmartComments);
+
+    internal const string SubClassFolders = nameof(SubClassFolders);
+}
+
+public record ImagesClass(
+    GlobalOptions GlobalOptions,
+    Features Features,
+    INamedTypeSymbol Class,
+    AttributeData Attribute,
+    IEnumerable<ImageInformation> Images
+)
+{
+    internal CurlyIndenter ToString(GeneratorExecutionContext context, CurlyIndenter builder)
+    {
+        _ = builder ?? throw new ArgumentNullException(nameof(builder));
+
+        builder.WriteLine("[CompilerGenerated]");
+        //We don't need to specify any other modifier
+        //because the user can decide if he want it to be an instance type.
+        //We also don't need to specify the visibility for partial types
+        builder.WriteLine($"partial class {Class.Name}");
+
+        builder.OpenBrace();
+
+        var modifier = Class.GetResultantVisibility() == SymbolVisibility.Public
+            ? "public"
+            : "internal";
+
+        if (Features.Sizes)
+        {
+            var imagesWithoutSuffix = Images.Where(i => !i.IsSuffixed(GlobalOptions.DefaultImageSuffixes));
+            var imagesWithSuffix = GlobalOptions.DefaultImageSuffixes.Select(suffix => new
+            {
+                suffix,
+                images = Images.Where(i => i.IsSuffixed(suffix))
+            }).Where(i => i.images.Any());
+
+            foreach (var imageInfo in imagesWithoutSuffix)
+            {
+                context.CancellationToken.ThrowIfCancellationRequested();
+                GenerateImageNameConstant(Attribute, builder, modifier, imageInfo);
+            }
+
+            foreach (var imageInfoGroup in imagesWithSuffix)
+            {
+                context.CancellationToken.ThrowIfCancellationRequested();
+                builder.WriteLine();
+                builder.WriteLine($"{modifier} partial class Size{imageInfoGroup.suffix}");
+                builder.OpenBrace();
+
+                foreach (var imageInfo in imageInfoGroup.images)
+                {
+                    context.CancellationToken.ThrowIfCancellationRequested();
+                    GenerateImageNameConstant(
+                        Attribute,
+                        builder,
+                        modifier,
+                        imageInfo,
+                        removeSuffix: true,
+                        suffix: imageInfoGroup.suffix
+                    );
+                }
+
+                builder.CloseBrace();
+            }
+        }
+        else
+        {
+            foreach (var imageInfo in Images)
+            {
+                context.CancellationToken.ThrowIfCancellationRequested();
+                GenerateImageNameConstant(Attribute, builder, modifier, imageInfo);
+            }
+        }
+
+        builder.CloseBrace();
+
+        return builder;
+    }
+
+    private static void GenerateImageNameConstant(
+        AttributeData attribute,
+        CurlyIndenter builder,
+        string modifier,
+        ImageInformation imageInfo,
+        bool removeSuffix = true,
+        string suffix = ""
+    )
+    {
+        if (@attribute.IsAttributeSet(AttributeNames.SmartComments))
+        {
+            builder.WriteLine($"//![]({imageInfo.Path})");
+        }
+
+        static string RemoveSuffix(string imageName, string suffix)
+        {
+            if (imageName.EndsWith(suffix, StringComparison.InvariantCulture))
+            {
+                return imageName.Substring(0, imageName.Length - suffix.Length).TrimEnd('_');
+            }
+            return imageName;
+        }
+
+        builder.WriteLine($"{modifier} const string {(removeSuffix ? RemoveSuffix(imageInfo.Name, suffix) : imageInfo.Name)} = \"{imageInfo.Name}\";");
+    }
+}
+
+public record Features(AttributeData Attribute)
+{
+    public bool Sizes => Attribute.IsAttributeSet(AttributeNames.Sizes);
+}
+
+public record GlobalOptions(GeneratorExecutionContext Context)
+{
+    public IList<string> DefaultImageSuffixes { get; } = new[]
+    {
+        "12x12",
+        "16x16",
+        "24x24",
+        "32x32",
+        "48x48",
+    };
+
     public string GetProjectDirectory()
     {
         if (Context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.ProjectDir", out var projectDir))
@@ -540,7 +522,7 @@ public record struct ImageInformation(
     public bool IsSuffixed(string suffix)
         => Name.EndsWith(suffix, StringComparison.InvariantCulture);
 
-    public bool IsSuffixed(string[] suffixes)
+    public bool IsSuffixed(IEnumerable<string> suffixes)
         => suffixes.Any(IsSuffixed);
 }
 
