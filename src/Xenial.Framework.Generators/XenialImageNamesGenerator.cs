@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Threading;
 
@@ -226,31 +227,33 @@ public class XenialImageNamesGenerator : ISourceGenerator
             {
                 if (bool.TryParse(markedAsImageSourceStr, out var markedAsImageSource))
                 {
-                    if (markedAsImageSource)
+                    if (!markedAsImageSource)
                     {
-                        var path = additionalText.Path;
-                        var fileName = Path.GetFileName(path);
-                        var name = Path.GetFileNameWithoutExtension(path);
-                        var extension = Path.GetExtension(path);
-                        var directory = Path.GetDirectoryName(path);
-
-                        var imageRoot = Path.Combine(projectDirectory, imagesBaseFolder);
-
-                        var relativePath = (path.StartsWith(imageRoot, StringComparison.InvariantCulture)
-                            ? path.Substring(imageRoot.Length) : path).TrimStart('/', '\\');
-
-                        yield return new ImageInformation(
-                            path,
-                            fileName,
-                            name,
-                            extension,
-                            directory,
-                            relativePath,
-                            imagesBaseFolder,
-                            projectDirectory,
-                            assemblyName
-                        );
+                        continue;
                     }
+
+                    var path = additionalText.Path;
+                    var fileName = Path.GetFileName(path);
+                    var name = Path.GetFileNameWithoutExtension(path);
+                    var extension = Path.GetExtension(path);
+                    var directory = Path.GetDirectoryName(path);
+
+                    var imageRoot = Path.Combine(projectDirectory, imagesBaseFolder);
+
+                    var relativePath = (path.StartsWith(imageRoot, StringComparison.InvariantCulture)
+                        ? path.Substring(imageRoot.Length) : path).TrimStart('/', '\\');
+
+                    yield return new ImageInformation(
+                        path,
+                        fileName,
+                        name,
+                        extension,
+                        directory,
+                        relativePath,
+                        imagesBaseFolder,
+                        projectDirectory,
+                        assemblyName
+                    );
                 }
                 else
                 {
