@@ -26,6 +26,7 @@
       <CompilerVisibleProperty Include="XenialAttributesVisibility" />
       <CompilerVisibleProperty Include="XenialDebugSourceGenerators" />
       <CompilerVisibleProperty Include="LangVersion" />
+      <CompilerVisibleProperty Include="AssemblyName" />
     </ItemGroup>
 
     <ItemGroup>
