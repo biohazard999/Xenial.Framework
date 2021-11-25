@@ -214,6 +214,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
     private static IEnumerable<ImageInformation> GetImages(GeneratorExecutionContext context, GlobalOptions features)
     {
         var projectDirectory = features.GetProjectDirectory();
+        var assemblyName = features.GetAssemblyName();
 
         foreach (var additionalText in context.AdditionalFiles)
         {
@@ -246,7 +247,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
                             directory,
                             relativePath,
                             imagesBaseFolder,
-                            projectDirectory
+                            projectDirectory,
+                            assemblyName
                         );
                     }
                 }
@@ -514,6 +516,16 @@ public record GlobalOptions(GeneratorExecutionContext Context)
 
         return string.Empty;
     }
+
+    public string GetAssemblyName()
+    {
+        if (Context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.AssemblyName", out var assemblyName))
+        {
+            return assemblyName;
+        }
+
+        return string.Empty;
+    }
 }
 
 public record struct ImageInformation(
@@ -524,7 +536,8 @@ public record struct ImageInformation(
     string Directory,
     string RelativePath,
     string BaseDirectory,
-    string ProjectDirectory)
+    string ProjectDirectory,
+    string AssemblyName)
 {
     public bool IsSuffixed(string suffix)
         => Name.EndsWith(suffix, StringComparison.InvariantCulture);
@@ -534,6 +547,19 @@ public record struct ImageInformation(
 
     public string RelativeDirectory
         => System.IO.Path.GetDirectoryName(RelativePath);
+
+    public string ResourceName =>
+        string.Join(".", new[]
+        {
+            AssemblyName
+        }.Concat(
+            Path.Replace('/', '.')
+                .Replace('\\', '.')
+                .Split('.')
+            ).Where(
+                s => !string.IsNullOrEmpty(s)
+            )
+        );
 }
 
 internal enum SymbolVisibility
