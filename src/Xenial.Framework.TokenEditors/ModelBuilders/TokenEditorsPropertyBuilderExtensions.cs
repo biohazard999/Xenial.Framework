@@ -9,7 +9,8 @@ using DevExpress.Persistent.Base;
 namespace Xenial.Framework.ModelBuilders;
 
 /// <summary>   Class TokenEditorsPropertyBuilderExtensions. </summary>
-public static class TokenEditorsPropertyBuilderExtensions
+[XenialCheckLicense]
+public static partial class TokenEditorsPropertyBuilderExtensions
 {
     /// <summary>
     /// Use the Token String Property Editor <see cref="TokenStringEditorAttribute"/>

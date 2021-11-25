@@ -232,8 +232,11 @@ public class XenialImageNamesGenerator : ISourceGenerator
                         var name = Path.GetFileNameWithoutExtension(path);
                         var extension = Path.GetExtension(path);
                         var directory = Path.GetDirectoryName(path);
-                        var relativePath = path.StartsWith(projectDirectory, StringComparison.InvariantCulture)
-                            ? path.Substring(projectDirectory.Length) : path;
+
+                        var imageRoot = Path.Combine(projectDirectory, imagesBaseFolder);
+
+                        var relativePath = (path.StartsWith(imageRoot, StringComparison.InvariantCulture)
+                            ? path.Substring(imageRoot.Length) : path).TrimStart('/', '\\');
 
                         yield return new ImageInformation(
                             path,
@@ -242,7 +245,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
                             extension,
                             directory,
                             relativePath,
-                            imagesBaseFolder
+                            imagesBaseFolder,
+                            projectDirectory
                         );
                     }
                 }
@@ -446,6 +450,8 @@ public record ImagesClass(
         {
             foreach (var imageInfo in Images)
             {
+                Console.WriteLine(imageInfo);
+
                 context.CancellationToken.ThrowIfCancellationRequested();
                 GenerateImageNameConstant(Attribute, builder, modifier, imageInfo);
             }
@@ -517,13 +523,17 @@ public record struct ImageInformation(
     string Extension,
     string Directory,
     string RelativePath,
-    string BaseDirectory)
+    string BaseDirectory,
+    string ProjectDirectory)
 {
     public bool IsSuffixed(string suffix)
         => Name.EndsWith(suffix, StringComparison.InvariantCulture);
 
     public bool IsSuffixed(IEnumerable<string> suffixes)
         => suffixes.Any(IsSuffixed);
+
+    public string RelativeDirectory
+        => System.IO.Path.GetDirectoryName(RelativePath);
 }
 
 internal enum SymbolVisibility
