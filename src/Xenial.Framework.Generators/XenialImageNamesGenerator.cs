@@ -468,16 +468,18 @@ public record ImagesClass(
             if (Features.ResourceAccessors)
             {
                 builder.WriteLine();
-                builder.WriteLine($"{modifier} class ResourceNames");
+                builder.WriteLine($"{modifier} static class ResourceNames");
                 builder.OpenBrace();
                 foreach (var imageInfo in Images)
                 {
                     GenerateResourceNameConstant(Attribute, builder, modifier, imageInfo);
                 }
 
+                builder.CloseBrace();
+
                 builder.WriteLine();
 
-                builder.WriteLine($"{modifier} class AsStream");
+                builder.WriteLine($"{modifier} static class AsStream");
                 builder.OpenBrace();
 
                 foreach (var imageInfo in Images)
@@ -499,8 +501,6 @@ public record ImagesClass(
 
                 builder.CloseBrace();
 
-
-                builder.CloseBrace();
 
             }
         }
