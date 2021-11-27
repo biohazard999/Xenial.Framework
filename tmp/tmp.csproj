@@ -9,7 +9,7 @@
     <XenialDebugSourceGenerators>false</XenialDebugSourceGenerators>
   </PropertyGroup>
 
-  <ItemGroup>    
+  <ItemGroup>
     <!--<PackageReference Include="Xenial.Framework.CompilerServices" Version="0.2.6-alpha.0.99" />-->
     <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.*">
       <PrivateAssets>all</PrivateAssets>
@@ -19,9 +19,11 @@
 
   <PropertyGroup>
     <!--<XenialAttributesModifier>public</XenialAttributesModifier>-->
+
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
-  <ItemGroup>    
+  <ItemGroup>
     <XenialImageNames Include="Images/*.png" />
   </ItemGroup>
 

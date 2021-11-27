@@ -5,12 +5,12 @@
         SmartComments = true,
         ResourceAccessors = true
     )]
-    public partial class ImageNamesWithSizes
+    public static partial class ImageNamesWithSizes
     {
-        public ImageNamesWithSizes()
+        static ImageNamesWithSizes()
         {
             var foo = ImageNamesWithSizes.aac;
-            
+
         }
     }
 

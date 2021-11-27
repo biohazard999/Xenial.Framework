@@ -477,7 +477,7 @@ public record ImagesClass(
 
                 builder.WriteLine();
 
-                builder.WriteLine($"{modifier} static class AsStream");
+                builder.WriteLine($"{modifier} class AsStream");
                 builder.OpenBrace();
 
                 foreach (var imageInfo in Images)
@@ -489,7 +489,7 @@ public record ImagesClass(
 
                 builder.WriteLine();
 
-                builder.WriteLine($"{modifier} static class AsBytes");
+                builder.WriteLine($"{modifier} class AsBytes");
                 builder.OpenBrace();
 
                 foreach (var imageInfo in Images)
