@@ -11,6 +11,7 @@ namespace Xenial
         
         public bool Sizes { get; set; }
         public bool SmartComments { get; set; }
+        public bool ResourceAccessors { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string DefaultImageSize { get; set; } = "16x16";
     }

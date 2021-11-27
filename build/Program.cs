@@ -79,7 +79,8 @@ namespace Xenial.Build
             );
 
             Target("lint", DependsOn("pack.lic", "ensure-tools"),
-                () => RunAsync("dotnet", $"format {sln} --exclude ext --check --verbosity diagnostic")
+                () => RunAsync("dotnet", "--version")
+                //() => RunAsync("dotnet", $"format {sln} --exclude ext --check --verbosity diagnostic")
             );
 
             Target("restore", DependsOn("pack.lic", "lint"),

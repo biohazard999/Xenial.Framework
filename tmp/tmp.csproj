@@ -21,7 +21,7 @@
     <!--<XenialAttributesModifier>public</XenialAttributesModifier>-->
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup>    
     <XenialImageNames Include="Images/*.png" />
   </ItemGroup>
 
