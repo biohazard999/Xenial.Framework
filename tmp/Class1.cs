@@ -1,11 +1,16 @@
 ﻿namespace MyProject
 {
-    [Xenial.XenialImageNames(Sizes = true)]
+    [Xenial.XenialImageNames(
+        Sizes = false,
+        SmartComments = true,
+        ResourceAccessors = true
+    )]
     public partial class ImageNamesWithSizes
     {
         public ImageNamesWithSizes()
         {
-             var foo = ImageNamesWithSizes.aac;
+            var foo = ImageNamesWithSizes.aac;
+            
         }
     }
 

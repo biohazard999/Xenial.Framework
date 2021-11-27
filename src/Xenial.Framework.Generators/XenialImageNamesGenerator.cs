@@ -694,9 +694,10 @@ public record struct ImageInformation(
     public string ResourceName =>
         string.Join(".", new[]
         {
-            AssemblyName
+            AssemblyName,
+            BaseDirectory
         }.Concat(
-            Path.Replace('/', '.')
+            RelativePath.Replace('/', '.')
                 .Replace('\\', '.')
                 .Split('.')
             ).Where(
