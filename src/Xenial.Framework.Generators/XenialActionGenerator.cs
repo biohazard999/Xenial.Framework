@@ -16,6 +16,8 @@ namespace Xenial.Framework.Generators;
 [Generator]
 public class XenialActionGenerator : ISourceGenerator
 {
+    private const string xenialDebugSourceGenerators = "XenialDebugSourceGenerators";
+
     private const string xenialActionAttributeName = "XenialActionAttribute";
     private const string xenialNamespace = "Xenial";
     private const string xenialActionAttributeFullName = $"{xenialNamespace}.{xenialActionAttributeName}";
@@ -56,6 +58,35 @@ public class XenialActionGenerator : ISourceGenerator
             }
         }
     }
+    private static void CheckForDebugger(GeneratorExecutionContext context)
+    {
+        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{xenialDebugSourceGenerators}", out var xenialDebugSourceGeneratorsAttrString))
+        {
+            if (bool.TryParse(xenialDebugSourceGeneratorsAttrString, out var xenialDebugSourceGeneratorsBool))
+            {
+                if (xenialDebugSourceGeneratorsBool)
+                {
+                    if (System.Diagnostics.Debugger.IsAttached)
+                    {
+                        return;
+                    }
+
+                    System.Diagnostics.Debugger.Launch();
+                }
+            }
+            else
+            {
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
+                            xenialDebugSourceGenerators,
+                            xenialDebugSourceGeneratorsAttrString
+                        )
+                        , null
+                    ));
+            }
+        }
+    }
 
     public void Execute(GeneratorExecutionContext context)
     {
@@ -65,6 +96,8 @@ public class XenialActionGenerator : ISourceGenerator
         }
 
         context.CancellationToken.ThrowIfCancellationRequested();
+
+        CheckForDebugger(context);
 
         var compilation = context.Compilation;
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{generateXenialActionAttributeMSBuildProperty}", out var generateXenialActionAttrStr))
@@ -127,6 +160,7 @@ public class XenialActionGenerator : ISourceGenerator
         {
             context.CancellationToken.ThrowIfCancellationRequested();
 
+
             var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, generateXenialActionAttribute);
             if (!isAttributeDeclared || semanticModel is null || @classSymbol is null)
             {
@@ -161,6 +195,8 @@ public class XenialActionGenerator : ISourceGenerator
             {
                 builder.WriteLine("[CompilerGenerated]");
 
+                var interfaces = @classSymbol.AllInterfaces;
+
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
 
@@ -176,6 +212,9 @@ public class XenialActionGenerator : ISourceGenerator
                 using (builder.OpenBrace($"public partial class {controllerName} : DevExpress.ExpressApp.ViewController"))
                 {
                     builder.WriteLine($"public DevExpress.ExpressApp.Actions.SimpleAction {actionName} {{ get; private set; }}");
+
+                    builder.WriteLine();
+
                     using (builder.OpenBrace($"public {controllerName}()"))
                     {
                         //TODO: Action Category

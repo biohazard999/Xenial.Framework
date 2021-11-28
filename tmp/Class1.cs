@@ -19,8 +19,13 @@ namespace MyProject
         }
     }
 
+    public class MyTarget
+    {
+
+    }
+
     [Xenial.XenialAction]
-    public partial record MyAction
+    public partial record MyAction : Xenial.IDetailViewAction<MyTarget>
     {
 
     }
