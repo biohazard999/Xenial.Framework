@@ -43,17 +43,4 @@ namespace MyProject
 
         protected override void OnDeactivated() => base.OnDeactivated();
     }
-
-    partial class MyActionController
-    {
-        partial void OnActivatedCore()
-        {
-            this.MyActionSimpleAction.Execute += MyActionSimpleAction_Execute;
-        }
-
-        private void MyActionSimpleActionExecute(object sender, SimpleActionExecuteEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
