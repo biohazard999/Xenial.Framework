@@ -335,7 +335,7 @@ public class XenialActionGenerator : ISourceGenerator
                             using (builder.OpenBrace($"if(e.CurrentObject is {targetType.ToDisplayString()})"))
                             {
                                 builder.WriteLine($"{targetType.ToDisplayString()} currentObject = ({targetType.ToDisplayString()})e.CurrentObject;");
-                                builder.WriteLine($"//{classSymbol.Name}");
+                                builder.WriteLine($"//{classSymbol.ToDisplayString()}");
                             }
                             //using (builder.OpenBrace("else"))
                             //{
