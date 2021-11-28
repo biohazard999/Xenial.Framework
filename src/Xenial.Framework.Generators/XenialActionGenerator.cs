@@ -333,8 +333,6 @@ public class XenialActionGenerator : ISourceGenerator
                         var targetType = GetTargetType();
                         if (targetType is not null)
                         {
-                            builder.WriteLine($"this.TargetObjectType = typeof({targetType.ToDisplayString()});");
-
                             using (builder.OpenBrace($"if(e.CurrentObject is {targetType.ToDisplayString()})"))
                             {
                                 builder.WriteLine($"{targetType.ToDisplayString()} currentObject = ({targetType.ToDisplayString()})e.CurrentObject;");
