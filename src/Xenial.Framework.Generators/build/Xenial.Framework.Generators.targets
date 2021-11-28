@@ -15,14 +15,16 @@
     <PropertyGroup>
       <GenerateXenialXpoBuilderAttribute Condition="'$(GenerateXenialXpoBuilderAttribute)' == ''">true</GenerateXenialXpoBuilderAttribute>
       <GenerateXenialImageNamesAttribute Condition="'$(GenerateXenialImageNamesAttribute)' == ''">true</GenerateXenialImageNamesAttribute>
+      <GenerateXenialActionAttribute Condition="'$(GenerateXenialActionAttribute)' == ''">true</GenerateXenialActionAttribute>
 
       <XenialAttributesVisibility Condition="'$(XenialAttributesVisibility)' == ''">internal</XenialAttributesVisibility>
       <XenialDebugSourceGenerators Condition="'$(XenialDebugSourceGenerators)' == ''">false</XenialDebugSourceGenerators>
     </PropertyGroup>
 
     <ItemGroup>
-      <CompilerVisibleProperty Include="GenerateXenialXpoBuilderAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialImageNamesAttribute" />
+      <CompilerVisibleProperty Include="GenerateXenialXpoBuilderAttribute" />
+      <CompilerVisibleProperty Include="GenerateXenialActionAttribute" />
       <CompilerVisibleProperty Include="XenialAttributesVisibility" />
       <CompilerVisibleProperty Include="XenialDebugSourceGenerators" />
       <CompilerVisibleProperty Include="LangVersion" />

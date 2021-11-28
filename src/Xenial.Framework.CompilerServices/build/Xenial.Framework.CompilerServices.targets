@@ -5,6 +5,7 @@
     <PropertyGroup>
       <GenerateXenialXpoBuilderAttribute Condition="'$(GenerateXenialXpoBuilderAttribute)' == ''">false</GenerateXenialXpoBuilderAttribute>
       <GenerateXenialImageNamesAttribute Condition="'$(GenerateXenialImageNamesAttribute)' == ''">false</GenerateXenialImageNamesAttribute>
+      <GenerateXenialActionAttribute Condition="'$(GenerateXenialActionAttribute)' == ''">false</GenerateXenialActionAttribute>
     </PropertyGroup>
 
   </Target>
