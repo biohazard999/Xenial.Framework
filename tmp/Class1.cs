@@ -29,7 +29,7 @@ namespace MyProject
     [XenialAction(Caption = "Foo", ImageName = MyTarget.MyImage)]
     public partial class MyAction : IDetailViewAction<MyTarget>
     {
-        public partial Task<(DetailView detailView, MyTarget newTarget)> Execute(MyTarget myTarget) => throw new NotImplementedException();
+        public partial Task<(DetailView detailView, MyTarget newTarget)> Execute(MyTarget myTarget123) => throw new NotImplementedException();
     }
 
     public class FooController : ViewController
@@ -37,6 +37,17 @@ namespace MyProject
         public FooController()
         {
             this.TargetViewType = ViewType.DetailView;
+
+            SimpleAction x = new()
+            {
+                SelectionDependencyType = SelectionDependencyType.RequireSingleObject
+            };
+            x.Execute += X_Execute;
+        }
+
+        private void X_Execute(object sender, SimpleActionExecuteEventArgs e)
+        {
+            e.
         }
 
         protected override void OnActivated() => base.OnActivated();

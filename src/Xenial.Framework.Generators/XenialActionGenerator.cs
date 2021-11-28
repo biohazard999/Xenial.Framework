@@ -289,8 +289,10 @@ public class XenialActionGenerator : ISourceGenerator
                         }
 
 
+                        var category = attribute.GetAttributeValue("Category", "Edit") ?? "Edit";
                         //TODO: Action Category
-                        builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"Edit\");");
+                        builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"{category}\");");
+                        builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
 
                         var caption = attribute.GetAttributeValue("Caption", string.Empty);
                         if (!string.IsNullOrEmpty(caption))
@@ -328,7 +330,20 @@ public class XenialActionGenerator : ISourceGenerator
 
                     using (builder.OpenBrace($"private void {actionName}Execute(object sender, DevExpress.ExpressApp.Actions.SimpleActionExecuteEventArgs e)"))
                     {
+                        var targetType = GetTargetType();
+                        if (targetType is not null)
+                        {
+                            builder.WriteLine($"this.TargetObjectType = typeof({targetType.ToDisplayString()});");
 
+                            using (builder.OpenBrace($"if(e.CurrentObject is {targetType.ToDisplayString()})"))
+                            {
+                                builder.WriteLine($"{targetType.ToDisplayString()} currentObject = ({targetType.ToDisplayString()})e.CurrentObject;");
+                            }
+                            using (builder.OpenBrace("else"))
+                            {
+
+                            }
+                        }
                     }
                 }
             }
