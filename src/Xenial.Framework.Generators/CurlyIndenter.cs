@@ -28,11 +28,18 @@ internal class CurlyIndenter
     public void Indent() => indentedTextWriter.Indent++;
     public void UnIndent() => indentedTextWriter.Indent--;
 
-    public void OpenBrace(string val)
+    internal record DisposableContext(CurlyIndenter Indenter) : IDisposable
+    {
+        void IDisposable.Dispose()
+            => Indenter.CloseBrace();
+    }
+
+    public IDisposable OpenBrace(string val)
     {
         WriteLine(val);
         WriteLine("{");
         Indent();
+        return new DisposableContext(this);
     }
 
     public void OpenBrace()

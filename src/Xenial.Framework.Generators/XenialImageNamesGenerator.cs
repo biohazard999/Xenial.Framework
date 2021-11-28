@@ -75,6 +75,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
         if (generateXenialImageNamesAttribute is null)
         {
+            //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
             return;
         }
 
