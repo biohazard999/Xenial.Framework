@@ -311,13 +311,24 @@ public class XenialActionGenerator : ISourceGenerator
                     using (builder.OpenBrace("protected override void OnActivated()"))
                     {
                         builder.WriteLine("base.OnActivated();");
+
+                        builder.WriteLine($"this.{actionName}.Execute -= {actionName}Execute;");
+                        builder.WriteLine($"this.{actionName}.Execute += {actionName}Execute;");
+
                         builder.WriteLine("this.OnActivatedCore();");
                     }
 
                     using (builder.OpenBrace("protected override void OnDeactivated()"))
                     {
+                        builder.WriteLine($"this.{actionName}.Execute -= {actionName}Execute;");
+
                         builder.WriteLine("this.OnDeactivatedCore();");
                         builder.WriteLine("base.OnDeactivated();");
+                    }
+
+                    using (builder.OpenBrace($"private void {actionName}Execute(object sender, DevExpress.ExpressApp.Actions.SimpleActionExecuteEventArgs e)"))
+                    {
+
                     }
                 }
             }
