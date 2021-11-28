@@ -27,8 +27,9 @@ namespace MyProject
     }
 
     [XenialAction(Caption = "Foo", ImageName = MyTarget.MyImage)]
-    public partial record MyAction : IDetailViewAction<MyTarget>
+    public class MyAction : IDetailViewAction<MyTarget>
     {
+
     }
 
     public class FooController : ViewController

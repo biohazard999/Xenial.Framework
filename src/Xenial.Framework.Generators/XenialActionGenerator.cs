@@ -219,9 +219,12 @@ public class XenialActionGenerator : ISourceGenerator
 
                 builder.WriteLine("[CompilerGenerated]");
 
-                using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
+                if (@class.HasModifier(SyntaxKind.PartialKeyword))
                 {
+                    using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
+                    {
 
+                    }
                 }
 
                 builder.WriteLine();
@@ -317,16 +320,16 @@ public class XenialActionGenerator : ISourceGenerator
 
         var isAttributeDeclared = symbol.IsAttributeDeclared(generateXenialImageNamesAttribute);
 
-        if (isAttributeDeclared && !@class.HasModifier(SyntaxKind.PartialKeyword))
-        {
-            context.ReportDiagnostic(
-                Diagnostic.Create(
-                    GeneratorDiagnostics.ClassNeedsToBePartial(xenialActionAttributeFullName),
-                    @class.GetLocation()
-            ));
+        //if (isAttributeDeclared && !@class.HasModifier(SyntaxKind.PartialKeyword))
+        //{
+        //    context.ReportDiagnostic(
+        //        Diagnostic.Create(
+        //            GeneratorDiagnostics.ClassNeedsToBePartial(xenialActionAttributeFullName),
+        //            @class.GetLocation()
+        //    ));
 
-            return (semanticModel, symbol, false);
-        }
+        //    return (semanticModel, symbol, false);
+        //}
 
         return (semanticModel, symbol, isAttributeDeclared);
     }
