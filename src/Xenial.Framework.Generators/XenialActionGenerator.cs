@@ -234,7 +234,7 @@ public class XenialActionGenerator : ISourceGenerator
                             var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
                             if (method is not null)
                             {
-                                builder.WriteLine($"{method.Modifiers} {method.ReturnType} Execute(MyTarget myTarget);");
+                                builder.WriteLine($"{method.Modifiers} {method.ReturnType.ToFullString()} Execute(MyTarget myTarget);");
                             }
                         }
                     }
