@@ -504,18 +504,20 @@ public record ImagesClass(
 
                 if (semanticModel is not null)
                 {
+                    //We check if the image type is in reach of compilation
                     var imageType = context.Compilation.GetTypeByMetadataName("System.Drawing.Image");
 
-                    builder.WriteLine($"//{(imageType is null ? true : false)}");
-
-                    builder.OpenBrace($"{modifier} class AsImage");
-
-                    foreach (var imageInfo in Images)
+                    if (imageType is not null)
                     {
-                        GenerateResourceImageMethod(Class, Attribute, builder, modifier, imageInfo);
-                    }
+                        builder.OpenBrace($"{modifier} class AsImage");
 
-                    builder.CloseBrace();
+                        foreach (var imageInfo in Images)
+                        {
+                            GenerateResourceImageMethod(Class, Attribute, builder, modifier, imageInfo);
+                        }
+
+                        builder.CloseBrace();
+                    }
                 }
             }
         }
@@ -671,15 +673,10 @@ public record ImagesClass(
             return imageName;
         }
 
-        builder.WriteLine($"{modifier} static byte[] {(removeSuffix ? RemoveSuffix(imageInfo.Name, suffix) : imageInfo.Name)}()");
+        builder.WriteLine($"{modifier} static System.Drawing.Image {(removeSuffix ? RemoveSuffix(imageInfo.Name, suffix) : imageInfo.Name)}()");
         builder.OpenBrace();
-        builder.WriteLine($"using(var stream = typeof({@class.Name}).Assembly.GetManifestResourceStream(\"{imageInfo.ResourceName}\"))");
-
-        builder.WriteLine("using(var ms = new MemoryStream())");
-        builder.OpenBrace();
-        builder.WriteLine("stream.CopyTo(ms);");
-        builder.WriteLine("return ms.ToArray();");
-        builder.CloseBrace();
+        builder.OpenBrace($"using(var stream = typeof({@class.Name}).Assembly.GetManifestResourceStream(\"{imageInfo.ResourceName}\"))");
+        builder.WriteLine("return System.Drawing.Image.FromStream(stream);");
         builder.CloseBrace();
         builder.WriteLine();
     }
