@@ -168,7 +168,7 @@ public class XenialActionGenerator : ISourceGenerator
                     using (builder.OpenBrace($"public {controllerName}()"))
                     {
                         //TODO: Action Category
-                        builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, {actionId}, \"Edit\");");
+                        builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"Edit\");");
                     }
                 }
             }
