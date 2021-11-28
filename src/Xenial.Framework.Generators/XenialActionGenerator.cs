@@ -242,6 +242,8 @@ public class XenialActionGenerator : ISourceGenerator
                             var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
                             if (method is not null && method.ReturnType is IdentifierNameSyntax returnTypeIdentifierNameSyntax)
                             {
+                                var modifiers = method.Modifiers.Where(t => !t.IsKind(SyntaxKind.AsyncKeyword));
+
                                 var returnTypeSymbol = semanticModel.GetTypeInfo(returnTypeIdentifierNameSyntax, context.CancellationToken);
 
                                 if (returnTypeSymbol.Type is not null)
@@ -249,11 +251,11 @@ public class XenialActionGenerator : ISourceGenerator
                                     var targetType = GetTargetType();
                                     if (targetType is not null)
                                     {
-                                        builder.WriteLine($"{method.Modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute({targetType.ToDisplayString()} myTarget);");
+                                        builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute({targetType.ToDisplayString()} myTarget);");
                                     }
                                     else
                                     {
-                                        builder.WriteLine($"{method.Modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute(object myTarget);");
+                                        builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute(object myTarget);");
                                     }
                                 }
                             }
