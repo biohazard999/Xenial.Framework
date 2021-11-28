@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <XenialDebugSourceGenerators>false</XenialDebugSourceGenerators>
+    <XenialDebugSourceGenerators>true</XenialDebugSourceGenerators>
   </PropertyGroup>
 
   <ItemGroup>

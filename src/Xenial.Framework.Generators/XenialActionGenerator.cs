@@ -234,6 +234,8 @@ public class XenialActionGenerator : ISourceGenerator
                             var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
                             if (method is not null)
                             {
+
+
                                 var returnTypeSymbol = semanticModel.GetDeclaredSymbol(method.ReturnType, context.CancellationToken);
 
                                 if (returnTypeSymbol is not null)
