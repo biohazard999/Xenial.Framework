@@ -29,7 +29,7 @@ public class XenialActionGenerator : ISourceGenerator
     /// </summary>
     internal class SyntaxReceiver : ISyntaxContextReceiver
     {
-        public List<ClassDeclarationSyntax> Classes { get; } = new();
+        public List<TypeDeclarationSyntax> Classes { get; } = new();
 
         /// <summary>
         /// Called for every syntax node in the compilation, we can inspect the nodes and save any information useful for generation
@@ -43,6 +43,15 @@ public class XenialActionGenerator : ISourceGenerator
                 if (classSymbol is not null)
                 {
                     Classes.Add(classDeclarationSyntax);
+                }
+            }
+            if (context.Node is RecordDeclarationSyntax { AttributeLists.Count: > 0 } recordDeclarationSyntax)
+            {
+                var classSymbol = context.SemanticModel.GetDeclaredSymbol(recordDeclarationSyntax);
+
+                if (classSymbol is not null)
+                {
+                    Classes.Add(recordDeclarationSyntax);
                 }
             }
         }
@@ -182,7 +191,7 @@ public class XenialActionGenerator : ISourceGenerator
     private static Compilation AddGeneratedCode(
         GeneratorExecutionContext context,
         Compilation compilation,
-        ClassDeclarationSyntax @class,
+        TypeDeclarationSyntax @class,
         CurlyIndenter builder
     )
     {
@@ -207,7 +216,7 @@ public class XenialActionGenerator : ISourceGenerator
     private static (SemanticModel? semanticModel, INamedTypeSymbol? @classSymbol, bool isAttributeDeclared) TryGetTargetType(
         GeneratorExecutionContext context,
         Compilation compilation,
-        ClassDeclarationSyntax @class,
+        TypeDeclarationSyntax @class,
         INamedTypeSymbol generateXenialImageNamesAttribute
     )
     {
@@ -239,6 +248,7 @@ public class XenialActionGenerator : ISourceGenerator
 
         return (semanticModel, symbol, isAttributeDeclared);
     }
+
 }
 
 

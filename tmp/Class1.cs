@@ -20,7 +20,7 @@ namespace MyProject
     }
 
     [Xenial.XenialAction]
-    public partial class MyAction
+    public partial record MyAction
     {
 
     }

@@ -139,7 +139,7 @@ public static class TypeSymbolExtensions
         );
     }
 
-    public static bool HasModifier(this ClassDeclarationSyntax @class, SyntaxKind kind)
+    public static bool HasModifier(this TypeDeclarationSyntax @class, SyntaxKind kind)
         => @class == null
             ? false
             : @class.Modifiers.Any(mod => mod.Text == SyntaxFactory.Token(kind).Text);
