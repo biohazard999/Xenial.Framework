@@ -250,6 +250,18 @@ public class XenialActionGenerator : ISourceGenerator
 
                         //TODO: Action Category
                         builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"Edit\");");
+
+                        var caption = attribute.GetAttributeValue("Caption", string.Empty);
+                        if (!string.IsNullOrEmpty(caption))
+                        {
+                            builder.WriteLine($"this.{actionName}.Caption = \"{caption}\"");
+                        }
+
+                        var imageName = attribute.GetAttributeValue("ImageName", string.Empty);
+                        if (!string.IsNullOrEmpty(imageName))
+                        {
+                            builder.WriteLine($"this.{actionName}.ImageName = \"{imageName}\"");
+                        }
                     }
                 }
             }
