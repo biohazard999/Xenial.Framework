@@ -200,7 +200,7 @@ public class XenialActionGenerator : ISourceGenerator
 
                 var interfaces = @classSymbol.AllInterfaces;
 
-                var interfaceDefinition = compilation.GetTypeByMetadataName("Xenial.IDetailViewAction<T>");
+                var interfaceDefinition = compilation.GetTypeByMetadataName("Xenial.IDetailViewAction");
 
                 if (interfaceDefinition is not null)
                 {
