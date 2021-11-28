@@ -217,10 +217,10 @@ public class XenialActionGenerator : ISourceGenerator
                     return null;
                 }
 
-                builder.WriteLine("[CompilerGenerated]");
 
                 if (@class.HasModifier(SyntaxKind.PartialKeyword))
                 {
+                    builder.WriteLine("[CompilerGenerated]");
                     using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                     {
 
