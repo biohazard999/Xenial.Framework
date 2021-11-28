@@ -227,7 +227,7 @@ public class XenialActionGenerator : ISourceGenerator
 
                         if (!methods.Any(method => method.Identifier.Text == "Execute"))
                         {
-                            builder.WriteLine("private partial void Execute(MyTarget myTarget);");
+                            builder.WriteLine("partial void Execute(MyTarget myTarget);");
                         }
                     }
                 }
