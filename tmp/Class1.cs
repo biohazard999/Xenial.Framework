@@ -32,26 +32,25 @@ namespace MyProject
         public partial Task<(DetailView detailView, MyTarget newTarget)> Execute(MyTarget myTarget123) => throw new NotImplementedException();
     }
 
-    public class FooController : ViewController
-    {
-        public FooController()
-        {
-            this.TargetViewType = ViewType.DetailView;
+    //public class FooController : ViewController
+    //{
+    //    public FooController()
+    //    {
+    //        this.TargetViewType = ViewType.DetailView;
 
-            SimpleAction x = new()
-            {
-                SelectionDependencyType = SelectionDependencyType.RequireSingleObject
-            };
-            x.Execute += X_Execute;
-        }
+    //        SimpleAction x = new()
+    //        {
+    //            SelectionDependencyType = SelectionDependencyType.RequireSingleObject
+    //        };
+    //        x.Execute += X_Execute;
+    //    }
 
-        private void X_Execute(object sender, SimpleActionExecuteEventArgs e)
-        {
-            e.
-        }
+    //    private void X_Execute(object sender, SimpleActionExecuteEventArgs e)
+    //    {
+    //    }
 
-        protected override void OnActivated() => base.OnActivated();
+    //    protected override void OnActivated() => base.OnActivated();
 
-        protected override void OnDeactivated() => base.OnDeactivated();
-    }
+    //    protected override void OnDeactivated() => base.OnDeactivated();
+    //}
 }
