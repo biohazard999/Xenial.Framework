@@ -304,6 +304,21 @@ public class XenialActionGenerator : ISourceGenerator
                             builder.WriteLine($"this.{actionName}.ImageName = \"{imageName}\";");
                         }
                     }
+
+                    builder.WriteLine("partial void OnActivatedCore();");
+                    builder.WriteLine("partial void OnDeactivatedCore();");
+
+                    using (builder.OpenBrace("protected override void OnActivated()"))
+                    {
+                        builder.WriteLine("base.OnActivated();");
+                        builder.WriteLine("this.OnActivatedCore();");
+                    }
+
+                    using (builder.OpenBrace("protected override void OnDeactivated()"))
+                    {
+                        builder.WriteLine("this.OnDeactivatedCore();");
+                        builder.WriteLine("base.OnDeactivated();");
+                    }
                 }
             }
 
