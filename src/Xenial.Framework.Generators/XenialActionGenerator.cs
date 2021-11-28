@@ -335,8 +335,10 @@ public class XenialActionGenerator : ISourceGenerator
                             using (builder.OpenBrace($"if(e.CurrentObject is {targetType.ToDisplayString()})"))
                             {
                                 builder.WriteLine($"{targetType.ToDisplayString()} currentObject = ({targetType.ToDisplayString()})e.CurrentObject;");
-                                builder.WriteLine($"//{classSymbol.ToDisplayString()}");
+                                builder.WriteLine($"{classSymbol.ToDisplayString()} action = new {classSymbol.ToDisplayString()}();");
+                                builder.WriteLine($"action.Execute(currentObject);");
                             }
+                            //TODO: Typematch failed for whatever reason
                             //using (builder.OpenBrace("else"))
                             //{
 

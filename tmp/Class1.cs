@@ -29,7 +29,7 @@ namespace MyProject
     [XenialAction(Caption = "Foo", ImageName = MyTarget.MyImage, Category = "View")]
     public partial class MyAction : IDetailViewAction<MyTarget>
     {
-        public partial Task<(DetailView detailView, MyTarget newTarget)> Execute(MyTarget myTarget123) => throw new NotImplementedException();
+        public partial void Execute(MyTarget myTarget123) => throw new NotImplementedException();
     }
 
     //public class FooController : ViewController
