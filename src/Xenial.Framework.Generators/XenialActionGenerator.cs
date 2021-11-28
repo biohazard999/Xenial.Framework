@@ -234,7 +234,12 @@ public class XenialActionGenerator : ISourceGenerator
                             var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
                             if (method is not null)
                             {
-                                builder.WriteLine($"{method.Modifiers} {method.ReturnType.ToFullString()} Execute(MyTarget myTarget);");
+                                var returnTypeSymbol = semanticModel.GetDeclaredSymbol(method.ReturnType, context.CancellationToken);
+
+                                if (returnTypeSymbol is not null)
+                                {
+                                    builder.WriteLine($"{method.Modifiers} {returnTypeSymbol.ToDisplayString()} Execute(MyTarget myTarget);");
+                                }
                             }
                         }
                     }
