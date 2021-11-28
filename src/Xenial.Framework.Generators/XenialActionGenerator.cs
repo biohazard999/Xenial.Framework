@@ -234,11 +234,14 @@ public class XenialActionGenerator : ISourceGenerator
 
                     using (builder.OpenBrace($"public {controllerName}()"))
                     {
+                        builder.WriteLine("this.TargetViewType = DevExpress.ExpressApp.ViewType.DetailView;");
+
                         var targetType = GetTargetType();
                         if (targetType is not null)
                         {
                             builder.WriteLine($"this.TargetObjectType = typeof({targetType.ToDisplayString()});");
                         }
+
 
                         //TODO: Action Category
                         builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"Edit\");");

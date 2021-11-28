@@ -2,6 +2,8 @@
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Utils;
 
+using Xenial;
+
 namespace MyProject
 {
     [Xenial.XenialImageNames(
@@ -24,8 +26,8 @@ namespace MyProject
 
     }
 
-    [Xenial.XenialAction]
-    public partial record MyAction : Xenial.IDetailViewAction<MyTarget>
+    [XenialAction]
+    public partial record MyAction : IDetailViewAction<MyTarget>
     {
 
     }
