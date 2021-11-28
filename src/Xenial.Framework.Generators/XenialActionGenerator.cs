@@ -225,8 +225,8 @@ public class XenialActionGenerator : ISourceGenerator
                     {
                         builder.WriteLine("private partial void Execute(MyTarget myTarget);");
                         builder.WriteLine("private partial bool Execute(MyTarget myTarget);");
-                        builder.WriteLine("private partial System.Threading.Task Execute(MyTarget myTarget);");
-                        builder.WriteLine("private partial System.Threading.Task<bool> Execute(MyTarget myTarget);");
+                        builder.WriteLine("private partial System.Threading.Tasks.Task Execute(MyTarget myTarget);");
+                        builder.WriteLine("private partial System.Threading.Tasks.Task<bool> Execute(MyTarget myTarget);");
                     }
                 }
 
