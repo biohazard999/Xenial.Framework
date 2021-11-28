@@ -26,10 +26,14 @@ namespace MyProject
         public const string MyImage = "ABC";
     }
 
-    [XenialAction(Caption = "Foo", ImageName = MyTarget.MyImage, Category = "View")]
+    [XenialAction(
+        Caption = "Foo",
+        ImageName = MyTarget.MyImage,
+        Category = "View"
+    )]
     public partial class MyAction : IDetailViewAction<MyTarget>
     {
-        public partial void Execute(MyTarget myTarget123) => throw new NotImplementedException();
+        public partial void Execute(MyTarget myTarget) => throw new NotImplementedException();
     }
 
     //public class FooController : ViewController
