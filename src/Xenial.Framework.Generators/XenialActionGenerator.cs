@@ -254,13 +254,13 @@ public class XenialActionGenerator : ISourceGenerator
                         var caption = attribute.GetAttributeValue("Caption", string.Empty);
                         if (!string.IsNullOrEmpty(caption))
                         {
-                            builder.WriteLine($"this.{actionName}.Caption = \"{caption}\"");
+                            builder.WriteLine($"this.{actionName}.Caption = \"{caption}\";");
                         }
 
                         var imageName = attribute.GetAttributeValue("ImageName", string.Empty);
                         if (!string.IsNullOrEmpty(imageName))
                         {
-                            builder.WriteLine($"this.{actionName}.ImageName = \"{imageName}\"");
+                            builder.WriteLine($"this.{actionName}.ImageName = \"{imageName}\";");
                         }
                     }
                 }
