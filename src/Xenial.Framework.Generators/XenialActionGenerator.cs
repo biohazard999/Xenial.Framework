@@ -227,20 +227,34 @@ public class XenialActionGenerator : ISourceGenerator
 
                         if (!methods.Any(method => method.Identifier.Text == "Execute"))
                         {
-                            builder.WriteLine("partial void Execute(MyTarget myTarget);");
+                            var targetType = GetTargetType();
+                            if (targetType is not null)
+                            {
+                                builder.WriteLine($"partial void Execute({targetType.ToDisplayString()} myTarget);");
+                            }
+                            else
+                            {
+                                builder.WriteLine("partial void Execute(object myTarget);");
+                            }
                         }
                         else
                         {
                             var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
                             if (method is not null && method.ReturnType is IdentifierNameSyntax returnTypeIdentifierNameSyntax)
                             {
-                                var returnTypeSymbol = semanticModel.GetDeclaredSymbol(returnTypeIdentifierNameSyntax, context.CancellationToken);
+                                var returnTypeSymbol = semanticModel.GetTypeInfo(returnTypeIdentifierNameSyntax, context.CancellationToken);
 
-
-
-                                if (returnTypeSymbol is not null)
+                                if (returnTypeSymbol.Type is not null)
                                 {
-                                    builder.WriteLine($"{method.Modifiers} {returnTypeSymbol.ToDisplayString()} Execute(MyTarget myTarget);");
+                                    var targetType = GetTargetType();
+                                    if (targetType is not null)
+                                    {
+                                        builder.WriteLine($"{method.Modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute({targetType.ToDisplayString()} myTarget);");
+                                    }
+                                    else
+                                    {
+                                        builder.WriteLine($"{method.Modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute(object myTarget);");
+                                    }
                                 }
                             }
                         }
