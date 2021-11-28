@@ -491,8 +491,7 @@ public record ImagesClass(
 
                 builder.WriteLine();
 
-                builder.WriteLine($"{modifier} class AsBytes");
-                builder.OpenBrace();
+                builder.OpenBrace($"{modifier} class AsBytes");
 
                 foreach (var imageInfo in Images)
                 {
@@ -501,7 +500,23 @@ public record ImagesClass(
 
                 builder.CloseBrace();
 
+                var semanticModel = context.Compilation.GetSemanticModel(context.Compilation.SyntaxTrees.First());
 
+                if (semanticModel is not null)
+                {
+                    var imageType = context.Compilation.GetTypeByMetadataName("System.Drawing.Image");
+
+                    builder.WriteLine($"//{(imageType is null ? true : false)}");
+
+                    builder.OpenBrace($"{modifier} class AsImage");
+
+                    foreach (var imageInfo in Images)
+                    {
+                        GenerateResourceImageMethod(Class, Attribute, builder, modifier, imageInfo);
+                    }
+
+                    builder.CloseBrace();
+                }
             }
         }
 
@@ -604,6 +619,43 @@ public record ImagesClass(
         bool removeSuffix = true,
         string suffix = ""
     )
+    {
+        if (@attribute.IsAttributeSet(AttributeNames.SmartComments))
+        {
+            builder.WriteLine($"//![]({imageInfo.Path})");
+        }
+
+        static string RemoveSuffix(string imageName, string suffix)
+        {
+            if (imageName.EndsWith(suffix, StringComparison.InvariantCulture))
+            {
+                return imageName.Substring(0, imageName.Length - suffix.Length).TrimEnd('_');
+            }
+            return imageName;
+        }
+
+        builder.WriteLine($"{modifier} static byte[] {(removeSuffix ? RemoveSuffix(imageInfo.Name, suffix) : imageInfo.Name)}()");
+        builder.OpenBrace();
+        builder.WriteLine($"using(var stream = typeof({@class.Name}).Assembly.GetManifestResourceStream(\"{imageInfo.ResourceName}\"))");
+
+        builder.WriteLine("using(var ms = new MemoryStream())");
+        builder.OpenBrace();
+        builder.WriteLine("stream.CopyTo(ms);");
+        builder.WriteLine("return ms.ToArray();");
+        builder.CloseBrace();
+        builder.CloseBrace();
+        builder.WriteLine();
+    }
+
+    private static void GenerateResourceImageMethod(
+       INamedTypeSymbol @class,
+       AttributeData attribute,
+       CurlyIndenter builder,
+       string modifier,
+       ImageInformation imageInfo,
+       bool removeSuffix = true,
+       string suffix = ""
+   )
     {
         if (@attribute.IsAttributeSet(AttributeNames.SmartComments))
         {

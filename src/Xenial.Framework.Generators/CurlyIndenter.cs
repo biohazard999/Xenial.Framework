@@ -28,6 +28,13 @@ internal class CurlyIndenter
     public void Indent() => indentedTextWriter.Indent++;
     public void UnIndent() => indentedTextWriter.Indent--;
 
+    public void OpenBrace(string val)
+    {
+        WriteLine(val);
+        WriteLine("{");
+        Indent();
+    }
+
     public void OpenBrace()
     {
         WriteLine("{");
