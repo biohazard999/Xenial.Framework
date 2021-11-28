@@ -26,7 +26,7 @@ namespace MyProject
         public const string MyImage = "ABC";
     }
 
-    [XenialAction(Caption = "Foo", ImageName = MyTarget.MyImage)]
+    [XenialAction(Caption = "Foo", ImageName = MyTarget.MyImage, Category = "View")]
     public partial class MyAction : IDetailViewAction<MyTarget>
     {
         public partial Task<(DetailView detailView, MyTarget newTarget)> Execute(MyTarget myTarget123) => throw new NotImplementedException();

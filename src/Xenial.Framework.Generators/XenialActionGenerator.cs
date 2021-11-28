@@ -166,7 +166,6 @@ public class XenialActionGenerator : ISourceGenerator
         {
             context.CancellationToken.ThrowIfCancellationRequested();
 
-
             var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, generateXenialActionAttribute);
             if (!isAttributeDeclared || semanticModel is null || @classSymbol is null)
             {
@@ -336,11 +335,12 @@ public class XenialActionGenerator : ISourceGenerator
                             using (builder.OpenBrace($"if(e.CurrentObject is {targetType.ToDisplayString()})"))
                             {
                                 builder.WriteLine($"{targetType.ToDisplayString()} currentObject = ({targetType.ToDisplayString()})e.CurrentObject;");
+                                builder.WriteLine($"//{classSymbol.Name}");
                             }
-                            using (builder.OpenBrace("else"))
-                            {
+                            //using (builder.OpenBrace("else"))
+                            //{
 
-                            }
+                            //}
                         }
                     }
                 }
