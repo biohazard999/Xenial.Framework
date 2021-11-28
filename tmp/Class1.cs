@@ -26,10 +26,9 @@ namespace MyProject
 
     }
 
-    [XenialAction]
+    [XenialAction(Caption = "Foo", ImageName = ImageNamesWithSizes.aac)]
     public partial record MyAction : IDetailViewAction<MyTarget>
     {
-
     }
 
     public class FooController : ViewController
