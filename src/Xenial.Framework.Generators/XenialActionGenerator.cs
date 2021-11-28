@@ -223,10 +223,10 @@ public class XenialActionGenerator : ISourceGenerator
                     builder.WriteLine("[CompilerGenerated]");
                     using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                     {
-                        builder.WriteLine("partial void Execute(MyTarget myTarget);");
-                        builder.WriteLine("partial bool Execute(MyTarget myTarget);");
-                        builder.WriteLine("partial System.Threading.Task Execute(MyTarget myTarget);");
-                        builder.WriteLine("partial System.Threading.Task<bool> Execute(MyTarget myTarget);");
+                        builder.WriteLine("private partial void Execute(MyTarget myTarget);");
+                        builder.WriteLine("private partial bool Execute(MyTarget myTarget);");
+                        builder.WriteLine("private partial System.Threading.Task Execute(MyTarget myTarget);");
+                        builder.WriteLine("private partial System.Threading.Task<bool> Execute(MyTarget myTarget);");
                     }
                 }
 

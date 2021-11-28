@@ -29,7 +29,7 @@ namespace MyProject
     [XenialAction(Caption = "Foo", ImageName = MyTarget.MyImage)]
     public partial class MyAction : IDetailViewAction<MyTarget>
     {
-
+        // partial void Execute(MyTarget myTarget) => throw new NotImplementedException();
     }
 
     public class FooController : ViewController
