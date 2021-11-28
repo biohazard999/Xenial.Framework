@@ -27,7 +27,7 @@ namespace MyProject
     }
 
     [XenialAction(Caption = "Foo", ImageName = MyTarget.MyImage)]
-    public class MyAction : IDetailViewAction<MyTarget>
+    public partial class MyAction : IDetailViewAction<MyTarget>
     {
 
     }
