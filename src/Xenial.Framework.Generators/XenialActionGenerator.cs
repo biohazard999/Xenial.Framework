@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using Microsoft.CodeAnalysis;
@@ -196,6 +197,17 @@ public class XenialActionGenerator : ISourceGenerator
                 builder.WriteLine("[CompilerGenerated]");
 
                 var interfaces = @classSymbol.AllInterfaces;
+
+                var interfaceDefinition = compilation.GetTypeByMetadataName("Xenial.IDetailViewAction<T>");
+
+                if (interfaceDefinition is not null)
+                {
+                    var isSame = interfaces.Any(i => i.OriginalDefinition.Name == interfaceDefinition.Name);
+                    if (isSame)
+                    {
+                        //(new System.Linq.SystemCore_EnumerableDebugView<System.Collections.Generic.KeyValuePair<Microsoft.CodeAnalysis.CSharp.Symbols.TypeParameterSymbol, Microsoft.CodeAnalysis.CSharp.Symbols.TypeWithAnnotations>>(((Microsoft.CodeAnalysis.CSharp.Symbols.SubstitutedNamedTypeSymbol)((Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.NonErrorNamedTypeSymbol)interfaces.array[0]).UnderlyingTypeSymbol).Map.Mapping).Items[0]).Value
+                    }
+                }
 
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
