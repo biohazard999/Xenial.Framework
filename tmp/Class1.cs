@@ -23,10 +23,10 @@ namespace MyProject
 
     public class MyTarget
     {
-
+        public const string MyImage = "ABC";
     }
 
-    [XenialAction(Caption = "Foo", ImageName = ImageNamesWithSizes.aac)]
+    [XenialAction(Caption = "Foo", ImageName = MyTarget.MyImage)]
     public partial record MyAction : IDetailViewAction<MyTarget>
     {
     }
