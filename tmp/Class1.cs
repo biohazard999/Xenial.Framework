@@ -1,4 +1,5 @@
-﻿using DevExpress.ExpressApp.Utils;
+﻿using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Utils;
 
 namespace MyProject
 {
@@ -21,5 +22,12 @@ namespace MyProject
     public partial class MyAction
     {
 
+    }
+
+    public class FooController : ViewController
+    {
+        public FooController()
+        {
+        }
     }
 }

@@ -158,9 +158,18 @@ public class XenialActionGenerator : ISourceGenerator
 
                 builder.WriteLine();
 
-                using (builder.OpenBrace($"partial class {@classSymbol.Name}Controller"))
-                {
+                var actionId = $"{@classSymbol.ContainingNamespace}.{@classSymbol.Name}SimpleAction";
+                var actionName = $"{@classSymbol.Name}SimpleAction";
+                var controllerName = $"{@classSymbol.Name}Controller";
 
+                using (builder.OpenBrace($"public partial class {controllerName}Controller : DevExpress.ExpressApp.ViewController"))
+                {
+                    builder.WriteLine($"public DevExpress.ExpressApp.Actions.SimpleAction {actionName} {{ get; private set; }}");
+                    using (builder.OpenBrace($"public {controllerName}()"))
+                    {
+                        //TODO: Action Category
+                        builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, {actionId}, \"Edit\");");
+                    }
                 }
             }
 
