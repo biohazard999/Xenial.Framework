@@ -242,7 +242,9 @@ public class XenialActionGenerator : ISourceGenerator
                             var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
                             if (method is not null && method.ReturnType is IdentifierNameSyntax returnTypeIdentifierNameSyntax)
                             {
-                                var modifiers = method.Modifiers.Where(t => !t.IsKind(SyntaxKind.AsyncKeyword));
+                                var modifiers = new SyntaxTokenList(
+                                    method.Modifiers.Where(t => !t.IsKind(SyntaxKind.AsyncKeyword))
+                                );
 
                                 var returnTypeSymbol = semanticModel.GetTypeInfo(returnTypeIdentifierNameSyntax, context.CancellationToken);
 
