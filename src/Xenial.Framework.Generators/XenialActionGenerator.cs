@@ -196,6 +196,8 @@ public class XenialActionGenerator : ISourceGenerator
             {
                 builder.WriteLine("[CompilerGenerated]");
 
+
+
                 var interfaces = @classSymbol.AllInterfaces;
 
                 var interfaceDefinition = compilation.GetTypeByMetadataName("Xenial.IDetailViewAction<T>");
