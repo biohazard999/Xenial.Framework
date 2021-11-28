@@ -162,7 +162,7 @@ public class XenialActionGenerator : ISourceGenerator
                 var actionName = $"{@classSymbol.Name}SimpleAction";
                 var controllerName = $"{@classSymbol.Name}Controller";
 
-                using (builder.OpenBrace($"public partial class {controllerName}Controller : DevExpress.ExpressApp.ViewController"))
+                using (builder.OpenBrace($"public partial class {controllerName} : DevExpress.ExpressApp.ViewController"))
                 {
                     builder.WriteLine($"public DevExpress.ExpressApp.Actions.SimpleAction {actionName} {{ get; private set; }}");
                     using (builder.OpenBrace($"public {controllerName}()"))
