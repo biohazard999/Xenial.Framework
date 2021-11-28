@@ -1,4 +1,6 @@
-﻿namespace MyProject
+﻿using DevExpress.ExpressApp.Utils;
+
+namespace MyProject
 {
     [Xenial.XenialImageNames(
         Sizes = false,
@@ -10,10 +12,14 @@
         static ImageNamesWithSizes()
         {
             var foo = ImageNamesWithSizes.aac;
-
             var x = ImageNamesWithSizes.AsImage.aac();
 
         }
     }
 
+    [Xenial.XenialAction]
+    public partial class MyAction
+    {
+
+    }
 }

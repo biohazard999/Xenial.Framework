@@ -150,7 +150,18 @@ public class XenialActionGenerator : ISourceGenerator
 
             using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
             {
+                builder.WriteLine("[CompilerGenerated]");
+                using (builder.OpenBrace($"partial class {@classSymbol.Name}"))
+                {
 
+                }
+
+                builder.WriteLine();
+
+                using (builder.OpenBrace($"partial class {@classSymbol.Name}Controller"))
+                {
+
+                }
             }
 
             compilation = AddGeneratedCode(context, compilation, @class, builder);
