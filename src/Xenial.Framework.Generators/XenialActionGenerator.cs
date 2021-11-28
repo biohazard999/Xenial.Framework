@@ -194,22 +194,25 @@ public class XenialActionGenerator : ISourceGenerator
 
             using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
             {
-                builder.WriteLine("[CompilerGenerated]");
-
-                var detailViewActionInterface = @classSymbol.AllInterfaces
-                    .FirstOrDefault(i => i.OriginalDefinition.ToDisplayString() == "Xenial.IDetailViewAction<T>");
-
-                if (detailViewActionInterface is not null)
+                ITypeSymbol? GetTargetType()
                 {
-                    if (detailViewActionInterface.IsGenericType)
+                    var detailViewActionInterface = @classSymbol.AllInterfaces
+                        .FirstOrDefault(i => i.OriginalDefinition.ToDisplayString() == "Xenial.IDetailViewAction<T>");
+
+                    if (detailViewActionInterface is not null)
                     {
+                        if (detailViewActionInterface.IsGenericType)
+                        {
+                            var targetType = detailViewActionInterface.TypeArguments.First();
 
-
-
+                            return targetType;
+                        }
                     }
 
-                    //(new System.Linq.SystemCore_EnumerableDebugView<System.Collections.Generic.KeyValuePair<Microsoft.CodeAnalysis.CSharp.Symbols.TypeParameterSymbol, Microsoft.CodeAnalysis.CSharp.Symbols.TypeWithAnnotations>>(((Microsoft.CodeAnalysis.CSharp.Symbols.SubstitutedNamedTypeSymbol)((Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.NonErrorNamedTypeSymbol)interfaces.array[0]).UnderlyingTypeSymbol).Map.Mapping).Items[0]).Value
+                    return null;
                 }
+
+                builder.WriteLine("[CompilerGenerated]");
 
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
@@ -231,6 +234,12 @@ public class XenialActionGenerator : ISourceGenerator
 
                     using (builder.OpenBrace($"public {controllerName}()"))
                     {
+                        var targetType = GetTargetType();
+                        if (targetType is not null)
+                        {
+                            builder.WriteLine($"this.TargetObjectType = typeof({targetType.ToDisplayString()});");
+                        }
+
                         //TODO: Action Category
                         builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"Edit\");");
                     }
