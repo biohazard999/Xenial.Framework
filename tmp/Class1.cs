@@ -36,6 +36,7 @@ namespace MyProject
     {
         public FooController()
         {
+            this.TargetViewType = ViewType.DetailView;
         }
     }
 }

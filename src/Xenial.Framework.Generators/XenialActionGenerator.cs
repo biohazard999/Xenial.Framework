@@ -132,11 +132,16 @@ public class XenialActionGenerator : ISourceGenerator
         syntaxWriter.WriteLine($"namespace {xenialNamespace}");
         syntaxWriter.OpenBrace();
 
+
         syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false)]");
-        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} sealed class {xenialActionAttributeName} : Attribute");
-        syntaxWriter.OpenBrace();
-        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} {xenialActionAttributeName}() {{ }}");
-        syntaxWriter.CloseBrace();
+        using (syntaxWriter.OpenBrace($"{context.GetDefaultAttributeModifier()} sealed class {xenialActionAttributeName} : Attribute"))
+        {
+            syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} {xenialActionAttributeName}() {{ }}");
+
+            syntaxWriter.WriteLine($"public string Caption {{ get; set; }}");
+            syntaxWriter.WriteLine($"public string ImageName {{ get; set; }}");
+            syntaxWriter.WriteLine($"public string Category {{ get; set; }}");
+        }
 
         syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} interface IDetailViewAction<T> {{ }}");
         syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} interface IListViewAction<T> {{ }}");
