@@ -229,6 +229,14 @@ public class XenialActionGenerator : ISourceGenerator
                         {
                             builder.WriteLine("partial void Execute(MyTarget myTarget);");
                         }
+                        else
+                        {
+                            var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
+                            if (method is not null)
+                            {
+                                builder.WriteLine($"{method.Modifiers} {method.ReturnType} Execute(MyTarget myTarget);");
+                            }
+                        }
                     }
                 }
 
