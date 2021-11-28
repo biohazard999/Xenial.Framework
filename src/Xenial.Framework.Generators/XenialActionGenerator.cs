@@ -196,19 +196,17 @@ public class XenialActionGenerator : ISourceGenerator
             {
                 builder.WriteLine("[CompilerGenerated]");
 
-                var interfaces = @classSymbol.AllInterfaces;
+                var detailViewActionInterface = @classSymbol.AllInterfaces
+                    .FirstOrDefault(i => i.OriginalDefinition.ToDisplayString() == "Xenial.IDetailViewAction<T>");
 
-                var interfaceDefinition = compilation.GetTypeByMetadataName("Xenial.IDetailViewAction");
-
-                if (interfaceDefinition is not null)
+                if (detailViewActionInterface is not null)
                 {
-                    var isSame = interfaces.Any(i => i.OriginalDefinition.Name == interfaceDefinition.Name);
-                    if (isSame)
+                    if (detailViewActionInterface.IsGenericType)
                     {
 
-
-                        //(new System.Linq.SystemCore_EnumerableDebugView<System.Collections.Generic.KeyValuePair<Microsoft.CodeAnalysis.CSharp.Symbols.TypeParameterSymbol, Microsoft.CodeAnalysis.CSharp.Symbols.TypeWithAnnotations>>(((Microsoft.CodeAnalysis.CSharp.Symbols.SubstitutedNamedTypeSymbol)((Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.NonErrorNamedTypeSymbol)interfaces.array[0]).UnderlyingTypeSymbol).Map.Mapping).Items[0]).Value
                     }
+
+                    //(new System.Linq.SystemCore_EnumerableDebugView<System.Collections.Generic.KeyValuePair<Microsoft.CodeAnalysis.CSharp.Symbols.TypeParameterSymbol, Microsoft.CodeAnalysis.CSharp.Symbols.TypeWithAnnotations>>(((Microsoft.CodeAnalysis.CSharp.Symbols.SubstitutedNamedTypeSymbol)((Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.NonErrorNamedTypeSymbol)interfaces.array[0]).UnderlyingTypeSymbol).Map.Mapping).Items[0]).Value
                 }
 
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
