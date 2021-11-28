@@ -678,6 +678,7 @@ public record ImagesClass(
         builder.OpenBrace($"using(var stream = typeof({@class.Name}).Assembly.GetManifestResourceStream(\"{imageInfo.ResourceName}\"))");
         builder.WriteLine("return System.Drawing.Image.FromStream(stream);");
         builder.CloseBrace();
+        builder.CloseBrace();
         builder.WriteLine();
     }
 }

@@ -10,7 +10,7 @@
         static ImageNamesWithSizes()
         {
             var foo = ImageNamesWithSizes.aac;
-
+            
         }
     }
 
