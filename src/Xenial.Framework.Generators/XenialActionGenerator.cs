@@ -205,6 +205,8 @@ public class XenialActionGenerator : ISourceGenerator
                     var isSame = interfaces.Any(i => i.OriginalDefinition.Name == interfaceDefinition.Name);
                     if (isSame)
                     {
+
+
                         //(new System.Linq.SystemCore_EnumerableDebugView<System.Collections.Generic.KeyValuePair<Microsoft.CodeAnalysis.CSharp.Symbols.TypeParameterSymbol, Microsoft.CodeAnalysis.CSharp.Symbols.TypeWithAnnotations>>(((Microsoft.CodeAnalysis.CSharp.Symbols.SubstitutedNamedTypeSymbol)((Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.NonErrorNamedTypeSymbol)interfaces.array[0]).UnderlyingTypeSymbol).Map.Mapping).Items[0]).Value
                     }
                 }
