@@ -222,6 +222,9 @@ public class XenialActionGenerator : ISourceGenerator
                     builder.WriteLine("[CompilerGenerated]");
                     using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                     {
+
+
+
                         var methods = @class.Members.OfType<MethodDeclarationSyntax>();
 
                         if (!methods.Any(method => method.Identifier.Text == "Execute"))
