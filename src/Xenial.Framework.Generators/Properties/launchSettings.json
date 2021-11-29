@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Xenial.Framework.Generators": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\..\\demos\\SourceGenerators\\Acme.Module\\Acme.Module.csproj"
+    }
+  }
+}
