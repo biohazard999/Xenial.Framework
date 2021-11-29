@@ -492,14 +492,13 @@ public record ImagesClass(
 
                 builder.WriteLine();
 
-                builder.OpenBrace($"{modifier} class AsBytes");
-
-                foreach (var imageInfo in Images)
+                using (builder.OpenBrace($"{modifier} class AsBytes"))
                 {
-                    GenerateResourceBytesMethod(Class, Attribute, builder, modifier, imageInfo);
+                    foreach (var imageInfo in Images)
+                    {
+                        GenerateResourceBytesMethod(Class, Attribute, builder, modifier, imageInfo);
+                    }
                 }
-
-                builder.CloseBrace();
 
                 var semanticModel = context.Compilation.GetSemanticModel(context.Compilation.SyntaxTrees.First());
 
@@ -510,14 +509,13 @@ public record ImagesClass(
 
                     if (imageType is not null)
                     {
-                        builder.OpenBrace($"{modifier} class AsImage");
-
-                        foreach (var imageInfo in Images)
+                        using (builder.OpenBrace($"{modifier} class AsImage"))
                         {
-                            GenerateResourceImageMethod(Class, Attribute, builder, modifier, imageInfo);
+                            foreach (var imageInfo in Images)
+                            {
+                                GenerateResourceImageMethod(Class, Attribute, builder, modifier, imageInfo);
+                            }
                         }
-
-                        builder.CloseBrace();
                     }
                 }
             }
@@ -674,12 +672,12 @@ public record ImagesClass(
             return imageName;
         }
 
-        builder.WriteLine($"{modifier} static System.Drawing.Image {(removeSuffix ? RemoveSuffix(imageInfo.Name, suffix) : imageInfo.Name)}()");
-        builder.OpenBrace();
-        builder.OpenBrace($"using(var stream = typeof({@class.Name}).Assembly.GetManifestResourceStream(\"{imageInfo.ResourceName}\"))");
-        builder.WriteLine("return System.Drawing.Image.FromStream(stream);");
-        builder.CloseBrace();
-        builder.CloseBrace();
+        using (builder.OpenBrace($"{modifier} static System.Drawing.Image {(removeSuffix ? RemoveSuffix(imageInfo.Name, suffix) : imageInfo.Name)}()"))
+        using (builder.OpenBrace($"using(var stream = typeof({@class.Name}).Assembly.GetManifestResourceStream(\"{imageInfo.ResourceName}\"))"))
+        {
+            builder.WriteLine("return System.Drawing.Image.FromStream(stream);");
+        }
+
         builder.WriteLine();
     }
 }

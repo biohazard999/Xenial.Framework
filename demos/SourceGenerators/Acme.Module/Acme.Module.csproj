@@ -10,6 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\src\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false"
