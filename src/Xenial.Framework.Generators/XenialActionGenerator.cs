@@ -129,24 +129,23 @@ public class XenialActionGenerator : ISourceGenerator
         syntaxWriter.WriteLine($"using System;");
         syntaxWriter.WriteLine();
 
-        syntaxWriter.WriteLine($"namespace {xenialNamespace}");
-        syntaxWriter.OpenBrace();
-
-
-        syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false)]");
-        using (syntaxWriter.OpenBrace($"{context.GetDefaultAttributeModifier()} sealed class {xenialActionAttributeName} : Attribute"))
+        using (syntaxWriter.OpenBrace($"namespace {xenialNamespace}"))
         {
-            syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} {xenialActionAttributeName}() {{ }}");
+            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false)]");
+            using (syntaxWriter.OpenBrace($"{context.GetDefaultAttributeModifier()} sealed class {xenialActionAttributeName} : Attribute"))
+            {
+                syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} {xenialActionAttributeName}() {{ }}");
 
-            syntaxWriter.WriteLine($"public string Caption {{ get; set; }}");
-            syntaxWriter.WriteLine($"public string ImageName {{ get; set; }}");
-            syntaxWriter.WriteLine($"public string Category {{ get; set; }}");
+                syntaxWriter.WriteLine($"public string Caption {{ get; set; }}");
+                syntaxWriter.WriteLine($"public string ImageName {{ get; set; }}");
+                syntaxWriter.WriteLine($"public string Category {{ get; set; }}");
+            }
+            syntaxWriter.WriteLine();
+
+            syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} interface IDetailViewAction<T> {{ }}");
+            syntaxWriter.WriteLine();
+            syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} interface IListViewAction<T> {{ }}");
         }
-
-        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} interface IDetailViewAction<T> {{ }}");
-        syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} interface IListViewAction<T> {{ }}");
-
-        syntaxWriter.CloseBrace();
 
         var syntax = syntaxWriter.ToString();
         var source = SourceText.From(syntax, Encoding.UTF8);
@@ -312,8 +311,11 @@ public class XenialActionGenerator : ISourceGenerator
                         }
                     }
 
+                    builder.WriteLine();
                     builder.WriteLine("partial void OnActivatedCore();");
+                    builder.WriteLine();
                     builder.WriteLine("partial void OnDeactivatedCore();");
+                    builder.WriteLine();
 
                     using (builder.OpenBrace("protected override void OnActivated()"))
                     {
@@ -324,6 +326,7 @@ public class XenialActionGenerator : ISourceGenerator
 
                         builder.WriteLine("this.OnActivatedCore();");
                     }
+                    builder.WriteLine();
 
                     using (builder.OpenBrace("protected override void OnDeactivated()"))
                     {
@@ -332,6 +335,7 @@ public class XenialActionGenerator : ISourceGenerator
                         builder.WriteLine("this.OnDeactivatedCore();");
                         builder.WriteLine("base.OnDeactivated();");
                     }
+                    builder.WriteLine();
 
                     using (builder.OpenBrace($"private void {actionName}Execute(object sender, DevExpress.ExpressApp.Actions.SimpleActionExecuteEventArgs e)"))
                     {
