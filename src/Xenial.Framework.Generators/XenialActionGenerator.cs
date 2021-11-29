@@ -224,9 +224,6 @@ public class XenialActionGenerator : ISourceGenerator
                     builder.WriteLine("[CompilerGenerated]");
                     using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                     {
-
-
-
                         var methods = @class.Members.OfType<MethodDeclarationSyntax>();
 
                         if (!methods.Any(method => method.Identifier.Text == "Execute"))
@@ -238,6 +235,7 @@ public class XenialActionGenerator : ISourceGenerator
                             }
                             else
                             {
+                                //TODO: Warn to implement one or more of the target interfaces
                                 builder.WriteLine("partial void Execute(object myTarget);");
                             }
                         }
@@ -381,7 +379,7 @@ public class XenialActionGenerator : ISourceGenerator
             fileName = Guid.NewGuid().ToString();
         }
 
-        context.AddSource($"{fileName}.g.cs", source);
+        context.AddSource($"{fileName}.{@class.Identifier}.g.cs", source);
 
         return compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
     }
