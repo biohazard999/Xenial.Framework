@@ -162,6 +162,9 @@ public class XenialActionGenerator : ISourceGenerator
             return;
         }
 
+
+
+
         foreach (var @class in syntaxReceiver.Classes)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
