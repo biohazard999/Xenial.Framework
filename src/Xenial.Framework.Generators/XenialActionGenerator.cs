@@ -336,9 +336,11 @@ public class XenialActionGenerator : ISourceGenerator
                             {
                                 builder.WriteLine($"{targetType.ToDisplayString()} currentObject = ({targetType.ToDisplayString()})e.CurrentObject;");
                                 builder.WriteLine($"{classSymbol.ToDisplayString()} action = new {classSymbol.ToDisplayString()}();");
+
+
                                 builder.WriteLine($"action.Execute(currentObject);");
                             }
-                            //TODO: Typematch failed for whatever reason
+                            //TODO: type match failed for whatever reason
                             //using (builder.OpenBrace("else"))
                             //{
 
