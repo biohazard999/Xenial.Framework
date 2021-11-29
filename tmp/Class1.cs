@@ -1,4 +1,5 @@
 ﻿using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Utils;
 
@@ -6,35 +7,56 @@ using Xenial;
 
 namespace MyProject
 {
-    [Xenial.XenialImageNames(
-        Sizes = false,
-        SmartComments = true,
-        ResourceAccessors = true
-    )]
-    public static partial class ImageNamesWithSizes
+    [DomainComponent]
+    public class Class1 : NonPersistentLiteObject
     {
-        static ImageNamesWithSizes()
-        {
-            var foo = ImageNamesWithSizes.aac;
-            var x = ImageNamesWithSizes.AsImage.aac();
+        private string myProperty;
 
+        public string MyProperty { get => myProperty; set => SetPropertyValue(ref myProperty, value); }
+    }
+
+    [XenialAction(Caption = "Do some stuff")]
+    public partial class Class1Action : IDetailViewAction<Class1>
+    {
+        public partial void Execute(
+            Class1 myTarget,
+            IObjectSpace objectSpace,
+            XafApplication application
+        )
+        {
+            myTarget.MyProperty = new Random().Next().ToString();
         }
     }
 
-    public class MyTarget
-    {
-        public const string MyImage = "ABC";
-    }
+    // [Xenial.XenialImageNames(
+    //     Sizes = false,
+    //     SmartComments = true,
+    //     ResourceAccessors = true
+    // )]
+    // public static partial class ImageNamesWithSizes
+    // {
+    //     static ImageNamesWithSizes()
+    //     {
+    //         var foo = ImageNamesWithSizes.aac;
+    //         var x = ImageNamesWithSizes.AsImage.aac();
 
-    [XenialAction(
-        Caption = "Foo",
-        ImageName = MyTarget.MyImage,
-        Category = "View"
-    )]
-    public partial class MyAction : IDetailViewAction<MyTarget>
-    {
-        public partial void Execute(MyTarget myTarget) => throw new NotImplementedException();
-    }
+    //     }
+    // }
+
+    // public class MyTarget
+    // {
+    //     public const string MyImage = "ABC";
+    // }
+
+    // [XenialAction(
+    //     Caption = "Foo",
+    //     ImageName = MyTarget.MyImage,
+    //     Category = "View"
+    // )]
+    // public partial class MyAction : IDetailViewAction<MyTarget>
+    // {
+    //     public partial void Execute(MyTarget myTarget) => throw new NotImplementedException();
+    // }
 
     //public class FooController : ViewController
     //{

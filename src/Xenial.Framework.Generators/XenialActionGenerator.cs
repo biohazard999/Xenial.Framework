@@ -226,9 +226,6 @@ public class XenialActionGenerator : ISourceGenerator
 
                         if (!methods.Any(method => method.Identifier.Text == "Execute"))
                         {
-
-
-
                             var targetType = GetTargetType();
                             if (targetType is not null)
                             {
