@@ -185,6 +185,17 @@ public class XenialActionGenerator : ISourceGenerator
             builder.WriteLine("using System.Runtime.CompilerServices;");
             builder.WriteLine();
 
+            // This is normally not needed, especially if we use the semantic model to generate the code
+            ////Import usings from user code
+            //builder.WriteLine("//Begin-User defined using statements");
+            //var root = @class.SyntaxTree.GetCompilationUnitRoot(context.CancellationToken);
+            //foreach (var @using in root.Usings)
+            //{
+            //    builder.WriteLine(@using.ToString());
+            //}
+            //builder.WriteLine("//End-User defined using statements");
+            //builder.WriteLine();
+
             var isGlobalNamespace = classSymbol.ContainingNamespace.ToString() == "<global namespace>";
             if (isGlobalNamespace)
             {
@@ -244,18 +255,22 @@ public class XenialActionGenerator : ISourceGenerator
                             var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
                             if (method is not null)
                             {
+                                var methodSymbol = semanticModel.GetDeclaredSymbol(method, context.CancellationToken);
+
                                 var modifiers = new SyntaxTokenList(
                                     method.Modifiers.Where(t => !t.IsKind(SyntaxKind.AsyncKeyword))
                                 );
 
                                 var returnTypeSymbol = semanticModel.GetTypeInfo(method.ReturnType, context.CancellationToken);
 
-                                if (returnTypeSymbol.Type is not null)
+                                if (methodSymbol is not null && returnTypeSymbol.Type is not null)
                                 {
                                     var targetType = GetTargetType();
                                     if (targetType is not null)
                                     {
-                                        builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute({targetType.ToDisplayString()} myTarget);");
+                                        var parameterString = string.Join(", ", methodSymbol.Parameters.Select(p => $"{p} {p.Name}"));
+
+                                        builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute({parameterString});");
                                     }
                                     else
                                     {
@@ -346,7 +361,7 @@ public class XenialActionGenerator : ISourceGenerator
                                 builder.WriteLine($"{classSymbol.ToDisplayString()} action = new {classSymbol.ToDisplayString()}();");
 
 
-                                builder.WriteLine($"action.Execute(currentObject);");
+                                //builder.WriteLine($"action.Execute(currentObject);");
                             }
                             //TODO: type match failed for whatever reason
                             //using (builder.OpenBrace("else"))
