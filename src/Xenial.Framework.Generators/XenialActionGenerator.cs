@@ -229,7 +229,7 @@ public class XenialActionGenerator : ISourceGenerator
                     return null;
                 }
 
-                List<IMethodSymbol> partialMethods = new();
+                List<(IMethodSymbol? ctor, IMethodSymbol invoker)> partialMethods = new();
 
                 if (@class.HasModifier(SyntaxKind.PartialKeyword))
                 {
@@ -267,7 +267,18 @@ public class XenialActionGenerator : ISourceGenerator
 
                                 if (methodSymbol is not null && returnTypeSymbol.Type is not null)
                                 {
-                                    partialMethods.Add(methodSymbol);
+                                    var possibleCtors = classSymbol.InstanceConstructors
+                                            //record copy constructor are implicitly declared
+                                            .Where(ctor => !ctor.IsImplicitlyDeclared)
+                                            .GroupBy(ctor => ctor.Parameters.Length)
+                                            .Select(g => (lenght: g.Key, ctors: g.ToArray()))
+                                            .OrderByDescending(g => g.lenght)
+                                            .FirstOrDefault();
+
+                                    //TODO: error on conflicting ctor count
+                                    var possibleCtor = possibleCtors.ctors.FirstOrDefault();
+
+                                    partialMethods.Add((possibleCtor, methodSymbol));
 
                                     var targetType = GetTargetType();
                                     if (targetType is not null)
@@ -362,22 +373,42 @@ public class XenialActionGenerator : ISourceGenerator
                             using (builder.OpenBrace($"if(e.CurrentObject is {targetType.ToDisplayString()})"))
                             {
                                 builder.WriteLine($"{targetType.ToDisplayString()} currentObject = ({targetType.ToDisplayString()})e.CurrentObject;");
-                                builder.WriteLine($"{classSymbol.ToDisplayString()} action = new {classSymbol.ToDisplayString()}();");
+
+                                var typeMap = new Dictionary<string, string>()
+                                {
+                                    ["DevExpress.ExpressApp.XafApplication"] = "this.Application",
+                                    ["DevExpress.ExpressApp.IObjectSpace"] = "this.ObjectSpace"
+                                };
 
                                 if (partialMethods.Count > 0)
                                 {
-                                    var method = partialMethods.First();
+                                    var (ctor, invoker) = partialMethods.First();
+                                    if (ctor is null)
+                                    {
+                                        builder.WriteLine($"{classSymbol.ToDisplayString()} action = new {classSymbol.ToDisplayString()}();");
+                                    }
+                                    else
+                                    {
+                                        builder.Write($"{classSymbol.ToDisplayString()} action = new {classSymbol.ToDisplayString()}(");
+
+                                        var parameters = new List<string>();
+                                        foreach (var parameter in ctor.Parameters)
+                                        {
+                                            if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
+                                            {
+                                                parameters.Add(resovledValue);
+                                            }
+                                        }
+
+                                        builder.Write(string.Join(", ", parameters));
+
+                                        builder.WriteLine(");");
+                                    }
 
                                     builder.WriteLine();
                                     builder.Write($"action.Execute(currentObject");
 
-                                    var typeMap = new Dictionary<string, string>()
-                                    {
-                                        ["DevExpress.ExpressApp.XafApplication"] = "this.Application",
-                                        ["DevExpress.ExpressApp.IObjectSpace"] = "this.ObjectSpace"
-                                    };
-
-                                    foreach (var parameter in method.Parameters)
+                                    foreach (var parameter in invoker.Parameters)
                                     {
                                         if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
                                         {
