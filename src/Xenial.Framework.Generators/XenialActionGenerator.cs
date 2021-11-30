@@ -229,6 +229,7 @@ public class XenialActionGenerator : ISourceGenerator
                     return null;
                 }
 
+                List<IMethodSymbol> partialMethods = new();
 
                 if (@class.HasModifier(SyntaxKind.PartialKeyword))
                 {
@@ -242,12 +243,12 @@ public class XenialActionGenerator : ISourceGenerator
                             var targetType = GetTargetType();
                             if (targetType is not null)
                             {
-                                builder.WriteLine($"partial void Execute({targetType.ToDisplayString()} myTarget);");
+                                builder.WriteLine($"partial void Execute({targetType.ToDisplayString()} targetObject);");
                             }
                             else
                             {
                                 //TODO: Warn to implement one or more of the target interfaces
-                                builder.WriteLine("partial void Execute(object myTarget);");
+                                builder.WriteLine("partial void Execute(object targetObject);");
                             }
                         }
                         else
@@ -257,6 +258,7 @@ public class XenialActionGenerator : ISourceGenerator
                             {
                                 var methodSymbol = semanticModel.GetDeclaredSymbol(method, context.CancellationToken);
 
+
                                 var modifiers = new SyntaxTokenList(
                                     method.Modifiers.Where(t => !t.IsKind(SyntaxKind.AsyncKeyword))
                                 );
@@ -265,6 +267,8 @@ public class XenialActionGenerator : ISourceGenerator
 
                                 if (methodSymbol is not null && returnTypeSymbol.Type is not null)
                                 {
+                                    partialMethods.Add(methodSymbol);
+
                                     var targetType = GetTargetType();
                                     if (targetType is not null)
                                     {
@@ -360,8 +364,33 @@ public class XenialActionGenerator : ISourceGenerator
                                 builder.WriteLine($"{targetType.ToDisplayString()} currentObject = ({targetType.ToDisplayString()})e.CurrentObject;");
                                 builder.WriteLine($"{classSymbol.ToDisplayString()} action = new {classSymbol.ToDisplayString()}();");
 
+                                if (partialMethods.Count > 0)
+                                {
+                                    var method = partialMethods.First();
 
-                                //builder.WriteLine($"action.Execute(currentObject);");
+                                    builder.WriteLine();
+                                    builder.Write($"action.Execute(currentObject");
+
+                                    var typeMap = new Dictionary<string, string>()
+                                    {
+                                        ["DevExpress.ExpressApp.XafApplication"] = "this.Application",
+                                        ["DevExpress.ExpressApp.IObjectSpace"] = "this.ObjectSpace"
+                                    };
+
+                                    foreach (var parameter in method.Parameters)
+                                    {
+                                        if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
+                                        {
+                                            builder.Write($", {resovledValue}");
+                                        }
+                                    }
+
+                                    builder.WriteLine(");");
+                                }
+                                else
+                                {
+                                    //builder.WriteLine($"action.Execute(currentObject);");
+                                }
                             }
                             //TODO: type match failed for whatever reason
                             //using (builder.OpenBrace("else"))

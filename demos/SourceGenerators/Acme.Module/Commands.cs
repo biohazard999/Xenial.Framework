@@ -26,6 +26,7 @@ internal partial class InjectedIntoExecuteCommand : IDetailViewAction<DomainComp
 {
     internal partial void Execute(
         DomainComponent domainComponent,
+        IObjectSpace os,
         XafApplication xafApplication
     )
     {
