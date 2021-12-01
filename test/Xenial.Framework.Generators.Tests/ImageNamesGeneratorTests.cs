@@ -266,56 +266,22 @@ public partial class MyGlobalClass
             );
 
         [Fact]
-        public async Task SizesGeneration()
-        {
-            var syntax = @"namespace MyProject { [Xenial.XenialImageNames(Sizes = true)] public partial class ImageNamesWithSizes { } }";
-            var syntaxTree = CSharpSyntaxTree.ParseText(
-                   syntax,
-                   new CSharpParseOptions(LanguageVersion.Default),
-                   "ImageNamesWithSizes.cs"
+        public Task SizesGeneration()
+            => RunSourceTestWithAdditionalFiles(
+                "ImageNamesWithSizes.cs",
+@"namespace MyProject
+{
+    [Xenial.XenialImageNames(Sizes = true)]
+    public partial class ImageNamesWithSizes { }
+}",
+                new[]
+                {
+                    "Images/MyImage.png",
+                    "Images/MyImage_32x32.png",
+                    "Images/MyImage_48x48.png"
+                },
+                "MyProject.ImageNamesWithSizes"
             );
-
-            var compilation = CSharpCompilation.Create(
-                CompilationName,
-                syntaxTrees: new[] { syntaxTree },
-                references: DefaultReferenceAssemblies,
-                //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-            ).AddInlineXenialImageNamesAttribute("public");
-
-            XenialImageNamesGenerator generator = new();
-
-            var mockAdditionalTexts = new[]
-            {
-                new MockAdditionalText("Images/MyImage.png"),
-                new MockAdditionalText("Images/MyImage_32x32.png"),
-                new MockAdditionalText("Images/MyImage_48x48.png"),
-            };
-
-            var additionalTreeOptions = ImmutableDictionary<object, AnalyzerConfigOptions>.Empty;
-
-            foreach (var mockAdditionalText in mockAdditionalTexts)
-            {
-                additionalTreeOptions = additionalTreeOptions.Add(mockAdditionalText, new MockAnalyzerConfigOptions("build_metadata.AdditionalFiles.XenialImageNames", "true"));
-            }
-
-            GeneratorDriver driver = CSharpGeneratorDriver.Create(
-                new[] { generator },
-                optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                    .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
-                    .WithAdditionalTreeOptions(additionalTreeOptions),
-                    additionalTexts: mockAdditionalTexts
-            );
-
-            (driver, var diagnostics, var ex, _) = driver.CompileAndLoadType(compilation, "MyProject.ImageNamesWithSizes");
-
-            VerifyDiagnostics(diagnostics, ex);
-
-            var settings = new VerifySettings();
-            settings.UniqueForTargetFrameworkAndVersion();
-            await Verifier.Verify(driver, settings);
-        }
-
 
         [Fact(Skip = "Currently not Supported")]
         public async Task SubFolderBasic()
@@ -427,9 +393,3 @@ internal static class CompilationHelpers
 
     }
 }
-public class NotPartialImageNames
-{
-}
-
-[XenialImageNames]
-public partial class PartialImageNames { }
