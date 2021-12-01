@@ -161,9 +161,6 @@ public class XenialActionGenerator : ISourceGenerator
             return;
         }
 
-
-
-
         foreach (var @class in syntaxReceiver.Classes)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
@@ -273,10 +270,11 @@ public class XenialActionGenerator : ISourceGenerator
                                             .GroupBy(ctor => ctor.Parameters.Length)
                                             .Select(g => (lenght: g.Key, ctors: g.ToArray()))
                                             .OrderByDescending(g => g.lenght)
+                                            .Select(g => g.ctors)
                                             .FirstOrDefault();
 
                                     //TODO: error on conflicting ctor count
-                                    var possibleCtor = possibleCtors.ctors.FirstOrDefault();
+                                    var possibleCtor = possibleCtors?.FirstOrDefault();
 
                                     partialMethods.Add((possibleCtor, methodSymbol));
 
