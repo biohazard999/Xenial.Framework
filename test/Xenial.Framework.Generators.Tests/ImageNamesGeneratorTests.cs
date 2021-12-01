@@ -104,7 +104,12 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
     {
         var compilation = CSharpCompilation.Create(CompilationName).AddInlineXenialImageNamesAttribute();
 
-        var syntax = @"using Xenial; namespace MyProject { [XenialImageNames(Foo = 123)] public class MyNonPartialClass{ } }";
+        var syntax = @"using Xenial;
+namespace MyProject
+{
+    [XenialImageNames(Foo = 123)]
+    public class MyNonPartialClass{ }
+}";
         var syntaxTree =
             CSharpSyntaxTree.ParseText(
                 syntax,
