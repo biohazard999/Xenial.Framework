@@ -154,11 +154,20 @@ public partial class MyGlobalClass
     [Fact]
     public Task DoesNotEmitDiagnosticIfPartial()
         => RunSourceTest("MyPartialClass.cs",
-            @"namespace MyProject { [Xenial.XenialImageNames] public partial class MyPartialClass { } }");
+@"namespace MyProject
+{
+    [Xenial.XenialImageNames]
+    public partial class MyPartialClass { }
+}");
 
     [Fact]
     public Task DoesNotEmitDiagnosticIfAttributeIsNotApplied()
-        => RunSourceTest(string.Empty, @"namespace MyProject { [System.Obsolete]public class MyPartialClassWithoutAttribute{ } }");
+        => RunSourceTest(string.Empty,
+@"namespace MyProject
+{
+    [System.Obsolete]
+    public class MyPartialClassWithoutAttribute{ }
+}");
 
     [Fact]
     public async Task BasicConstantGeneration()
