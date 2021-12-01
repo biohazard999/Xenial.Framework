@@ -24,6 +24,7 @@ public abstract class BaseGeneratorTests<TGenerator>
     where TGenerator : class, ISourceGenerator, new()
 {
     protected const string CompilationName = "AssemblyName";
+    protected const string XenialAttributesVisibility = "XenialAttributesVisibility";
 
 #if FULL_FRAMEWORK || NETCOREAPP3_1
     static BaseGeneratorTests() => RegisterModuleInitializers.RegisterVerifiers();
@@ -84,24 +85,10 @@ public abstract class BaseGeneratorTests<TGenerator>
         );
 
     [Fact]
-    public async Task DoesEmitCustomAttributeModifier()
-    {
-        var compilation = CSharpCompilation.Create(CompilationName);
-        XenialImageNamesGenerator generator = new();
-
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            new[] { generator },
-            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(
-                    new MockAnalyzerConfigOptions("build_property.XenialAttributesVisibility", "public")
-                )
+    public Task DoesEmitCustomAttributeModifier()
+        => RunTest(
+            options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(XenialAttributesVisibility), "public"))
         );
-
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
-    }
 }
 
 [UsesVerify]
