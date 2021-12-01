@@ -225,9 +225,13 @@ public partial class MyGlobalClass
     [UsesVerify]
     public class AttributeDrivenTests
     {
+        private static Task RunSourceTestWithAdditionalFiles(string fileName, string source, string[] additionalFiles, string? typeToLoad = null)
+            => new ImageNamesGeneratorTests()
+                .RunSourceTestWithAdditionalFiles(fileName, source, additionalFiles, typeToLoad);
+
         [Fact]
         public Task SmartCommentsGeneration()
-            => new ImageNamesGeneratorTests().RunSourceTestWithAdditionalFiles(
+            => RunSourceTestWithAdditionalFiles(
                 "ImageNamesWithSmartComments.cs",
 @"namespace MyProject
 {
@@ -244,55 +248,22 @@ public partial class MyGlobalClass
             );
 
         [Fact]
-        public async Task ResourceAccessorsGeneration()
-        {
-            var syntax = @"namespace MyProject { [Xenial.XenialImageNames(ResourceAccessors = true, SmartComments = true)] public partial class ImageNamesResourceAccessors { } }";
-            var syntaxTree = CSharpSyntaxTree.ParseText(
-                   syntax,
-                   new CSharpParseOptions(LanguageVersion.Default),
-                   "ResourceAccessors.cs"
+        public Task ResourceAccessorsGeneration()
+            => RunSourceTestWithAdditionalFiles(
+                "ResourceAccessors.cs",
+@"namespace MyProject
+{
+    [Xenial.XenialImageNames(ResourceAccessors = true, SmartComments = true)]
+    public partial class ImageNamesResourceAccessors { }
+}",
+                new[]
+                {
+                    "Images/MyImage.png",
+                    "Images/MyImage_32x32.png",
+                    "Images/MyImage_48x48.png"
+                },
+                "MyProject.ImageNamesResourceAccessors"
             );
-
-            var compilation = CSharpCompilation.Create(
-                CompilationName,
-                syntaxTrees: new[] { syntaxTree },
-                references: DefaultReferenceAssemblies,
-                //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-            ).AddInlineXenialImageNamesAttribute("public");
-
-            XenialImageNamesGenerator generator = new();
-
-            var mockAdditionalTexts = new[]
-            {
-                new MockAdditionalText("Images/MyImage.png"),
-                new MockAdditionalText("Images/MyImage_32x32.png"),
-                new MockAdditionalText("Images/MyImage_48x48.png"),
-            };
-
-            var additionalTreeOptions = ImmutableDictionary<object, AnalyzerConfigOptions>.Empty;
-
-            foreach (var mockAdditionalText in mockAdditionalTexts)
-            {
-                additionalTreeOptions = additionalTreeOptions.Add(mockAdditionalText, new MockAnalyzerConfigOptions("build_metadata.AdditionalFiles.XenialImageNames", "true"));
-            }
-
-            GeneratorDriver driver = CSharpGeneratorDriver.Create(
-                new[] { generator },
-                optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                    .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
-                    .WithAdditionalTreeOptions(additionalTreeOptions),
-                    additionalTexts: mockAdditionalTexts
-            );
-
-            (driver, var diagnostics, var ex, _) = driver.CompileAndLoadType(compilation, "MyProject.ResourceAccessors");
-
-            VerifyDiagnostics(diagnostics, ex);
-
-            var settings = new VerifySettings();
-            settings.UniqueForTargetFrameworkAndVersion();
-            await Verifier.Verify(driver, settings);
-        }
 
         [Fact]
         public async Task SizesGeneration()
