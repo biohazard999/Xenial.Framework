@@ -157,27 +157,8 @@ public partial class MyGlobalClass
             @"namespace MyProject { [Xenial.XenialImageNames] public partial class MyPartialClass { } }");
 
     [Fact]
-    public async Task DoesNotEmitDiagnosticIfAttributeIsNotApplied()
-    {
-        var compilation = CSharpCompilation.Create(CompilationName).AddInlineXenialImageNamesAttribute();
-
-        var syntax = @"namespace MyProject { [System.Obsolete]public class MyPartialClassWithoutAttribute{ } }";
-
-        compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, new CSharpParseOptions(LanguageVersion.Default)));
-
-        XenialImageNamesGenerator generator = new();
-
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            new[] { generator },
-            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
-        );
-
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
-    }
+    public Task DoesNotEmitDiagnosticIfAttributeIsNotApplied()
+        => RunSourceTest(string.Empty, @"namespace MyProject { [System.Obsolete]public class MyPartialClassWithoutAttribute{ } }");
 
     [Fact]
     public async Task BasicConstantGeneration()
