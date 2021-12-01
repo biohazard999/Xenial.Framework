@@ -218,7 +218,6 @@ public partial class MyGlobalClass
     // It's for whatever reason important that the attribute is public in our tests
     // however in production it's works fine with internal visibility...
     [UsesVerify]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "Test classes are fine for grouping")]
     public class AttributeDrivenTests
     {
         [Fact]
