@@ -429,7 +429,7 @@ public class ImageNamesGeneratorTests
         }
 
 
-        [Fact]
+        [Fact(Skip = "Currently not Supported")]
         public async Task SubFolderBasic()
         {
             var syntax = @"namespace MyProject { [Xenial.XenialImageNames(SmartComments = true)] public partial class SubFolderImages { } }";
