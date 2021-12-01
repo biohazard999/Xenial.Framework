@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Linq;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -25,10 +26,36 @@ public sealed class MockAnalyzerConfigOptionsProvider : AnalyzerConfigOptionsPro
     public override AnalyzerConfigOptions GlobalOptions { get; }
 
     public override AnalyzerConfigOptions GetOptions(SyntaxTree tree)
-        => treeDict.TryGetValue(tree, out var options) ? options : MockAnalyzerConfigOptions.Empty;
+    {
+        if (treeDict.TryGetValue(tree, out var options))
+        {
+            return options;
+        }
+        else
+        {
+            return MockAnalyzerConfigOptions.Empty;
+        }
+    }
 
     public override AnalyzerConfigOptions GetOptions(AdditionalText textFile)
-        => treeDict.TryGetValue(textFile, out var options) ? options : MockAnalyzerConfigOptions.Empty;
+    {
+        if (treeDict.TryGetValue(textFile, out var options))
+        {
+            return options;
+        }
+
+        var keys = treeDict.Keys.OfType<AdditionalText>();
+        var key = keys.FirstOrDefault(key => key.Path == textFile.Path);
+        if (key is not null)
+        {
+            if (treeDict.TryGetValue(key, out options))
+            {
+                return options;
+            }
+        }
+
+        return MockAnalyzerConfigOptions.Empty;
+    }
 
     internal MockAnalyzerConfigOptionsProvider WithAdditionalTreeOptions(ImmutableDictionary<object, AnalyzerConfigOptions> treeDict)
         => new MockAnalyzerConfigOptionsProvider(this.treeDict.AddRange(treeDict), GlobalOptions);

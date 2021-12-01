@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -42,7 +43,8 @@ public abstract class BaseGeneratorTests<TGenerator>
         Func<MockAnalyzerConfigOptionsProvider, MockAnalyzerConfigOptionsProvider>? analyzerOptions = null,
         Action<VerifySettings>? verifySettings = null,
         Func<CSharpCompilation, CSharpCompilation>? compilationOptions = null,
-        Func<SyntaxTree[]>? syntaxTrees = null
+        Func<SyntaxTree[]>? syntaxTrees = null,
+        Func<IEnumerable<AdditionalText>>? additionalTexts = null
     )
     {
         var compilation = CSharpCompilation.Create(CompilationName,
@@ -72,7 +74,8 @@ public abstract class BaseGeneratorTests<TGenerator>
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
             new[] { generator },
-            optionsProvider: mockOptions
+            optionsProvider: mockOptions,
+            additionalTexts: additionalTexts == null ? null : additionalTexts()
         );
 
         driver = driver.RunGenerators(compilation);
@@ -133,8 +136,25 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
             compilationOptions: compilation => compilation.AddInlineXenialImageNamesAttribute(),
             syntaxTrees: () => new[]
             {
-                BuildSyntaxTree(fileName,source)
+                BuildSyntaxTree(fileName, source)
             });
+
+    protected Task RunSourceTestWithAdditionalFiles(string fileName, string source, string[] additionalFiles)
+        => RunSourceTestWithAdditionalFiles(fileName, source, additionalFiles.Select(f => new MockAdditionalText(f)));
+
+    protected Task RunSourceTestWithAdditionalFiles(string fileName, string source, IEnumerable<MockAdditionalText> additionalFiles)
+        => RunTest(
+            options => options
+                .WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false"))
+                .WithAdditionalTreeOptions(
+                    additionalFiles.ToImmutableDictionary(k => (object)k, _ => (AnalyzerConfigOptions)new MockAnalyzerConfigOptions("build_metadata.AdditionalFiles.XenialImageNames", "true"))
+                ),
+            compilationOptions: compilation => compilation.AddInlineXenialImageNamesAttribute(),
+            syntaxTrees: () => new[]
+            {
+                BuildSyntaxTree(fileName, source)
+            },
+            additionalTexts: () => additionalFiles);
 
     [Fact]
     public Task DoesEmitDiagnosticIfNotPartial()
@@ -174,49 +194,14 @@ public partial class MyGlobalClass
 }");
 
     [Fact]
-    public async Task BasicConstantGeneration()
-    {
-        var compilation = CSharpCompilation.Create(CompilationName);
-
-        var syntax = @"namespace MyProject { [Xenial.XenialImageNames] public partial class BasicImageNames { } }";
-
-        compilation = compilation.AddInlineXenialImageNamesAttribute();
-
-        compilation = compilation.AddSyntaxTrees(
-            CSharpSyntaxTree.ParseText(
-                syntax,
-                new CSharpParseOptions(LanguageVersion.Default),
-                "BasicImageNames.cs"
-            ));
-
-        XenialImageNamesGenerator generator = new();
-
-        var mockAdditionalText = new MockAdditionalText("Images/MyPicture.png");
-
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            new[] { generator },
-            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
-                .WithAdditionalTreeOptions(ImmutableDictionary<object, AnalyzerConfigOptions>.Empty.Add(mockAdditionalText, new MockAnalyzerConfigOptions("build_metadata.AdditionalFiles.XenialImageNames", "true"))),
-            additionalTexts: new[]
+    public Task BasicConstantGeneration()
+        => RunSourceTestWithAdditionalFiles("BasicImageNames.cs",
+            @"namespace MyProject { [Xenial.XenialImageNames] public partial class BasicImageNames { } }",
+            new[]
             {
-                mockAdditionalText
-            }
-        );
+                "Images/MyPicture.png"
+            });
 
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
-    }
-
-    // BEWARE: 🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉
-    // For whatever weird reason, we need to generate the attribute beforehand in our tests.
-    // otherwise the attributes get not "populated" correctly.
-    // For this we use the generate `AddInlineXenialImageNamesAttribute`
-    // method of the builder to avoid too much code duplication
-    // It's for whatever reason important that the attribute is public in our tests
-    // however in production it's works fine with internal visibility...
     [UsesVerify]
     public class AttributeDrivenTests
     {
@@ -236,7 +221,7 @@ public partial class MyGlobalClass
                 references: DefaultReferenceAssemblies,
                 //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-            ).AddInlineXenialImageNamesAttribute("public");
+            ).AddInlineXenialImageNamesAttribute();
 
             XenialImageNamesGenerator generator = new();
 
