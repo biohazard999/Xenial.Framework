@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Xenial.Framework.Generators.Tests;
 
-internal sealed class MockAnalyzerConfigOptionsProvider : AnalyzerConfigOptionsProvider
+public sealed class MockAnalyzerConfigOptionsProvider : AnalyzerConfigOptionsProvider
 {
     private readonly ImmutableDictionary<object, AnalyzerConfigOptions> treeDict;
 

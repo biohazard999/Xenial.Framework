@@ -37,19 +37,45 @@ public abstract class BaseGeneratorTests<TGenerator>
 
     protected abstract string GeneratorEmitProperty { get; }
 
-    [Fact]
-    public async Task EmitsGenerateAttributeByDefault()
+    protected async Task RunTest(
+        Func<MockAnalyzerConfigOptionsProvider, MockAnalyzerConfigOptionsProvider>? analyzerOptions = null,
+        Action<VerifySettings>? verifySettings = null
+    )
     {
         var compilation = CSharpCompilation.Create(CompilationName);
         var generator = CreateGenerator();
 
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
+        var mockOptions = MockAnalyzerConfigOptionsProvider.Empty;
+
+        if (analyzerOptions is not null)
+        {
+            mockOptions = analyzerOptions(mockOptions);
+        }
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            new[] { generator },
+            optionsProvider: mockOptions
+        );
 
         driver = driver.RunGenerators(compilation);
         var settings = new VerifySettings();
         settings.UniqueForTargetFrameworkAndVersion();
+        verifySettings?.Invoke(settings);
         await Verifier.Verify(driver, settings);
     }
+
+    [Fact]
+    public Task EmitsGenerateAttributeByDefault()
+        => RunTest();
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public Task DoesNotEmitIfAttributeIfOpted(bool emitProperty)
+        => RunTest(
+            options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), emitProperty.ToString())),
+            settings => settings.UseParameters(emitProperty)
+        );
 }
 
 [UsesVerify]
@@ -58,44 +84,6 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
     protected override string GeneratorEmitProperty => "GeneratorEmitProperty";
 
     private const string imageNamesBuildPropertyName = "build_property.GenerateXenialImageNamesAttribute";
-    
-
-
-    [Fact]
-    public async Task DoesNotEmitImageNamesAttributeIfOptedOut()
-    {
-        var compilation = CSharpCompilation.Create(CompilationName);
-        XenialImageNamesGenerator generator = new();
-
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            new[] { generator },
-            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
-        );
-
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
-    }
-
-    [Fact]
-    public async Task DoesEmitImageNamesAttributeIfOptedIn()
-    {
-        var compilation = CSharpCompilation.Create(CompilationName);
-        XenialImageNamesGenerator generator = new();
-
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            new[] { generator },
-            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "true"))
-        );
-
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
-    }
 
     [Fact]
     public async Task DoesEmitDiagnosticIfNotBoolean()
