@@ -123,82 +123,38 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
 
     private const string imageNamesBuildPropertyName = "build_property.GenerateXenialImageNamesAttribute";
 
-    [Fact]
-    public Task DoesEmitDiagnosticIfNotPartial()
+    protected Task RunSourceTest(string fileName, string source)
         => RunTest(
             options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false")),
             compilationOptions: compilation => compilation.AddInlineXenialImageNamesAttribute(),
             syntaxTrees: () => new[]
             {
-BuildSyntaxTree("MyNonPartialClass.cs",
+                BuildSyntaxTree(fileName,source)
+            });
+
+    [Fact]
+    public Task DoesEmitDiagnosticIfNotPartial()
+        => RunSourceTest("MyNonPartialClass.cs",
 @"using Xenial;
 namespace MyProject
 {
     [XenialImageNames(Foo = 123)]
     public class MyNonPartialClass{ }
-}")
-        });
+}");
 
     [Fact]
-    public async Task DoesEmitDiagnosticIfInGlobalNamespace()
-    {
-        var compilation = CSharpCompilation.Create(CompilationName).AddInlineXenialImageNamesAttribute();
-
-        var syntax = @"using Xenial;
+    public Task DoesEmitDiagnosticIfInGlobalNamespace()
+        => RunSourceTest("MyNonPartialClass.cs",
+@"using Xenial;
 [XenialImageNames(Foo = 123)]
 public partial class MyGlobalClass
 {
-}";
-        var syntaxTree =
-            CSharpSyntaxTree.ParseText(
-                syntax,
-                new CSharpParseOptions(LanguageVersion.Default),
-                path: "MyNonPartialClass.cs"
-            );
-
-        compilation = compilation.AddSyntaxTrees(syntaxTree);
-
-        XenialImageNamesGenerator generator = new();
-
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            new[] { generator },
-            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
-        );
-
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
-    }
+}");
 
     [Fact]
-    public async Task DoesNotEmitDiagnosticIfPartial()
-    {
-        var compilation = CSharpCompilation.Create(CompilationName).AddInlineXenialImageNamesAttribute();
-
-        var syntax = @"namespace MyProject { [Xenial.XenialImageNames] public partial class MyPartialClass { } }";
-
-        compilation = compilation.AddSyntaxTrees(
-            CSharpSyntaxTree.ParseText(
-                syntax,
-                new CSharpParseOptions(LanguageVersion.Default),
-                path: "MyPartialClass.cs"
-            ));
-
-        XenialImageNamesGenerator generator = new();
-
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            new[] { generator },
-            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
-        );
-
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
-    }
+    public Task DoesNotEmitDiagnosticIfPartial()
+        => RunSourceTest("MyPartialClass.cs",
+            @"namespace MyProject { [Xenial.XenialImageNames] public partial class MyPartialClass { } }");
 
     [Fact]
     public async Task DoesNotEmitDiagnosticIfAttributeIsNotApplied()
