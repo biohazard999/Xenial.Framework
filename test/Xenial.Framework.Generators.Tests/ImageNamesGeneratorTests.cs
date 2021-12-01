@@ -45,7 +45,11 @@ public abstract class BaseGeneratorTests<TGenerator>
         Func<SyntaxTree[]>? syntaxTrees = null
     )
     {
-        var compilation = CSharpCompilation.Create(CompilationName);
+        var compilation = CSharpCompilation.Create(CompilationName,
+                references: DefaultReferenceAssemblies,
+                //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        );
 
         if (compilationOptions is not null)
         {
