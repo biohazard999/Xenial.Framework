@@ -144,7 +144,11 @@ namespace MyProject
     {
         var compilation = CSharpCompilation.Create(CompilationName).AddInlineXenialImageNamesAttribute();
 
-        var syntax = @"using Xenial; [XenialImageNames(Foo = 123)] public partial class MyGlobalClass { }";
+        var syntax = @"using Xenial;
+[XenialImageNames(Foo = 123)]
+public partial class MyGlobalClass
+{
+}";
         var syntaxTree =
             CSharpSyntaxTree.ParseText(
                 syntax,
