@@ -82,17 +82,9 @@ public abstract class BaseGeneratorTests<TGenerator>
         => RunTest(
             options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "ABC"))
         );
-}
-
-[UsesVerify]
-public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGenerator>
-{
-    protected override string GeneratorEmitProperty => "GeneratorEmitProperty";
-
-    private const string imageNamesBuildPropertyName = "build_property.GenerateXenialImageNamesAttribute";
 
     [Fact]
-    public async Task EmitsCustomModifier()
+    public async Task DoesEmitCustomAttributeModifier()
     {
         var compilation = CSharpCompilation.Create(CompilationName);
         XenialImageNamesGenerator generator = new();
@@ -110,6 +102,15 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
         settings.UniqueForTargetFrameworkAndVersion();
         await Verifier.Verify(driver, settings);
     }
+}
+
+[UsesVerify]
+public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGenerator>
+{
+    protected override string GeneratorEmitProperty => "GeneratorEmitProperty";
+
+    private const string imageNamesBuildPropertyName = "build_property.GenerateXenialImageNamesAttribute";
+
 
     [Fact]
     public async Task DoesEmitDiagnosticIfNotPartial()
