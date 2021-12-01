@@ -44,7 +44,8 @@ public abstract class BaseGeneratorTests<TGenerator>
         Action<VerifySettings>? verifySettings = null,
         Func<CSharpCompilation, CSharpCompilation>? compilationOptions = null,
         Func<SyntaxTree[]>? syntaxTrees = null,
-        Func<IEnumerable<AdditionalText>>? additionalTexts = null
+        Func<IEnumerable<AdditionalText>>? additionalTexts = null,
+        string? typeToLoad = null
     )
     {
         var compilation = CSharpCompilation.Create(CompilationName,
@@ -78,11 +79,29 @@ public abstract class BaseGeneratorTests<TGenerator>
             additionalTexts: additionalTexts == null ? null : additionalTexts()
         );
 
-        driver = driver.RunGenerators(compilation);
+        var (driverAfterCompile, diagnostics, ex, _) = typeToLoad == null
+            ? (driver.RunGenerators(compilation), ImmutableArray<Diagnostic>.Empty, (Exception?)null, (Type?)null)
+            : driver.CompileAndLoadType(compilation, typeToLoad);
+
+        VerifyDiagnostics(diagnostics, ex);
+
+        driver = driverAfterCompile;
+
         var settings = new VerifySettings();
         settings.UniqueForTargetFrameworkAndVersion();
         verifySettings?.Invoke(settings);
         await Verifier.Verify(driver, settings);
+    }
+
+    private static void VerifyDiagnostics(ImmutableArray<Diagnostic> diagnostics, Exception? ex)
+    {
+        if (diagnostics.Length > 0 && ex is not null)
+        {
+            throw new AggregateException(new ArgumentException(string.Join(
+                Environment.NewLine,
+                diagnostics.Select(diag => new DiagnosticFormatter().Format(diag))
+            )), ex);
+        }
     }
 
     [Fact]
@@ -139,10 +158,10 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
                 BuildSyntaxTree(fileName, source)
             });
 
-    protected Task RunSourceTestWithAdditionalFiles(string fileName, string source, string[] additionalFiles)
-        => RunSourceTestWithAdditionalFiles(fileName, source, additionalFiles.Select(f => new MockAdditionalText(f)));
+    protected Task RunSourceTestWithAdditionalFiles(string fileName, string source, string[] additionalFiles, string? typeToLoad = null)
+        => RunSourceTestWithAdditionalFiles(fileName, source, additionalFiles.Select(f => new MockAdditionalText(f)), typeToLoad);
 
-    protected Task RunSourceTestWithAdditionalFiles(string fileName, string source, IEnumerable<MockAdditionalText> additionalFiles)
+    protected Task RunSourceTestWithAdditionalFiles(string fileName, string source, IEnumerable<MockAdditionalText> additionalFiles, string? typeToLoad = null)
         => RunTest(
             options => options
                 .WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false"))
@@ -154,7 +173,8 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
             {
                 BuildSyntaxTree(fileName, source)
             },
-            additionalTexts: () => additionalFiles);
+            additionalTexts: () => additionalFiles,
+            typeToLoad: typeToLoad);
 
     [Fact]
     public Task DoesEmitDiagnosticIfNotPartial()
@@ -206,55 +226,22 @@ public partial class MyGlobalClass
     public class AttributeDrivenTests
     {
         [Fact]
-        public async Task SmartCommentsGeneration()
-        {
-            var syntax = @"namespace MyProject { [Xenial.XenialImageNames(SmartComments = true)] public partial class ImageNamesWithSmartComments{ } }";
-            var syntaxTree = CSharpSyntaxTree.ParseText(
-                   syntax,
-                   new CSharpParseOptions(LanguageVersion.Default),
-                   "ImageNamesWithSmartComments.cs"
+        public Task SmartCommentsGeneration()
+            => new ImageNamesGeneratorTests().RunSourceTestWithAdditionalFiles(
+                "ImageNamesWithSmartComments.cs",
+@"namespace MyProject
+{
+    [Xenial.XenialImageNames(SmartComments = true)]
+    public partial class ImageNamesWithSmartComments{ }
+}",
+                new[]
+                {
+                    "Images/MyImage.png",
+                    "Images/MyImage_32x32.png",
+                    "Images/MyImage_48x48.png"
+                },
+                "MyProject.ImageNamesWithSizes"
             );
-
-            var compilation = CSharpCompilation.Create(
-                CompilationName,
-                syntaxTrees: new[] { syntaxTree },
-                references: DefaultReferenceAssemblies,
-                //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-            ).AddInlineXenialImageNamesAttribute();
-
-            XenialImageNamesGenerator generator = new();
-
-            var mockAdditionalTexts = new[]
-            {
-                new MockAdditionalText("Images/MyImage.png"),
-                new MockAdditionalText("Images/MyImage_32x32.png"),
-                new MockAdditionalText("Images/MyImage_48x48.png"),
-            };
-
-            var additionalTreeOptions = ImmutableDictionary<object, AnalyzerConfigOptions>.Empty;
-
-            foreach (var mockAdditionalText in mockAdditionalTexts)
-            {
-                additionalTreeOptions = additionalTreeOptions.Add(mockAdditionalText, new MockAnalyzerConfigOptions("build_metadata.AdditionalFiles.XenialImageNames", "true"));
-            }
-
-            GeneratorDriver driver = CSharpGeneratorDriver.Create(
-                new[] { generator },
-                optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                    .WithGlobalOptions(new MockAnalyzerConfigOptions(imageNamesBuildPropertyName, "false"))
-                    .WithAdditionalTreeOptions(additionalTreeOptions),
-                    additionalTexts: mockAdditionalTexts
-            );
-
-            (driver, var diagnostics, var ex, _) = driver.CompileAndLoadType(compilation, "MyProject.ImageNamesWithSizes");
-
-            VerifyDiagnostics(diagnostics, ex);
-
-            var settings = new VerifySettings();
-            settings.UniqueForTargetFrameworkAndVersion();
-            await Verifier.Verify(driver, settings);
-        }
 
         [Fact]
         public async Task ResourceAccessorsGeneration()
