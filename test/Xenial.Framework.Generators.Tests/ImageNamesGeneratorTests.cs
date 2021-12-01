@@ -20,21 +20,36 @@ using static Xenial.Framework.Generators.Tests.TestReferenceAssemblies;
 
 namespace Xenial.Framework.Generators.Tests;
 
-[UsesVerify]
-public class ImageNamesGeneratorTests
+public abstract class BaseGeneratorTests<TGenerator>
+    where TGenerator : class, ISourceGenerator, new()
 {
+
 #if FULL_FRAMEWORK || NETCOREAPP3_1
-    static ImageNamesGeneratorTests() => RegisterModuleInitializers.RegisterVerifiers();
+    static BaseGeneratorTests() => RegisterModuleInitializers.RegisterVerifiers();
 #endif
+
+    protected virtual TGenerator CreateGenerator()
+        => new TGenerator();
+
+    protected string BuildProperty(string property)
+        => $"build_property.{property}";
+
+    protected abstract string GeneratorEmitProperty { get; }
+}
+
+[UsesVerify]
+public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGenerator>
+{
+    protected override string GeneratorEmitProperty => "GeneratorEmitProperty";
 
     private const string imageNamesBuildPropertyName = "build_property.GenerateXenialImageNamesAttribute";
     private const string compilationName = "AssemblyName";
 
     [Fact]
-    public async Task EmitsImageNamesAttributeByDefault()
+    public async Task EmitsGenerateAttributeByDefault()
     {
         var compilation = CSharpCompilation.Create(compilationName);
-        XenialImageNamesGenerator generator = new();
+        var generator = CreateGenerator();
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
 
