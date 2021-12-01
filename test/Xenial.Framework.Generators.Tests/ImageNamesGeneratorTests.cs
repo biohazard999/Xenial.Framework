@@ -23,6 +23,7 @@ namespace Xenial.Framework.Generators.Tests;
 public abstract class BaseGeneratorTests<TGenerator>
     where TGenerator : class, ISourceGenerator, new()
 {
+    protected const string CompilationName = "AssemblyName";
 
 #if FULL_FRAMEWORK || NETCOREAPP3_1
     static BaseGeneratorTests() => RegisterModuleInitializers.RegisterVerifiers();
@@ -35,20 +36,11 @@ public abstract class BaseGeneratorTests<TGenerator>
         => $"build_property.{property}";
 
     protected abstract string GeneratorEmitProperty { get; }
-}
-
-[UsesVerify]
-public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGenerator>
-{
-    protected override string GeneratorEmitProperty => "GeneratorEmitProperty";
-
-    private const string imageNamesBuildPropertyName = "build_property.GenerateXenialImageNamesAttribute";
-    private const string compilationName = "AssemblyName";
 
     [Fact]
     public async Task EmitsGenerateAttributeByDefault()
     {
-        var compilation = CSharpCompilation.Create(compilationName);
+        var compilation = CSharpCompilation.Create(CompilationName);
         var generator = CreateGenerator();
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
@@ -58,11 +50,21 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
         settings.UniqueForTargetFrameworkAndVersion();
         await Verifier.Verify(driver, settings);
     }
+}
+
+[UsesVerify]
+public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGenerator>
+{
+    protected override string GeneratorEmitProperty => "GeneratorEmitProperty";
+
+    private const string imageNamesBuildPropertyName = "build_property.GenerateXenialImageNamesAttribute";
+    
+
 
     [Fact]
     public async Task DoesNotEmitImageNamesAttributeIfOptedOut()
     {
-        var compilation = CSharpCompilation.Create(compilationName);
+        var compilation = CSharpCompilation.Create(CompilationName);
         XenialImageNamesGenerator generator = new();
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
@@ -80,7 +82,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
     [Fact]
     public async Task DoesEmitImageNamesAttributeIfOptedIn()
     {
-        var compilation = CSharpCompilation.Create(compilationName);
+        var compilation = CSharpCompilation.Create(CompilationName);
         XenialImageNamesGenerator generator = new();
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
@@ -98,7 +100,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
     [Fact]
     public async Task DoesEmitDiagnosticIfNotBoolean()
     {
-        var compilation = CSharpCompilation.Create(compilationName);
+        var compilation = CSharpCompilation.Create(CompilationName);
         XenialImageNamesGenerator generator = new();
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
@@ -116,7 +118,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
     [Fact]
     public async Task EmitsCustomModifier()
     {
-        var compilation = CSharpCompilation.Create(compilationName);
+        var compilation = CSharpCompilation.Create(CompilationName);
         XenialImageNamesGenerator generator = new();
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(
@@ -136,7 +138,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
     [Fact]
     public async Task DoesEmitDiagnosticIfNotPartial()
     {
-        var compilation = CSharpCompilation.Create(compilationName).AddInlineXenialImageNamesAttribute();
+        var compilation = CSharpCompilation.Create(CompilationName).AddInlineXenialImageNamesAttribute();
 
         var syntax = @"using Xenial; namespace MyProject { [XenialImageNames(Foo = 123)] public class MyNonPartialClass{ } }";
         var syntaxTree =
@@ -165,7 +167,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
     [Fact]
     public async Task DoesEmitDiagnosticIfInGlobalNamespace()
     {
-        var compilation = CSharpCompilation.Create(compilationName).AddInlineXenialImageNamesAttribute();
+        var compilation = CSharpCompilation.Create(CompilationName).AddInlineXenialImageNamesAttribute();
 
         var syntax = @"using Xenial; [XenialImageNames(Foo = 123)] public partial class MyGlobalClass { }";
         var syntaxTree =
@@ -194,7 +196,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
     [Fact]
     public async Task DoesNotEmitDiagnosticIfPartial()
     {
-        var compilation = CSharpCompilation.Create(compilationName).AddInlineXenialImageNamesAttribute();
+        var compilation = CSharpCompilation.Create(CompilationName).AddInlineXenialImageNamesAttribute();
 
         var syntax = @"namespace MyProject { [Xenial.XenialImageNames] public partial class MyPartialClass { } }";
 
@@ -222,7 +224,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
     [Fact]
     public async Task DoesNotEmitDiagnosticIfAttributeIsNotApplied()
     {
-        var compilation = CSharpCompilation.Create(compilationName).AddInlineXenialImageNamesAttribute();
+        var compilation = CSharpCompilation.Create(CompilationName).AddInlineXenialImageNamesAttribute();
 
         var syntax = @"namespace MyProject { [System.Obsolete]public class MyPartialClassWithoutAttribute{ } }";
 
@@ -245,7 +247,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
     [Fact]
     public async Task BasicConstantGeneration()
     {
-        var compilation = CSharpCompilation.Create(compilationName);
+        var compilation = CSharpCompilation.Create(CompilationName);
 
         var syntax = @"namespace MyProject { [Xenial.XenialImageNames] public partial class BasicImageNames { } }";
 
@@ -301,7 +303,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
             );
 
             var compilation = CSharpCompilation.Create(
-                compilationName,
+                CompilationName,
                 syntaxTrees: new[] { syntaxTree },
                 references: DefaultReferenceAssemblies,
                 //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
@@ -352,7 +354,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
             );
 
             var compilation = CSharpCompilation.Create(
-                compilationName,
+                CompilationName,
                 syntaxTrees: new[] { syntaxTree },
                 references: DefaultReferenceAssemblies,
                 //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
@@ -403,7 +405,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
             );
 
             var compilation = CSharpCompilation.Create(
-                compilationName,
+                CompilationName,
                 syntaxTrees: new[] { syntaxTree },
                 references: DefaultReferenceAssemblies,
                 //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
@@ -455,7 +457,7 @@ public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGener
             );
 
             var compilation = CSharpCompilation.Create(
-                compilationName,
+                CompilationName,
                 syntaxTrees: new[] { syntaxTree },
                 references: DefaultReferenceAssemblies,
                 //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
