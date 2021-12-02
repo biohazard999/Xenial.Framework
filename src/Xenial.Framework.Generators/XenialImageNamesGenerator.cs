@@ -290,28 +290,25 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
         syntaxWriter.WriteLine($"using System.ComponentModel;");
         syntaxWriter.WriteLine();
 
-        syntaxWriter.WriteLine($"namespace {xenialNamespace}");
-        syntaxWriter.OpenBrace();
+        using (syntaxWriter.OpenBrace($"namespace {xenialNamespace}"))
+        {
+            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]");
 
-        syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]");
-        syntaxWriter.WriteLine($"{visibility} sealed class {xenialImageNamesAttributeName} : Attribute");
-        syntaxWriter.OpenBrace();
-        syntaxWriter.WriteLine($"{visibility} {xenialImageNamesAttributeName}() {{ }}");
+            using (syntaxWriter.OpenBrace($"{visibility} sealed class {xenialImageNamesAttributeName} : Attribute"))
+            {
+                syntaxWriter.WriteLine($"{visibility} {xenialImageNamesAttributeName}() {{ }}");
 
-        syntaxWriter.WriteLine();
+                syntaxWriter.WriteLine();
 
-        //Properties need to be public in order to be used
-        syntaxWriter.WriteLine($"public bool {AttributeNames.Sizes} {{ get; set; }}");
-        syntaxWriter.WriteLine($"public bool {AttributeNames.SmartComments} {{ get; set; }}");
-        syntaxWriter.WriteLine($"public bool {AttributeNames.ResourceAccessors} {{ get; set; }}");
+                //Properties need to be public in order to be used
+                syntaxWriter.WriteLine($"public bool {AttributeNames.Sizes} {{ get; set; }}");
+                syntaxWriter.WriteLine($"public bool {AttributeNames.SmartComments} {{ get; set; }}");
+                syntaxWriter.WriteLine($"public bool {AttributeNames.ResourceAccessors} {{ get; set; }}");
 
-        syntaxWriter.WriteLine("[EditorBrowsable(EditorBrowsableState.Never)]");
-        syntaxWriter.WriteLine($"public string {AttributeNames.DefaultImageSize} {{ get; set; }} = \"{AttributeNames.DefaultImageSizeValue}\";");
-
-
-        syntaxWriter.CloseBrace();
-
-        syntaxWriter.CloseBrace();
+                syntaxWriter.WriteLine("[EditorBrowsable(EditorBrowsableState.Never)]");
+                syntaxWriter.WriteLine($"public string {AttributeNames.DefaultImageSize} {{ get; set; }} = \"{AttributeNames.DefaultImageSizeValue}\";");
+            }
+        }
 
         var syntax = syntaxWriter.ToString();
         var source = SourceText.From(syntax, Encoding.UTF8);
