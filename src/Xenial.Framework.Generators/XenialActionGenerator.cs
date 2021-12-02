@@ -477,17 +477,6 @@ public class XenialActionGenerator : IXenialSourceGenerator
 
         var isAttributeDeclared = symbol.IsAttributeDeclared(generateXenialImageNamesAttribute);
 
-        //if (isAttributeDeclared && !@class.HasModifier(SyntaxKind.PartialKeyword))
-        //{
-        //    context.ReportDiagnostic(
-        //        Diagnostic.Create(
-        //            GeneratorDiagnostics.ClassNeedsToBePartial(xenialActionAttributeFullName),
-        //            @class.GetLocation()
-        //    ));
-
-        //    return (semanticModel, symbol, false);
-        //}
-
         return (semanticModel, symbol, isAttributeDeclared);
     }
 

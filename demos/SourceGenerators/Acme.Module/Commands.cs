@@ -1,6 +1,7 @@
 ﻿using System;
 
 using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Actions;
 
 using Xenial;
 
@@ -14,7 +15,8 @@ public class DomainComponent
 public partial record JörgsAction(XafApplication Application, IObjectSpace ObjectSpace) : IDetailViewAction<DomainComponent>
 {
     public partial Task Execute(DomainComponent targetObject)
-        => throw new NotImplementedException();
+    {
+    }
 }
 
 
