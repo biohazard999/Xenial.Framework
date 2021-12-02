@@ -6,7 +6,7 @@
     <TargetFramework>$(_TFM)</TargetFramework>
     <IsRoslynComponent>true</IsRoslynComponent>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <IsPackable>true</IsPackable>
+    <IsPackable>false</IsPackable>
     <DevelopmentDependency>true</DevelopmentDependency>
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>false</IncludeSymbols>
@@ -14,12 +14,10 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-    
+
     <!-- Debug source generators -->
     <!-- http://stevetalkscode.co.uk/debug-source-generators-with-vs2019-1610 -->
     <IsRoslynComponent>true</IsRoslynComponent>
-
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,14 +30,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" ReferenceOutputAssembly="false" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Package the generator in the analyzer directory of the nuget package -->
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="$(OutputPath)\$(AssemblyName).pdb" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <!-- Package the Newtonsoft.Json dependency alongside the generator assembly -->
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Xenial.Framework.Generators.Internal\Xenial.Framework.Generators.Internal.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all"  />
   </ItemGroup>
 
 </Project>

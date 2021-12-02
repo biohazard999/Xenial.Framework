@@ -3,8 +3,5 @@
     <CustomBuildProperties>
       <Value>TargetFramework = netstandard2.0</Value>
     </CustomBuildProperties>
-    <HiddenComponentWarnings>
-      <Value>InstrumentationOfSourceGeneratorsBreaksGeneration</Value>
-    </HiddenComponentWarnings>
   </Settings>
 </ProjectConfiguration>

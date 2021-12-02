@@ -401,7 +401,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
     )
     {
         parseOptions = parseOptions ?? CSharpParseOptions.Default;
-        var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
+        var syntaxWriter = CurlyIndenter.Create();
 
         syntaxWriter.WriteLine($"using System;");
         syntaxWriter.WriteLine();

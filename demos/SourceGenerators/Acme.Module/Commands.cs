@@ -2,6 +2,7 @@
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
+using DevExpress.Persistent.Base;
 
 using Xenial;
 
@@ -14,8 +15,9 @@ public class DomainComponent
 [XenialAction(Caption = "Fooooooo", ImageName = ImageNames.aac, Category = "View")]
 public partial record JörgsAction(XafApplication Application, IObjectSpace ObjectSpace) : IDetailViewAction<DomainComponent>
 {
-    public partial Task Execute(DomainComponent targetObject)
+    public partial void Execute(DomainComponent targetObject)
     {
+
     }
 }
 
