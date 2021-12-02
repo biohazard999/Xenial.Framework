@@ -3,6 +3,5 @@
     <CustomBuildProperties>
       <Value>TargetFramework = net6.0</Value>
     </CustomBuildProperties>
-    <InstrumentOutputAssembly>False</InstrumentOutputAssembly>
   </Settings>
 </ProjectConfiguration>

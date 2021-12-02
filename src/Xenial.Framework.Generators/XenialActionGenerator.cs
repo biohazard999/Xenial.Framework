@@ -21,7 +21,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
     private const string xenialActionAttributeName = "XenialActionAttribute";
     private const string xenialNamespace = "Xenial";
     private const string xenialActionAttributeFullName = $"{xenialNamespace}.{xenialActionAttributeName}";
-    private const string generateXenialActionAttributeMSBuildProperty = $"Generate{xenialActionAttributeName}";
+    public const string GenerateXenialActionAttributeMSBuildProperty = $"Generate{xenialActionAttributeName}";
 
     private static void CheckForDebugger(GeneratorExecutionContext context)
     {
@@ -60,7 +60,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
 
         CheckForDebugger(context);
 
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{generateXenialActionAttributeMSBuildProperty}", out var generateXenialActionAttrStr))
+        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialActionAttributeMSBuildProperty}", out var generateXenialActionAttrStr))
         {
             if (bool.TryParse(generateXenialActionAttrStr, out var generateXenialActionAttr))
             {
@@ -74,7 +74,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
                 context.ReportDiagnostic(
                     Diagnostic.Create(
                         GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            generateXenialActionAttributeMSBuildProperty,
+                            GenerateXenialActionAttributeMSBuildProperty,
                             generateXenialActionAttrStr
                         )
                         , null

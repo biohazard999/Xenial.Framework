@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Resources;
 using System.Text;
 using System.Threading;
 
@@ -22,7 +21,7 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
     private const string xenialImageNamesAttributeName = "XenialImageNamesAttribute";
     private const string xenialNamespace = "Xenial";
     private const string xenialImageNamesAttributeFullName = $"{xenialNamespace}.{xenialImageNamesAttributeName}";
-    private const string generateXenialImageNamesAttributeMSBuildProperty = $"Generate{xenialImageNamesAttributeName}";
+    public const string GenerateXenialImageNamesAttributeMSBuildProperty = $"Generate{xenialImageNamesAttributeName}";
 
     private const string markAsXenialImageSourceMetadataAttribute = "XenialImageNames";
 
@@ -244,7 +243,7 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
 
     private static Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation)
     {
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{generateXenialImageNamesAttributeMSBuildProperty}", out var generateXenialImageNamesAttrStr))
+        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialImageNamesAttributeMSBuildProperty}", out var generateXenialImageNamesAttrStr))
         {
             if (bool.TryParse(generateXenialImageNamesAttrStr, out var generateXenialImageNamesAttr))
             {
@@ -258,7 +257,7 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
                 context.ReportDiagnostic(
                     Diagnostic.Create(
                         GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            generateXenialImageNamesAttributeMSBuildProperty,
+                            GenerateXenialImageNamesAttributeMSBuildProperty,
                             generateXenialImageNamesAttrStr
                         )
                         , null
@@ -380,7 +379,7 @@ public record ImagesClass(
         //We don't need to specify any other modifier
         //because the user can decide if he want it to be an instance type.
         //We also don't need to specify the visibility for partial types
-        builder.WriteLine($"partial class {Class.Name}");
+        builder.WriteLine($"partial {(Class.IsRecord ? "record" : "class")} {Class.Name}");
 
         builder.OpenBrace();
 

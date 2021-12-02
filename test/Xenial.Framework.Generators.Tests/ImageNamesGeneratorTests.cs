@@ -16,7 +16,7 @@ namespace Xenial.Framework.Generators.Tests;
 [UsesVerify]
 public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGenerator>
 {
-    protected override string GeneratorEmitProperty => "GenerateXenialImageNamesAttribute";
+    protected override string GeneratorEmitProperty => XenialImageNamesGenerator.GenerateXenialImageNamesAttributeMSBuildProperty;
 
     protected Task RunSourceTest(string fileName, string source)
         => RunTest(
@@ -85,7 +85,24 @@ public partial class MyGlobalClass
     [Fact]
     public Task BasicConstantGeneration()
         => RunSourceTestWithAdditionalFiles("BasicImageNames.cs",
-            @"namespace MyProject { [Xenial.XenialImageNames] public partial class BasicImageNames { } }",
+@"namespace MyProject
+{
+    [Xenial.XenialImageNames]
+    public partial class BasicImageNames { }
+}",
+            new[]
+            {
+                "Images/MyPicture.png"
+            });
+
+    [Fact]
+    public Task BasicConstantGenerationWithRecord()
+        => RunSourceTestWithAdditionalFiles("BasicImageNamesWithRecord.cs",
+@"namespace MyProject
+{
+    [Xenial.XenialImageNames]
+    public partial record BasicImageNamesRecord { }
+}",
             new[]
             {
                 "Images/MyPicture.png"
