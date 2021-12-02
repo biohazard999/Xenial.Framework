@@ -32,6 +32,16 @@ internal static class GeneratorDiagnostics
         description: $"The class using the [{attributeName}] needs to be partial"
     );
 
+    internal static DiagnosticDescriptor ClassShouldBePartial(string attributeName) => new(
+        "XENGEN0102",
+        $"The class using the [{attributeName}] should be partial",
+        $"The class using the [{attributeName}] should be partial",
+        category,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: $"The class using the [{attributeName}] should be partial"
+    );
+
     internal static DiagnosticDescriptor ClassNeedsToBeInNamespace(string attributeName) => new(
         "XENGEN0101",
         $"The class using the [{attributeName}] needs to be in a namespace",

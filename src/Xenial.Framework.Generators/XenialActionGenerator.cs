@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -60,58 +61,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
 
         CheckForDebugger(context);
 
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialActionAttributeMSBuildProperty}", out var generateXenialActionAttrStr))
-        {
-            if (bool.TryParse(generateXenialActionAttrStr, out var generateXenialActionAttr))
-            {
-                if (!generateXenialActionAttr)
-                {
-                    return compilation;
-                }
-            }
-            else
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            GenerateXenialActionAttributeMSBuildProperty,
-                            generateXenialActionAttrStr
-                        )
-                        , null
-                    ));
-
-                return compilation;
-            }
-        }
-
-        var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
-
-        syntaxWriter.WriteLine($"using System;");
-        syntaxWriter.WriteLine();
-
-        using (syntaxWriter.OpenBrace($"namespace {xenialNamespace}"))
-        {
-            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false)]");
-            using (syntaxWriter.OpenBrace($"{context.GetDefaultAttributeModifier()} sealed class {xenialActionAttributeName} : Attribute"))
-            {
-                syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} {xenialActionAttributeName}() {{ }}");
-
-                syntaxWriter.WriteLine($"public string Caption {{ get; set; }}");
-                syntaxWriter.WriteLine($"public string ImageName {{ get; set; }}");
-                syntaxWriter.WriteLine($"public string Category {{ get; set; }}");
-            }
-            syntaxWriter.WriteLine();
-
-            syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} interface IDetailViewAction<T> {{ }}");
-            syntaxWriter.WriteLine();
-            syntaxWriter.WriteLine($"{context.GetDefaultAttributeModifier()} interface IListViewAction<T> {{ }}");
-        }
-
-        var syntax = syntaxWriter.ToString();
-        var source = SourceText.From(syntax, Encoding.UTF8);
-        context.AddSource($"{xenialActionAttributeName}.g.cs", source);
-
-        compilation = compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
+        compilation = GenerateAttribute(context, compilation);
 
         var generateXenialActionAttribute = compilation.GetTypeByMetadataName(xenialActionAttributeFullName);
 
@@ -188,67 +138,77 @@ public class XenialActionGenerator : IXenialSourceGenerator
 
                 List<(IMethodSymbol? ctor, IMethodSymbol invoker)> partialMethods = new();
 
-                if (@class.HasModifier(SyntaxKind.PartialKeyword))
+                if (!@class.HasModifier(SyntaxKind.PartialKeyword))
                 {
-                    builder.WriteLine("[CompilerGenerated]");
-                    using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
-                    {
-                        var methods = @class.Members.OfType<MethodDeclarationSyntax>();
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            GeneratorDiagnostics.ClassShouldBePartial(
+                            xenialActionAttributeName
+                        ), @class.GetLocation())
+                    );
 
-                        if (!methods.Any(method => method.Identifier.Text == "Execute"))
+                    return compilation;
+                }
+
+
+                builder.WriteLine("[CompilerGenerated]");
+                using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
+                {
+                    var methods = @class.Members.OfType<MethodDeclarationSyntax>();
+
+                    if (!methods.Any(method => method.Identifier.Text == "Execute"))
+                    {
+                        var targetType = GetTargetType();
+                        if (targetType is not null)
                         {
-                            var targetType = GetTargetType();
-                            if (targetType is not null)
-                            {
-                                builder.WriteLine($"partial void Execute({targetType.ToDisplayString()} targetObject);");
-                            }
-                            else
-                            {
-                                //TODO: Warn to implement one or more of the target interfaces
-                                builder.WriteLine("partial void Execute(object targetObject);");
-                            }
+                            builder.WriteLine($"partial void Execute({targetType.ToDisplayString()} targetObject);");
                         }
                         else
                         {
-                            var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
-                            if (method is not null)
+                            //TODO: Warn to implement one or more of the target interfaces
+                            builder.WriteLine("partial void Execute(object targetObject);");
+                        }
+                    }
+                    else
+                    {
+                        var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
+                        if (method is not null)
+                        {
+                            var methodSymbol = semanticModel.GetDeclaredSymbol(method, context.CancellationToken);
+
+
+                            var modifiers = new SyntaxTokenList(
+                                method.Modifiers.Where(t => !t.IsKind(SyntaxKind.AsyncKeyword))
+                            );
+
+                            var returnTypeSymbol = semanticModel.GetTypeInfo(method.ReturnType, context.CancellationToken);
+
+                            if (methodSymbol is not null && returnTypeSymbol.Type is not null)
                             {
-                                var methodSymbol = semanticModel.GetDeclaredSymbol(method, context.CancellationToken);
+                                var possibleCtors = classSymbol.InstanceConstructors
+                                        //record copy constructor are implicitly declared
+                                        .Where(ctor => !ctor.IsImplicitlyDeclared)
+                                        .GroupBy(ctor => ctor.Parameters.Length)
+                                        .Select(g => (lenght: g.Key, ctors: g.ToArray()))
+                                        .OrderByDescending(g => g.lenght)
+                                        .Select(g => g.ctors)
+                                        .FirstOrDefault();
 
+                                //TODO: error on conflicting ctor count
+                                var possibleCtor = possibleCtors?.FirstOrDefault();
 
-                                var modifiers = new SyntaxTokenList(
-                                    method.Modifiers.Where(t => !t.IsKind(SyntaxKind.AsyncKeyword))
-                                );
+                                partialMethods.Add((possibleCtor, methodSymbol));
 
-                                var returnTypeSymbol = semanticModel.GetTypeInfo(method.ReturnType, context.CancellationToken);
-
-                                if (methodSymbol is not null && returnTypeSymbol.Type is not null)
+                                var targetType = GetTargetType();
+                                if (targetType is not null)
                                 {
-                                    var possibleCtors = classSymbol.InstanceConstructors
-                                            //record copy constructor are implicitly declared
-                                            .Where(ctor => !ctor.IsImplicitlyDeclared)
-                                            .GroupBy(ctor => ctor.Parameters.Length)
-                                            .Select(g => (lenght: g.Key, ctors: g.ToArray()))
-                                            .OrderByDescending(g => g.lenght)
-                                            .Select(g => g.ctors)
-                                            .FirstOrDefault();
+                                    var parameterString = string.Join(", ", methodSymbol.Parameters.Select(p => $"{p} {p.Name}"));
 
-                                    //TODO: error on conflicting ctor count
-                                    var possibleCtor = possibleCtors?.FirstOrDefault();
-
-                                    partialMethods.Add((possibleCtor, methodSymbol));
-
-                                    var targetType = GetTargetType();
-                                    if (targetType is not null)
-                                    {
-                                        var parameterString = string.Join(", ", methodSymbol.Parameters.Select(p => $"{p} {p.Name}"));
-
-                                        builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute({parameterString});");
-                                    }
-                                    else
-                                    {
-                                        builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute(object myTarget);");
-                                    }
+                                    builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute({parameterString});");
+                                }
+                                else
+                                {
+                                    builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute(object myTarget);");
                                 }
                             }
                         }
@@ -395,6 +355,79 @@ public class XenialActionGenerator : IXenialSourceGenerator
         }
 
         return compilation;
+    }
+
+    private static Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation)
+    {
+        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialActionAttributeMSBuildProperty}", out var generateXenialActionAttrStr))
+        {
+            if (bool.TryParse(generateXenialActionAttrStr, out var generateXenialActionAttr))
+            {
+                if (!generateXenialActionAttr)
+                {
+                    return compilation;
+                }
+            }
+            else
+            {
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
+                            GenerateXenialActionAttributeMSBuildProperty,
+                            generateXenialActionAttrStr
+                        )
+                        , null
+                    ));
+
+                return compilation;
+            }
+        }
+
+        var (source, syntaxTree) = GenerateXenialActionsAttribute(
+            (CSharpParseOptions)context.ParseOptions,
+            context.GetDefaultAttributeModifier(),
+            context.CancellationToken
+        );
+
+        context.AddSource($"{xenialActionAttributeName}.g.cs", source);
+
+        return compilation.AddSyntaxTrees(syntaxTree);
+    }
+
+    public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialActionsAttribute(
+        CSharpParseOptions? parseOptions = null,
+        string visibility = "internal",
+        CancellationToken cancellationToken = default
+    )
+    {
+        parseOptions = parseOptions ?? CSharpParseOptions.Default;
+        var syntaxWriter = new CurlyIndenter(new System.CodeDom.Compiler.IndentedTextWriter(new StringWriter()));
+
+        syntaxWriter.WriteLine($"using System;");
+        syntaxWriter.WriteLine();
+
+        using (syntaxWriter.OpenBrace($"namespace {xenialNamespace}"))
+        {
+            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false)]");
+            using (syntaxWriter.OpenBrace($"{visibility} sealed class {xenialActionAttributeName} : Attribute"))
+            {
+                syntaxWriter.WriteLine($"{visibility} {xenialActionAttributeName}() {{ }}");
+
+                syntaxWriter.WriteLine($"public string Caption {{ get; set; }}");
+                syntaxWriter.WriteLine($"public string ImageName {{ get; set; }}");
+                syntaxWriter.WriteLine($"public string Category {{ get; set; }}");
+            }
+            syntaxWriter.WriteLine();
+
+            syntaxWriter.WriteLine($"{visibility} interface IDetailViewAction<T> {{ }}");
+            syntaxWriter.WriteLine();
+            syntaxWriter.WriteLine($"{visibility} interface IListViewAction<T> {{ }}");
+        }
+
+        var syntax = syntaxWriter.ToString();
+        var source = SourceText.From(syntax, Encoding.UTF8);
+        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
+        return (source, syntaxTree);
     }
 
     private static Compilation AddGeneratedCode(
