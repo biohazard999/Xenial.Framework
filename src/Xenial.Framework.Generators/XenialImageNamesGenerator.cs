@@ -376,118 +376,108 @@ public record ImagesClass(
         //We don't need to specify any other modifier
         //because the user can decide if he want it to be an instance type.
         //We also don't need to specify the visibility for partial types
-        builder.WriteLine($"partial {(Class.IsRecord ? "record" : "class")} {Class.Name}");
-
-        builder.OpenBrace();
-
-        var modifier = Class.GetResultantVisibility() == SymbolVisibility.Public
-            ? "public"
-            : "internal";
-
-        if (Features.Sizes)
+        using (builder.OpenBrace($"partial {(Class.IsRecord ? "record" : "class")} {Class.Name}"))
         {
-            var imagesWithoutSuffix = Images.Where(i => !i.IsSuffixed(GlobalOptions.DefaultImageSuffixes));
-            var imagesWithSuffix = GlobalOptions.DefaultImageSuffixes.Select(suffix => new
-            {
-                suffix,
-                images = Images.Where(i => i.IsSuffixed(suffix))
-            }).Where(i => i.images.Any());
+            var modifier = Class.GetResultantVisibility() == SymbolVisibility.Public
+                ? "public"
+                : "internal";
 
-            foreach (var imageInfo in imagesWithoutSuffix)
+            if (Features.Sizes)
             {
-                context.CancellationToken.ThrowIfCancellationRequested();
-                GenerateImageNameConstant(Attribute, builder, modifier, imageInfo);
-            }
+                var imagesWithoutSuffix = Images.Where(i => !i.IsSuffixed(GlobalOptions.DefaultImageSuffixes));
+                var imagesWithSuffix = GlobalOptions.DefaultImageSuffixes.Select(suffix => new
+                {
+                    suffix,
+                    images = Images.Where(i => i.IsSuffixed(suffix))
+                }).Where(i => i.images.Any());
 
-            foreach (var imageInfoGroup in imagesWithSuffix)
-            {
-                context.CancellationToken.ThrowIfCancellationRequested();
-                builder.WriteLine();
-                builder.WriteLine($"{modifier} partial class Size{imageInfoGroup.suffix}");
-                builder.OpenBrace();
-
-                foreach (var imageInfo in imageInfoGroup.images)
+                foreach (var imageInfo in imagesWithoutSuffix)
                 {
                     context.CancellationToken.ThrowIfCancellationRequested();
-                    GenerateImageNameConstant(
-                        Attribute,
-                        builder,
-                        modifier,
-                        imageInfo,
-                        removeSuffix: true,
-                        suffix: imageInfoGroup.suffix
-                    );
+                    GenerateImageNameConstant(Attribute, builder, modifier, imageInfo);
                 }
 
-                builder.CloseBrace();
-            }
-        }
-        else
-        {
-            foreach (var imageInfo in Images)
-            {
-                Console.WriteLine(imageInfo);
-
-                context.CancellationToken.ThrowIfCancellationRequested();
-                GenerateImageNameConstant(Attribute, builder, modifier, imageInfo);
-            }
-
-            if (Features.ResourceAccessors)
-            {
-                builder.WriteLine();
-                builder.WriteLine($"{modifier} static class ResourceNames");
-                builder.OpenBrace();
-                foreach (var imageInfo in Images)
+                foreach (var imageInfoGroup in imagesWithSuffix)
                 {
-                    GenerateResourceNameConstant(Attribute, builder, modifier, imageInfo);
-                }
-
-                builder.CloseBrace();
-
-                builder.WriteLine();
-
-                builder.WriteLine($"{modifier} static class AsStream");
-                builder.OpenBrace();
-
-                foreach (var imageInfo in Images)
-                {
-                    GenerateResourceStreamMethod(Class, Attribute, builder, modifier, imageInfo);
-                }
-
-                builder.CloseBrace();
-
-                builder.WriteLine();
-
-                using (builder.OpenBrace($"{modifier} class AsBytes"))
-                {
-                    foreach (var imageInfo in Images)
+                    context.CancellationToken.ThrowIfCancellationRequested();
+                    builder.WriteLine();
+                    using (builder.OpenBrace($"{modifier} partial class Size{imageInfoGroup.suffix}"))
                     {
-                        GenerateResourceBytesMethod(Class, Attribute, builder, modifier, imageInfo);
+                        foreach (var imageInfo in imageInfoGroup.images)
+                        {
+                            context.CancellationToken.ThrowIfCancellationRequested();
+                            GenerateImageNameConstant(
+                                Attribute,
+                                builder,
+                                modifier,
+                                imageInfo,
+                                removeSuffix: true,
+                                suffix: imageInfoGroup.suffix
+                            );
+                        }
                     }
                 }
-
-                var semanticModel = context.Compilation.GetSemanticModel(context.Compilation.SyntaxTrees.First());
-
-                if (semanticModel is not null)
+            }
+            else
+            {
+                foreach (var imageInfo in Images)
                 {
-                    //We check if the image type is in reach of compilation
-                    var imageType = context.Compilation.GetTypeByMetadataName("System.Drawing.Image");
+                    context.CancellationToken.ThrowIfCancellationRequested();
+                    GenerateImageNameConstant(Attribute, builder, modifier, imageInfo);
+                }
 
-                    if (imageType is not null)
+                if (Features.ResourceAccessors)
+                {
+                    builder.WriteLine();
+                    using (builder.OpenBrace($"{modifier} static class ResourceNames"))
                     {
-                        using (builder.OpenBrace($"{modifier} class AsImage"))
+                        foreach (var imageInfo in Images)
                         {
-                            foreach (var imageInfo in Images)
+                            GenerateResourceNameConstant(Attribute, builder, modifier, imageInfo);
+                        }
+                    }
+
+                    builder.WriteLine();
+
+                    using (builder.OpenBrace($"{modifier} static class AsStream"))
+                    {
+                        foreach (var imageInfo in Images)
+                        {
+                            GenerateResourceStreamMethod(Class, Attribute, builder, modifier, imageInfo);
+                        }
+                    }
+
+                    builder.WriteLine();
+
+                    using (builder.OpenBrace($"{modifier} class AsBytes"))
+                    {
+                        foreach (var imageInfo in Images)
+                        {
+                            GenerateResourceBytesMethod(Class, Attribute, builder, modifier, imageInfo);
+                        }
+                    }
+
+                    var semanticModel = context.Compilation.GetSemanticModel(context.Compilation.SyntaxTrees.First());
+
+                    if (semanticModel is not null)
+                    {
+                        //We check if the image type is in reach of compilation
+                        var imageType = context.Compilation.GetTypeByMetadataName("System.Drawing.Image");
+
+                        if (imageType is not null)
+                        {
+                            using (builder.OpenBrace($"{modifier} class AsImage"))
                             {
-                                GenerateResourceImageMethod(Class, Attribute, builder, modifier, imageInfo);
+                                foreach (var imageInfo in Images)
+                                {
+                                    GenerateResourceImageMethod(Class, Attribute, builder, modifier, imageInfo);
+                                }
                             }
                         }
                     }
                 }
             }
         }
-
-        builder.CloseBrace();
 
         return builder;
     }
