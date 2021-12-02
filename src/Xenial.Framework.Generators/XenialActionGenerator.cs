@@ -14,8 +14,7 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-[Generator]
-public class XenialActionGenerator : ISourceGenerator
+public class XenialActionGenerator : IXenialSourceGenerator
 {
     private const string xenialDebugSourceGenerators = "XenialDebugSourceGenerators";
 
@@ -24,41 +23,6 @@ public class XenialActionGenerator : ISourceGenerator
     private const string xenialActionAttributeFullName = $"{xenialNamespace}.{xenialActionAttributeName}";
     private const string generateXenialActionAttributeMSBuildProperty = $"Generate{xenialActionAttributeName}";
 
-    public void Initialize(GeneratorInitializationContext context)
-        => context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-
-    /// <summary>
-    /// Receives all the classes that have the Xenial.XenialImageNamesAttribute set.
-    /// </summary>
-    internal class SyntaxReceiver : ISyntaxContextReceiver
-    {
-        public List<TypeDeclarationSyntax> Classes { get; } = new();
-
-        /// <summary>
-        /// Called for every syntax node in the compilation, we can inspect the nodes and save any information useful for generation
-        /// </summary>
-        public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
-        {
-            if (context.Node is ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclarationSyntax)
-            {
-                var classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclarationSyntax);
-
-                if (classSymbol is not null)
-                {
-                    Classes.Add(classDeclarationSyntax);
-                }
-            }
-            if (context.Node is RecordDeclarationSyntax { AttributeLists.Count: > 0 } recordDeclarationSyntax)
-            {
-                var classSymbol = context.SemanticModel.GetDeclaredSymbol(recordDeclarationSyntax);
-
-                if (classSymbol is not null)
-                {
-                    Classes.Add(recordDeclarationSyntax);
-                }
-            }
-        }
-    }
     private static void CheckForDebugger(GeneratorExecutionContext context)
     {
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{xenialDebugSourceGenerators}", out var xenialDebugSourceGeneratorsAttrString))
@@ -89,25 +53,20 @@ public class XenialActionGenerator : ISourceGenerator
         }
     }
 
-    public void Execute(GeneratorExecutionContext context)
+    public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types)
     {
-        if (context.SyntaxContextReceiver is not SyntaxReceiver syntaxReceiver)
-        {
-            return;
-        }
-
-        context.CancellationToken.ThrowIfCancellationRequested();
+        _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
+        _ = types ?? throw new ArgumentNullException(nameof(types));
 
         CheckForDebugger(context);
 
-        var compilation = context.Compilation;
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{generateXenialActionAttributeMSBuildProperty}", out var generateXenialActionAttrStr))
         {
             if (bool.TryParse(generateXenialActionAttrStr, out var generateXenialActionAttr))
             {
                 if (!generateXenialActionAttr)
                 {
-                    return;
+                    return compilation;
                 }
             }
             else
@@ -120,7 +79,8 @@ public class XenialActionGenerator : ISourceGenerator
                         )
                         , null
                     ));
-                return;
+
+                return compilation;
             }
         }
 
@@ -158,10 +118,10 @@ public class XenialActionGenerator : ISourceGenerator
         if (generateXenialActionAttribute is null)
         {
             //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
-            return;
+            return compilation;
         }
 
-        foreach (var @class in syntaxReceiver.Classes)
+        foreach (var @class in types)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
 
@@ -203,7 +163,7 @@ public class XenialActionGenerator : ISourceGenerator
                     ), @class.GetLocation())
                 );
 
-                return;
+                return compilation;
             }
 
             using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
@@ -433,6 +393,8 @@ public class XenialActionGenerator : ISourceGenerator
 
             compilation = AddGeneratedCode(context, compilation, @class, builder);
         }
+
+        return compilation;
     }
 
     private static Compilation AddGeneratedCode(

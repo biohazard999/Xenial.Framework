@@ -19,7 +19,7 @@ using static Xenial.Framework.Generators.Tests.TestReferenceAssemblies;
 namespace Xenial.Framework.Generators.Tests;
 
 public abstract class BaseGeneratorTests<TGenerator>
-    where TGenerator : class, ISourceGenerator, new()
+    where TGenerator : class, IXenialSourceGenerator, new()
 {
     protected const string CompilationName = "AssemblyName";
     protected const string XenialAttributesVisibility = "XenialAttributesVisibility";
@@ -28,8 +28,13 @@ public abstract class BaseGeneratorTests<TGenerator>
     static BaseGeneratorTests() => RegisterModuleInitializers.RegisterVerifiers();
 #endif
 
-    protected virtual TGenerator CreateGenerator()
-        => new TGenerator();
+    protected virtual ISourceGenerator CreateGenerator()
+    {
+        var generator = new XenialGenerator();
+        generator.Generators.Clear();
+        generator.Generators.Add(new TGenerator());
+        return generator;
+    }
 
     protected string BuildProperty(string property)
         => $"build_property.{property}";

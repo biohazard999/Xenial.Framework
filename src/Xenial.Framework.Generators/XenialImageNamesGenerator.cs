@@ -15,8 +15,7 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-[Generator]
-public class XenialImageNamesGenerator : ISourceGenerator
+public class XenialImageNamesGenerator : IXenialSourceGenerator
 {
     private const string xenialDebugSourceGenerators = "XenialDebugSourceGenerators";
 
@@ -29,39 +28,10 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
     private const string imagesBaseFolder = "Images";
 
-    public void Initialize(GeneratorInitializationContext context)
-        => context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-
-    /// <summary>
-    /// Receives all the classes that have the Xenial.XenialImageNamesAttribute set.
-    /// </summary>
-    internal class SyntaxReceiver : ISyntaxContextReceiver
+    public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types)
     {
-        public List<ClassDeclarationSyntax> Classes { get; } = new();
-
-        /// <summary>
-        /// Called for every syntax node in the compilation, we can inspect the nodes and save any information useful for generation
-        /// </summary>
-        public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
-        {
-            if (context.Node is ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclarationSyntax)
-            {
-                var classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclarationSyntax);
-
-                if (classSymbol is not null)
-                {
-                    Classes.Add(classDeclarationSyntax);
-                }
-            }
-        }
-    }
-
-    public void Execute(GeneratorExecutionContext context)
-    {
-        if (context.SyntaxContextReceiver is not SyntaxReceiver syntaxReceiver)
-        {
-            return;
-        }
+        _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
+        _ = types ?? throw new ArgumentNullException(nameof(types));
 
         context.CancellationToken.ThrowIfCancellationRequested();
 
@@ -69,17 +39,17 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
         var globalOptions = new GlobalOptions(context);
 
-        var compilation = GenerateAttribute(context);
+        compilation = GenerateAttribute(context, compilation);
 
         var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
 
         if (generateXenialImageNamesAttribute is null)
         {
             //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
-            return;
+            return compilation;
         }
 
-        foreach (var @class in syntaxReceiver.Classes)
+        foreach (var @class in types)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
 
@@ -109,7 +79,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
                     ), @class.GetLocation())
                 );
 
-                return;
+                return compilation;
             }
 
             builder.WriteLine($"namespace {@classSymbol.ContainingNamespace}");
@@ -120,7 +90,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
             var defaultSize = attribute.GetAttributeValue(AttributeNames.DefaultImageSize, AttributeNames.DefaultImageSizeValue);
             if (!SanitizeSize(context, defaultSize))
             {
-                return;
+                return compilation;
             }
 
             var images = GetImages(context, globalOptions).ToList();
@@ -139,6 +109,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
 
             compilation = AddGeneratedCode(context, compilation, @class, builder);
         }
+
+        return compilation;
     }
 
     private static bool SanitizeSize(GeneratorExecutionContext context, string size)
@@ -155,7 +127,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
     private static Compilation AddGeneratedCode(
         GeneratorExecutionContext context,
         Compilation compilation,
-        ClassDeclarationSyntax @class,
+        TypeDeclarationSyntax @class,
         CurlyIndenter builder
     )
     {
@@ -177,7 +149,7 @@ public class XenialImageNamesGenerator : ISourceGenerator
     private static (SemanticModel? semanticModel, INamedTypeSymbol? @classSymbol, bool isAttributeDeclared) TryGetTargetType(
         GeneratorExecutionContext context,
         Compilation compilation,
-        ClassDeclarationSyntax @class,
+        TypeDeclarationSyntax @class,
         INamedTypeSymbol generateXenialImageNamesAttribute
     )
     {
@@ -270,9 +242,8 @@ public class XenialImageNamesGenerator : ISourceGenerator
         }
     }
 
-    private static Compilation GenerateAttribute(GeneratorExecutionContext context)
+    private static Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation)
     {
-        var compilation = context.Compilation;
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{generateXenialImageNamesAttributeMSBuildProperty}", out var generateXenialImageNamesAttrStr))
         {
             if (bool.TryParse(generateXenialImageNamesAttrStr, out var generateXenialImageNamesAttr))
