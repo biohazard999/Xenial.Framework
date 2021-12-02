@@ -81,30 +81,28 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
                 return compilation;
             }
 
-            builder.WriteLine($"namespace {@classSymbol.ContainingNamespace}");
-            builder.OpenBrace();
-
-            var features = new Features(@attribute);
-
-            var defaultSize = attribute.GetAttributeValue(AttributeNames.DefaultImageSize, AttributeNames.DefaultImageSizeValue);
-            if (!SanitizeSize(context, defaultSize))
+            using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
             {
-                return compilation;
+                var features = new Features(@attribute);
+
+                var defaultSize = attribute.GetAttributeValue(AttributeNames.DefaultImageSize, AttributeNames.DefaultImageSizeValue);
+                if (!SanitizeSize(context, defaultSize))
+                {
+                    return compilation;
+                }
+
+                var images = GetImages(context, globalOptions).ToList();
+
+                var imageClass = new ImagesClass(
+                    globalOptions,
+                    features,
+                    classSymbol,
+                    @attribute,
+                    images
+                );
+
+                builder = imageClass.ToString(context, builder);
             }
-
-            var images = GetImages(context, globalOptions).ToList();
-
-            var imageClass = new ImagesClass(
-                globalOptions,
-                features,
-                classSymbol,
-                @attribute,
-                images
-            );
-
-            builder = imageClass.ToString(context, builder);
-
-            builder.CloseBrace();
 
             compilation = AddGeneratedCode(context, compilation, @class, builder);
         }
