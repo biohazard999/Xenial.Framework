@@ -372,6 +372,9 @@ public class XenialActionGenerator : IXenialSourceGenerator
 
         builder.WriteLine($"using System;");
         builder.WriteLine();
+        builder.WriteLine("using Xenial.ExpressApp;");
+        builder.WriteLine("using Xenial.ExpressApp.Actions;");
+        builder.WriteLine("using Xenial.ExpressApp.Templates;");
         builder.WriteLine("using Xenial.Persistent.Base;");
         builder.WriteLine();
 
@@ -385,7 +388,26 @@ public class XenialActionGenerator : IXenialSourceGenerator
                 builder.WriteLine($"public string Caption {{ get; set; }}");
                 builder.WriteLine($"public string ImageName {{ get; set; }}");
                 builder.WriteLine($"public string Category {{ get; set; }}");
+                builder.WriteLine($"public string DiagnosticInfo {{ get; set; }}");
+                builder.WriteLine($"public string Id {{ get; set; }}");
+                builder.WriteLine($"public string TargetViewId {{ get; set; }}");
+                builder.WriteLine($"public string TargetObjectsCriteria {{ get; set; }}");
+                builder.WriteLine($"public string ConfirmationMessage {{ get; set; }}");
+                builder.WriteLine($"public string ToolTip {{ get; set; }}");
+                builder.WriteLine($"public string Shortcut {{ get; set; }}");
+
+                builder.WriteLine($"public Type TypeOfView {{ get; set; }}");
+                builder.WriteLine($"public Type TargetObjectType {{ get; set; }}");
+
+                builder.WriteLine($"public bool QuickAccess {{ get; set; }}");
+
                 builder.WriteLine($"public XenialPredefinedCategory PredefinedCategory {{ get; set; }}");
+                builder.WriteLine($"public XenialSelectionDependencyType SelectionDependencyType {{ get; set; }}");
+                builder.WriteLine($"public XenialActionMeaning ActionMeaning {{ get; set; }}");
+                builder.WriteLine($"public XenialViewType TargetViewType {{ get; set; }}");
+                builder.WriteLine($"public XenialNesting TargetViewNesting {{ get; set; }}");
+                builder.WriteLine($"public XenialTargetObjectsCriteriaMode TargetObjectsCriteriaMode {{ get; set; }}");
+                builder.WriteLine($"public XenialActionItemPaintStyle PaintStyle {{ get; set; }}");
             }
             builder.WriteLine();
 

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
+using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Actions;
+using DevExpress.ExpressApp.Templates;
 using DevExpress.Persistent.Base;
 
 using Microsoft.CodeAnalysis;
@@ -17,7 +20,16 @@ public class XenialCopyEnumerationsGenerator : XenialBaseGenerator, IXenialSourc
     public XenialCopyEnumerationsGenerator(IDictionary<string, string>? constantsToInject) : base(constantsToInject) { }
 
     public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types)
-        => CopyEnumeration<PredefinedCategory>(context, compilation);
+    {
+        compilation = CopyEnumeration<PredefinedCategory>(context, compilation);
+        compilation = CopyEnumeration<ActionMeaning>(context, compilation);
+        compilation = CopyEnumeration<ActionItemPaintStyle>(context, compilation);
+        compilation = CopyEnumeration<SelectionDependencyType>(context, compilation);
+        compilation = CopyEnumeration<TargetObjectsCriteriaMode>(context, compilation);
+        compilation = CopyEnumeration<Nesting>(context, compilation);
+        compilation = CopyEnumeration<ViewType>(context, compilation);
+        return compilation;
+    }
 
     private Compilation CopyEnumeration<T>(
         GeneratorExecutionContext context,
