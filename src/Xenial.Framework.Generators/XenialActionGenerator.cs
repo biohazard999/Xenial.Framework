@@ -211,16 +211,18 @@ public class XenialActionGenerator : IXenialSourceGenerator
                         builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"{category}\");");
                         builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
 
-                        var caption = attribute.GetAttributeValue("Caption", string.Empty);
-                        if (!string.IsNullOrEmpty(caption))
+                        static void MapAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
                         {
-                            builder.WriteLine($"this.{actionName}.Caption = \"{caption}\";");
+                            var value = attribute.GetAttributeValue(attributeName, string.Empty);
+                            if (!string.IsNullOrEmpty(value))
+                            {
+                                builder.WriteLine($"this.{actionName}.{attributeName} = \"{value}\";");
+                            }
                         }
 
-                        var imageName = attribute.GetAttributeValue("ImageName", string.Empty);
-                        if (!string.IsNullOrEmpty(imageName))
+                        foreach (var mappingAttribute in stringActionAttributeNames)
                         {
-                            builder.WriteLine($"this.{actionName}.ImageName = \"{imageName}\";");
+                            MapAttribute(builder, attribute, actionName, mappingAttribute);
                         }
                     }
 
@@ -361,6 +363,20 @@ public class XenialActionGenerator : IXenialSourceGenerator
         return compilation.AddSyntaxTrees(syntaxTree);
     }
 
+    private static readonly string[] stringActionAttributeNames = new[]
+    {
+        "Caption",
+        "ImageName",
+        "Category",
+        "DiagnosticInfo",
+        "Id",
+        "TargetViewId",
+        "TargetObjectsCriteria",
+        "ConfirmationMessage",
+        "ToolTip",
+        "Shortcut",
+    };
+
     public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialActionsAttribute(
         CSharpParseOptions? parseOptions = null,
         string visibility = "internal",
@@ -385,16 +401,10 @@ public class XenialActionGenerator : IXenialSourceGenerator
             {
                 builder.WriteLine($"{visibility} {xenialActionAttributeName}() {{ }}");
 
-                builder.WriteLine($"public string Caption {{ get; set; }}");
-                builder.WriteLine($"public string ImageName {{ get; set; }}");
-                builder.WriteLine($"public string Category {{ get; set; }}");
-                builder.WriteLine($"public string DiagnosticInfo {{ get; set; }}");
-                builder.WriteLine($"public string Id {{ get; set; }}");
-                builder.WriteLine($"public string TargetViewId {{ get; set; }}");
-                builder.WriteLine($"public string TargetObjectsCriteria {{ get; set; }}");
-                builder.WriteLine($"public string ConfirmationMessage {{ get; set; }}");
-                builder.WriteLine($"public string ToolTip {{ get; set; }}");
-                builder.WriteLine($"public string Shortcut {{ get; set; }}");
+                foreach (var actionAttribute in stringActionAttributeNames)
+                {
+                    builder.WriteLine($"public string {actionAttribute} {{ get; set; }}");
+                }
 
                 builder.WriteLine($"public Type TypeOfView {{ get; set; }}");
                 builder.WriteLine($"public Type TargetObjectType {{ get; set; }}");
