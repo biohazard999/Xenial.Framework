@@ -17,7 +17,8 @@ public class DomainComponent
     Caption = "Yo Alex",
     ImageName = ImageNames.aac,
     Category = "View",
-    PredefinedCategory = XenialPredefinedCategory.View
+    PredefinedCategory = XenialPredefinedCategory.View,
+    TargetObjectType = typeof(DomainComponent)
 )]
 public partial record AlexAction(XafApplication Application, IObjectSpace ObjectSpace)
     : IDetailViewAction<DomainComponent>

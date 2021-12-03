@@ -224,6 +224,12 @@ public class XenialActionGenerator : IXenialSourceGenerator
                         {
                             MapAttribute(builder, attribute, actionName, mappingAttribute);
                         }
+
+                        var value = attribute.GetAttributeValue<Type>("TargetObjectType", null);
+                        if (value is not null)
+                        {
+                            builder.WriteLine($"this.{actionName}.TargetObjectType = \"{value}\";");
+                        }
                     }
 
                     builder.WriteLine();
