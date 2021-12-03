@@ -211,7 +211,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
                         builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"{category}\");");
                         builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
 
-                        static void MapAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
+                        static void MapStringAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
                         {
                             var value = attribute.GetAttributeValue(attributeName, string.Empty);
                             if (!string.IsNullOrEmpty(value))
@@ -220,15 +220,23 @@ public class XenialActionGenerator : IXenialSourceGenerator
                             }
                         }
 
-                        foreach (var mappingAttribute in stringActionAttributeNames)
+                        static void MapTypeAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
                         {
-                            MapAttribute(builder, attribute, actionName, mappingAttribute);
+                            var value = attribute.GetAttributeValue<INamedTypeSymbol>(attributeName);
+                            if (value is not null)
+                            {
+                                builder.WriteLine($"this.{actionName}.{attributeName} = typeof({value});");
+                            }
                         }
 
-                        var value = attribute.GetAttributeValue<INamedTypeSymbol>("TargetObjectType", null);
-                        if (value is not null)
+                        foreach (var mappingAttribute in stringActionAttributeNames)
                         {
-                            builder.WriteLine($"this.{actionName}.TargetObjectType = typeof({value});");
+                            MapStringAttribute(builder, attribute, actionName, mappingAttribute);
+                        }
+
+                        foreach (var mappingAttribute in typeActionAttributeNames)
+                        {
+                            MapTypeAttribute(builder, attribute, actionName, mappingAttribute);
                         }
                     }
 
@@ -383,6 +391,12 @@ public class XenialActionGenerator : IXenialSourceGenerator
         "Shortcut",
     };
 
+    private static readonly string[] typeActionAttributeNames = new[]
+    {
+        "TargetObjectType",
+        "TypeOfView",
+    };
+
     public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialActionsAttribute(
         CSharpParseOptions? parseOptions = null,
         string visibility = "internal",
@@ -412,8 +426,10 @@ public class XenialActionGenerator : IXenialSourceGenerator
                     builder.WriteLine($"public string {actionAttribute} {{ get; set; }}");
                 }
 
-                builder.WriteLine($"public Type TypeOfView {{ get; set; }}");
-                builder.WriteLine($"public Type TargetObjectType {{ get; set; }}");
+                foreach (var actionAttribute in typeActionAttributeNames)
+                {
+                    builder.WriteLine($"public Type {actionAttribute} {{ get; set; }}");
+                }
 
                 builder.WriteLine($"public bool QuickAccess {{ get; set; }}");
 
