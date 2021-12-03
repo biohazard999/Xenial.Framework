@@ -3,5 +3,8 @@
     <CustomBuildProperties>
       <Value>TargetFramework = net6.0</Value>
     </CustomBuildProperties>
+    <HiddenComponentWarnings>
+      <Value>InstrumentationOfSourceGeneratorsBreaksGeneration</Value>
+    </HiddenComponentWarnings>
   </Settings>
 </ProjectConfiguration>

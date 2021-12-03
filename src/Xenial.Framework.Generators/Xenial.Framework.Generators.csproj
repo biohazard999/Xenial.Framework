@@ -27,19 +27,29 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\Xenial.Framework.Generators.Internal\CurlyIndenter.cs" Link="CurlyIndenter.cs" />
+    <Compile Include="..\Xenial.Framework.Generators.Internal\IXenialSourceGenerator.cs" Link="IXenialSourceGenerator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="bin\Debug\netstandard2.0\\Xenial.Framework.Generators.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Package the generator in the analyzer directory of the nuget package -->
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Remove="bin\Debug\netstandard2.0\\Xenial.Framework.Generators.pdb" />
     <None Include="$(OutputPath)\$(AssemblyName).pdb" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <!-- Package the Newtonsoft.Json dependency alongside the generator assembly -->
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xenial.Framework.Generators.Internal\Xenial.Framework.Generators.Internal.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all"  />
+    <ProjectReference Include="..\Xenial.Framework.Generators.Internal\Xenial.Framework.Generators.Internal.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

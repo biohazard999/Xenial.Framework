@@ -7,7 +7,7 @@ namespace Xenial.Framework.MsBuild;
 /// <summary>
 /// Takes care of opening and closing curly braces for code generation
 /// </summary>
-internal class CurlyIndenter
+public class CurlyIndenter
 {
     internal static CurlyIndenter Create()
         => new CurlyIndenter(new IndentedTextWriter(new StringWriter()));

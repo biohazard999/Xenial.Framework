@@ -11,55 +11,22 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
+using Xenial.Framework.Generators.Internal;
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
 public class XenialActionGenerator : IXenialSourceGenerator
 {
-    private const string xenialDebugSourceGenerators = "XenialDebugSourceGenerators";
-
     private const string xenialActionAttributeName = "XenialActionAttribute";
     private const string xenialNamespace = "Xenial";
     private const string xenialActionAttributeFullName = $"{xenialNamespace}.{xenialActionAttributeName}";
     public const string GenerateXenialActionAttributeMSBuildProperty = $"Generate{xenialActionAttributeName}";
 
-    private static void CheckForDebugger(GeneratorExecutionContext context)
-    {
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{xenialDebugSourceGenerators}", out var xenialDebugSourceGeneratorsAttrString))
-        {
-            if (bool.TryParse(xenialDebugSourceGeneratorsAttrString, out var xenialDebugSourceGeneratorsBool))
-            {
-                if (xenialDebugSourceGeneratorsBool)
-                {
-                    if (System.Diagnostics.Debugger.IsAttached)
-                    {
-                        return;
-                    }
-
-                    System.Diagnostics.Debugger.Launch();
-                }
-            }
-            else
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            xenialDebugSourceGenerators,
-                            xenialDebugSourceGeneratorsAttrString
-                        )
-                        , null
-                    ));
-            }
-        }
-    }
-
     public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types)
     {
         _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
         _ = types ?? throw new ArgumentNullException(nameof(types));
-
-        CheckForDebugger(context);
 
         compilation = GenerateAttribute(context, compilation);
 
@@ -401,30 +368,33 @@ public class XenialActionGenerator : IXenialSourceGenerator
     )
     {
         parseOptions = parseOptions ?? CSharpParseOptions.Default;
-        var syntaxWriter = CurlyIndenter.Create();
+        var builder = CurlyIndenter.Create();
 
-        syntaxWriter.WriteLine($"using System;");
-        syntaxWriter.WriteLine();
+        builder.WriteLine($"using System;");
+        builder.WriteLine();
+        builder.WriteLine("using Xenial.Persistent.Base;");
+        builder.WriteLine();
 
-        using (syntaxWriter.OpenBrace($"namespace {xenialNamespace}"))
+        using (builder.OpenBrace($"namespace {xenialNamespace}"))
         {
-            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false)]");
-            using (syntaxWriter.OpenBrace($"{visibility} sealed class {xenialActionAttributeName} : Attribute"))
+            builder.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false)]");
+            using (builder.OpenBrace($"{visibility} sealed class {xenialActionAttributeName} : Attribute"))
             {
-                syntaxWriter.WriteLine($"{visibility} {xenialActionAttributeName}() {{ }}");
+                builder.WriteLine($"{visibility} {xenialActionAttributeName}() {{ }}");
 
-                syntaxWriter.WriteLine($"public string Caption {{ get; set; }}");
-                syntaxWriter.WriteLine($"public string ImageName {{ get; set; }}");
-                syntaxWriter.WriteLine($"public string Category {{ get; set; }}");
+                builder.WriteLine($"public string Caption {{ get; set; }}");
+                builder.WriteLine($"public string ImageName {{ get; set; }}");
+                builder.WriteLine($"public string Category {{ get; set; }}");
+                builder.WriteLine($"public XenialPredefinedCategory PredefinedCategory {{ get; set; }}");
             }
-            syntaxWriter.WriteLine();
+            builder.WriteLine();
 
-            syntaxWriter.WriteLine($"{visibility} interface IDetailViewAction<T> {{ }}");
-            syntaxWriter.WriteLine();
-            syntaxWriter.WriteLine($"{visibility} interface IListViewAction<T> {{ }}");
+            builder.WriteLine($"{visibility} interface IDetailViewAction<T> {{ }}");
+            builder.WriteLine();
+            builder.WriteLine($"{visibility} interface IListViewAction<T> {{ }}");
         }
 
-        var syntax = syntaxWriter.ToString();
+        var syntax = builder.ToString();
         var source = SourceText.From(syntax, Encoding.UTF8);
         var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
         return (source, syntaxTree);

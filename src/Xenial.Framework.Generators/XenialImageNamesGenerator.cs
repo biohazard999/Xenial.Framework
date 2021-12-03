@@ -10,14 +10,13 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
+using Xenial.Framework.Generators.Internal;
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
 public class XenialImageNamesGenerator : IXenialSourceGenerator
 {
-    private const string xenialDebugSourceGenerators = "XenialDebugSourceGenerators";
-
     private const string xenialImageNamesAttributeName = "XenialImageNamesAttribute";
     private const string xenialNamespace = "Xenial";
     private const string xenialImageNamesAttributeFullName = $"{xenialNamespace}.{xenialImageNamesAttributeName}";
@@ -33,8 +32,6 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
         _ = types ?? throw new ArgumentNullException(nameof(types));
 
         context.CancellationToken.ThrowIfCancellationRequested();
-
-        CheckForDebugger(context);
 
         var globalOptions = new GlobalOptions(context);
 
@@ -314,35 +311,6 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
         return (source, syntaxTree);
     }
 
-    private static void CheckForDebugger(GeneratorExecutionContext context)
-    {
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{xenialDebugSourceGenerators}", out var xenialDebugSourceGeneratorsAttrString))
-        {
-            if (bool.TryParse(xenialDebugSourceGeneratorsAttrString, out var xenialDebugSourceGeneratorsBool))
-            {
-                if (xenialDebugSourceGeneratorsBool)
-                {
-                    if (System.Diagnostics.Debugger.IsAttached)
-                    {
-                        return;
-                    }
-
-                    System.Diagnostics.Debugger.Launch();
-                }
-            }
-            else
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            xenialDebugSourceGenerators,
-                            xenialDebugSourceGeneratorsAttrString
-                        )
-                        , null
-                    ));
-            }
-        }
-    }
 
 }
 

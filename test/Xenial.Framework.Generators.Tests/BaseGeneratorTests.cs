@@ -12,6 +12,8 @@ using VerifyTests;
 
 using VerifyXunit;
 
+using Xenial.Framework.Generators.Internal;
+
 using Xunit;
 
 using static Xenial.Framework.Generators.Tests.TestReferenceAssemblies;
