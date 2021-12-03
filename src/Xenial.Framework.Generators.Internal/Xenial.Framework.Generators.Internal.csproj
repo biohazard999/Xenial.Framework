@@ -30,9 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)"
-                      ReferenceOutputAssembly="true"
-                      PrivateAssets="all" />
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
