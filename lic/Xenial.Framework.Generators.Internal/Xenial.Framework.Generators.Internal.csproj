@@ -6,14 +6,15 @@
     <TargetFramework>$(_TFM)</TargetFramework>
     <IsRoslynComponent>true</IsRoslynComponent>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <IsPackable>false</IsPackable>
+    <IsPackable>true</IsPackable>
     <DevelopmentDependency>true</DevelopmentDependency>
     <IncludeSource>false</IncludeSource>
-    <IncludeSymbols>false</IncludeSymbols>
+    <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat></SymbolPackageFormat>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <PackageOutputPath>../../artifacts/internal/nuget</PackageOutputPath>
 
     <!-- Debug source generators -->
     <!-- http://stevetalkscode.co.uk/debug-source-generators-with-vs2019-1610 -->
@@ -39,6 +40,7 @@
     <!-- Package the generator in the analyzer directory of the nuget package -->
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="$(OutputPath)\$(AssemblyName).pdb" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(OutputPath)\DevExpress.ExpressApp.$(DxVersionPostFix).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <!-- Package the Newtonsoft.Json dependency alongside the generator assembly -->
   </ItemGroup>
 

@@ -44,6 +44,7 @@
     <AspNetCoreVersion>5.0.2</AspNetCoreVersion>
     <!-- <DxPackageVersion>[21.1.3-beta]</DxPackageVersion> -->
     <DxPackageVersion>[$(DxVersion)]</DxPackageVersion>
+    <DxVersionPostFix>v21.2</DxVersionPostFix>
     <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>
     <XenialDemoPackageVersion>
     </XenialDemoPackageVersion>
@@ -63,8 +64,8 @@
     <DeterministicSourcePaths>true</DeterministicSourcePaths>
 
 
-    <!-- Building a 5.0 app with 6.0 SDK in VS 2019 causes analyzers to fail to load #36552 -->    
-    <!-- https://github.com/dotnet/aspnetcore/issues/36552 -->    
+    <!-- Building a 5.0 app with 6.0 SDK in VS 2019 causes analyzers to fail to load #36552 -->
+    <!-- https://github.com/dotnet/aspnetcore/issues/36552 -->
    <DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
   </PropertyGroup>
 
