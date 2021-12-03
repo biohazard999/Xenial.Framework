@@ -72,6 +72,19 @@ internal static class AttributeDataExtensions
         return defaultValue;
     }
 
+    public static TypedConstant? GetAttribute(
+        this AttributeData attribute,
+        string attributeName)
+    {
+        var namedArgument = attribute.NamedArguments.FirstOrDefault(argument => argument.Key == attributeName);
+
+        if (namedArgument.Key == attributeName)
+        {
+            return namedArgument.Value;
+        }
+
+        return null;
+    }
 }
 
 

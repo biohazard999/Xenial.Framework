@@ -220,6 +220,33 @@ public class XenialActionGenerator : IXenialSourceGenerator
                             }
                         }
 
+                        static void MapBooleanAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
+                        {
+                            var value = attribute.GetAttributeValue<bool?>(attributeName);
+                            if (value.HasValue)
+                            {
+                                var val = value.Value.ToString() == bool.TrueString ? "true" : "false";
+                                builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
+                            }
+                        }
+
+                        static void MapObjectAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
+                        {
+                            var value = attribute.GetAttribute(attributeName);
+                            if (value.HasValue)
+                            {
+                                var val = value.Value switch
+                                {
+                                    { Kind: TypedConstantKind.Type } => $"typeof({value.Value.Value})",
+                                    { Kind: TypedConstantKind.Primitive, Value: var v } when v is string => $"\"{v}\"",
+                                    { Kind: TypedConstantKind.Primitive, Value: var v } when v is bool => $"{(v.ToString() == bool.TrueString ? "true" : "false")}",
+                                    _ => value.Value.Value?.ToString()
+                                };
+
+                                builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
+                            }
+                        }
+
                         static void MapTypeAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
                         {
                             var value = attribute.GetAttributeValue<INamedTypeSymbol>(attributeName);
@@ -232,6 +259,16 @@ public class XenialActionGenerator : IXenialSourceGenerator
                         foreach (var mappingAttribute in stringActionAttributeNames)
                         {
                             MapStringAttribute(builder, attribute, actionName, mappingAttribute);
+                        }
+
+                        foreach (var mappingAttribute in boolActionAttributeNames)
+                        {
+                            MapBooleanAttribute(builder, attribute, actionName, mappingAttribute);
+                        }
+
+                        foreach (var mappingAttribute in objectActionAttributeNames)
+                        {
+                            MapObjectAttribute(builder, attribute, actionName, mappingAttribute);
                         }
 
                         foreach (var mappingAttribute in typeActionAttributeNames)
@@ -397,6 +434,27 @@ public class XenialActionGenerator : IXenialSourceGenerator
         "TypeOfView",
     };
 
+    private static readonly string[] boolActionAttributeNames = new[]
+    {
+        "QuickAccess",
+    };
+
+    private static readonly string[] objectActionAttributeNames = new[]
+    {
+        "Tag",
+    };
+
+    private static readonly Dictionary<string, string> enumActionAttributeNames = new()
+    {
+        ["PredefinedCategory"] = "XenialPredefinedCategory",
+        ["SelectionDependencyType"] = "XenialSelectionDependencyType",
+        ["ActionMeaning"] = "XenialActionMeaning",
+        ["TargetViewType"] = "XenialViewType",
+        ["TargetViewNesting"] = "XenialNesting",
+        ["TargetObjectsCriteriaMode"] = "XenialTargetObjectsCriteriaMode",
+        ["PaintStyle"] = "XenialActionItemPaintStyle",
+    };
+
     public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialActionsAttribute(
         CSharpParseOptions? parseOptions = null,
         string visibility = "internal",
@@ -431,7 +489,15 @@ public class XenialActionGenerator : IXenialSourceGenerator
                     builder.WriteLine($"public Type {actionAttribute} {{ get; set; }}");
                 }
 
-                builder.WriteLine($"public bool QuickAccess {{ get; set; }}");
+                foreach (var actionAttribute in boolActionAttributeNames)
+                {
+                    builder.WriteLine($"public bool {actionAttribute} {{ get; set; }}");
+                }
+
+                foreach (var actionAttribute in objectActionAttributeNames)
+                {
+                    builder.WriteLine($"public object {actionAttribute} {{ get; set; }}");
+                }
 
                 builder.WriteLine($"public XenialPredefinedCategory PredefinedCategory {{ get; set; }}");
                 builder.WriteLine($"public XenialSelectionDependencyType SelectionDependencyType {{ get; set; }}");
@@ -441,6 +507,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
                 builder.WriteLine($"public XenialTargetObjectsCriteriaMode TargetObjectsCriteriaMode {{ get; set; }}");
                 builder.WriteLine($"public XenialActionItemPaintStyle PaintStyle {{ get; set; }}");
             }
+
             builder.WriteLine();
 
             builder.WriteLine($"{visibility} interface IDetailViewAction<T> {{ }}");

@@ -18,7 +18,9 @@ public class DomainComponent
     ImageName = ImageNames.aac,
     Category = "View",
     PredefinedCategory = XenialPredefinedCategory.View,
-    TargetObjectType = typeof(DomainComponent)
+    TargetObjectType = typeof(DomainComponent),
+    QuickAccess = true,
+    Tag = "???"
 )]
 public partial record AlexAction(XafApplication Application, IObjectSpace ObjectSpace)
     : IDetailViewAction<DomainComponent>
