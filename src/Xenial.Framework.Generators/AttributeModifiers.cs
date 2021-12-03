@@ -55,8 +55,15 @@ internal static class AttributeDataExtensions
     {
         var namedArgument = attribute.NamedArguments.FirstOrDefault(argument => argument.Key == attributeName);
 
+        var kind = TypedConstantKind.Primitive;
+
+        if (typeof(TValue).IsAssignableFrom(typeof(INamedTypeSymbol)))
+        {
+            kind = TypedConstantKind.Type;
+        }
+
         if (namedArgument.Key == attributeName
-            && namedArgument.Value.Kind is TypedConstantKind.Primitive
+            && namedArgument.Value.Kind == kind
             && namedArgument.Value.Value is TValue value)
         {
             return value;

@@ -225,10 +225,10 @@ public class XenialActionGenerator : IXenialSourceGenerator
                             MapAttribute(builder, attribute, actionName, mappingAttribute);
                         }
 
-                        var value = attribute.GetAttributeValue<Type>("TargetObjectType", null);
+                        var value = attribute.GetAttributeValue<INamedTypeSymbol>("TargetObjectType", null);
                         if (value is not null)
                         {
-                            builder.WriteLine($"this.{actionName}.TargetObjectType = \"{value}\";");
+                            builder.WriteLine($"this.{actionName}.TargetObjectType = typeof({value});");
                         }
                     }
 
