@@ -19,7 +19,7 @@
     <!-- http://stevetalkscode.co.uk/debug-source-generators-with-vs2019-1610 -->
     <IsRoslynComponent>true</IsRoslynComponent>
 
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>

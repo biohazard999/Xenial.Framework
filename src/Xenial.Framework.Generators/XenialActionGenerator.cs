@@ -256,6 +256,15 @@ public class XenialActionGenerator : IXenialSourceGenerator
                             }
                         }
 
+                        static void MapTypeForwardedEnumAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
+                        {
+                            var value = attribute.GetAttributeValue<INamedTypeSymbol>(attributeName);
+                            if (value is not null)
+                            {
+                                builder.WriteLine($"this.{actionName}.{attributeName} = typeof({value});");
+                            }
+                        }
+
                         foreach (var mappingAttribute in stringActionAttributeNames)
                         {
                             MapStringAttribute(builder, attribute, actionName, mappingAttribute);
@@ -274,6 +283,11 @@ public class XenialActionGenerator : IXenialSourceGenerator
                         foreach (var mappingAttribute in typeActionAttributeNames)
                         {
                             MapTypeAttribute(builder, attribute, actionName, mappingAttribute);
+                        }
+
+                        foreach (var mappingAttribute in enumActionAttributeNames)
+                        {
+                            MapTypeForwardedEnumAttribute(builder, attribute, mappingAttribute.Key, mappingAttribute.Value);
                         }
                     }
 
@@ -499,13 +513,10 @@ public class XenialActionGenerator : IXenialSourceGenerator
                     builder.WriteLine($"public object {actionAttribute} {{ get; set; }}");
                 }
 
-                builder.WriteLine($"public XenialPredefinedCategory PredefinedCategory {{ get; set; }}");
-                builder.WriteLine($"public XenialSelectionDependencyType SelectionDependencyType {{ get; set; }}");
-                builder.WriteLine($"public XenialActionMeaning ActionMeaning {{ get; set; }}");
-                builder.WriteLine($"public XenialViewType TargetViewType {{ get; set; }}");
-                builder.WriteLine($"public XenialNesting TargetViewNesting {{ get; set; }}");
-                builder.WriteLine($"public XenialTargetObjectsCriteriaMode TargetObjectsCriteriaMode {{ get; set; }}");
-                builder.WriteLine($"public XenialActionItemPaintStyle PaintStyle {{ get; set; }}");
+                foreach (var actionAttributePair in enumActionAttributeNames)
+                {
+                    builder.WriteLine($"public {actionAttributePair.Value} {actionAttributePair.Key} {{ get; set; }}");
+                }
             }
 
             builder.WriteLine();
