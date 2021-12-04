@@ -94,9 +94,7 @@ $@"namespace MyActions
     public partial class GeneratesSimpleActionWhenDefined {{ }}
 }}", verifySettings: settings => settings.UseParameters(propertyName, value));
 
-
-
-
+    //The heavy part
     //private static readonly string[] stringActionAttributeNames = new[]
     //{
     //    "Id",
@@ -105,23 +103,20 @@ $@"namespace MyActions
 
     //private static readonly string[] typeActionAttributeNames = new[]
     //{
-    //    "TargetObjectType",
-    //    "TypeOfView",
-    //};
-
-    //private static readonly string[] objectActionAttributeNames = new[]
-    //{
-    //    "Tag",
+    //    "TargetObjectType", //this should come out of context
+    //    "TypeOfView", //we should not need this, but maybe should consider it after talking to dennis
     //};
 
     //private static readonly Dictionary<string, string> enumActionAttributeNames = new()
     //{
-    //    ["SelectionDependencyType"] = "XenialSelectionDependencyType",
-    //    ["ActionMeaning"] = "XenialActionMeaning",
-    //    ["TargetViewType"] = "XenialViewType",
-    //    ["TargetViewNesting"] = "XenialNesting",
-    //    ["TargetObjectsCriteriaMode"] = "XenialTargetObjectsCriteriaMode",
-    //    ["PaintStyle"] = "XenialActionItemPaintStyle",
+    //    ["SelectionDependencyType"] = "XenialSelectionDependencyType", //this should come out of context
+    //    ["ActionMeaning"] = "XenialActionMeaning", //I am not even sure what's that for
+    //    ["TargetViewType"] = "XenialViewType", //this should come out of context
+    //    ["TargetViewNesting"] = "XenialNesting", //this is a tricky one and could come out of context
+    //    ["PaintStyle"] = "XenialActionItemPaintStyle", //this should come directly from the attribute
+    // This should go in some way of INPC, at least let the new criteria syntax do it's job
+    //    ["TargetObjectsCriteriaMode"] = "XenialTargetObjectsCriteriaMode", //
+    //    ["TargetObjectsCriteria"] = "XenialTargetObjectsCriteriaMode", //
     //};
 
 }
