@@ -232,7 +232,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
 
                         foreach (var mappingAttribute in enumActionAttributeNames)
                         {
-                            MapTypeForwardedEnumAttribute(builder, attribute, mappingAttribute.Key, mappingAttribute.Value);
+                            MapTypeForwardedEnumAttribute(builder, attribute, actionName, mappingAttribute.Key);
                         }
                     }
 
@@ -383,10 +383,10 @@ public class XenialActionGenerator : IXenialSourceGenerator
 
     private static void MapTypeForwardedEnumAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
     {
-        var value = attribute.GetAttributeValue<INamedTypeSymbol>(attributeName);
+        var value = attribute.GetTypeForwardedAttributeValue(attributeName);
         if (value is not null)
         {
-            builder.WriteLine($"this.{actionName}.{attributeName} = typeof({value});");
+            builder.WriteLine($"this.{actionName}.{attributeName} = {value};");
         }
     }
 

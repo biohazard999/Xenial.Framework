@@ -85,6 +85,40 @@ internal static class AttributeDataExtensions
 
         return null;
     }
+
+    public static string? GetTypeForwardedAttributeValue(
+        this AttributeData attribute,
+        string attributeName)
+    {
+        var namedArgument = attribute.NamedArguments.FirstOrDefault(argument => argument.Key == attributeName);
+
+        if (
+            namedArgument.Key == attributeName
+            && namedArgument.Value is TypedConstant constant
+            && constant.Kind is TypedConstantKind.Enum
+        )
+        {
+            if (constant.Type is INamedTypeSymbol namedTypeSymbol)
+            {
+                var typeForwardAttribute = namedTypeSymbol.GetAttributes().First(m =>
+                    m.AttributeClass is not null
+                    //We can safely compare with ToString because it represents just the NamedTypeSymbol, not the attributes or overloads
+                    && m.AttributeClass.ToString() == "Xenial.XenialTypeForward"
+                );
+
+                if (typeForwardAttribute.ConstructorArguments.Length > 0)
+                {
+                    var targetType = typeForwardAttribute.ConstructorArguments[0].Value?.ToString();
+                    var enumValue = namedArgument.Value.Value?.ToString();
+                    return $"({targetType}){enumValue}";
+                }
+
+            }
+            return namedArgument.Value.Value?.ToString();
+        }
+
+        return null;
+    }
 }
 
 

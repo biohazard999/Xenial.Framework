@@ -17,7 +17,8 @@ public class DomainComponent
     Caption = "Yo Alex",
     ImageName = ImageNames.aac,
     Category = "View",
-    PredefinedCategory = XenialPredefinedCategory.View,
+    //PredefinedCategory = XenialPredefinedCategory.View,
+    ActionMeaning = Xenial.ExpressApp.Actions.XenialActionMeaning.Cancel,
     TargetObjectType = typeof(DomainComponent),
     QuickAccess = true,
     Tag = "???"
