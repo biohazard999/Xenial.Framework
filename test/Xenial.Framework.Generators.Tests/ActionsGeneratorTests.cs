@@ -60,29 +60,27 @@ $@"namespace MyActions
     public partial class GeneratesSimpleActionWhenDefined {{ }}
 }}", verifySettings: settings => settings.UseParameters(propertyName, value));
 
+    [Theory]
+    [InlineData("QuickAccess", "false")]
+    [InlineData("QuickAccess", "true")]
+    public Task GeneratesSimpleBoolMappingProperties(string propertyName, string value)
+=> RunSourceTest("GeneratesSimpleActionWhenDefined",
+$@"namespace MyActions
+{{
+    [Xenial.XenialAction({propertyName} = {value})]
+    public partial class GeneratesSimpleActionWhenDefined {{ }}
+}}", verifySettings: settings => settings.UseParameters(propertyName, value));
+
     //private static readonly string[] stringActionAttributeNames = new[]
     //{
-    //    "Caption",
-    //    "ImageName",
-    //    "Category",
-    //    "DiagnosticInfo",
     //    "Id",
-    //    "TargetViewId",
-    //    "TargetObjectsCriteria",
-    //    "ConfirmationMessage",
-    //    "ToolTip",
-    //    "Shortcut",
-    //};
+    //    "Category",
+    //    ["PredefinedCategory"] = "XenialPredefinedCategory",
 
     //private static readonly string[] typeActionAttributeNames = new[]
     //{
     //    "TargetObjectType",
     //    "TypeOfView",
-    //};
-
-    //private static readonly string[] boolActionAttributeNames = new[]
-    //{
-    //    "QuickAccess",
     //};
 
     //private static readonly string[] objectActionAttributeNames = new[]
@@ -92,7 +90,6 @@ $@"namespace MyActions
 
     //private static readonly Dictionary<string, string> enumActionAttributeNames = new()
     //{
-    //    ["PredefinedCategory"] = "XenialPredefinedCategory",
     //    ["SelectionDependencyType"] = "XenialSelectionDependencyType",
     //    ["ActionMeaning"] = "XenialActionMeaning",
     //    ["TargetViewType"] = "XenialViewType",
