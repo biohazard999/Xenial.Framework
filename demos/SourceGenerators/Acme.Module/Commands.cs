@@ -21,7 +21,21 @@ public class DomainComponent
     ActionMeaning = Xenial.ExpressApp.Actions.XenialActionMeaning.Cancel,
     TargetObjectType = typeof(DomainComponent),
     QuickAccess = true,
-    Tag = "???"
+    Tag = "???",
+    SelectionDependencyType = Xenial.ExpressApp.Actions.XenialSelectionDependencyType.RequireMultipleObjects,
+    ConfirmationMessage = "Confirm",
+    DiagnosticInfo = "Diagnostic",
+    Id = "FOOID",
+    PaintStyle = Xenial.ExpressApp.Templates.XenialActionItemPaintStyle.CaptionAndImage,
+    Shortcut = "CtrlC",
+    TargetObjectsCriteria = "1=2",
+    TargetObjectsCriteriaMode = Xenial.ExpressApp.Actions.XenialTargetObjectsCriteriaMode.TrueForAll,
+    TargetViewId = "TargetViewIdFoo",
+    TargetViewNesting = Xenial.ExpressApp.XenialNesting.Nested,
+    TargetViewType = Xenial.ExpressApp.XenialViewType.DashboardView,
+    ToolTip = "Tooltip to the action",
+    TypeOfView = typeof(DashboardView)
+//PredefinedCategory = XenialPredefinedCategory.Export
 )]
 public partial record AlexAction(XafApplication Application, IObjectSpace ObjectSpace)
     : IDetailViewAction<DomainComponent>

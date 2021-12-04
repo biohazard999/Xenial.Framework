@@ -22,9 +22,10 @@ namespace Xenial
         public string ConfirmationMessage { get; set; }
         public string ToolTip { get; set; }
         public string Shortcut { get; set; }
-        public Type TypeOfView { get; set; }
         public Type TargetObjectType { get; set; }
+        public Type TypeOfView { get; set; }
         public bool QuickAccess { get; set; }
+        public object Tag { get; set; }
         public XenialPredefinedCategory PredefinedCategory { get; set; }
         public XenialSelectionDependencyType SelectionDependencyType { get; set; }
         public XenialActionMeaning ActionMeaning { get; set; }
