@@ -205,65 +205,10 @@ public class XenialActionGenerator : IXenialSourceGenerator
                             builder.WriteLine($"this.TargetObjectType = typeof({targetType.ToDisplayString()});");
                         }
 
-
                         var category = attribute.GetAttributeValue("Category", "Edit") ?? "Edit";
                         //TODO: Action Category
                         builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"{category}\");");
                         builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
-
-                        static void MapStringAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
-                        {
-                            var value = attribute.GetAttributeValue(attributeName, string.Empty);
-                            if (!string.IsNullOrEmpty(value))
-                            {
-                                builder.WriteLine($"this.{actionName}.{attributeName} = \"{value}\";");
-                            }
-                        }
-
-                        static void MapBooleanAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
-                        {
-                            var value = attribute.GetAttributeValue<bool?>(attributeName);
-                            if (value.HasValue)
-                            {
-                                var val = value.Value.ToString() == bool.TrueString ? "true" : "false";
-                                builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
-                            }
-                        }
-
-                        static void MapObjectAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
-                        {
-                            var value = attribute.GetAttribute(attributeName);
-                            if (value.HasValue)
-                            {
-                                var val = value.Value switch
-                                {
-                                    { Kind: TypedConstantKind.Type } => $"typeof({value.Value.Value})",
-                                    { Kind: TypedConstantKind.Primitive, Value: var v } when v is string => $"\"{v}\"",
-                                    { Kind: TypedConstantKind.Primitive, Value: var v } when v is bool => $"{(v.ToString() == bool.TrueString ? "true" : "false")}",
-                                    _ => value.Value.Value?.ToString()
-                                };
-
-                                builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
-                            }
-                        }
-
-                        static void MapTypeAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
-                        {
-                            var value = attribute.GetAttributeValue<INamedTypeSymbol>(attributeName);
-                            if (value is not null)
-                            {
-                                builder.WriteLine($"this.{actionName}.{attributeName} = typeof({value});");
-                            }
-                        }
-
-                        static void MapTypeForwardedEnumAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
-                        {
-                            var value = attribute.GetAttributeValue<INamedTypeSymbol>(attributeName);
-                            if (value is not null)
-                            {
-                                builder.WriteLine($"this.{actionName}.{attributeName} = typeof({value});");
-                            }
-                        }
 
                         foreach (var mappingAttribute in stringActionAttributeNames)
                         {
@@ -389,6 +334,60 @@ public class XenialActionGenerator : IXenialSourceGenerator
         }
 
         return compilation;
+    }
+
+    private static void MapStringAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
+    {
+        var value = attribute.GetAttributeValue(attributeName, string.Empty);
+        if (!string.IsNullOrEmpty(value))
+        {
+            builder.WriteLine($"this.{actionName}.{attributeName} = \"{value}\";");
+        }
+    }
+
+    private static void MapBooleanAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
+    {
+        var value = attribute.GetAttributeValue<bool?>(attributeName);
+        if (value.HasValue)
+        {
+            var val = value.Value.ToString() == bool.TrueString ? "true" : "false";
+            builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
+        }
+    }
+
+    private static void MapObjectAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
+    {
+        var value = attribute.GetAttribute(attributeName);
+        if (value.HasValue)
+        {
+            var val = value.Value switch
+            {
+                { Kind: TypedConstantKind.Type } => $"typeof({value.Value.Value})",
+                { Kind: TypedConstantKind.Primitive, Value: var v } when v is string => $"\"{v}\"",
+                { Kind: TypedConstantKind.Primitive, Value: var v } when v is bool => $"{(v.ToString() == bool.TrueString ? "true" : "false")}",
+                _ => value.Value.Value?.ToString()
+            };
+
+            builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
+        }
+    }
+
+    private static void MapTypeAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
+    {
+        var value = attribute.GetAttributeValue<INamedTypeSymbol>(attributeName);
+        if (value is not null)
+        {
+            builder.WriteLine($"this.{actionName}.{attributeName} = typeof({value});");
+        }
+    }
+
+    private static void MapTypeForwardedEnumAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
+    {
+        var value = attribute.GetAttributeValue<INamedTypeSymbol>(attributeName);
+        if (value is not null)
+        {
+            builder.WriteLine($"this.{actionName}.{attributeName} = typeof({value});");
+        }
     }
 
     private static Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation)

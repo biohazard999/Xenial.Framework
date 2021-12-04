@@ -32,7 +32,7 @@ public abstract class XenialBaseGenerator
         _ = builder ?? throw new ArgumentNullException(nameof(builder));
         _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
 
-        parseOptions = parseOptions ?? new CSharpParseOptions(LanguageVersion.Preview);
+        parseOptions = parseOptions ?? (CSharpParseOptions)context.ParseOptions;
         var syntax = builder.ToString().Replace("{visibility}", "internal");
         var source = SourceText.From(syntax, Encoding.UTF8);
         var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: context.CancellationToken);
