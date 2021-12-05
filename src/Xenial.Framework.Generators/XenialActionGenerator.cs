@@ -218,22 +218,22 @@ public class XenialActionGenerator : IXenialSourceGenerator
                             "Category"
                         }))
                         {
-                            MapStringAttribute(builder, attribute, actionName, mappingAttribute);
+                            MapAttribute(builder, attribute, actionName, mappingAttribute);
                         }
 
                         foreach (var mappingAttribute in boolActionAttributeNames)
                         {
-                            MapBooleanAttribute(builder, attribute, actionName, mappingAttribute);
+                            MapAttribute(builder, attribute, actionName, mappingAttribute);
                         }
 
                         foreach (var mappingAttribute in objectActionAttributeNames)
                         {
-                            MapObjectAttribute(builder, attribute, actionName, mappingAttribute);
+                            MapAttribute(builder, attribute, actionName, mappingAttribute);
                         }
 
                         foreach (var mappingAttribute in typeActionAttributeNames)
                         {
-                            MapTypeAttribute(builder, attribute, actionName, mappingAttribute);
+                            MapAttribute(builder, attribute, actionName, mappingAttribute);
                         }
 
                         foreach (var mappingAttribute in enumActionAttributeNames)
@@ -342,38 +342,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
         return compilation;
     }
 
-    private static void MapStringAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
-    {
-        var value = attribute.GetAttribute(attributeName);
-        if (value.HasValue)
-        {
-            var val = value.Value.MapTypedConstant();
-            builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
-        }
-    }
-
-    private static void MapBooleanAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
-    {
-        var value = attribute.GetAttribute(attributeName);
-        if (value.HasValue)
-        {
-            var val = value.Value.MapTypedConstant();
-            builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
-        }
-    }
-
-    private static void MapObjectAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
-    {
-        var value = attribute.GetAttribute(attributeName);
-        if (value.HasValue)
-        {
-            var val = value.Value.MapTypedConstant();
-
-            builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
-        }
-    }
-
-    private static void MapTypeAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
+    private static void MapAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
     {
         var value = attribute.GetAttribute(attributeName);
         if (value.HasValue)
