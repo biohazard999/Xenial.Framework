@@ -360,13 +360,17 @@ public class XenialActionGenerator : IXenialSourceGenerator
         var value = attribute.GetAttribute(attributeName);
         if (value.HasValue)
         {
-            var val = value.Value switch
-            {
-                { Kind: TypedConstantKind.Type } => $"typeof({value.Value.Value})",
-                { Kind: TypedConstantKind.Primitive, Value: var v } when v is string => $"\"{v}\"",
-                { Kind: TypedConstantKind.Primitive, Value: var v } when v is bool => $"{(v.ToString() == bool.TrueString ? "true" : "false")}",
-                _ => value.Value.Value?.ToString()
-            };
+            static string MapTypedConstant(TypedConstant typedConstant)
+                => typedConstant switch
+                {
+                    { Kind: TypedConstantKind.Type } => $"typeof({typedConstant.Value})",
+                    { Kind: TypedConstantKind.Primitive, Value: var v } when v is string => $"\"{v}\"",
+                    { Kind: TypedConstantKind.Primitive, Value: var v } when v is bool => $"{(v.ToString() == bool.TrueString ? "true" : "false")}",
+                    { Kind: TypedConstantKind.Array, Type: var type } when type is IArrayTypeSymbol arr => $"new {arr.ElementType}[] {{ {(string.Join(", ", typedConstant.Values.Select(t => MapTypedConstant(t)))) } }}",
+                    _ => typedConstant.Value?.ToString() ?? string.Empty
+                };
+
+            var val = MapTypedConstant(value.Value);
 
             builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
         }

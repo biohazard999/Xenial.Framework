@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 using Microsoft.CodeAnalysis;
@@ -29,15 +30,27 @@ public abstract class XenialBaseGenerator
         string fileName,
         CSharpParseOptions? parseOptions = null)
     {
-        _ = builder ?? throw new ArgumentNullException(nameof(builder));
-        _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
+        try
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+            _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
 
-        parseOptions = parseOptions ?? (CSharpParseOptions)context.ParseOptions;
-        var syntax = builder.ToString().Replace("{visibility}", "internal");
-        var source = SourceText.From(syntax, Encoding.UTF8);
-        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: context.CancellationToken);
+            parseOptions = parseOptions ?? (CSharpParseOptions)context.ParseOptions;
+            var syntax = builder.ToString().Replace("{visibility}", "internal");
+            var source = SourceText.From(syntax, Encoding.UTF8);
+            var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: context.CancellationToken);
 
-        context.AddSource($"{fileName}.g.cs", source);
-        return compilation.AddSyntaxTrees(syntaxTree);
+            context.AddSource($"{fileName}.g.cs", source);
+            return compilation.AddSyntaxTrees(syntaxTree);
+        }
+        catch (ArgumentException ex)
+        {
+            if (!Debugger.IsAttached)
+            {
+                Debugger.Launch();
+            }
+            Console.WriteLine(ex.ToString());
+            throw;
+        }
     }
 }
