@@ -367,6 +367,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
                     { Kind: TypedConstantKind.Primitive, Value: var v } when v is string => $"\"{v}\"",
                     { Kind: TypedConstantKind.Primitive, Value: var v } when v is bool => $"{(v.ToString() == bool.TrueString ? "true" : "false")}",
                     { Kind: TypedConstantKind.Array, Type: var type } when type is IArrayTypeSymbol arr => $"new {arr.ElementType}[] {{ {(string.Join(", ", typedConstant.Values.Select(t => MapTypedConstant(t)))) } }}",
+                    { Kind: TypedConstantKind.Enum, Type: var type, Value: var val } when type is INamedTypeSymbol namedType => namedType.GetMembers().OfType<IFieldSymbol>().First(f => f.ConstantValue?.Equals(typedConstant.Value) ?? false).ToString(),
                     _ => typedConstant.Value?.ToString() ?? string.Empty
                 };
 

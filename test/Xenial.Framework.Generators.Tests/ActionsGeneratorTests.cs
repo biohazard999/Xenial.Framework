@@ -71,11 +71,6 @@ $@"namespace MyActions
     public partial class GeneratesSimpleActionWhenDefined {{ }}
 }}", verifySettings: settings => settings.UseParameters(propertyName, value));
 
-    public enum TestEnumeration
-    {
-        MyEnumValue
-    }
-
     [Theory]
     [InlineData("Tag", "true")]
     [InlineData("Tag", "false")]
@@ -85,7 +80,7 @@ $@"namespace MyActions
     [InlineData("Tag", "new int[] { 1, 2 }")]
     [InlineData("Tag", "new string[] { \"Foo\", \"Bar\" }")]
     [InlineData("Tag", "new object[] { \"Foo\", 123 }")]
-    //[InlineData("Tag", "Xenial.ExpressApp.XenialNesting.Root")] //This may require adding the enumeration to the compilation
+    [InlineData("Tag", "System.DateTimeKind.Local")] //This may require adding the enumeration to the compilation
     public Task GeneratesObjectMappedProperties(string propertyName, string value)
         => RunSourceTest("GeneratesSimpleActionWhenDefined",
 $@"namespace MyActions
@@ -94,6 +89,7 @@ $@"namespace MyActions
     public partial class GeneratesSimpleActionWhenDefined {{ }}
 }}", verifySettings: settings => settings.UseParameters(propertyName, value));
 
+    
     //The heavy part
     //private static readonly string[] stringActionAttributeNames = new[]
     //{
