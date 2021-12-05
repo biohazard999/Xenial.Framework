@@ -51,4 +51,14 @@ internal static class GeneratorDiagnostics
         isEnabledByDefault: true,
         description: $"The class using the [{attributeName}] needs to be namespace"
     );
+
+    internal static DiagnosticDescriptor ConflictingAttributes(string attributeName, IEnumerable<string> conflictingAttributeProperties) => new(
+        "XENGEN0200",
+        $"When using the [{attributeName}] you shall not use conflicting properties, use only one of the following: {string.Join(" | ", conflictingAttributeProperties)}",
+        $"When using the [{attributeName}] you shall not use conflicting properties, use only one of the following: {string.Join(" | ", conflictingAttributeProperties)}",
+        category,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: $"When using the [{attributeName}] you shall not use conflicting properties, use only one of the following: {string.Join(" | ", conflictingAttributeProperties)}"
+    );
 }

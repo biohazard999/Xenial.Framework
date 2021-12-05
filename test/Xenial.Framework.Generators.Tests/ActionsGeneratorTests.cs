@@ -144,6 +144,15 @@ $@"namespace MyActions
     public partial class GeneratesSimpleActionWhenDefined { }
 }");
 
+    [Fact]
+    public Task ConflictingCategoryAttributesCategoryShouldOutputDiagnostics()
+=> RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+{
+    [Xenial.XenialAction(Category = ""MyCat"", PredefinedCategory = Xenial.Persistent.Base.XenialPredefinedCategory.View)]
+    public partial class GeneratesSimpleActionWhenDefined { }
+}");
+
     //The heavy part
     //private static readonly string[] stringActionAttributeNames = new[]
     //{

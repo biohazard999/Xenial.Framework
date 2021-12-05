@@ -205,6 +205,19 @@ public class XenialActionGenerator : IXenialSourceGenerator
                             builder.WriteLine($"this.TargetObjectType = typeof({targetType.ToDisplayString()});");
                         }
 
+                        if (attribute.HasAttribute("Category") && attribute.HasAttribute("PredefinedCategory"))
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    GeneratorDiagnostics.ConflictingAttributes(
+                                    xenialActionAttributeName,
+                                    new[] { "Category", "PredefinedCategory" }
+                                ), @class.GetLocation())
+                            );
+
+                            return compilation;
+                        }
+
                         var category = $"\"{attribute.GetAttributeValue("Category", "Edit") ?? "Edit"}\"";
                         actionId = attribute.GetAttributeValue("Id", actionId) ?? actionId;
 

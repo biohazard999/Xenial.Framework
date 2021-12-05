@@ -1,0 +1,15 @@
+﻿{
+  Diagnostics: [
+    {
+      Id: XENGEN0200,
+      Title: When using the [XenialActionAttribute] you shall not use conflicting properties, use only one of the following: Category | PredefinedCategory,
+      Severity: Error,
+      WarningLevel: 0,
+      Location: GeneratesSimpleActionWhenDefined: (2,4)-(3,61),
+      Description: When using the [XenialActionAttribute] you shall not use conflicting properties, use only one of the following: Category | PredefinedCategory,
+      MessageFormat: When using the [XenialActionAttribute] you shall not use conflicting properties, use only one of the following: Category | PredefinedCategory,
+      Message: When using the [XenialActionAttribute] you shall not use conflicting properties, use only one of the following: Category | PredefinedCategory,
+      Category: Usage
+    }
+  ]
+}

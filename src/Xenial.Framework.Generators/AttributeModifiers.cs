@@ -85,6 +85,19 @@ internal static class AttributeDataExtensions
 
         return null;
     }
+    public static bool HasAttribute(
+        this AttributeData attribute,
+        string attributeName)
+    {
+        var namedArgument = attribute.NamedArguments.FirstOrDefault(argument => argument.Key == attributeName);
+
+        if (namedArgument.Key == attributeName)
+        {
+            return true;
+        }
+
+        return false;
+    }
 
     public static string? GetTypeForwardedAttributeValue(
         this AttributeData attribute,
