@@ -84,6 +84,7 @@ $@"namespace MyActions
     [InlineData("Tag", "typeof(TestEnumeration)")] //Seams to work fine even without adding the type to the compilation
     [InlineData("Tag", "new int[] { 1, 2 }")]
     [InlineData("Tag", "new string[] { \"Foo\", \"Bar\" }")]
+    [InlineData("Tag", "new object[] { \"Foo\", 123 }")]
     //[InlineData("Tag", "Xenial.ExpressApp.XenialNesting.Root")] //This may require adding the enumeration to the compilation
     public Task GeneratesObjectMappedProperties(string propertyName, string value)
         => RunSourceTest("GeneratesSimpleActionWhenDefined",
