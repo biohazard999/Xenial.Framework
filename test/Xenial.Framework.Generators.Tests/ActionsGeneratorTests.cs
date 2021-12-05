@@ -80,7 +80,7 @@ $@"namespace MyActions
     [InlineData("Tag", "new int[] { 1, 2 }")]
     [InlineData("Tag", "new string[] { \"Foo\", \"Bar\" }")]
     [InlineData("Tag", "new object[] { \"Foo\", 123 }")]
-    [InlineData("Tag", "System.DateTimeKind.Local")] //This may require adding the enumeration to the compilation
+    [InlineData("Tag", "System.DateTimeKind.Local")]
     public Task GeneratesObjectMappedProperties(string propertyName, string value)
         => RunSourceTest("GeneratesSimpleActionWhenDefined",
 $@"namespace MyActions
@@ -89,7 +89,7 @@ $@"namespace MyActions
     public partial class GeneratesSimpleActionWhenDefined {{ }}
 }}", verifySettings: settings => settings.UseParameters(propertyName, value));
 
-    
+
     //The heavy part
     //private static readonly string[] stringActionAttributeNames = new[]
     //{
