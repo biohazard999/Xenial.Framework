@@ -206,11 +206,17 @@ public class XenialActionGenerator : IXenialSourceGenerator
                         }
 
                         var category = attribute.GetAttributeValue("Category", "Edit") ?? "Edit";
+                        actionId = attribute.GetAttributeValue("Id", actionId) ?? actionId;
+
                         //TODO: Action Category
                         builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"{category}\");");
                         builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
 
-                        foreach (var mappingAttribute in stringActionAttributeNames)
+                        foreach (var mappingAttribute in stringActionAttributeNames.Except(new[]
+                        {
+                            "Id",
+                            "Category"
+                        }))
                         {
                             MapStringAttribute(builder, attribute, actionName, mappingAttribute);
                         }
@@ -360,18 +366,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
         var value = attribute.GetAttribute(attributeName);
         if (value.HasValue)
         {
-            static string MapTypedConstant(TypedConstant typedConstant)
-                => typedConstant switch
-                {
-                    { Kind: TypedConstantKind.Type } => $"typeof({typedConstant.Value})",
-                    { Kind: TypedConstantKind.Primitive, Value: var v } when v is string => $"\"{v}\"",
-                    { Kind: TypedConstantKind.Primitive, Value: var v } when v is bool => $"{(v.ToString() == bool.TrueString ? "true" : "false")}",
-                    { Kind: TypedConstantKind.Array, Type: var type } when type is IArrayTypeSymbol arr => $"new {arr.ElementType}[] {{ {(string.Join(", ", typedConstant.Values.Select(t => MapTypedConstant(t)))) } }}",
-                    { Kind: TypedConstantKind.Enum, Type: var type, Value: var val } when type is INamedTypeSymbol namedType => namedType.GetMembers().OfType<IFieldSymbol>().First(f => f.ConstantValue?.Equals(typedConstant.Value) ?? false).ToString(),
-                    _ => typedConstant.Value?.ToString() ?? string.Empty
-                };
-
-            var val = MapTypedConstant(value.Value);
+            var val = value.Value.MapTypedConstant();
 
             builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
         }

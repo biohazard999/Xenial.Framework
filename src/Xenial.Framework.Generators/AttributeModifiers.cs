@@ -109,7 +109,7 @@ internal static class AttributeDataExtensions
                 if (typeForwardAttribute.ConstructorArguments.Length > 0)
                 {
                     var targetType = typeForwardAttribute.ConstructorArguments[0].Value?.ToString();
-                    var enumValue = namedArgument.Value.Value?.ToString();
+                    var enumValue = namedArgument.Value.MapTypedConstant();
                     return $"({targetType}){enumValue}";
                 }
 
@@ -197,4 +197,16 @@ public static class TypeSymbolExtensions
         => @class == null
             ? false
             : @class.Modifiers.Any(mod => mod.Text == SyntaxFactory.Token(kind).Text);
+
+    public static string MapTypedConstant(this TypedConstant typedConstant)
+        => typedConstant switch
+        {
+            { Kind: TypedConstantKind.Type } => $"typeof({typedConstant.Value})",
+            { Kind: TypedConstantKind.Primitive, Value: var v } when v is string => $"\"{v}\"",
+            { Kind: TypedConstantKind.Primitive, Value: var v } when v is bool => $"{(v.ToString() == bool.TrueString ? "true" : "false")}",
+            { Kind: TypedConstantKind.Array, Type: var type } when type is IArrayTypeSymbol arr => $"new {arr.ElementType}[] {{ {(string.Join(", ", typedConstant.Values.Select(t => MapTypedConstant(t)))) } }}",
+            { Kind: TypedConstantKind.Enum, Type: var type, Value: var val } when type is INamedTypeSymbol namedType => namedType.GetMembers().OfType<IFieldSymbol>().First(f => f.ConstantValue?.Equals(typedConstant.Value) ?? false).ToString(),
+            _ => typedConstant.Value?.ToString() ?? string.Empty
+        };
+
 }

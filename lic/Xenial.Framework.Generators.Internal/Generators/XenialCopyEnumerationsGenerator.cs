@@ -28,6 +28,7 @@ public class XenialCopyEnumerationsGenerator : XenialBaseGenerator, IXenialSourc
         compilation = CopyEnumeration<TargetObjectsCriteriaMode>(context, compilation);
         compilation = CopyEnumeration<Nesting>(context, compilation);
         compilation = CopyEnumeration<ViewType>(context, compilation);
+
         return compilation;
     }
 

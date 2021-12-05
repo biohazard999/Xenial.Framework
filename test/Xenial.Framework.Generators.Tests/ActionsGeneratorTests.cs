@@ -89,6 +89,41 @@ $@"namespace MyActions
     public partial class GeneratesSimpleActionWhenDefined {{ }}
 }}", verifySettings: settings => settings.UseParameters(propertyName, value));
 
+    [Fact]
+    public Task IdIsGenerated()
+        => RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+{
+    [Xenial.XenialAction]
+    public partial class GeneratesSimpleActionWhenDefined { }
+}");
+
+    [Fact]
+    public Task IdIsImplicitlySet()
+        => RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+{
+    [Xenial.XenialAction(Id = ""MyActionId""]
+    public partial class GeneratesSimpleActionWhenDefined { }
+}");
+
+    [Fact]
+    public Task DefaultCategoryIsGenerated()
+        => RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+{
+    [Xenial.XenialAction]
+    public partial class GeneratesSimpleActionWhenDefined { }
+}");
+
+    [Fact]
+    public Task StringCategoryIsUsed()
+    => RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+{
+    [Xenial.XenialAction(Category = ""MyCat"")]
+    public partial class GeneratesSimpleActionWhenDefined { }
+}");
 
     //The heavy part
     //private static readonly string[] stringActionAttributeNames = new[]
