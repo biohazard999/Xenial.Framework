@@ -17,6 +17,16 @@ public class ActionsGeneratorTests : BaseGeneratorTests<XenialActionGenerator>
 {
     protected override string GeneratorEmitProperty => XenialActionGenerator.GenerateXenialActionAttributeMSBuildProperty;
 
+    protected override Microsoft.CodeAnalysis.ISourceGenerator CreateGenerator()
+    {
+        var gen = base.CreateGenerator();
+        if (gen is XenialGenerator xenialGenerator)
+        {
+            xenialGenerator.Generators.Insert(0, new XenialTypeForwardTypesGenerator(addSources: false));
+        }
+        return gen;
+    }
+
     protected Task RunSourceTest(string fileName, string source, Action<VerifySettings>? verifySettings = null)
         => RunTest(
             options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false")),
@@ -122,6 +132,15 @@ $@"namespace MyActions
 @"namespace MyActions
 {
     [Xenial.XenialAction(Category = ""MyCat"")]
+    public partial class GeneratesSimpleActionWhenDefined { }
+}");
+
+    [Fact]
+    public Task PredefinedCategoryCategoryIsUsed()
+=> RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+{
+    [Xenial.XenialAction(PredefinedCategory = Xenial.Persistent.Base.XenialPredefinedCategory.View)]
     public partial class GeneratesSimpleActionWhenDefined { }
 }");
 

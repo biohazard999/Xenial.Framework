@@ -205,25 +205,29 @@ public class XenialActionGenerator : IXenialSourceGenerator
                             builder.WriteLine($"this.TargetObjectType = typeof({targetType.ToDisplayString()});");
                         }
 
-                        var category = attribute.GetAttributeValue("Category", "Edit") ?? "Edit";
+                        var category = $"\"{attribute.GetAttributeValue("Category", "Edit") ?? "Edit"}\"";
                         actionId = attribute.GetAttributeValue("Id", actionId) ?? actionId;
 
+                        var predefinedCategory = attribute.GetAttribute("PredefinedCategory");
+
+                        if (predefinedCategory is not null)
+                        {
+                            category = attribute.GetTypeForwardedAttributeValue("PredefinedCategory");
+                        }
+
+
                         //TODO: Action Category
-                        builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"{category}\");");
+                        builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", {category});");
                         builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
 
                         foreach (var mappingAttribute in actionAttributeNames.Where(m => !new[]
                         {
                             "Id",
-                            "Category"
-                        }.Contains(m.Key)).Except(enumActionAttributeNames))
+                            "Category",
+                            "PredefinedCategory"
+                        }.Contains(m.Key)))
                         {
-                            MapAttribute(builder, attribute, actionName, mappingAttribute.Key);
-                        }
-
-                        foreach (var mappingAttribute in enumActionAttributeNames)
-                        {
-                            MapTypeForwardedEnumAttribute(builder, attribute, actionName, mappingAttribute.Key);
+                            MapAttribute(builder, attribute, actionName, mappingAttribute.Key, typeForward: true);
                         }
                     }
 
@@ -327,10 +331,14 @@ public class XenialActionGenerator : IXenialSourceGenerator
         return compilation;
     }
 
-    private static void MapAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
+    private static void MapAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName, bool typeForward = false)
     {
         var value = attribute.GetAttribute(attributeName);
-        if (value.HasValue)
+        if (value.HasValue && value.Value.Kind == TypedConstantKind.Enum && typeForward)
+        {
+            MapTypeForwardedEnumAttribute(builder, attribute, actionName, attributeName);
+        }
+        else if (value.HasValue)
         {
             var val = value.Value.MapTypedConstant();
             builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
@@ -402,47 +410,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
         ["QuickAccess"] = "bool",
 
         ["Tag"] = "object",
-        ["PredefinedCategory"] = "XenialPredefinedCategory",
-        ["SelectionDependencyType"] = "XenialSelectionDependencyType",
-        ["ActionMeaning"] = "XenialActionMeaning",
-        ["TargetViewType"] = "XenialViewType",
-        ["TargetViewNesting"] = "XenialNesting",
-        ["TargetObjectsCriteriaMode"] = "XenialTargetObjectsCriteriaMode",
-        ["PaintStyle"] = "XenialActionItemPaintStyle",
-    };
 
-    //private static readonly string[] stringActionAttributeNames = new[]
-    //{
-    //    "Caption",
-    //    "ImageName",
-    //    "Category",
-    //    "DiagnosticInfo",
-    //    "Id",
-    //    "TargetViewId",
-    //    "TargetObjectsCriteria",
-    //    "ConfirmationMessage",
-    //    "ToolTip",
-    //    "Shortcut",
-    //};
-
-    //private static readonly string[] typeActionAttributeNames = new[]
-    //{
-    //    "TargetObjectType",
-    //    "TypeOfView",
-    //};
-
-    //private static readonly string[] boolActionAttributeNames = new[]
-    //{
-    //    "QuickAccess",
-    //};
-
-    //private static readonly string[] objectActionAttributeNames = new[]
-    //{
-    //    "Tag",
-    //};
-
-    private static readonly Dictionary<string, string> enumActionAttributeNames = new()
-    {
         ["PredefinedCategory"] = "XenialPredefinedCategory",
         ["SelectionDependencyType"] = "XenialSelectionDependencyType",
         ["ActionMeaning"] = "XenialActionMeaning",

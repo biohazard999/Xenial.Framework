@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
@@ -12,18 +13,25 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-internal class XenialTypeForwardTypesGenerator : IXenialSourceGenerator
+public class XenialTypeForwardTypesGenerator : IXenialSourceGenerator
 {
     private const string xenialTypeForwardedTypes = "XenialTypeForwardedTypes";
     public const string GenerateXenialTypeForwardedTypesMSBuildProperty = $"Generate{xenialTypeForwardedTypes}";
+    private readonly bool addSources;
+
+    public XenialTypeForwardTypesGenerator(bool addSources = true)
+        => this.addSources = addSources;
 
     public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types)
     {
+        _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
+        _ = types ?? throw new ArgumentNullException(nameof(types));
+
         compilation = GenerateTypeForwardedTypes(context, compilation);
         return compilation;
     }
 
-    private static Compilation GenerateTypeForwardedTypes(GeneratorExecutionContext context, Compilation compilation)
+    private Compilation GenerateTypeForwardedTypes(GeneratorExecutionContext context, Compilation compilation)
     {
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialTypeForwardedTypesMSBuildProperty}", out var generateXenialTypeForwardedTypesAttrStr))
         {
@@ -56,8 +64,10 @@ internal class XenialTypeForwardTypesGenerator : IXenialSourceGenerator
                 context.GetDefaultAttributeModifier(),
                 context.CancellationToken
             );
-
-            context.AddSource($"{pair.Key}.g.cs", source);
+            if (addSources)
+            {
+                context.AddSource($"{pair.Key}.g.cs", source);
+            }
             compilation = compilation.AddSyntaxTrees(syntaxTree);
         }
 
