@@ -212,28 +212,13 @@ public class XenialActionGenerator : IXenialSourceGenerator
                         builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", \"{category}\");");
                         builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
 
-                        foreach (var mappingAttribute in stringActionAttributeNames.Except(new[]
+                        foreach (var mappingAttribute in actionAttributeNames.Where(m => !new[]
                         {
                             "Id",
                             "Category"
-                        }))
+                        }.Contains(m.Key)).Except(enumActionAttributeNames))
                         {
-                            MapAttribute(builder, attribute, actionName, mappingAttribute);
-                        }
-
-                        foreach (var mappingAttribute in boolActionAttributeNames)
-                        {
-                            MapAttribute(builder, attribute, actionName, mappingAttribute);
-                        }
-
-                        foreach (var mappingAttribute in objectActionAttributeNames)
-                        {
-                            MapAttribute(builder, attribute, actionName, mappingAttribute);
-                        }
-
-                        foreach (var mappingAttribute in typeActionAttributeNames)
-                        {
-                            MapAttribute(builder, attribute, actionName, mappingAttribute);
+                            MapAttribute(builder, attribute, actionName, mappingAttribute.Key);
                         }
 
                         foreach (var mappingAttribute in enumActionAttributeNames)
@@ -398,35 +383,63 @@ public class XenialActionGenerator : IXenialSourceGenerator
         return compilation.AddSyntaxTrees(syntaxTree);
     }
 
-    private static readonly string[] stringActionAttributeNames = new[]
+    private static readonly Dictionary<string, string> actionAttributeNames = new()
     {
-        "Caption",
-        "ImageName",
-        "Category",
-        "DiagnosticInfo",
-        "Id",
-        "TargetViewId",
-        "TargetObjectsCriteria",
-        "ConfirmationMessage",
-        "ToolTip",
-        "Shortcut",
+        ["Caption"] = "string",
+        ["ImageName"] = "string",
+        ["Category"] = "string",
+        ["DiagnosticInfo"] = "string",
+        ["Id"] = "string",
+        ["TargetViewId"] = "string",
+        ["TargetObjectsCriteria"] = "string",
+        ["ConfirmationMessage"] = "string",
+        ["ToolTip"] = "string",
+        ["Shortcut"] = "string",
+
+        ["TargetObjectType"] = "Type",
+        ["TypeOfView"] = "Type",
+
+        ["QuickAccess"] = "bool",
+
+        ["Tag"] = "object",
+        ["PredefinedCategory"] = "XenialPredefinedCategory",
+        ["SelectionDependencyType"] = "XenialSelectionDependencyType",
+        ["ActionMeaning"] = "XenialActionMeaning",
+        ["TargetViewType"] = "XenialViewType",
+        ["TargetViewNesting"] = "XenialNesting",
+        ["TargetObjectsCriteriaMode"] = "XenialTargetObjectsCriteriaMode",
+        ["PaintStyle"] = "XenialActionItemPaintStyle",
     };
 
-    private static readonly string[] typeActionAttributeNames = new[]
-    {
-        "TargetObjectType",
-        "TypeOfView",
-    };
+    //private static readonly string[] stringActionAttributeNames = new[]
+    //{
+    //    "Caption",
+    //    "ImageName",
+    //    "Category",
+    //    "DiagnosticInfo",
+    //    "Id",
+    //    "TargetViewId",
+    //    "TargetObjectsCriteria",
+    //    "ConfirmationMessage",
+    //    "ToolTip",
+    //    "Shortcut",
+    //};
 
-    private static readonly string[] boolActionAttributeNames = new[]
-    {
-        "QuickAccess",
-    };
+    //private static readonly string[] typeActionAttributeNames = new[]
+    //{
+    //    "TargetObjectType",
+    //    "TypeOfView",
+    //};
 
-    private static readonly string[] objectActionAttributeNames = new[]
-    {
-        "Tag",
-    };
+    //private static readonly string[] boolActionAttributeNames = new[]
+    //{
+    //    "QuickAccess",
+    //};
+
+    //private static readonly string[] objectActionAttributeNames = new[]
+    //{
+    //    "Tag",
+    //};
 
     private static readonly Dictionary<string, string> enumActionAttributeNames = new()
     {
@@ -463,27 +476,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
             {
                 builder.WriteLine($"{visibility} {xenialActionAttributeName}() {{ }}");
 
-                foreach (var actionAttribute in stringActionAttributeNames)
-                {
-                    builder.WriteLine($"public string {actionAttribute} {{ get; set; }}");
-                }
-
-                foreach (var actionAttribute in typeActionAttributeNames)
-                {
-                    builder.WriteLine($"public Type {actionAttribute} {{ get; set; }}");
-                }
-
-                foreach (var actionAttribute in boolActionAttributeNames)
-                {
-                    builder.WriteLine($"public bool {actionAttribute} {{ get; set; }}");
-                }
-
-                foreach (var actionAttribute in objectActionAttributeNames)
-                {
-                    builder.WriteLine($"public object {actionAttribute} {{ get; set; }}");
-                }
-
-                foreach (var actionAttributePair in enumActionAttributeNames)
+                foreach (var actionAttributePair in actionAttributeNames)
                 {
                     builder.WriteLine($"public {actionAttributePair.Value} {actionAttributePair.Key} {{ get; set; }}");
                 }
