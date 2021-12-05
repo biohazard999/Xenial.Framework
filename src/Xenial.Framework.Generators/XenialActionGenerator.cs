@@ -344,19 +344,20 @@ public class XenialActionGenerator : IXenialSourceGenerator
 
     private static void MapStringAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
     {
-        var value = attribute.GetAttributeValue(attributeName, string.Empty);
-        if (!string.IsNullOrEmpty(value))
+        var value = attribute.GetAttribute(attributeName);
+        if (value.HasValue)
         {
-            builder.WriteLine($"this.{actionName}.{attributeName} = \"{value}\";");
+            var val = value.Value.MapTypedConstant();
+            builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
         }
     }
 
     private static void MapBooleanAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
     {
-        var value = attribute.GetAttributeValue<bool?>(attributeName);
+        var value = attribute.GetAttribute(attributeName);
         if (value.HasValue)
         {
-            var val = value.Value.ToString() == bool.TrueString ? "true" : "false";
+            var val = value.Value.MapTypedConstant();
             builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
         }
     }
@@ -374,10 +375,11 @@ public class XenialActionGenerator : IXenialSourceGenerator
 
     private static void MapTypeAttribute(CurlyIndenter builder, AttributeData attribute, string actionName, string attributeName)
     {
-        var value = attribute.GetAttributeValue<INamedTypeSymbol>(attributeName);
-        if (value is not null)
+        var value = attribute.GetAttribute(attributeName);
+        if (value.HasValue)
         {
-            builder.WriteLine($"this.{actionName}.{attributeName} = typeof({value});");
+            var val = value.Value.MapTypedConstant();
+            builder.WriteLine($"this.{actionName}.{attributeName} = {val};");
         }
     }
 
