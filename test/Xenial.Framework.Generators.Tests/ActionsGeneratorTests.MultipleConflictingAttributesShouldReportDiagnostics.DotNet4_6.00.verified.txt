@@ -1,0 +1,23 @@
+{
+  Diagnostics: [
+    {
+      Id: XENGEN0201,
+      Title:
+When using the [XenialActionAttribute] you must make sure it's only used once per Action, check for multiple partial implementations of [Xenial.XenialAction(Category = "MyCat")]
+    public partial class GeneratesSimpleActionWhenDefined { },
+      Severity: Error,
+      WarningLevel: 0,
+      Location: GeneratesSimpleActionWhenDefined: (5,4)-(6,61),
+      Description:
+When using the [XenialActionAttribute] you must make sure it's only used once per Action, check for multiple partial implementations of [Xenial.XenialAction(Category = "MyCat")]
+    public partial class GeneratesSimpleActionWhenDefined { },
+      MessageFormat:
+When using the [XenialActionAttribute] you must make sure it's only used once per Action, check for multiple partial implementations of [Xenial.XenialAction(Category = "MyCat")]
+    public partial class GeneratesSimpleActionWhenDefined { },
+      Message:
+When using the [XenialActionAttribute] you must make sure it's only used once per Action, check for multiple partial implementations of [Xenial.XenialAction(Category = "MyCat")]
+    public partial class GeneratesSimpleActionWhenDefined { },
+      Category: Usage
+    }
+  ]
+}

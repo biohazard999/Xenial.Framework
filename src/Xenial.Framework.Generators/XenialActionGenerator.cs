@@ -23,6 +23,8 @@ public class XenialActionGenerator : IXenialSourceGenerator
     private const string xenialActionAttributeFullName = $"{xenialNamespace}.{xenialActionAttributeName}";
     public const string GenerateXenialActionAttributeMSBuildProperty = $"Generate{xenialActionAttributeName}";
 
+    private List<string> AddedSourceFiles { get; } = new List<string>();
+
     public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types)
     {
         _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
@@ -399,7 +401,9 @@ public class XenialActionGenerator : IXenialSourceGenerator
             context.CancellationToken
         );
 
-        context.AddSource($"{xenialActionAttributeName}.g.cs", source);
+        var hintName = $"{xenialActionAttributeName}.g.cs";
+
+        context.AddSource(hintName, source);
 
         return compilation.AddSyntaxTrees(syntaxTree);
     }
@@ -476,7 +480,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
         return (source, syntaxTree);
     }
 
-    private static Compilation AddGeneratedCode(
+    private Compilation AddGeneratedCode(
         GeneratorExecutionContext context,
         Compilation compilation,
         TypeDeclarationSyntax @class,
@@ -493,9 +497,27 @@ public class XenialActionGenerator : IXenialSourceGenerator
             fileName = Guid.NewGuid().ToString();
         }
 
-        context.AddSource($"{fileName}.{@class.Identifier}.g.cs", source);
+        var hintName = $"{fileName}.{@class.Identifier}.g.cs";
 
-        return compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
+        if (!AddedSourceFiles.Contains(hintName))
+        {
+            AddedSourceFiles.Add(hintName);
+            context.AddSource(hintName, source);
+
+            var syntaxTree = CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken);
+
+            return compilation.AddSyntaxTrees(syntaxTree);
+        }
+
+        context.ReportDiagnostic(
+            Diagnostic.Create(
+                GeneratorDiagnostics.ConflictingClasses(
+                    xenialActionAttributeName,
+                    @class.ToString()
+                ), @class.GetLocation()
+            ));
+
+        return compilation;
     }
 
     private static AttributeData GetXenialActionAttribute(INamedTypeSymbol symbol, INamedTypeSymbol generateXenialActionAttribute)

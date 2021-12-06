@@ -22,7 +22,7 @@ public class ActionsGeneratorTests : BaseGeneratorTests<XenialActionGenerator>
         var gen = base.CreateGenerator();
         if (gen is XenialGenerator xenialGenerator)
         {
-            xenialGenerator.Generators.Insert(0, new XenialTypeForwardTypesGenerator(addSources: false));
+            xenialGenerator.Generators.Insert(0, new XenialTypeForwardTypesGenerator(AddSources: false));
         }
         return gen;
     }
@@ -146,20 +146,24 @@ $@"namespace MyActions
 
     [Fact]
     public Task ConflictingCategoryAttributesCategoryShouldOutputDiagnostics()
-=> RunSourceTest("GeneratesSimpleActionWhenDefined",
+        => RunSourceTest("GeneratesSimpleActionWhenDefined",
 @"namespace MyActions
 {
     [Xenial.XenialAction(Category = ""MyCat"", PredefinedCategory = Xenial.Persistent.Base.XenialPredefinedCategory.View)]
     public partial class GeneratesSimpleActionWhenDefined { }
 }");
 
-    //The heavy part
-    //private static readonly string[] stringActionAttributeNames = new[]
-    //{
-    //    "Id",
-    //    "Category",
-    //    ["PredefinedCategory"] = "XenialPredefinedCategory",
+    [Fact]
+    public Task MultipleConflictingAttributesShouldReportDiagnostics()
+        => RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+{
+    [Xenial.XenialAction(Category = ""MyCat"")]
+    public partial class GeneratesSimpleActionWhenDefined { }
 
+    [Xenial.XenialAction(Category = ""MyCat"")]
+    public partial class GeneratesSimpleActionWhenDefined { }
+}");
     //private static readonly string[] typeActionAttributeNames = new[]
     //{
     //    "TargetObjectType", //this should come out of context

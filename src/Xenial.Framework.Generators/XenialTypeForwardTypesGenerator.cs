@@ -13,14 +13,10 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-public class XenialTypeForwardTypesGenerator : IXenialSourceGenerator
+public record XenialTypeForwardTypesGenerator(bool AddSources = true) : IXenialSourceGenerator
 {
     private const string xenialTypeForwardedTypes = "XenialTypeForwardedTypes";
     public const string GenerateXenialTypeForwardedTypesMSBuildProperty = $"Generate{xenialTypeForwardedTypes}";
-    private readonly bool addSources;
-
-    public XenialTypeForwardTypesGenerator(bool addSources = true)
-        => this.addSources = addSources;
 
     public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types)
     {
@@ -64,7 +60,7 @@ public class XenialTypeForwardTypesGenerator : IXenialSourceGenerator
                 context.GetDefaultAttributeModifier(),
                 context.CancellationToken
             );
-            if (addSources)
+            if (AddSources)
             {
                 context.AddSource($"{pair.Key}.g.cs", source);
             }
