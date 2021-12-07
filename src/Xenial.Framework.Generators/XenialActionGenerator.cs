@@ -60,16 +60,18 @@ public class XenialActionGenerator : IXenialSourceGenerator
         TypeDeclarationSyntax Class,
         INamedTypeSymbol ClassSymbol,
         AttributeData ActionAttribute,
-        ITypeSymbol? TargetClass,
+        ITypeSymbol? TargetType,
         IMethodSymbol? Constructor,
         XenialMethodGeneratorContext? Executor
     )
     {
         public bool IsPartial => Class.HasModifier(SyntaxKind.PartialKeyword);
         public bool IsGlobalNamespace => ClassSymbol.ContainingNamespace.ToString() == "<global namespace>";
-        public bool HasTargetClass => TargetClass is not null;
+        public bool HasTargetType => TargetType is not null;
         public bool HasExecutor => Executor is not null;
         public bool HasCustomConstructor => Constructor is not null;
+        public bool HasConflictingAttributes => ActionAttribute.HasAttribute("Category") && ActionAttribute.HasAttribute("PredefinedCategory");
+        public bool HasError => IsGlobalNamespace || !IsPartial || HasConflictingAttributes;
 
         public Compilation ReportClassNeedsToBeInNamespaceDiagnostic(GeneratorExecutionContext context, Compilation compilation)
         {
@@ -97,6 +99,21 @@ public class XenialActionGenerator : IXenialSourceGenerator
                     ), Class.GetLocation())
                 );
 
+            }
+            return compilation;
+        }
+
+        public Compilation ReportAttributesShouldNotConflictDiagnostic(GeneratorExecutionContext context, Compilation compilation)
+        {
+            if (HasConflictingAttributes)
+            {
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        GeneratorDiagnostics.ConflictingAttributes(
+                        xenialActionAttributeName,
+                        new[] { "Category", "PredefinedCategory" }
+                    ), Class.GetLocation())
+                );
             }
             return compilation;
         }
@@ -457,13 +474,13 @@ public class XenialActionGenerator : IXenialSourceGenerator
             //compilation = AddGeneratedCode(context, compilation, @class, builder);
         }
 
-
         foreach (var actionContext in collectedContexts)
         {
             compilation = actionContext.ReportClassNeedsToBeInNamespaceDiagnostic(context, compilation);
             compilation = actionContext.ReportClassShouldBePartialDiagnostic(context, compilation);
+            compilation = actionContext.ReportAttributesShouldNotConflictDiagnostic(context, compilation);
 
-            if (actionContext.IsGlobalNamespace || !actionContext.IsPartial) { continue; }
+            if (actionContext.HasError) { continue; }
 
             var builder = CurlyIndenter.Create();
 
@@ -479,11 +496,184 @@ public class XenialActionGenerator : IXenialSourceGenerator
                 builder.WriteLine("[CompilerGenerated]");
                 using (builder.OpenBrace($"partial {(actionContext.ClassSymbol.IsRecord ? "record" : "class")} {actionContext.ClassSymbol.Name}"))
                 {
-
+                    GeneratePartialMethodDeclaration(builder, actionContext);
                 }
+
+                builder.WriteLine();
+
+                compilation = GenerateController(context, compilation, builder, actionContext);
             }
 
             compilation = AddGeneratedCode(context, compilation, actionContext.Class, builder);
+        }
+
+        return compilation;
+    }
+
+    private static void GeneratePartialMethodDeclaration(CurlyIndenter builder, XenialActionGeneratorContext actionContext)
+    {
+        if (!actionContext.HasExecutor)
+        {
+            if (actionContext.HasTargetType && actionContext.TargetType is not null)
+            {
+                builder.WriteLine($"partial void Execute({actionContext.TargetType.ToDisplayString()} targetObject);");
+            }
+            else
+            {
+                builder.WriteLine($"partial void Execute(object targetObject);");
+            }
+        }
+        else if (actionContext.Executor is not null && actionContext.Executor.ReturnTypeInfo.Type is not null)
+        {
+            var parameterString = string.Join(", ", actionContext.Executor.Symbol.Parameters.Select(p => $"{p} {p.Name}"));
+
+            builder.WriteLine($"{actionContext.Executor.PartialModifiers} {actionContext.Executor.ReturnTypeInfo.Type.ToDisplayString()} Execute({parameterString});");
+        }
+        else
+        {
+            //builder.WriteLine($"{actionContext.Executor.PartialModifiers} {actionContext.Executor.ReturnTypeInfo.Type.ToDisplayString()} Execute({parameterString});");
+        }
+    }
+
+
+    private static Compilation GenerateController(GeneratorExecutionContext context, Compilation compilation, CurlyIndenter builder, XenialActionGeneratorContext actionContext)
+    {
+        var actionId = $"{actionContext.Namespace}.{actionContext.ClassSymbol.Name}SimpleAction";
+        var actionName = $"{actionContext.ClassSymbol.Name}SimpleAction";
+        var controllerName = $"{actionContext.ClassSymbol.Name}Controller";
+
+        builder.WriteLine("[CompilerGenerated]");
+        using (builder.OpenBrace($"public partial class {controllerName} : DevExpress.ExpressApp.ViewController"))
+        {
+            builder.WriteLine($"public DevExpress.ExpressApp.Actions.SimpleAction {actionName} {{ get; private set; }}");
+
+            builder.WriteLine();
+
+            using (builder.OpenBrace($"public {controllerName}()"))
+            {
+                builder.WriteLine("this.TargetViewType = DevExpress.ExpressApp.ViewType.DetailView;");
+
+                if (actionContext.HasTargetType && actionContext.TargetType is not null)
+                {
+                    builder.WriteLine($"this.TargetObjectType = typeof({actionContext.TargetType.ToDisplayString()});");
+                }
+
+                var category = $"\"{actionContext.ActionAttribute.GetAttributeValue("Category", "Edit") ?? "Edit"}\"";
+                actionId = actionContext.ActionAttribute.GetAttributeValue("Id", actionId) ?? actionId;
+
+                var predefinedCategory = actionContext.ActionAttribute.GetAttribute("PredefinedCategory");
+
+                if (predefinedCategory is not null)
+                {
+                    category = actionContext.ActionAttribute.GetTypeForwardedAttributeValue("PredefinedCategory");
+                }
+
+
+                //TODO: Action Category
+                builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", {category});");
+                builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
+
+                foreach (var mappingAttribute in actionAttributeNames.Where(m => !new[]
+                {
+                        "Id",
+                        "Category",
+                        "PredefinedCategory"
+                    }.Contains(m.Key)))
+                {
+                    MapAttribute(builder, actionContext.ActionAttribute, actionName, mappingAttribute.Key, typeForward: true);
+                }
+            }
+
+            builder.WriteLine();
+            builder.WriteLine("partial void OnActivatedCore();");
+            builder.WriteLine();
+            builder.WriteLine("partial void OnDeactivatedCore();");
+            builder.WriteLine();
+
+            using (builder.OpenBrace("protected override void OnActivated()"))
+            {
+                builder.WriteLine("base.OnActivated();");
+
+                builder.WriteLine($"this.{actionName}.Execute -= {actionName}Execute;");
+                builder.WriteLine($"this.{actionName}.Execute += {actionName}Execute;");
+
+                builder.WriteLine("this.OnActivatedCore();");
+            }
+            builder.WriteLine();
+
+            using (builder.OpenBrace("protected override void OnDeactivated()"))
+            {
+                builder.WriteLine($"this.{actionName}.Execute -= {actionName}Execute;");
+
+                builder.WriteLine("this.OnDeactivatedCore();");
+                builder.WriteLine("base.OnDeactivated();");
+            }
+            builder.WriteLine();
+
+            var typeMap = new Dictionary<string, string>()
+            {
+                ["DevExpress.ExpressApp.XafApplication"] = "this.Application",
+                ["DevExpress.ExpressApp.IObjectSpace"] = "this.ObjectSpace"
+            };
+
+            //using (builder.OpenBrace($"protected virtual {@classSymbol.Name} CreateAction()"))
+            //{
+
+            //}
+
+            using (builder.OpenBrace($"private void {actionName}Execute(object sender, DevExpress.ExpressApp.Actions.SimpleActionExecuteEventArgs e)"))
+            {
+                if (actionContext.TargetType is not null)
+                {
+                    using (builder.OpenBrace($"if(e.CurrentObject is {actionContext.TargetType.ToDisplayString()})"))
+                    {
+                        builder.WriteLine($"{actionContext.TargetType.ToDisplayString()} currentObject = ({actionContext.TargetType.ToDisplayString()})e.CurrentObject;");
+
+                        if (actionContext.Constructor is null)
+                        {
+                            builder.WriteLine($"{actionContext.ClassSymbol.ToDisplayString()} action = new {actionContext.ClassSymbol.ToDisplayString()}();");
+                        }
+                        else
+                        {
+                            builder.Write($"{actionContext.ClassSymbol.ToDisplayString()} action = new {actionContext.ClassSymbol.ToDisplayString()}(");
+
+                            var parameters = new List<string>();
+                            foreach (var parameter in actionContext.Constructor.Parameters)
+                            {
+                                if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
+                                {
+                                    parameters.Add(resovledValue);
+                                }
+                            }
+
+                            builder.Write(string.Join(", ", parameters));
+
+                            builder.WriteLine(");");
+                        }
+
+                        builder.WriteLine();
+                        builder.Write($"action.Execute(currentObject");
+
+                        if (actionContext.Executor is not null)
+                        {
+                            foreach (var parameter in actionContext.Executor.Symbol.Parameters)
+                            {
+                                if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
+                                {
+                                    builder.Write($", {resovledValue}");
+                                }
+                            }
+                        }
+
+                        builder.WriteLine(");");
+                    }
+                }
+                //TODO: type match failed for whatever reason
+                //using (builder.OpenBrace("else"))
+                //{
+
+                //}
+            }
         }
 
         return compilation;

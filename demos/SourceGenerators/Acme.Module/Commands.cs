@@ -50,11 +50,3 @@ public partial record AlexAction(XafApplication Application, IObjectSpace Object
 
     }
 }
-
-public class Foo : ViewController
-{
-    public Foo()
-    {
-        TargetViewType
-    }
-}
