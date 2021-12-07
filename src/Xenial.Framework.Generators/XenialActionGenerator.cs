@@ -25,6 +25,83 @@ public class XenialActionGenerator : IXenialSourceGenerator
 
     private List<string> AddedSourceFiles { get; } = new List<string>();
 
+    private record XenialMethodGeneratorContext(
+        MethodDeclarationSyntax Syntax,
+        IMethodSymbol Symbol,
+        TypeInfo ReturnTypeInfo
+    )
+    {
+        public static XenialMethodGeneratorContext? CreateContext(GeneratorExecutionContext context, SemanticModel semanticModel, MethodDeclarationSyntax? syntax)
+        {
+            if (syntax is null)
+            {
+                return null;
+            }
+
+            var method = semanticModel.GetDeclaredSymbol(syntax, context.CancellationToken);
+
+            if (method is null)
+            {
+                return null;
+            }
+
+            var returnTypeInfo = semanticModel.GetTypeInfo(syntax.ReturnType, context.CancellationToken);
+
+            return new(syntax, method, returnTypeInfo);
+        }
+
+        public SyntaxTokenList PartialModifiers => new SyntaxTokenList(
+            Syntax.Modifiers.Where(t => !t.IsKind(SyntaxKind.AsyncKeyword))
+        );
+    }
+
+    private record XenialActionGeneratorContext(
+        INamespaceSymbol Namespace,
+        TypeDeclarationSyntax Class,
+        INamedTypeSymbol ClassSymbol,
+        AttributeData ActionAttribute,
+        ITypeSymbol? TargetClass,
+        IMethodSymbol? Constructor,
+        XenialMethodGeneratorContext? Executor
+    )
+    {
+        public bool IsPartial => Class.HasModifier(SyntaxKind.PartialKeyword);
+        public bool IsGlobalNamespace => ClassSymbol.ContainingNamespace.ToString() == "<global namespace>";
+        public bool HasTargetClass => TargetClass is not null;
+        public bool HasExecutor => Executor is not null;
+        public bool HasCustomConstructor => Constructor is not null;
+
+        public Compilation ReportClassNeedsToBeInNamespaceDiagnostic(GeneratorExecutionContext context, Compilation compilation)
+        {
+            if (IsGlobalNamespace)
+            {
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        GeneratorDiagnostics.ClassNeedsToBeInNamespace(
+                        xenialActionAttributeName
+                    ), Class.GetLocation())
+                );
+
+            }
+            return compilation;
+        }
+
+        public Compilation ReportClassShouldBePartialDiagnostic(GeneratorExecutionContext context, Compilation compilation)
+        {
+            if (!IsPartial)
+            {
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        GeneratorDiagnostics.ClassShouldBePartial(
+                        xenialActionAttributeName
+                    ), Class.GetLocation())
+                );
+
+            }
+            return compilation;
+        }
+    }
+
     public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types)
     {
         _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
@@ -39,6 +116,8 @@ public class XenialActionGenerator : IXenialSourceGenerator
             //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
             return compilation;
         }
+
+        var collectedContexts = new List<XenialActionGeneratorContext>();
 
         foreach (var @class in types)
         {
@@ -85,262 +164,326 @@ public class XenialActionGenerator : IXenialSourceGenerator
                 return compilation;
             }
 
-            using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
+            ITypeSymbol? GetTargetType()
             {
-                ITypeSymbol? GetTargetType()
-                {
-                    var detailViewActionInterface = @classSymbol.AllInterfaces
-                        .FirstOrDefault(i => i.OriginalDefinition.ToDisplayString() == "Xenial.IDetailViewAction<T>");
+                var detailViewActionInterface = @classSymbol.AllInterfaces
+                    .FirstOrDefault(i => i.OriginalDefinition.ToDisplayString() == "Xenial.IDetailViewAction<T>");
 
-                    if (detailViewActionInterface is not null)
+                if (detailViewActionInterface is not null)
+                {
+                    if (detailViewActionInterface.IsGenericType)
                     {
-                        if (detailViewActionInterface.IsGenericType)
-                        {
-                            var targetType = detailViewActionInterface.TypeArguments.First();
+                        var targetType = detailViewActionInterface.TypeArguments.First();
 
-                            return targetType;
-                        }
+                        return targetType;
                     }
-
-                    return null;
                 }
 
-                List<(IMethodSymbol? ctor, IMethodSymbol invoker)> partialMethods = new();
+                return null;
+            }
 
-                if (!@class.HasModifier(SyntaxKind.PartialKeyword))
-                {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create(
-                            GeneratorDiagnostics.ClassShouldBePartial(
-                            xenialActionAttributeName
-                        ), @class.GetLocation())
-                    );
+            var possibleCtors2 = classSymbol.InstanceConstructors
+                //record copy constructor are implicitly declared
+                .Where(ctor => !ctor.IsImplicitlyDeclared)
+                .GroupBy(ctor => ctor.Parameters.Length)
+                .Select(g => (lenght: g.Key, ctors: g.ToArray()))
+                .OrderByDescending(g => g.lenght)
+                .Select(g => g.ctors)
+                .FirstOrDefault();
 
-                    return compilation;
-                }
+            //TODO: error on conflicting ctor count
+            var possibleCtor2 = possibleCtors2?.FirstOrDefault();
+
+            var executorMethod = @class.Members
+                .OfType<MethodDeclarationSyntax>()
+                .Where(method => method.Identifier.Text == "Execute")
+                .FirstOrDefault();
+
+            var actionContext = new XenialActionGeneratorContext(
+                @classSymbol.ContainingNamespace,
+                @class,
+                @classSymbol,
+                attribute,
+                GetTargetType(),
+                possibleCtor2,
+                XenialMethodGeneratorContext.CreateContext(context, semanticModel, executorMethod)
+            );
+
+            collectedContexts.Add(actionContext);
+
+            #region Old Code
+            //using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
+            //{
+            //    List<(IMethodSymbol? ctor, IMethodSymbol invoker)> partialMethods = new();
+
+            //    if (!@class.HasModifier(SyntaxKind.PartialKeyword))
+            //    {
+            //        context.ReportDiagnostic(
+            //            Diagnostic.Create(
+            //                GeneratorDiagnostics.ClassShouldBePartial(
+            //                xenialActionAttributeName
+            //            ), @class.GetLocation())
+            //        );
+
+            //        return compilation;
+            //    }
 
 
+            //    builder.WriteLine("[CompilerGenerated]");
+            //    using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
+            //    {
+            //        var methods = @class.Members.OfType<MethodDeclarationSyntax>();
+
+            //        if (!methods.Any(method => method.Identifier.Text == "Execute"))
+            //        {
+            //            var targetType = GetTargetType();
+            //            if (targetType is not null)
+            //            {
+            //                builder.WriteLine($"partial void Execute({targetType.ToDisplayString()} targetObject);");
+            //            }
+            //            else
+            //            {
+            //                //TODO: Warn to implement one or more of the target interfaces
+            //                builder.WriteLine("partial void Execute(object targetObject);");
+            //            }
+            //        }
+            //        else
+            //        {
+            //            var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
+            //            if (method is not null)
+            //            {
+            //                var methodSymbol = semanticModel.GetDeclaredSymbol(method, context.CancellationToken);
+
+            //                var modifiers = new SyntaxTokenList(
+            //                    method.Modifiers.Where(t => !t.IsKind(SyntaxKind.AsyncKeyword))
+            //                );
+
+            //                var returnTypeSymbol = semanticModel.GetTypeInfo(method.ReturnType, context.CancellationToken);
+
+            //                if (methodSymbol is not null && returnTypeSymbol.Type is not null)
+            //                {
+            //                    var possibleCtors = classSymbol.InstanceConstructors
+            //                            //record copy constructor are implicitly declared
+            //                            .Where(ctor => !ctor.IsImplicitlyDeclared)
+            //                            .GroupBy(ctor => ctor.Parameters.Length)
+            //                            .Select(g => (lenght: g.Key, ctors: g.ToArray()))
+            //                            .OrderByDescending(g => g.lenght)
+            //                            .Select(g => g.ctors)
+            //                            .FirstOrDefault();
+
+            //                    //TODO: error on conflicting ctor count
+            //                    var possibleCtor = possibleCtors?.FirstOrDefault();
+
+            //                    partialMethods.Add((possibleCtor, methodSymbol));
+
+            //                    var targetType = GetTargetType();
+            //                    if (targetType is not null)
+            //                    {
+            //                        var parameterString = string.Join(", ", methodSymbol.Parameters.Select(p => $"{p} {p.Name}"));
+
+            //                        builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute({parameterString});");
+            //                    }
+            //                    else
+            //                    {
+            //                        builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute(object myTarget);");
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+
+            //    builder.WriteLine();
+
+            //    var actionId = $"{@classSymbol.ContainingNamespace}.{@classSymbol.Name}SimpleAction";
+            //    var actionName = $"{@classSymbol.Name}SimpleAction";
+            //    var controllerName = $"{@classSymbol.Name}Controller";
+
+            //    builder.WriteLine("[CompilerGenerated]");
+            //    using (builder.OpenBrace($"public partial class {controllerName} : DevExpress.ExpressApp.ViewController"))
+            //    {
+            //        builder.WriteLine($"public DevExpress.ExpressApp.Actions.SimpleAction {actionName} {{ get; private set; }}");
+
+            //        builder.WriteLine();
+
+            //        using (builder.OpenBrace($"public {controllerName}()"))
+            //        {
+            //            builder.WriteLine("this.TargetViewType = DevExpress.ExpressApp.ViewType.DetailView;");
+
+            //            var targetType = GetTargetType();
+            //            if (targetType is not null)
+            //            {
+            //                builder.WriteLine($"this.TargetObjectType = typeof({targetType.ToDisplayString()});");
+            //            }
+
+            //            if (attribute.HasAttribute("Category") && attribute.HasAttribute("PredefinedCategory"))
+            //            {
+            //                context.ReportDiagnostic(
+            //                    Diagnostic.Create(
+            //                        GeneratorDiagnostics.ConflictingAttributes(
+            //                        xenialActionAttributeName,
+            //                        new[] { "Category", "PredefinedCategory" }
+            //                    ), @class.GetLocation())
+            //                );
+
+            //                return compilation;
+            //            }
+
+            //            var category = $"\"{attribute.GetAttributeValue("Category", "Edit") ?? "Edit"}\"";
+            //            actionId = attribute.GetAttributeValue("Id", actionId) ?? actionId;
+
+            //            var predefinedCategory = attribute.GetAttribute("PredefinedCategory");
+
+            //            if (predefinedCategory is not null)
+            //            {
+            //                category = attribute.GetTypeForwardedAttributeValue("PredefinedCategory");
+            //            }
+
+
+            //            //TODO: Action Category
+            //            builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", {category});");
+            //            builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
+
+            //            foreach (var mappingAttribute in actionAttributeNames.Where(m => !new[]
+            //            {
+            //                "Id",
+            //                "Category",
+            //                "PredefinedCategory"
+            //            }.Contains(m.Key)))
+            //            {
+            //                MapAttribute(builder, attribute, actionName, mappingAttribute.Key, typeForward: true);
+            //            }
+            //        }
+
+            //        builder.WriteLine();
+            //        builder.WriteLine("partial void OnActivatedCore();");
+            //        builder.WriteLine();
+            //        builder.WriteLine("partial void OnDeactivatedCore();");
+            //        builder.WriteLine();
+
+            //        using (builder.OpenBrace("protected override void OnActivated()"))
+            //        {
+            //            builder.WriteLine("base.OnActivated();");
+
+            //            builder.WriteLine($"this.{actionName}.Execute -= {actionName}Execute;");
+            //            builder.WriteLine($"this.{actionName}.Execute += {actionName}Execute;");
+
+            //            builder.WriteLine("this.OnActivatedCore();");
+            //        }
+            //        builder.WriteLine();
+
+            //        using (builder.OpenBrace("protected override void OnDeactivated()"))
+            //        {
+            //            builder.WriteLine($"this.{actionName}.Execute -= {actionName}Execute;");
+
+            //            builder.WriteLine("this.OnDeactivatedCore();");
+            //            builder.WriteLine("base.OnDeactivated();");
+            //        }
+            //        builder.WriteLine();
+
+            //        var typeMap = new Dictionary<string, string>()
+            //        {
+            //            ["DevExpress.ExpressApp.XafApplication"] = "this.Application",
+            //            ["DevExpress.ExpressApp.IObjectSpace"] = "this.ObjectSpace"
+            //        };
+
+            //        //using (builder.OpenBrace($"protected virtual {@classSymbol.Name} CreateAction()"))
+            //        //{
+
+            //        //}
+
+            //        using (builder.OpenBrace($"private void {actionName}Execute(object sender, DevExpress.ExpressApp.Actions.SimpleActionExecuteEventArgs e)"))
+            //        {
+            //            var targetType = GetTargetType();
+            //            if (targetType is not null)
+            //            {
+            //                using (builder.OpenBrace($"if(e.CurrentObject is {targetType.ToDisplayString()})"))
+            //                {
+            //                    builder.WriteLine($"{targetType.ToDisplayString()} currentObject = ({targetType.ToDisplayString()})e.CurrentObject;");
+
+            //                    if (partialMethods.Count > 0)
+            //                    {
+            //                        var (ctor, invoker) = partialMethods.First();
+            //                        if (ctor is null)
+            //                        {
+            //                            builder.WriteLine($"{classSymbol.ToDisplayString()} action = new {classSymbol.ToDisplayString()}();");
+            //                        }
+            //                        else
+            //                        {
+            //                            builder.Write($"{classSymbol.ToDisplayString()} action = new {classSymbol.ToDisplayString()}(");
+
+            //                            var parameters = new List<string>();
+            //                            foreach (var parameter in ctor.Parameters)
+            //                            {
+            //                                if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
+            //                                {
+            //                                    parameters.Add(resovledValue);
+            //                                }
+            //                            }
+
+            //                            builder.Write(string.Join(", ", parameters));
+
+            //                            builder.WriteLine(");");
+            //                        }
+
+            //                        builder.WriteLine();
+            //                        builder.Write($"action.Execute(currentObject");
+
+            //                        foreach (var parameter in invoker.Parameters)
+            //                        {
+            //                            if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
+            //                            {
+            //                                builder.Write($", {resovledValue}");
+            //                            }
+            //                        }
+
+            //                        builder.WriteLine(");");
+            //                    }
+            //                    else
+            //                    {
+            //                        //builder.WriteLine($"action.Execute(currentObject);");
+            //                    }
+            //                }
+            //                //TODO: type match failed for whatever reason
+            //                //using (builder.OpenBrace("else"))
+            //                //{
+
+            //                //}
+            //            }
+            //        }
+            //    }
+            //}
+            #endregion
+
+            //compilation = AddGeneratedCode(context, compilation, @class, builder);
+        }
+
+
+        foreach (var actionContext in collectedContexts)
+        {
+            compilation = actionContext.ReportClassNeedsToBeInNamespaceDiagnostic(context, compilation);
+            compilation = actionContext.ReportClassShouldBePartialDiagnostic(context, compilation);
+
+            if (actionContext.IsGlobalNamespace || !actionContext.IsPartial) { continue; }
+
+            var builder = CurlyIndenter.Create();
+
+            builder.WriteLine("// <auto-generated />");
+            builder.WriteLine();
+            builder.WriteLine("using System;");
+            builder.WriteLine("using System.IO;");
+            builder.WriteLine("using System.Runtime.CompilerServices;");
+            builder.WriteLine();
+
+            using (builder.OpenBrace($"namespace {actionContext.ClassSymbol.ContainingNamespace}"))
+            {
                 builder.WriteLine("[CompilerGenerated]");
-                using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
+                using (builder.OpenBrace($"partial {(actionContext.ClassSymbol.IsRecord ? "record" : "class")} {actionContext.ClassSymbol.Name}"))
                 {
-                    var methods = @class.Members.OfType<MethodDeclarationSyntax>();
 
-                    if (!methods.Any(method => method.Identifier.Text == "Execute"))
-                    {
-                        var targetType = GetTargetType();
-                        if (targetType is not null)
-                        {
-                            builder.WriteLine($"partial void Execute({targetType.ToDisplayString()} targetObject);");
-                        }
-                        else
-                        {
-                            //TODO: Warn to implement one or more of the target interfaces
-                            builder.WriteLine("partial void Execute(object targetObject);");
-                        }
-                    }
-                    else
-                    {
-                        var method = methods.FirstOrDefault(method => method.Identifier.Text == "Execute");
-                        if (method is not null)
-                        {
-                            var methodSymbol = semanticModel.GetDeclaredSymbol(method, context.CancellationToken);
-
-
-                            var modifiers = new SyntaxTokenList(
-                                method.Modifiers.Where(t => !t.IsKind(SyntaxKind.AsyncKeyword))
-                            );
-
-                            var returnTypeSymbol = semanticModel.GetTypeInfo(method.ReturnType, context.CancellationToken);
-
-                            if (methodSymbol is not null && returnTypeSymbol.Type is not null)
-                            {
-                                var possibleCtors = classSymbol.InstanceConstructors
-                                        //record copy constructor are implicitly declared
-                                        .Where(ctor => !ctor.IsImplicitlyDeclared)
-                                        .GroupBy(ctor => ctor.Parameters.Length)
-                                        .Select(g => (lenght: g.Key, ctors: g.ToArray()))
-                                        .OrderByDescending(g => g.lenght)
-                                        .Select(g => g.ctors)
-                                        .FirstOrDefault();
-
-                                //TODO: error on conflicting ctor count
-                                var possibleCtor = possibleCtors?.FirstOrDefault();
-
-                                partialMethods.Add((possibleCtor, methodSymbol));
-
-                                var targetType = GetTargetType();
-                                if (targetType is not null)
-                                {
-                                    var parameterString = string.Join(", ", methodSymbol.Parameters.Select(p => $"{p} {p.Name}"));
-
-                                    builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute({parameterString});");
-                                }
-                                else
-                                {
-                                    builder.WriteLine($"{modifiers} {returnTypeSymbol.Type.ToDisplayString()} Execute(object myTarget);");
-                                }
-                            }
-                        }
-                    }
-                }
-
-                builder.WriteLine();
-
-                var actionId = $"{@classSymbol.ContainingNamespace}.{@classSymbol.Name}SimpleAction";
-                var actionName = $"{@classSymbol.Name}SimpleAction";
-                var controllerName = $"{@classSymbol.Name}Controller";
-
-                builder.WriteLine("[CompilerGenerated]");
-                using (builder.OpenBrace($"public partial class {controllerName} : DevExpress.ExpressApp.ViewController"))
-                {
-                    builder.WriteLine($"public DevExpress.ExpressApp.Actions.SimpleAction {actionName} {{ get; private set; }}");
-
-                    builder.WriteLine();
-
-                    using (builder.OpenBrace($"public {controllerName}()"))
-                    {
-                        builder.WriteLine("this.TargetViewType = DevExpress.ExpressApp.ViewType.DetailView;");
-
-                        var targetType = GetTargetType();
-                        if (targetType is not null)
-                        {
-                            builder.WriteLine($"this.TargetObjectType = typeof({targetType.ToDisplayString()});");
-                        }
-
-                        if (attribute.HasAttribute("Category") && attribute.HasAttribute("PredefinedCategory"))
-                        {
-                            context.ReportDiagnostic(
-                                Diagnostic.Create(
-                                    GeneratorDiagnostics.ConflictingAttributes(
-                                    xenialActionAttributeName,
-                                    new[] { "Category", "PredefinedCategory" }
-                                ), @class.GetLocation())
-                            );
-
-                            return compilation;
-                        }
-
-                        var category = $"\"{attribute.GetAttributeValue("Category", "Edit") ?? "Edit"}\"";
-                        actionId = attribute.GetAttributeValue("Id", actionId) ?? actionId;
-
-                        var predefinedCategory = attribute.GetAttribute("PredefinedCategory");
-
-                        if (predefinedCategory is not null)
-                        {
-                            category = attribute.GetTypeForwardedAttributeValue("PredefinedCategory");
-                        }
-
-
-                        //TODO: Action Category
-                        builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", {category});");
-                        builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
-
-                        foreach (var mappingAttribute in actionAttributeNames.Where(m => !new[]
-                        {
-                            "Id",
-                            "Category",
-                            "PredefinedCategory"
-                        }.Contains(m.Key)))
-                        {
-                            MapAttribute(builder, attribute, actionName, mappingAttribute.Key, typeForward: true);
-                        }
-                    }
-
-                    builder.WriteLine();
-                    builder.WriteLine("partial void OnActivatedCore();");
-                    builder.WriteLine();
-                    builder.WriteLine("partial void OnDeactivatedCore();");
-                    builder.WriteLine();
-
-                    using (builder.OpenBrace("protected override void OnActivated()"))
-                    {
-                        builder.WriteLine("base.OnActivated();");
-
-                        builder.WriteLine($"this.{actionName}.Execute -= {actionName}Execute;");
-                        builder.WriteLine($"this.{actionName}.Execute += {actionName}Execute;");
-
-                        builder.WriteLine("this.OnActivatedCore();");
-                    }
-                    builder.WriteLine();
-
-                    using (builder.OpenBrace("protected override void OnDeactivated()"))
-                    {
-                        builder.WriteLine($"this.{actionName}.Execute -= {actionName}Execute;");
-
-                        builder.WriteLine("this.OnDeactivatedCore();");
-                        builder.WriteLine("base.OnDeactivated();");
-                    }
-                    builder.WriteLine();
-
-                    using (builder.OpenBrace($"private void {actionName}Execute(object sender, DevExpress.ExpressApp.Actions.SimpleActionExecuteEventArgs e)"))
-                    {
-                        var targetType = GetTargetType();
-                        if (targetType is not null)
-                        {
-                            using (builder.OpenBrace($"if(e.CurrentObject is {targetType.ToDisplayString()})"))
-                            {
-                                builder.WriteLine($"{targetType.ToDisplayString()} currentObject = ({targetType.ToDisplayString()})e.CurrentObject;");
-
-                                var typeMap = new Dictionary<string, string>()
-                                {
-                                    ["DevExpress.ExpressApp.XafApplication"] = "this.Application",
-                                    ["DevExpress.ExpressApp.IObjectSpace"] = "this.ObjectSpace"
-                                };
-
-                                if (partialMethods.Count > 0)
-                                {
-                                    var (ctor, invoker) = partialMethods.First();
-                                    if (ctor is null)
-                                    {
-                                        builder.WriteLine($"{classSymbol.ToDisplayString()} action = new {classSymbol.ToDisplayString()}();");
-                                    }
-                                    else
-                                    {
-                                        builder.Write($"{classSymbol.ToDisplayString()} action = new {classSymbol.ToDisplayString()}(");
-
-                                        var parameters = new List<string>();
-                                        foreach (var parameter in ctor.Parameters)
-                                        {
-                                            if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
-                                            {
-                                                parameters.Add(resovledValue);
-                                            }
-                                        }
-
-                                        builder.Write(string.Join(", ", parameters));
-
-                                        builder.WriteLine(");");
-                                    }
-
-                                    builder.WriteLine();
-                                    builder.Write($"action.Execute(currentObject");
-
-                                    foreach (var parameter in invoker.Parameters)
-                                    {
-                                        if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
-                                        {
-                                            builder.Write($", {resovledValue}");
-                                        }
-                                    }
-
-                                    builder.WriteLine(");");
-                                }
-                                else
-                                {
-                                    //builder.WriteLine($"action.Execute(currentObject);");
-                                }
-                            }
-                            //TODO: type match failed for whatever reason
-                            //using (builder.OpenBrace("else"))
-                            //{
-
-                            //}
-                        }
-                    }
                 }
             }
 
-            compilation = AddGeneratedCode(context, compilation, @class, builder);
+            compilation = AddGeneratedCode(context, compilation, actionContext.Class, builder);
         }
 
         return compilation;

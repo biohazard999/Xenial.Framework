@@ -164,6 +164,28 @@ $@"namespace MyActions
     [Xenial.XenialAction(Category = ""MyCat"")]
     public partial class GeneratesSimpleActionWhenDefined { }
 }");
+
+
+    //    [Fact]
+    //    public Task CtorReference()
+    //        => RunSourceTest("GeneratesSimpleActionWhenDefined",
+    //@"namespace MyActions
+    //{
+    //    [Xenial.XenialAction(Category = ""MyCat"")]
+    //    public partial class GeneratesSimpleActionWhenDefined
+    //    {
+    //        public GeneratesSimpleActionWhenDefined(DevExpress.ExpressApp.XafApplication application) {}
+    //    }
+    //}");
+
+    //    [Fact]
+    //    public Task InjectIntoRecordCtor()
+    //    => RunSourceTest("GeneratesSimpleActionWhenDefined",
+    //@"namespace MyActions
+    //{
+    //    [Xenial.XenialAction]
+    //    public partial class GeneratesSimpleActionWhenDefined(DevExpress.ExpressApp.XafApplication Application) { }
+    //}");
     //private static readonly string[] typeActionAttributeNames = new[]
     //{
     //    "TargetObjectType", //this should come out of context

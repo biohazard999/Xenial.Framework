@@ -17,12 +17,9 @@ public class DomainComponent
     Caption = "Yo Alex",
     ImageName = ImageNames.aac,
     Category = "View",
-    PredefinedCategory = XenialPredefinedCategory.View,
     ActionMeaning = Xenial.ExpressApp.Actions.XenialActionMeaning.Cancel,
-    TargetObjectType = typeof(DomainComponent),
     QuickAccess = true,
     Tag = "???",
-    SelectionDependencyType = Xenial.ExpressApp.Actions.XenialSelectionDependencyType.RequireMultipleObjects,
     ConfirmationMessage = "Confirm",
     DiagnosticInfo = "Diagnostic",
     Id = "FOOID",
@@ -32,10 +29,13 @@ public class DomainComponent
     TargetObjectsCriteriaMode = Xenial.ExpressApp.Actions.XenialTargetObjectsCriteriaMode.TrueForAll,
     TargetViewId = "TargetViewIdFoo",
     TargetViewNesting = Xenial.ExpressApp.XenialNesting.Nested,
-    TargetViewType = Xenial.ExpressApp.XenialViewType.DashboardView,
     ToolTip = "Tooltip to the action",
+
+
+    SelectionDependencyType = Xenial.ExpressApp.Actions.XenialSelectionDependencyType.RequireMultipleObjects,
+    TargetObjectType = typeof(DomainComponent),
+    TargetViewType = Xenial.ExpressApp.XenialViewType.DashboardView,
     TypeOfView = typeof(DashboardView)
-//PredefinedCategory = XenialPredefinedCategory.Export
 )]
 public partial record AlexAction(XafApplication Application, IObjectSpace ObjectSpace)
     : IDetailViewAction<DomainComponent>
@@ -46,5 +46,15 @@ public partial record AlexAction(XafApplication Application, IObjectSpace Object
         {
         };
         throw null;
+
+
+    }
+}
+
+public class Foo : ViewController
+{
+    public Foo()
+    {
+        TargetViewType
     }
 }

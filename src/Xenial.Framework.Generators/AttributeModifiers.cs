@@ -207,6 +207,17 @@ public static class TypeSymbolExtensions
         );
     }
 
+    public static AttributeData? FindAttribute(this INamedTypeSymbol symbol, INamedTypeSymbol attributeSymbol)
+    {
+        _ = symbol ?? throw new ArgumentNullException(nameof(symbol));
+
+        return symbol.GetAttributes().FirstOrDefault(m =>
+            m.AttributeClass is not null
+            //We can safely compare with ToString because it represents just the NamedTypeSymbol, not the attributes or overloads
+            && m.AttributeClass.ToString() == attributeSymbol.ToString()
+        );
+    }
+
     public static bool HasModifier(this TypeDeclarationSyntax @class, SyntaxKind kind)
         => @class == null
             ? false
