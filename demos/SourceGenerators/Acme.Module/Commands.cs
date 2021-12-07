@@ -40,13 +40,5 @@ public class DomainComponent
 public partial record AlexAction(XafApplication Application, IObjectSpace ObjectSpace)
     : IDetailViewAction<DomainComponent>
 {
-    public partial void Execute(DomainComponent obj)
-    {
-        var sa = new SimpleAction()
-        {
-        };
-        throw null;
 
-
-    }
 }
