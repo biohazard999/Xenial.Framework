@@ -488,6 +488,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
         ["DiagnosticInfo"] = "string",
         ["Id"] = "string",
         ["TargetViewId"] = "string",
+        ["TargetViewIds"] = "string[]",
         ["TargetObjectsCriteria"] = "string",
         ["ConfirmationMessage"] = "string",
         ["ToolTip"] = "string",

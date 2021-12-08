@@ -165,18 +165,26 @@ $@"namespace MyActions
     public partial class GeneratesSimpleActionWhenDefined { }
 }");
 
+    //    [Fact]
+    //    public Task TargetViewIdIsGenerated()
+    //    => RunSourceTest("GeneratesSimpleActionWhenDefined",
+    //@"namespace MyActions
+    //{
+    //    [Xenial.XenialAction(TargetViewId = ""GeneratesSimpleActionWhenDefined_DetailView"")]
+    //    public partial class GeneratesSimpleActionWhenDefined { }
+    //}");
 
     //    [Fact]
     //    public Task CtorReference()
     //        => RunSourceTest("GeneratesSimpleActionWhenDefined",
     //@"namespace MyActions
-    //{
-    //    [Xenial.XenialAction(Category = ""MyCat"")]
-    //    public partial class GeneratesSimpleActionWhenDefined
     //    {
-    //        public GeneratesSimpleActionWhenDefined(DevExpress.ExpressApp.XafApplication application) {}
-    //    }
-    //}");
+    //        [Xenial.XenialAction(Category = ""MyCat"")]
+    //        public partial class GeneratesSimpleActionWhenDefined
+    //        {
+    //            public GeneratesSimpleActionWhenDefined(DevExpress.ExpressApp.XafApplication application) {}
+    //        }
+    //    }");
 
     //    [Fact]
     //    public Task InjectIntoRecordCtor()

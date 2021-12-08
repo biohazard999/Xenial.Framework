@@ -18,6 +18,7 @@ namespace Xenial
         public string DiagnosticInfo { get; set; }
         public string Id { get; set; }
         public string TargetViewId { get; set; }
+        public string[] TargetViewIds { get; set; }
         public string TargetObjectsCriteria { get; set; }
         public string ConfirmationMessage { get; set; }
         public string ToolTip { get; set; }
