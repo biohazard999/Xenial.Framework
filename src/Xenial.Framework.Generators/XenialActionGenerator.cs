@@ -74,7 +74,9 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
         public bool HasTargetType => TargetType is not null;
         public bool HasExecutor => Executor is not null;
         public bool HasCustomConstructor => Constructor is not null;
-        public bool HasConflictingAttributes => ActionAttribute.HasAttribute("Category") && ActionAttribute.HasAttribute("PredefinedCategory");
+        public bool HasConflictingCategoryAttributes => ActionAttribute.HasAttribute("Category") && ActionAttribute.HasAttribute("PredefinedCategory");
+        public bool HasConflictingTargetViewIdAttributes => ActionAttribute.HasAttribute("TargetViewId") && ActionAttribute.HasAttribute("TargetViewIds");
+        public bool HasConflictingAttributes => HasConflictingCategoryAttributes || HasConflictingTargetViewIdAttributes;
         public bool HasError => IsGlobalNamespace || !IsPartial || HasConflictingAttributes;
 
         public Compilation ReportClassNeedsToBeInNamespaceDiagnostic(GeneratorExecutionContext context, Compilation compilation)
@@ -109,13 +111,23 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
 
         public Compilation ReportAttributesShouldNotConflictDiagnostic(GeneratorExecutionContext context, Compilation compilation)
         {
-            if (HasConflictingAttributes)
+            if (HasConflictingCategoryAttributes)
             {
                 context.ReportDiagnostic(
                     Diagnostic.Create(
                         GeneratorDiagnostics.ConflictingAttributes(
                         xenialActionAttributeName,
                         new[] { "Category", "PredefinedCategory" }
+                    ), Class.GetLocation())
+                );
+            }
+            if (HasConflictingTargetViewIdAttributes)
+            {
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        GeneratorDiagnostics.ConflictingAttributes(
+                        xenialActionAttributeName,
+                        new[] { "TargetViewId", "TargetViewIds" }
                     ), Class.GetLocation())
                 );
             }

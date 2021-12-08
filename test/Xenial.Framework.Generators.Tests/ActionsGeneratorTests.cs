@@ -16,6 +16,7 @@ namespace Xenial.Framework.Generators.Tests;
 public class ActionsGeneratorTests : BaseGeneratorTests<XenialActionGenerator>
 {
     private static XenialActionGeneratorOutputOptions OnlyController => new(Attribute: false, PartialBuddy: false, Controller: true);
+    private static XenialActionGeneratorOutputOptions OnlyDiagnostics => new(Attribute: false, PartialBuddy: false, Controller: false);
     private static XenialActionGeneratorOutputOptions PartialBuddyAndController => new(Attribute: false, PartialBuddy: true, Controller: true);
 
     protected override XenialActionGenerator CreateTargetGenerator() => new(new());
@@ -188,12 +189,22 @@ $@"namespace MyActions
 
     [Fact]
     public Task TargetViewIdsAreGenerated()
-    => RunSourceTest("GeneratesSimpleActionWhenDefined",
+        => RunSourceTest("GeneratesSimpleActionWhenDefined",
 @"namespace MyActions
     {
         [Xenial.XenialAction(TargetViewIds = new[] { ""GeneratesSimpleActionWhenDefined_DetailView"", ""GeneratesSimpleActionWhenDefined_NestedDetailView"" })]
         public partial class GeneratesSimpleActionWhenDefined { }
     }", outputOptions: OnlyController);
+
+
+    [Fact]
+    public Task ConflictingTargetViewIdAttributesShouldOutputDiagnostics()
+        => RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+{
+    [Xenial.XenialAction(TargetViewId = ""MyCat"", TargetViewIds = new [] { ""Foo"" )]
+    public partial class GeneratesSimpleActionWhenDefined { }
+}", outputOptions: OnlyDiagnostics);
 
     //    [Fact]
     //    public Task CtorReference()
