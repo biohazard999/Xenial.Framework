@@ -332,6 +332,13 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                     builder.WriteLine($"this.TargetObjectType = typeof({actionContext.TargetType.ToDisplayString()});");
                 }
 
+                if (actionContext.ActionAttribute.HasAttribute("TargetViewId"))
+                {
+                    var targetViewId = $"\"{actionContext.ActionAttribute.GetAttributeValue("TargetViewId", "") ?? ""}\"";
+
+                    builder.WriteLine($"this.TargetViewId = {targetViewId}");
+                }
+
                 var category = $"\"{actionContext.ActionAttribute.GetAttributeValue("Category", "Edit") ?? "Edit"}\"";
                 actionId = actionContext.ActionAttribute.GetAttributeValue("Id", actionId) ?? actionId;
 
@@ -342,7 +349,6 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                     category = actionContext.ActionAttribute.GetTypeForwardedAttributeValue("PredefinedCategory");
                 }
 
-
                 //TODO: Action Category
                 builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", {category});");
                 builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
@@ -351,7 +357,9 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 {
                         "Id",
                         "Category",
-                        "PredefinedCategory"
+                        "PredefinedCategory",
+                        "TargetViewId",
+                        "TargetViewIds",
                     }.Contains(m.Key)))
                 {
                     MapAttribute(builder, actionContext.ActionAttribute, actionName, mappingAttribute.Key, typeForward: true);

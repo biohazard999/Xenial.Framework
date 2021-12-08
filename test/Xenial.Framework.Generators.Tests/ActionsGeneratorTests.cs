@@ -177,14 +177,14 @@ $@"namespace MyActions
     public partial class GeneratesSimpleActionWhenDefined { }
 }");
 
-    //    [Fact]
-    //    public Task TargetViewIdIsGenerated()
-    //    => RunSourceTest("GeneratesSimpleActionWhenDefined",
-    //@"namespace MyActions
-    //{
-    //    [Xenial.XenialAction(TargetViewId = ""GeneratesSimpleActionWhenDefined_DetailView"")]
-    //    public partial class GeneratesSimpleActionWhenDefined { }
-    //}");
+    [Fact]
+    public Task TargetViewIdIsGenerated()
+        => RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+    {
+        [Xenial.XenialAction(TargetViewId = ""GeneratesSimpleActionWhenDefined_DetailView"")]
+        public partial class GeneratesSimpleActionWhenDefined { }
+    }", outputOptions: OnlyController);
 
     //    [Fact]
     //    public Task CtorReference()
