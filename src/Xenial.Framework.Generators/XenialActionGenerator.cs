@@ -278,19 +278,21 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
 
             WriteBasicImports(builder);
 
+            string? controllerName = null;
             using (builder.OpenBrace($"namespace {actionContext.ClassSymbol.ContainingNamespace}"))
             {
-                var controllerName = GenerateController(context, compilation, builder, actionContext);
-                compilation = AddGeneratedCode(
-                    context,
-                    compilation,
-                    actionContext.Class,
-                    builder,
-                    addedSourceFiles,
-                    controllerName,
-                    OutputOptions.Controller
-                );
+                controllerName = GenerateController(context, compilation, builder, actionContext);
             }
+
+            compilation = AddGeneratedCode(
+                context,
+                compilation,
+                actionContext.Class,
+                builder,
+                addedSourceFiles,
+                controllerName,
+                OutputOptions.Controller
+            );
         }
 
         return compilation;
