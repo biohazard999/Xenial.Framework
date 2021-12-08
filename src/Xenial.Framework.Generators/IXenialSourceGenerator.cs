@@ -11,6 +11,7 @@ public interface IXenialSourceGenerator
     Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
-        IList<TypeDeclarationSyntax> types
+        IList<TypeDeclarationSyntax> types,
+        IList<string> addedSourceFiles
     );
 }

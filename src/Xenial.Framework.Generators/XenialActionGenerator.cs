@@ -23,8 +23,6 @@ public class XenialActionGenerator : IXenialSourceGenerator
     private const string xenialActionAttributeFullName = $"{xenialNamespace}.{xenialActionAttributeName}";
     public const string GenerateXenialActionAttributeMSBuildProperty = $"Generate{xenialActionAttributeName}";
 
-    private List<string> AddedSourceFiles { get; } = new List<string>();
-
     private record XenialMethodGeneratorContext(
         MethodDeclarationSyntax Syntax,
         IMethodSymbol Symbol,
@@ -119,10 +117,16 @@ public class XenialActionGenerator : IXenialSourceGenerator
         }
     }
 
-    public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types)
+    public Compilation Execute(
+        GeneratorExecutionContext context,
+        Compilation compilation,
+        IList<TypeDeclarationSyntax> types,
+        IList<string> addedSourceFiles
+    )
     {
         _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
         _ = types ?? throw new ArgumentNullException(nameof(types));
+        _ = addedSourceFiles ?? throw new ArgumentNullException(nameof(addedSourceFiles));
 
         compilation = GenerateAttribute(context, compilation);
 
@@ -239,7 +243,7 @@ public class XenialActionGenerator : IXenialSourceGenerator
                 compilation = GenerateController(context, compilation, builder, actionContext);
             }
 
-            compilation = AddGeneratedCode(context, compilation, actionContext.Class, builder);
+            compilation = AddGeneratedCode(context, compilation, actionContext.Class, builder, addedSourceFiles);
         }
 
         return compilation;
@@ -387,20 +391,20 @@ public class XenialActionGenerator : IXenialSourceGenerator
                         }
 
                         builder.WriteLine();
-                        builder.Write($"action.Execute(currentObject");
+                        //builder.Write($"action.Execute(currentObject");
 
-                        if (actionContext.Executor is not null)
-                        {
-                            foreach (var parameter in actionContext.Executor.Symbol.Parameters)
-                            {
-                                if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
-                                {
-                                    builder.Write($", {resovledValue}");
-                                }
-                            }
-                        }
+                        //if (actionContext.Executor is not null)
+                        //{
+                        //    foreach (var parameter in actionContext.Executor.Symbol.Parameters)
+                        //    {
+                        //        if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
+                        //        {
+                        //            builder.Write($", {resovledValue}");
+                        //        }
+                        //    }
+                        //}
 
-                        builder.WriteLine(");");
+                        //builder.WriteLine(");");
                     }
                 }
                 //TODO: type match failed for whatever reason
@@ -548,11 +552,12 @@ public class XenialActionGenerator : IXenialSourceGenerator
         return (source, syntaxTree);
     }
 
-    private Compilation AddGeneratedCode(
+    private static Compilation AddGeneratedCode(
         GeneratorExecutionContext context,
         Compilation compilation,
         TypeDeclarationSyntax @class,
-        CurlyIndenter builder
+        CurlyIndenter builder,
+        IList<string> addedSourceFiles
     )
     {
         var syntax = builder.ToString();
@@ -567,9 +572,9 @@ public class XenialActionGenerator : IXenialSourceGenerator
 
         var hintName = $"{fileName}.{@class.Identifier}.g.cs";
 
-        if (!AddedSourceFiles.Contains(hintName))
+        if (!addedSourceFiles.Contains(hintName))
         {
-            AddedSourceFiles.Add(hintName);
+            addedSourceFiles.Add(hintName);
             context.AddSource(hintName, source);
 
             var syntaxTree = CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken);

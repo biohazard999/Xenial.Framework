@@ -18,16 +18,26 @@ public record XenialTypeForwardTypesGenerator(bool AddSources = true) : IXenialS
     private const string xenialTypeForwardedTypes = "XenialTypeForwardedTypes";
     public const string GenerateXenialTypeForwardedTypesMSBuildProperty = $"Generate{xenialTypeForwardedTypes}";
 
-    public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types)
+    public Compilation Execute(
+        GeneratorExecutionContext context,
+        Compilation compilation,
+        IList<TypeDeclarationSyntax> types,
+        IList<string> addedSourceFiles
+    )
     {
         _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
         _ = types ?? throw new ArgumentNullException(nameof(types));
+        _ = addedSourceFiles ?? throw new ArgumentNullException(nameof(addedSourceFiles));
 
-        compilation = GenerateTypeForwardedTypes(context, compilation);
+        compilation = GenerateTypeForwardedTypes(context, compilation, addedSourceFiles);
         return compilation;
     }
 
-    private Compilation GenerateTypeForwardedTypes(GeneratorExecutionContext context, Compilation compilation)
+    private Compilation GenerateTypeForwardedTypes(
+        GeneratorExecutionContext context,
+        Compilation compilation,
+        IList<string> addedSourceFiles
+    )
     {
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialTypeForwardedTypesMSBuildProperty}", out var generateXenialTypeForwardedTypesAttrStr))
         {
@@ -62,7 +72,11 @@ public record XenialTypeForwardTypesGenerator(bool AddSources = true) : IXenialS
             );
             if (AddSources)
             {
-                context.AddSource($"{pair.Key}.g.cs", source);
+                var hintName = $"{pair.Key}.g.cs";
+                if (!addedSourceFiles.Contains(hintName))
+                {
+                    context.AddSource(hintName, source);
+                }
             }
             compilation = compilation.AddSyntaxTrees(syntaxTree);
         }

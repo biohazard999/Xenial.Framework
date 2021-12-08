@@ -60,10 +60,12 @@ public class XenialGenerator : ISourceGenerator
         CheckForDebugger(context);
 
         var compilation = context.Compilation;
+
+        var addedSourceFiles = new List<string>();
         foreach (var generator in Generators)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
-            compilation = generator.Execute(context, compilation, syntaxReceiver.Types);
+            compilation = generator.Execute(context, compilation, syntaxReceiver.Types, addedSourceFiles);
         }
     }
 

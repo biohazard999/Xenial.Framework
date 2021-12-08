@@ -26,10 +26,16 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
 
     private const string imagesBaseFolder = "Images";
 
-    public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types)
+    public Compilation Execute(
+        GeneratorExecutionContext context,
+        Compilation compilation,
+        IList<TypeDeclarationSyntax> types,
+        IList<string> addedSourceFiles
+    )
     {
         _ = compilation ?? throw new ArgumentNullException(nameof(compilation));
         _ = types ?? throw new ArgumentNullException(nameof(types));
+        _ = addedSourceFiles ?? throw new ArgumentNullException(nameof(addedSourceFiles));
 
         context.CancellationToken.ThrowIfCancellationRequested();
 
@@ -101,7 +107,7 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
                 builder = imageClass.ToString(context, builder);
             }
 
-            compilation = AddGeneratedCode(context, compilation, @class, builder);
+            compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles);
         }
 
         return compilation;
@@ -122,7 +128,8 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
         GeneratorExecutionContext context,
         Compilation compilation,
         TypeDeclarationSyntax @class,
-        CurlyIndenter builder
+        CurlyIndenter builder,
+        IList<string> addedSourceFiles
     )
     {
         var syntax = builder.ToString();
@@ -135,9 +142,14 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
             fileName = Guid.NewGuid().ToString();
         }
 
-        context.AddSource($"{fileName}.g.cs", source);
+        var hintName = $"{fileName}.g.cs";
+        if (!addedSourceFiles.Contains(hintName))
+        {
+            context.AddSource(hintName, source);
+            return compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
+        }
 
-        return compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
+        return compilation;
     }
 
     private static (SemanticModel? semanticModel, INamedTypeSymbol? @classSymbol, bool isAttributeDeclared) TryGetTargetType(
