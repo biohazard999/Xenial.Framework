@@ -22,7 +22,7 @@ public record XenialActionGeneratorOutputOptions(
     bool Controller = true
 );
 
-public record XenialActionGenerator(XenialActionGeneratorOutputOptions Options) : IXenialSourceGenerator
+public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOptions) : IXenialSourceGenerator
 {
     private const string xenialActionAttributeName = "XenialActionAttribute";
     private const string xenialNamespace = "Xenial";
@@ -253,7 +253,14 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions Options) 
 
             }
 
-            compilation = AddGeneratedCode(context, compilation, actionContext.Class, builder, addedSourceFiles);
+            compilation = AddGeneratedCode(
+                context,
+                compilation,
+                actionContext.Class,
+                builder,
+                addedSourceFiles,
+                emitFile: OutputOptions.PartialBuddy
+            );
 
             builder = CurlyIndenter.Create();
 
@@ -262,7 +269,15 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions Options) 
             using (builder.OpenBrace($"namespace {actionContext.ClassSymbol.ContainingNamespace}"))
             {
                 var controllerName = GenerateController(context, compilation, builder, actionContext);
-                compilation = AddGeneratedCode(context, compilation, actionContext.Class, builder, addedSourceFiles, controllerName);
+                compilation = AddGeneratedCode(
+                    context,
+                    compilation,
+                    actionContext.Class,
+                    builder,
+                    addedSourceFiles,
+                    controllerName,
+                    OutputOptions.Controller
+                );
             }
         }
 
@@ -579,7 +594,8 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions Options) 
         TypeDeclarationSyntax @class,
         CurlyIndenter builder,
         IList<string> addedSourceFiles,
-        string? hintName = null
+        string? hintName = null,
+        bool emitFile = true
     )
     {
         var syntax = builder.ToString();
@@ -597,7 +613,10 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions Options) 
         if (!addedSourceFiles.Contains(hintName))
         {
             addedSourceFiles.Add(hintName);
-            context.AddSource(hintName, source);
+            if (emitFile)
+            {
+                context.AddSource(hintName, source);
+            }
 
             var syntaxTree = CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken);
 

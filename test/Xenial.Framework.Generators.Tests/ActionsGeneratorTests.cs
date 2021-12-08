@@ -15,6 +15,9 @@ namespace Xenial.Framework.Generators.Tests;
 [UsesVerify]
 public class ActionsGeneratorTests : BaseGeneratorTests<XenialActionGenerator>
 {
+    private static XenialActionGeneratorOutputOptions OnlyController => new(Attribute: false, PartialBuddy: false, Controller: true);
+    private static XenialActionGeneratorOutputOptions PartialBuddyAndController => new(Attribute: false, PartialBuddy: true, Controller: true);
+
     protected override XenialActionGenerator CreateTargetGenerator() => new(new());
     protected override string GeneratorEmitProperty => XenialActionGenerator.GenerateXenialActionAttributeMSBuildProperty;
 
@@ -28,7 +31,7 @@ public class ActionsGeneratorTests : BaseGeneratorTests<XenialActionGenerator>
         return gen;
     }
 
-    protected Task RunSourceTest(string fileName, string source, Action<VerifySettings>? verifySettings = null)
+    protected Task RunSourceTest(string fileName, string source, Action<VerifySettings>? verifySettings = null, XenialActionGeneratorOutputOptions? outputOptions = null)
         => RunTest(
             options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false")),
             compilationOptions: compilation => compilation.AddInlineXenialActionsAttribute(),
@@ -36,7 +39,15 @@ public class ActionsGeneratorTests : BaseGeneratorTests<XenialActionGenerator>
             {
                 BuildSyntaxTree(fileName, source)
             },
-            verifySettings: verifySettings);
+            verifySettings: verifySettings,
+            prepareGenerator: gen =>
+            {
+                if (outputOptions is null)
+                {
+                    return gen;
+                }
+                return new XenialActionGenerator(outputOptions);
+            });
 
     [Fact]
     public Task WarnsIfClassIsNotPartial()
@@ -54,7 +65,7 @@ public class ActionsGeneratorTests : BaseGeneratorTests<XenialActionGenerator>
 {
     [Xenial.XenialAction]
     public partial class GeneratesSimpleActionWhenDefined { }
-}");
+}", outputOptions: PartialBuddyAndController);
 
     [Theory]
     [InlineData("Caption", "MappedCaption")]
@@ -69,7 +80,7 @@ $@"namespace MyActions
 {{
     [Xenial.XenialAction({propertyName} = ""{value}"")]
     public partial class GeneratesSimpleActionWhenDefined {{ }}
-}}", verifySettings: settings => settings.UseParameters(propertyName, value));
+}}", verifySettings: settings => settings.UseParameters(propertyName, value), outputOptions: OnlyController);
 
     [Theory]
     [InlineData("QuickAccess", "false")]
@@ -80,7 +91,7 @@ $@"namespace MyActions
 {{
     [Xenial.XenialAction({propertyName} = {value})]
     public partial class GeneratesSimpleActionWhenDefined {{ }}
-}}", verifySettings: settings => settings.UseParameters(propertyName, value));
+}}", verifySettings: settings => settings.UseParameters(propertyName, value), outputOptions: OnlyController);
 
     [Theory]
     [InlineData("Tag", "true")]
@@ -98,7 +109,7 @@ $@"namespace MyActions
 {{
     [Xenial.XenialAction({propertyName} = {value})]
     public partial class GeneratesSimpleActionWhenDefined {{ }}
-}}", verifySettings: settings => settings.UseParameters(propertyName, value));
+}}", verifySettings: settings => settings.UseParameters(propertyName, value), outputOptions: OnlyController);
 
     [Fact]
     public Task IdIsGenerated()
@@ -107,7 +118,7 @@ $@"namespace MyActions
 {
     [Xenial.XenialAction]
     public partial class GeneratesSimpleActionWhenDefined { }
-}");
+}", outputOptions: OnlyController);
 
     [Fact]
     public Task IdIsImplicitlySet()
@@ -116,7 +127,7 @@ $@"namespace MyActions
 {
     [Xenial.XenialAction(Id = ""MyActionId""]
     public partial class GeneratesSimpleActionWhenDefined { }
-}");
+}", outputOptions: OnlyController);
 
     [Fact]
     public Task DefaultCategoryIsGenerated()
@@ -125,7 +136,7 @@ $@"namespace MyActions
 {
     [Xenial.XenialAction]
     public partial class GeneratesSimpleActionWhenDefined { }
-}");
+}", outputOptions: OnlyController);
 
     [Fact]
     public Task StringCategoryIsUsed()
@@ -134,7 +145,7 @@ $@"namespace MyActions
 {
     [Xenial.XenialAction(Category = ""MyCat"")]
     public partial class GeneratesSimpleActionWhenDefined { }
-}");
+}", outputOptions: OnlyController);
 
     [Fact]
     public Task PredefinedCategoryCategoryIsUsed()
@@ -143,7 +154,7 @@ $@"namespace MyActions
 {
     [Xenial.XenialAction(PredefinedCategory = Xenial.Persistent.Base.XenialPredefinedCategory.View)]
     public partial class GeneratesSimpleActionWhenDefined { }
-}");
+}", outputOptions: OnlyController);
 
     [Fact]
     public Task ConflictingCategoryAttributesCategoryShouldOutputDiagnostics()
