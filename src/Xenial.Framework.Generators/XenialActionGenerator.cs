@@ -336,7 +336,18 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 {
                     var targetViewId = $"\"{actionContext.ActionAttribute.GetAttributeValue("TargetViewId", "") ?? ""}\"";
 
-                    builder.WriteLine($"this.TargetViewId = {targetViewId}");
+                    builder.WriteLine($"this.TargetViewId = {targetViewId};");
+                }
+
+                if (actionContext.ActionAttribute.HasAttribute("TargetViewIds"))
+                {
+                    var targetViewId = actionContext.ActionAttribute.GetAttribute("TargetViewIds");
+
+                    if (targetViewId.HasValue && targetViewId.Value.Kind is TypedConstantKind.Array && targetViewId.Value.Type is IArrayTypeSymbol)
+                    {
+                        var targetViewIds = string.Join(";", targetViewId.Value.Values.Select(t => t.Value));
+                        builder.WriteLine($"this.TargetViewId = \"{targetViewIds}\";");
+                    }
                 }
 
                 var category = $"\"{actionContext.ActionAttribute.GetAttributeValue("Category", "Edit") ?? "Edit"}\"";

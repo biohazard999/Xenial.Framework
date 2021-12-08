@@ -186,6 +186,15 @@ $@"namespace MyActions
         public partial class GeneratesSimpleActionWhenDefined { }
     }", outputOptions: OnlyController);
 
+    [Fact]
+    public Task TargetViewIdsAreGenerated()
+    => RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+    {
+        [Xenial.XenialAction(TargetViewIds = new[] { ""GeneratesSimpleActionWhenDefined_DetailView"", ""GeneratesSimpleActionWhenDefined_NestedDetailView"" })]
+        public partial class GeneratesSimpleActionWhenDefined { }
+    }", outputOptions: OnlyController);
+
     //    [Fact]
     //    public Task CtorReference()
     //        => RunSourceTest("GeneratesSimpleActionWhenDefined",
