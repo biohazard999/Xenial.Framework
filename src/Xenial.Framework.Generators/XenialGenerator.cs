@@ -17,7 +17,7 @@ public class XenialGenerator : ISourceGenerator
     {
         new XenialTypeForwardTypesGenerator(),
         new XenialImageNamesGenerator(),
-        new XenialActionGenerator()
+        new XenialActionGenerator(new())
     };
 
     public void Initialize(GeneratorInitializationContext context)

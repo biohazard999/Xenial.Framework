@@ -21,7 +21,7 @@ using static Xenial.Framework.Generators.Tests.TestReferenceAssemblies;
 namespace Xenial.Framework.Generators.Tests;
 
 public abstract class BaseGeneratorTests<TGenerator>
-    where TGenerator : class, IXenialSourceGenerator, new()
+    where TGenerator : class, IXenialSourceGenerator
 {
     protected const string CompilationName = "AssemblyName";
     protected const string XenialAttributesVisibility = "XenialAttributesVisibility";
@@ -30,11 +30,13 @@ public abstract class BaseGeneratorTests<TGenerator>
     static BaseGeneratorTests() => RegisterModuleInitializers.RegisterVerifiers();
 #endif
 
-    protected virtual ISourceGenerator CreateGenerator()
+    protected abstract TGenerator CreateTargetGenerator();
+
+    protected virtual XenialGenerator CreateGenerator()
     {
         var generator = new XenialGenerator();
         generator.Generators.Clear();
-        generator.Generators.Add(new TGenerator());
+        generator.Generators.Add(CreateTargetGenerator());
         return generator;
     }
 
@@ -49,7 +51,8 @@ public abstract class BaseGeneratorTests<TGenerator>
         Func<CSharpCompilation, CSharpCompilation>? compilationOptions = null,
         Func<SyntaxTree[]>? syntaxTrees = null,
         Func<IEnumerable<AdditionalText>>? additionalTexts = null,
-        string? typeToLoad = null
+        string? typeToLoad = null,
+        Func<TGenerator, TGenerator>? prepareGenerator = null
     )
     {
         var compilation = CSharpCompilation.Create(CompilationName,
@@ -69,6 +72,17 @@ public abstract class BaseGeneratorTests<TGenerator>
         }
 
         var generator = CreateGenerator();
+
+        if (prepareGenerator is not null)
+        {
+            var prevGenerator = generator.Generators.OfType<TGenerator>().First();
+            var newGenerator = prepareGenerator.Invoke(prevGenerator);
+            if (newGenerator != prevGenerator)
+            {
+                var index = generator.Generators.IndexOf(prevGenerator);
+                generator.Generators[index] = newGenerator;
+            }
+        }
 
         var mockOptions = MockAnalyzerConfigOptionsProvider.Empty;
 

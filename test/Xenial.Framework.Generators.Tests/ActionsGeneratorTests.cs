@@ -15,9 +15,10 @@ namespace Xenial.Framework.Generators.Tests;
 [UsesVerify]
 public class ActionsGeneratorTests : BaseGeneratorTests<XenialActionGenerator>
 {
+    protected override XenialActionGenerator CreateTargetGenerator() => new(new());
     protected override string GeneratorEmitProperty => XenialActionGenerator.GenerateXenialActionAttributeMSBuildProperty;
 
-    protected override Microsoft.CodeAnalysis.ISourceGenerator CreateGenerator()
+    protected override XenialGenerator CreateGenerator()
     {
         var gen = base.CreateGenerator();
         if (gen is XenialGenerator xenialGenerator)

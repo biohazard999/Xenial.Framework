@@ -16,6 +16,8 @@ namespace Xenial.Framework.Generators.Tests;
 [UsesVerify]
 public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGenerator>
 {
+    protected override XenialImageNamesGenerator CreateTargetGenerator() => new();
+
     protected override string GeneratorEmitProperty => XenialImageNamesGenerator.GenerateXenialImageNamesAttributeMSBuildProperty;
 
     protected Task RunSourceTest(string fileName, string source)

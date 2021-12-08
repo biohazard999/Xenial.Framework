@@ -13,39 +13,4 @@ namespace MyActions
         partial void Execute(object targetObject);
     }
     
-    [CompilerGenerated]
-    public partial class GeneratesSimpleActionWhenDefinedController : DevExpress.ExpressApp.ViewController
-    {
-        public DevExpress.ExpressApp.Actions.SimpleAction GeneratesSimpleActionWhenDefinedSimpleAction { get; private set; }
-        
-        public GeneratesSimpleActionWhenDefinedController()
-        {
-            this.TargetViewType = DevExpress.ExpressApp.ViewType.DetailView;
-            this.GeneratesSimpleActionWhenDefinedSimpleAction = new DevExpress.ExpressApp.Actions.SimpleAction(this, "MyActions.GeneratesSimpleActionWhenDefinedSimpleAction", "MyCat");
-            this.GeneratesSimpleActionWhenDefinedSimpleAction.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;
-        }
-        
-        partial void OnActivatedCore();
-        
-        partial void OnDeactivatedCore();
-        
-        protected override void OnActivated()
-        {
-            base.OnActivated();
-            this.GeneratesSimpleActionWhenDefinedSimpleAction.Execute -= GeneratesSimpleActionWhenDefinedSimpleActionExecute;
-            this.GeneratesSimpleActionWhenDefinedSimpleAction.Execute += GeneratesSimpleActionWhenDefinedSimpleActionExecute;
-            this.OnActivatedCore();
-        }
-        
-        protected override void OnDeactivated()
-        {
-            this.GeneratesSimpleActionWhenDefinedSimpleAction.Execute -= GeneratesSimpleActionWhenDefinedSimpleActionExecute;
-            this.OnDeactivatedCore();
-            base.OnDeactivated();
-        }
-        
-        private void GeneratesSimpleActionWhenDefinedSimpleActionExecute(object sender, DevExpress.ExpressApp.Actions.SimpleActionExecuteEventArgs e)
-        {
-        }
-    }
 }
