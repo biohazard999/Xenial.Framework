@@ -71,9 +71,6 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
     {
         public bool IsPartial => Class.HasModifier(SyntaxKind.PartialKeyword);
         public bool IsGlobalNamespace => ClassSymbol.ContainingNamespace.ToString() == "<global namespace>";
-        public bool HasTargetType => TargetType is not null;
-        public bool HasExecutor => Executor is not null;
-        public bool HasCustomConstructor => Constructor is not null;
         public bool HasConflictingCategoryAttributes => ActionAttribute.HasAttribute("Category") && ActionAttribute.HasAttribute("PredefinedCategory");
         public bool HasConflictingTargetViewIdAttributes => ActionAttribute.HasAttribute("TargetViewId") && ActionAttribute.HasAttribute("TargetViewIds");
         public bool HasConflictingAttributes => HasConflictingCategoryAttributes || HasConflictingTargetViewIdAttributes;
@@ -300,9 +297,9 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
 
     private static void GeneratePartialMethodDeclaration(CurlyIndenter builder, XenialActionGeneratorContext actionContext)
     {
-        if (!actionContext.HasExecutor)
+        if (actionContext.Executor is null)
         {
-            if (actionContext.HasTargetType && actionContext.TargetType is not null)
+            if (actionContext.TargetType is not null)
             {
                 builder.WriteLine($"partial void Execute({actionContext.TargetType.ToDisplayString()} targetObject);");
             }
@@ -311,7 +308,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 builder.WriteLine($"partial void Execute(object targetObject);");
             }
         }
-        else if (actionContext.Executor is not null && actionContext.Executor.ReturnTypeInfo.Type is not null)
+        else if (actionContext.Executor.ReturnTypeInfo.Type is not null)
         {
             var parameterString = string.Join(", ", actionContext.Executor.Symbol.Parameters.Select(p => $"{p} {p.Name}"));
 
@@ -341,7 +338,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
             {
                 builder.WriteLine("this.TargetViewType = DevExpress.ExpressApp.ViewType.DetailView;");
 
-                if (actionContext.HasTargetType && actionContext.TargetType is not null)
+                if (actionContext.TargetType is not null)
                 {
                     builder.WriteLine($"this.TargetObjectType = typeof({actionContext.TargetType.ToDisplayString()});");
                 }
