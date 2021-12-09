@@ -494,21 +494,21 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
 
                     builder.WriteLine();
 
-                    builder.WriteLine($"protected partial {actionContext.ClassSymbol.ToDisplayString()} Create{actionContext.ClassSymbol.Name}ActionCore();");
+                    builder.WriteLine($"private partial {actionContext.ClassSymbol.ToDisplayString()} Create{actionContext.ClassSymbol.Name}ActionCore();");
 
                     var semanticModel = compilation.GetSemanticModel(method.SyntaxTree);
                     if (semanticModel is not null)
                     {
                         var returnType = semanticModel.GetTypeInfo(method.ReturnType, context.CancellationToken);
 
-                        if (!method.HasModifier(SyntaxKind.ProtectedKeyword) || returnType.Type is null || returnType.Type.ToDisplayString() != actionContext.ClassSymbol.ToDisplayString())
+                        if (!method.HasModifier(SyntaxKind.PrivateKeyword) || returnType.Type is null || returnType.Type.ToDisplayString() != actionContext.ClassSymbol.ToDisplayString())
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
                                     GeneratorDiagnostics.ConflictingPartialImplementation(
                                         partialCreationMethodName,
                                         actionContext.ClassSymbol.ToDisplayString(),
-                                        "protected partial"
+                                        "private partial"
                                     ),
                                 method.GetLocation()
                             ));
