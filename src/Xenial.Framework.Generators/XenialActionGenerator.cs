@@ -495,9 +495,28 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                     builder.WriteLine();
 
                     builder.WriteLine($"protected partial {actionContext.ClassSymbol.ToDisplayString()} Create{actionContext.ClassSymbol.Name}ActionCore();");
-                    //TODO: Report diagnostics if not in par
-                    wasFound = true;
-                    break;
+
+                    var semanticModel = compilation.GetSemanticModel(method.SyntaxTree);
+                    if (semanticModel is not null)
+                    {
+                        var returnType = semanticModel.GetTypeInfo(method.ReturnType, context.CancellationToken);
+
+                        if (!method.HasModifier(SyntaxKind.ProtectedKeyword) || returnType.Type is null || returnType.Type.ToDisplayString() != actionContext.ClassSymbol.ToDisplayString())
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    GeneratorDiagnostics.ConflictingPartialImplementation(
+                                        partialCreationMethodName,
+                                        actionContext.ClassSymbol.ToDisplayString(),
+                                        "protected partial"
+                                    ),
+                                method.GetLocation()
+                            ));
+                        }
+
+                        wasFound = true;
+                        break;
+                    }
                 }
             }
 

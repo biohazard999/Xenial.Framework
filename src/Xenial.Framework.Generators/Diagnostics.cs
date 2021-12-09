@@ -71,4 +71,14 @@ internal static class GeneratorDiagnostics
         isEnabledByDefault: true,
         description: $"When using the [{attributeName}] you must make sure it's only used once per Action, check for multiple partial implementations of {conflictingClass}"
     );
+
+    internal static DiagnosticDescriptor ConflictingPartialImplementation(string methodName, string conflictingReturnType, string conflictingModifier) => new(
+        "XENGEN0202",
+        $"When implementing the partial method [{methodName}] you must make sure it returns [{conflictingReturnType}] and have the visibility [{conflictingModifier}]",
+        $"When implementing the partial method [{methodName}] you must make sure it returns [{conflictingReturnType}] and have the visibility [{conflictingModifier}]",
+        category,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: $"When implementing the partial method [{methodName}] you must make sure it returns [{conflictingReturnType}] and have the visibility [{conflictingModifier}]"
+    );
 }

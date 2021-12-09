@@ -223,6 +223,11 @@ public static class TypeSymbolExtensions
             ? false
             : @class.Modifiers.Any(mod => mod.Text == SyntaxFactory.Token(kind).Text);
 
+    public static bool HasModifier(this MethodDeclarationSyntax method, SyntaxKind kind)
+        => method == null
+        ? false
+        : method.Modifiers.Any(mod => mod.Text == SyntaxFactory.Token(kind).Text);
+
     public static string MapTypedConstant(this TypedConstant typedConstant)
         => typedConstant switch
         {

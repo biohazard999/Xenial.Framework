@@ -219,7 +219,7 @@ $@"namespace MyActions
 }", outputOptions: OnlyController);
 
     [Fact]
-    public Task PartialControllerOverloadReportsDiagnostics()
+    public Task PartialControllerOverloadWithoutKeywordAndVoidReturnTypeReportsDiagnostics()
         => RunSourceTest("GeneratesSimpleActionWhenDefined",
 @"namespace MyActions
 {
