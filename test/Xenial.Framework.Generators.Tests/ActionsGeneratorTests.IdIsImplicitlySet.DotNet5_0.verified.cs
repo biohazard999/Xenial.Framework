@@ -38,6 +38,15 @@ namespace MyActions
             base.OnDeactivated();
         }
         
+        protected MyActions.GeneratesSimpleActionWhenDefined CreateGeneratesSimpleActionWhenDefinedAction()
+        {
+            this.CreateGeneratesSimpleActionWhenDefinedActionCore();
+            MyActions.GeneratesSimpleActionWhenDefined action = new MyActions.GeneratesSimpleActionWhenDefined();
+            return action;
+        }
+        
+        partial void CreateGeneratesSimpleActionWhenDefinedActionCore();
+        
         private void GeneratesSimpleActionWhenDefinedSimpleActionExecute(object sender, DevExpress.ExpressApp.Actions.SimpleActionExecuteEventArgs e)
         {
         }

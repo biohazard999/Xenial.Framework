@@ -456,8 +456,6 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
 
             //TODO: see if we can map those to controller code with intellisense
             builder.WriteLine($"partial void Create{actionContext.ClassSymbol.Name}ActionCore();");
-            builder.WriteLine();
-
 
             builder.WriteLine();
 
