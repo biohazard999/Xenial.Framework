@@ -30,22 +30,16 @@ public class XenialGenerator : ISourceGenerator
 
         public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
         {
-            if (context.Node is ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclarationSyntax)
+            if (context.Node is TypeDeclarationSyntax typeDeclarationSyntax)
             {
-                var classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclarationSyntax);
-
-                if (classSymbol is not null)
+                if (typeDeclarationSyntax.AttributeLists.Count > 0 || typeDeclarationSyntax.HasModifier(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))
                 {
-                    Types.Add(classDeclarationSyntax);
-                }
-            }
-            if (context.Node is RecordDeclarationSyntax { AttributeLists.Count: > 0 } recordDeclarationSyntax)
-            {
-                var classSymbol = context.SemanticModel.GetDeclaredSymbol(recordDeclarationSyntax);
+                    var classSymbol = context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax);
 
-                if (classSymbol is not null)
-                {
-                    Types.Add(recordDeclarationSyntax);
+                    if (classSymbol is not null)
+                    {
+                        Types.Add(typeDeclarationSyntax);
+                    }
                 }
             }
         }

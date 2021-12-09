@@ -206,17 +206,17 @@ $@"namespace MyActions
     public partial class GeneratesSimpleActionWhenDefined { }
 }", outputOptions: OnlyDiagnostics);
 
-    //    [Fact]
-    //    public Task CtorReference()
-    //        => RunSourceTest("GeneratesSimpleActionWhenDefined",
-    //@"namespace MyActions
-    //    {
-    //        [Xenial.XenialAction(Category = ""MyCat"")]
-    //        public partial class GeneratesSimpleActionWhenDefined
-    //        {
-    //            public GeneratesSimpleActionWhenDefined(DevExpress.ExpressApp.XafApplication application) {}
-    //        }
-    //    }");
+    [Fact]
+    public Task CtorReferenceWithClass()
+        => RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+{
+    [Xenial.XenialAction]
+    public partial class GeneratesSimpleActionWhenDefined
+    {
+        public GeneratesSimpleActionWhenDefined(DevExpress.ExpressApp.XafApplication application) {}
+    }
+}", outputOptions: OnlyController);
 
     //    [Fact]
     //    public Task InjectIntoRecordCtor()

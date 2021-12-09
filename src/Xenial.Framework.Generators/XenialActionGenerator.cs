@@ -420,10 +420,46 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 ["DevExpress.ExpressApp.IObjectSpace"] = "this.ObjectSpace"
             };
 
-            //using (builder.OpenBrace($"protected virtual {@classSymbol.Name} CreateAction()"))
-            //{
+            static void CreateActionCore(CurlyIndenter builder, XenialActionGeneratorContext actionContext, Dictionary<string, string> typeMap)
+            {
+                if (actionContext.Constructor is null)
+                {
+                    builder.WriteLine($"{actionContext.ClassSymbol.ToDisplayString()} action = new {actionContext.ClassSymbol.ToDisplayString()}();");
+                }
+                else
+                {
+                    builder.Write($"{actionContext.ClassSymbol.ToDisplayString()} action = new {actionContext.ClassSymbol.ToDisplayString()}(");
 
-            //}
+                    var parameters = new List<string>();
+                    foreach (var parameter in actionContext.Constructor.Parameters)
+                    {
+                        if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
+                        {
+                            parameters.Add(resovledValue);
+                        }
+                    }
+
+                    builder.Write(string.Join(", ", parameters));
+
+                    builder.WriteLine(");");
+                }
+                builder.WriteLine("return action;");
+            }
+
+            using (builder.OpenBrace($"protected {actionContext.ClassSymbol.ToDisplayString()} Create{actionContext.ClassSymbol.Name}Action()"))
+            {
+                builder.WriteLine($"this.Create{actionContext.ClassSymbol.Name}ActionCore();");
+                CreateActionCore(builder, actionContext, typeMap);
+            }
+
+            builder.WriteLine();
+
+            //TODO: see if we can map those to controller code with intellisense
+            builder.WriteLine($"partial void Create{actionContext.ClassSymbol.Name}ActionCore();");
+            builder.WriteLine();
+
+
+            builder.WriteLine();
 
             using (builder.OpenBrace($"private void {actionName}Execute(object sender, DevExpress.ExpressApp.Actions.SimpleActionExecuteEventArgs e)"))
             {
@@ -433,27 +469,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                     {
                         builder.WriteLine($"{actionContext.TargetType.ToDisplayString()} currentObject = ({actionContext.TargetType.ToDisplayString()})e.CurrentObject;");
 
-                        if (actionContext.Constructor is null)
-                        {
-                            builder.WriteLine($"{actionContext.ClassSymbol.ToDisplayString()} action = new {actionContext.ClassSymbol.ToDisplayString()}();");
-                        }
-                        else
-                        {
-                            builder.Write($"{actionContext.ClassSymbol.ToDisplayString()} action = new {actionContext.ClassSymbol.ToDisplayString()}(");
-
-                            var parameters = new List<string>();
-                            foreach (var parameter in actionContext.Constructor.Parameters)
-                            {
-                                if (typeMap.TryGetValue(parameter.ToString(), out var resovledValue))
-                                {
-                                    parameters.Add(resovledValue);
-                                }
-                            }
-
-                            builder.Write(string.Join(", ", parameters));
-
-                            builder.WriteLine(");");
-                        }
+                        builder.WriteLine($"{actionContext.ClassSymbol.ToDisplayString()} action = this.Create{actionContext.ClassSymbol.Name}Action();");
 
                         builder.WriteLine();
                         //builder.Write($"action.Execute(currentObject");
