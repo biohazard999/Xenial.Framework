@@ -335,6 +335,18 @@
       <ParentExtension>$(MSBuildProjectExtension.Replace('proj', ''))</ParentExtension>
       <DependentUpon>%(ParentFile)%(ParentExtension)</DependentUpon>
     </None>
+    <None Update="ViewIdsGeneratorTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet3_1.verified.txt">
+      <DependentUpon>ViewIdsGeneratorTests.cs</DependentUpon>
+    </None>
+    <None Update="ViewIdsGeneratorTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet4_6.verified.txt">
+      <DependentUpon>ViewIdsGeneratorTests.cs</DependentUpon>
+    </None>
+    <None Update="ViewIdsGeneratorTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet5_0.verified.txt">
+      <DependentUpon>ViewIdsGeneratorTests.cs</DependentUpon>
+    </None>
+    <None Update="ViewIdsGeneratorTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet6_0.verified.txt">
+      <DependentUpon>ViewIdsGeneratorTests.cs</DependentUpon>
+    </None>
   </ItemGroup>
 
 </Project>

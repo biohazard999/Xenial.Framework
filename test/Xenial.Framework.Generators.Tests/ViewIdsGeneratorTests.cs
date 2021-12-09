@@ -14,7 +14,7 @@ using Xunit;
 namespace Xenial.Framework.Generators.Tests;
 
 [UsesVerify]
-public class XenialViewIdsGeneratorTests : BaseGeneratorTests<XenialViewIdsGenerator>
+public class ViewIdsGeneratorTests : BaseGeneratorTests<XenialViewIdsGenerator>
 {
     protected override XenialViewIdsGenerator CreateTargetGenerator() => new();
 
@@ -29,6 +29,33 @@ public class XenialViewIdsGeneratorTests : BaseGeneratorTests<XenialViewIdsGener
                 BuildSyntaxTree(fileName, source)
             });
 
+    [Fact]
+    public Task DoesEmitDiagnosticIfNotPartial()
+        => RunSourceTest("MyNonPartialClass.cs",
+@"using Xenial;
+namespace MyProject
+{
+    [XenialViewIds]
+    public class MyNonPartialClass{ }
+}");
+
+    [Fact]
+    public Task DoesEmitDiagnosticIfInGlobalNamespace()
+        => RunSourceTest("MyNonPartialClass.cs",
+@"using Xenial;
+[XenialViewIds]
+public partial class MyGlobalClass
+{
+}");
+
+    [Fact]
+    public Task DoesNotEmitDiagnosticIfPartial()
+        => RunSourceTest("MyPartialClass.cs",
+@"namespace MyProject
+{
+    [Xenial.XenialViewIds]
+    public partial class MyPartialClass { }
+}");
 }
 
 internal static partial class CompilationHelpers
