@@ -218,6 +218,26 @@ $@"namespace MyActions
     }
 }", outputOptions: OnlyController);
 
+    [Fact]
+    public Task PartialControllerOverloadReportsDiagnostics()
+        => RunSourceTest("GeneratesSimpleActionWhenDefined",
+@"namespace MyActions
+{
+    [Xenial.XenialAction]
+    public partial class GeneratesSimpleActionWhenDefined
+    {
+        public GeneratesSimpleActionWhenDefined(DevExpress.ExpressApp.XafApplication application) {}
+    }
+
+    partial class GeneratesSimpleActionWhenDefinedController
+    {
+        partial void CreateGeneratesSimpleActionWhenDefinedActionCore()
+        {
+        }
+    }
+
+}", outputOptions: OnlyController);
+
     //    [Fact]
     //    public Task InjectIntoRecordCtor()
     //    => RunSourceTest("GeneratesSimpleActionWhenDefined",

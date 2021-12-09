@@ -278,7 +278,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
             string? controllerName = null;
             using (builder.OpenBrace($"namespace {actionContext.ClassSymbol.ContainingNamespace}"))
             {
-                controllerName = GenerateController(context, compilation, builder, actionContext);
+                controllerName = GenerateController(context, compilation, builder, actionContext, types);
             }
 
             compilation = AddGeneratedCode(
@@ -321,11 +321,39 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
     }
 
 
-    private static string GenerateController(GeneratorExecutionContext context, Compilation compilation, CurlyIndenter builder, XenialActionGeneratorContext actionContext)
+    private static string GenerateController(
+        GeneratorExecutionContext context,
+        Compilation compilation,
+        CurlyIndenter builder,
+        XenialActionGeneratorContext actionContext,
+        IList<TypeDeclarationSyntax> types
+    )
     {
         var actionId = $"{actionContext.Namespace}.{actionContext.ClassSymbol.Name}SimpleAction";
         var actionName = $"{actionContext.ClassSymbol.Name}SimpleAction";
         var controllerName = $"{actionContext.ClassSymbol.Name}Controller";
+        var controllerFullName = $"{actionContext.Namespace}.{controllerName}";
+
+        static IEnumerable<(TypeDeclarationSyntax typeSyntax, INamedTypeSymbol typeSymbol)> FindPartialControllerType(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types, string controllerFullName)
+        {
+            foreach (var type in types)
+            {
+                var semanticModel = compilation.GetSemanticModel(type.SyntaxTree);
+                if (semanticModel is not null)
+                {
+                    var symbol = semanticModel.GetDeclaredSymbol(type, context.CancellationToken);
+                    if (symbol is not null)
+                    {
+                        if (symbol.ToDisplayString() == controllerFullName)
+                        {
+                            yield return (type, symbol);
+                        }
+                    }
+                }
+            }
+        }
+
+        var partialControllerTypes = FindPartialControllerType(context, compilation, types, controllerFullName).ToList();
 
         builder.WriteLine("[CompilerGenerated]");
         using (builder.OpenBrace($"public partial class {controllerName} : DevExpress.ExpressApp.ViewController"))
@@ -446,16 +474,45 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 builder.WriteLine("return action;");
             }
 
-            using (builder.OpenBrace($"protected {actionContext.ClassSymbol.ToDisplayString()} Create{actionContext.ClassSymbol.Name}Action()"))
+            var partialCreationMethodName = $"Create{actionContext.ClassSymbol.Name}ActionCore";
+
+            var wasFound = false;
+
+            foreach (var partialControllerType in partialControllerTypes)
             {
-                builder.WriteLine($"this.Create{actionContext.ClassSymbol.Name}ActionCore();");
-                CreateActionCore(builder, actionContext, typeMap);
+                var method = partialControllerType.typeSyntax.Members
+                    .OfType<MethodDeclarationSyntax>()
+                    .Where(m => m.Identifier.Text == partialCreationMethodName)
+                    .FirstOrDefault();
+
+                if (method is not null)
+                {
+                    using (builder.OpenBrace($"protected {actionContext.ClassSymbol.ToDisplayString()} Create{actionContext.ClassSymbol.Name}Action()"))
+                    {
+                        builder.WriteLine($"return this.Create{actionContext.ClassSymbol.Name}ActionCore();");
+                    }
+
+                    builder.WriteLine();
+
+                    builder.WriteLine($"protected partial {actionContext.ClassSymbol.ToDisplayString()} Create{actionContext.ClassSymbol.Name}ActionCore();");
+                    //TODO: Report diagnostics if not in par
+                    wasFound = true;
+                    break;
+                }
             }
 
-            builder.WriteLine();
+            if (!wasFound)
+            {
+                using (builder.OpenBrace($"protected {actionContext.ClassSymbol.ToDisplayString()} Create{actionContext.ClassSymbol.Name}Action()"))
+                {
+                    builder.WriteLine($"this.Create{actionContext.ClassSymbol.Name}ActionCore();");
+                    CreateActionCore(builder, actionContext, typeMap);
+                }
 
-            //TODO: see if we can map those to controller code with intellisense
-            builder.WriteLine($"partial void Create{actionContext.ClassSymbol.Name}ActionCore();");
+                builder.WriteLine();
+
+                builder.WriteLine($"partial void Create{actionContext.ClassSymbol.Name}ActionCore();");
+            }
 
             builder.WriteLine();
 
