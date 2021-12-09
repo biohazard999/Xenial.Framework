@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using DevExpress.ExpressApp.DC;
+using DevExpress.Xpo;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -23,11 +24,12 @@ public class ViewIdsGeneratorTests : BaseGeneratorTests<XenialViewIdsGenerator>
 
     protected override string GeneratorEmitProperty => XenialViewIdsGenerator.GenerateXenialViewIdsAttributeMSBuildProperty;
 
-    protected override IEnumerable<Microsoft.CodeAnalysis.PortableExecutableReference> AdditionalReferences
+    protected override IEnumerable<PortableExecutableReference> AdditionalReferences
     {
         get
         {
             yield return MetadataReference.CreateFromFile(typeof(DomainComponentAttribute).Assembly.Location);
+            yield return MetadataReference.CreateFromFile(typeof(PersistentAttribute).Assembly.Location);
         }
     }
 
@@ -70,11 +72,35 @@ public partial class MyGlobalClass
 
     [Fact]
     public Task CollectsBasicDomainComponent()
-    => RunSourceTest("MyPartialClass.cs",
+        => RunSourceTest("MyPartialClass.cs",
 @"namespace MyProject
 {
     [DevExpress.ExpressApp.DC.DomainComponent]
     public class DomainComponent { }
+
+    [Xenial.XenialViewIds]
+    public partial class MyPartialClass { }
+}");
+
+    [Fact]
+    public Task CollectsBasicPersistentType()
+        => RunSourceTest("MyPartialClass.cs",
+@"namespace MyProject
+{
+    [DevExpress.Xpo.Persistent(""MyPersistent"")]
+    public class PersistentObject { }
+
+    [Xenial.XenialViewIds]
+    public partial class MyPartialClass { }
+}");
+
+    [Fact]
+    public Task CollectsBasicNonPersistentType()
+        => RunSourceTest("MyPartialClass.cs",
+@"namespace MyProject
+{
+    [DevExpress.Xpo.NonPersistent]
+    public class NonPersistentObject { }
 
     [Xenial.XenialViewIds]
     public partial class MyPartialClass { }

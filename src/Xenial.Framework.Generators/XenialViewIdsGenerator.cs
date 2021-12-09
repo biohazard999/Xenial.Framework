@@ -23,6 +23,8 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
     public const string GenerateXenialViewIdsAttributeMSBuildProperty = $"Generate{xenialViewIdsAttributeName}";
 
     private const string fullQualifiedDomainComponentAttribute = "DevExpress.ExpressApp.DC.DomainComponentAttribute";
+    private const string fullQualifiedXpoPersistentAttribute = "DevExpress.Xpo.PersistentAttribute";
+    private const string fullQualifiedXpoNonPersistentAttribute = "DevExpress.Xpo.NonPersistentAttribute";
 
     public Compilation Execute(
         GeneratorExecutionContext context,
@@ -47,47 +49,55 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
             return compilation;
         }
 
-        var domainComponentAttribute = compilation.GetTypeByMetadataName(fullQualifiedDomainComponentAttribute);
+        var collectedAttributes = new[]
+        {
+            compilation.GetTypeByMetadataName(fullQualifiedDomainComponentAttribute),
+            compilation.GetTypeByMetadataName(fullQualifiedXpoPersistentAttribute),
+            compilation.GetTypeByMetadataName(fullQualifiedXpoNonPersistentAttribute)
+        };
 
         var collectedViewIds = new List<string>();
 
-        if (domainComponentAttribute is not null)
+        foreach (var collectedAttribute in collectedAttributes)
         {
-            static (SemanticModel? semanticModel, INamedTypeSymbol? @classSymbol, bool isAttributeDeclared) IsAttributeDeclared(
-                   GeneratorExecutionContext context,
-                   Compilation compilation,
-                   TypeDeclarationSyntax @class,
-                   INamedTypeSymbol attributeSymbol
-               )
+            if (collectedAttribute is not null)
             {
-                var semanticModel = compilation.GetSemanticModel(@class.SyntaxTree);
-                if (semanticModel is null)
+                static (SemanticModel? semanticModel, INamedTypeSymbol? @classSymbol, bool isAttributeDeclared) IsAttributeDeclared(
+                       GeneratorExecutionContext context,
+                       Compilation compilation,
+                       TypeDeclarationSyntax @class,
+                       INamedTypeSymbol attributeSymbol
+                   )
                 {
-                    return (semanticModel, null, false);
+                    var semanticModel = compilation.GetSemanticModel(@class.SyntaxTree);
+                    if (semanticModel is null)
+                    {
+                        return (semanticModel, null, false);
+                    }
+
+                    var symbol = semanticModel.GetDeclaredSymbol(@class, context.CancellationToken);
+
+                    if (symbol is null)
+                    {
+                        return (semanticModel, null, false);
+                    }
+
+                    var isAttributeDeclared = symbol.IsAttributeDeclared(attributeSymbol);
+
+                    return (semanticModel, symbol, isAttributeDeclared);
                 }
 
-                var symbol = semanticModel.GetDeclaredSymbol(@class, context.CancellationToken);
 
-                if (symbol is null)
+                foreach (var @class in types)
                 {
-                    return (semanticModel, null, false);
-                }
-
-                var isAttributeDeclared = symbol.IsAttributeDeclared(attributeSymbol);
-
-                return (semanticModel, symbol, isAttributeDeclared);
-            }
-
-
-            foreach (var @class in types)
-            {
-                context.CancellationToken.ThrowIfCancellationRequested();
-                var (semanticModel, @classSymbol, isAttributeDeclared) = IsAttributeDeclared(context, compilation, @class, domainComponentAttribute);
-                if (isAttributeDeclared && @classSymbol is not null)
-                {
-                    collectedViewIds.Add($"{@classSymbol.Name}_DetailView");
-                    collectedViewIds.Add($"{@classSymbol.Name}_ListView");
-                    collectedViewIds.Add($"{@classSymbol.Name}_LookupListView");
+                    context.CancellationToken.ThrowIfCancellationRequested();
+                    var (_, @classSymbol, isAttributeDeclared) = IsAttributeDeclared(context, compilation, @class, collectedAttribute);
+                    if (isAttributeDeclared && @classSymbol is not null)
+                    {
+                        collectedViewIds.Add($"{@classSymbol.Name}_DetailView");
+                        collectedViewIds.Add($"{@classSymbol.Name}_ListView");
+                        collectedViewIds.Add($"{@classSymbol.Name}_LookupListView");
+                    }
                 }
             }
         }
