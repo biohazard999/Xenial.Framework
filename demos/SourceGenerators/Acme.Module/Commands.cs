@@ -2,6 +2,7 @@
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
+using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
 
 using Xenial;
@@ -9,6 +10,7 @@ using Xenial.Persistent.Base;
 
 namespace Acme.Module.Commands;
 
+[DomainComponent]
 public class DomainComponent
 {
 }
@@ -39,5 +41,4 @@ public class DomainComponent
 )]
 public partial record AlexAction1 : IDetailViewAction<DomainComponent>
 {
-
 }
