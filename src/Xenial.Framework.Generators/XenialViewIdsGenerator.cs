@@ -22,6 +22,8 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
     private const string xenialImageNamesAttributeFullName = $"{xenialNamespace}.{xenialViewIdsAttributeName}";
     public const string GenerateXenialViewIdsAttributeMSBuildProperty = $"Generate{xenialViewIdsAttributeName}";
 
+    private const string fullQualifiedDomainComponentAttribute = "DevExpress.ExpressApp.DC.DomainComponentAttribute";
+
     public Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
@@ -43,6 +45,51 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
         {
             //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
             return compilation;
+        }
+
+        var domainComponentAttribute = compilation.GetTypeByMetadataName(fullQualifiedDomainComponentAttribute);
+
+        var collectedViewIds = new List<string>();
+
+        if (domainComponentAttribute is not null)
+        {
+            static (SemanticModel? semanticModel, INamedTypeSymbol? @classSymbol, bool isAttributeDeclared) IsAttributeDeclared(
+                   GeneratorExecutionContext context,
+                   Compilation compilation,
+                   TypeDeclarationSyntax @class,
+                   INamedTypeSymbol attributeSymbol
+               )
+            {
+                var semanticModel = compilation.GetSemanticModel(@class.SyntaxTree);
+                if (semanticModel is null)
+                {
+                    return (semanticModel, null, false);
+                }
+
+                var symbol = semanticModel.GetDeclaredSymbol(@class, context.CancellationToken);
+
+                if (symbol is null)
+                {
+                    return (semanticModel, null, false);
+                }
+
+                var isAttributeDeclared = symbol.IsAttributeDeclared(attributeSymbol);
+
+                return (semanticModel, symbol, isAttributeDeclared);
+            }
+
+
+            foreach (var @class in types)
+            {
+                context.CancellationToken.ThrowIfCancellationRequested();
+                var (semanticModel, @classSymbol, isAttributeDeclared) = IsAttributeDeclared(context, compilation, @class, domainComponentAttribute);
+                if (isAttributeDeclared && @classSymbol is not null)
+                {
+                    collectedViewIds.Add($"{@classSymbol.Name}_DetailView");
+                    collectedViewIds.Add($"{@classSymbol.Name}_ListView");
+                    collectedViewIds.Add($"{@classSymbol.Name}_LookupListView");
+                }
+            }
         }
 
         foreach (var @class in types)
@@ -78,6 +125,7 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
                 return compilation;
             }
 
+            var visibility = context.GetDefaultAttributeModifier();
             using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
             {
                 builder.WriteLine("[CompilerGenerated]");
@@ -86,7 +134,10 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
                 //We also don't need to specify the visibility for partial types
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
-
+                    foreach (var viewId in collectedViewIds)
+                    {
+                        builder.WriteLine($"{visibility} const string {viewId} = \"{viewId}\";");
+                    }
                 }
             }
 

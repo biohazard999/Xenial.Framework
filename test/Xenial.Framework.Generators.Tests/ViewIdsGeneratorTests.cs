@@ -4,6 +4,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
+using DevExpress.ExpressApp.DC;
+
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -19,6 +22,14 @@ public class ViewIdsGeneratorTests : BaseGeneratorTests<XenialViewIdsGenerator>
     protected override XenialViewIdsGenerator CreateTargetGenerator() => new();
 
     protected override string GeneratorEmitProperty => XenialViewIdsGenerator.GenerateXenialViewIdsAttributeMSBuildProperty;
+
+    protected override IEnumerable<Microsoft.CodeAnalysis.PortableExecutableReference> AdditionalReferences
+    {
+        get
+        {
+            yield return MetadataReference.CreateFromFile(typeof(DomainComponentAttribute).Assembly.Location);
+        }
+    }
 
     protected Task RunSourceTest(string fileName, string source)
         => RunTest(
@@ -53,6 +64,18 @@ public partial class MyGlobalClass
         => RunSourceTest("MyPartialClass.cs",
 @"namespace MyProject
 {
+    [Xenial.XenialViewIds]
+    public partial class MyPartialClass { }
+}");
+
+    [Fact]
+    public Task CollectsBasicDomainComponent()
+    => RunSourceTest("MyPartialClass.cs",
+@"namespace MyProject
+{
+    [DevExpress.ExpressApp.DC.DomainComponent]
+    public class DomainComponent { }
+
     [Xenial.XenialViewIds]
     public partial class MyPartialClass { }
 }");

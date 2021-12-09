@@ -45,6 +45,8 @@ public abstract class BaseGeneratorTests<TGenerator>
 
     protected abstract string GeneratorEmitProperty { get; }
 
+    protected virtual IEnumerable<PortableExecutableReference> AdditionalReferences => Enumerable.Empty<PortableExecutableReference>();
+
     protected async Task RunTest(
         Func<MockAnalyzerConfigOptionsProvider, MockAnalyzerConfigOptionsProvider>? analyzerOptions = null,
         Action<VerifySettings>? verifySettings = null,
@@ -56,7 +58,7 @@ public abstract class BaseGeneratorTests<TGenerator>
     )
     {
         var compilation = CSharpCompilation.Create(CompilationName,
-                references: DefaultReferenceAssemblies,
+                references: DefaultReferenceAssemblies.Concat(AdditionalReferences),
                 //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
         );
