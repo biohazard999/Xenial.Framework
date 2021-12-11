@@ -42,7 +42,6 @@ public sealed class XenialHotReloadDetailViewController : ViewController
     private void ReloadCurrentViewSimpleAction_Execute(object sender, SimpleActionExecuteEventArgs e)
         => ReloadCurrentView(null);
 
-
 #if NET6_0_OR_GREATER
     /// <summary>
     /// For internal use only.
