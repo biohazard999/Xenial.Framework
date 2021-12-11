@@ -14,7 +14,10 @@ namespace Xenial.Framework.Win.SystemModule
 
         public static Type[] ControllerTypes { get; } = new[]
         {
-            typeof(XenialAdvancedModelEditorActionsViewController)
+            typeof(XenialHotReloadMainWindowController),
+#if NET6_0_OR_GREATER
+            typeof(XenialHotReloadDetailViewController),
+#endif
         };
     }
 }
@@ -35,10 +38,7 @@ namespace DevExpress.ExpressApp
         /// An enumerator that allows foreach to be used to process use xenial windows forms controllers
         /// in this collection.
         /// </returns>
-
         public static IEnumerable<Type> UseXenialWindowsFormsControllers(this IEnumerable<Type> types)
             => types.Concat(ControllerTypeList.ControllerTypes);
-
-
     }
 }
