@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <XenialImageNames Include="Images/**/*.svg" />
+    <AdditionalFiles Include="Images\**\*.svg" XenialImageNames="true" />
+    <EmbeddedResource Include="Images\**\*.svg" />
   </ItemGroup>
 
 </Project>

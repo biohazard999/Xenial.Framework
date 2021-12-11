@@ -1,8 +1,12 @@
-{
+﻿{
   "profiles": {
-    "Xenial.Framework.Generators": {
+    "Acme.Module": {
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\..\\demos\\SourceGenerators\\Acme.Module\\Acme.Module.csproj"
+    },
+    "Xenial.Framework.Generators.Images": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Xenial.Framework.Images\\Xenial.Framework.Images.csproj"
     }
   }
 }
