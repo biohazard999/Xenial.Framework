@@ -33,7 +33,8 @@ public sealed class XenialHotReloadDetailViewController : ViewController
     {
         ReloadCurrentViewSimpleAction = new SimpleAction(this, $"{GetType().FullName}.{nameof(ReloadCurrentViewSimpleAction)}", DevExpress.Persistent.Base.PredefinedCategory.Tools)
         {
-            Caption = "Reload View"
+            Caption = "Reload View",
+            ImageName = "Action_HotReload"
         };
         ReloadCurrentViewSimpleAction.Execute += ReloadCurrentViewSimpleAction_Execute;
     }
