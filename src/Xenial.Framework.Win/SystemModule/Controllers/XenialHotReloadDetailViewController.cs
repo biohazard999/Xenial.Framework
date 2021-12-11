@@ -52,10 +52,10 @@ public sealed class XenialHotReloadDetailViewController : ViewController
         XenialHotReloadManager.UpdateApp -= HotReloadManager_UpdateApp;
         XenialHotReloadManager.UpdateApp += HotReloadManager_UpdateApp;
     }
-#endif
 
     private void HotReloadManager_UpdateApp(object? sender, XenialHotReloadEventArgs e)
         => ReloadCurrentView(e.Type);
+#endif
 
     /// <summary>
     /// For internal use only.
