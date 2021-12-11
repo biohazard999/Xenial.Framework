@@ -7,7 +7,7 @@ namespace DevExpress.ExpressApp.Model.Core;
 /// <summary>
 /// Class ModelNodesGeneratorUpdatersExtentions.
 /// </summary>
-public static partial class ModelNodesGeneratorUpdaterLayoutBuilderExtentions
+public static partial class ModelNodesGeneratorUpdaterExtentions
 {
     /// <summary>   Uses the app options. </summary>
     ///
