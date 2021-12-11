@@ -15,7 +15,7 @@ using Xenial.Framework.Win.SystemModule;
 
 using static Xenial.Tasty;
 
-Describe(nameof(XenialAdvancedModelEditorActionsViewController), () =>
+Describe("Xenial.Framework.Win", () =>
 {
     //var application = A.Fake<XafApplication>();
     //var window = new Window(application, TemplateContext.ApplicationWindow, new List<Controller>(), true, true);
