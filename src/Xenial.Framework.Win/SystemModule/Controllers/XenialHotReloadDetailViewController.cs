@@ -1,11 +1,11 @@
-﻿#if NET6_0_OR_GREATER
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.SystemModule;
@@ -24,17 +24,50 @@ public sealed class XenialHotReloadDetailViewController : ViewController
     /// <summary>
     /// For internal use only.
     /// </summary>
+    public SimpleAction ReloadCurrentViewSimpleAction { get; }
+
+    /// <summary>
+    /// For internal use only.
+    /// </summary>
+    public XenialHotReloadDetailViewController()
+    {
+        ReloadCurrentViewSimpleAction = new SimpleAction(this, $"{GetType().FullName}.{nameof(ReloadCurrentViewSimpleAction)}", DevExpress.Persistent.Base.PredefinedCategory.Tools)
+        {
+            Caption = "Reload View"
+        };
+        ReloadCurrentViewSimpleAction.Execute += ReloadCurrentViewSimpleAction_Execute;
+    }
+
+    private void ReloadCurrentViewSimpleAction_Execute(object sender, SimpleActionExecuteEventArgs e)
+        => ReloadCurrentView(null);
+
+
+#if NET6_0_OR_GREATER
+    /// <summary>
+    /// For internal use only.
+    /// </summary>
     protected override void OnActivated()
     {
         base.OnActivated();
         XenialHotReloadManager.UpdateApp -= HotReloadManager_UpdateApp;
         XenialHotReloadManager.UpdateApp += HotReloadManager_UpdateApp;
     }
+#endif
 
     private void HotReloadManager_UpdateApp(object? sender, XenialHotReloadEventArgs e)
+        => ReloadCurrentView(e.Type);
+
+    /// <summary>
+    /// For internal use only.
+    /// </summary>
+    /// <param name="type"></param>
+    public void ReloadCurrentView(Type? type)
     {
         var builderAttributes = View.ObjectTypeInfo.FindAttributes<DetailViewLayoutBuilderAttribute>();
-        var builderAttribute = builderAttributes.FirstOrDefault(a => a.GeneratorType == e.Type);
+        var builderAttribute = type is null
+            ? builderAttributes.FirstOrDefault()
+            : builderAttributes.FirstOrDefault(a => a.GeneratorType == type);
+
         if (builderAttribute is null)
         {
             return;
@@ -95,6 +128,7 @@ public sealed class XenialHotReloadDetailViewController : ViewController
         }
     }
 
+#if NET6_0_OR_GREATER
     /// <summary>
     /// For internal use only.
     /// </summary>
@@ -103,5 +137,5 @@ public sealed class XenialHotReloadDetailViewController : ViewController
         XenialHotReloadManager.UpdateApp -= HotReloadManager_UpdateApp;
         base.OnDeactivated();
     }
-}
 #endif
+}

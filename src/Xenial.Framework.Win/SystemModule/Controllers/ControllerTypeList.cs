@@ -11,13 +11,10 @@ namespace Xenial.Framework.Win.SystemModule
         /// <summary>   Gets a list of types of the controllers. </summary>
         ///
         /// <value> A list of types of the controllers. </value>
-
         public static Type[] ControllerTypes { get; } = new[]
         {
             typeof(XenialHotReloadMainWindowController),
-#if NET6_0_OR_GREATER
             typeof(XenialHotReloadDetailViewController),
-#endif
         };
     }
 }
