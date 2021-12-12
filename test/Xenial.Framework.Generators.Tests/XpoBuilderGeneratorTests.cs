@@ -91,7 +91,35 @@ namespace MyProject
     public class BasicBoolProperty
     {
         public bool BoolProperty { get; set; }
-        public System.Boolean BoolProperty { get; set; }
+        public System.Boolean BoolProperty2 { get; set; }
+    }
+}");
+
+    [Fact]
+    public Task BasicDecimalProperty()
+        => RunSourceTest("BasicDecimalProperty.cs",
+@"using Xenial;
+namespace MyProject
+{
+    [XenialXpoBuilder]
+    public class BasicDecimalProperty
+    {
+        public decimal DecimalProperty { get; set; }
+        public System.Decimal DecimalProperty2 { get; set; }
+    }
+}");
+
+    [Fact]
+    public Task BasicDoubleProperty()
+        => RunSourceTest("BasicDoubleProperty.cs",
+@"using Xenial;
+namespace MyProject
+{
+    [XenialXpoBuilder]
+    public class BasicDoubleProperty
+    {
+        public double DoubleProperty { get; set; }
+        public System.Double DoubleProperty2 { get; set; }
     }
 }");
 
