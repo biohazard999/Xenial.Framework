@@ -54,7 +54,7 @@ namespace MyProject
 
     [Fact]
     public Task BasicStringProperty()
-    => RunSourceTest("BasicStringProperty.cs",
+        => RunSourceTest("BasicStringProperty.cs",
 @"using Xenial;
 namespace MyProject
 {
@@ -63,6 +63,35 @@ namespace MyProject
     {
         public string StringProperty { get; set; }
         public System.String StringProperty2 { get; set; }
+    }
+}");
+
+    [Fact]
+    public Task BasicIntProperty()
+        => RunSourceTest("BasicIntProperty.cs",
+@"using Xenial;
+namespace MyProject
+{
+    [XenialXpoBuilder]
+    public class BasicIntProperty
+    {
+        public int IntProperty { get; set; }
+        public System.Int32 IntProperty2 { get; set; }
+        public System.Int64 IntProperty3 { get; set; }
+    }
+}");
+
+    [Fact]
+    public Task BasicBoolProperty()
+        => RunSourceTest("BasicBoolProperty.cs",
+@"using Xenial;
+namespace MyProject
+{
+    [XenialXpoBuilder]
+    public class BasicBoolProperty
+    {
+        public bool BoolProperty { get; set; }
+        public System.Boolean BoolProperty { get; set; }
     }
 }");
 
