@@ -75,7 +75,7 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
             return compilation;
         }
 
-        var builders = new Dictionary<INamedTypeSymbol, string>();
+        var builders = new Dictionary<INamedTypeSymbol, string>(SymbolEqualityComparer.Default);
 
         foreach (var @class in types)
         {
