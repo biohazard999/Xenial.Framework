@@ -1,12 +1,15 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Threading.Tasks;
+
+using DevExpress.ExpressApp.DC;
+using DevExpress.Xpo;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-
-using VerifyTests;
 
 using VerifyXunit;
 
@@ -15,102 +18,101 @@ using Xunit;
 namespace Xenial.Framework.Generators.Tests;
 
 [UsesVerify]
-public class XpoBuilderGeneratorTests
+public class XpoBuilderGeneratorTests : BaseGeneratorTests<XenialXpoBuilderGenerator>
 {
-#if FULL_FRAMEWORK || NETCOREAPP3_1
-    static XpoBuilderGeneratorTests() => RegisterModuleInitializers.RegisterVerifiers();
-#endif
+    protected override XenialXpoBuilderGenerator CreateTargetGenerator() => new();
 
-    private const string xpoBuilderBuildPropertyName = "build_property.GenerateXenialXpoBuilderAttribute";
-    private const string compilationName = "AssemblyName";
+    protected override string GeneratorEmitProperty => XenialXpoBuilderGenerator.GenerateXenialXpoBuilderAttributeMSBuildProperty;
 
-    [Fact]
-    public async Task EmitsXpoBuilderAttributeByDefault()
+    protected override IEnumerable<PortableExecutableReference> AdditionalReferences
     {
-        var compilation = CSharpCompilation.Create(compilationName);
-        XenialXpoBuilderGenerator generator = new();
-
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
-
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
+        get
+        {
+            yield return MetadataReference.CreateFromFile(typeof(DomainComponentAttribute).Assembly.Location);
+            yield return MetadataReference.CreateFromFile(typeof(PersistentAttribute).Assembly.Location);
+        }
     }
 
-    [Fact]
-    public async Task DoesNotEmitXpoBuilderAttributeIfOptedOut()
-    {
-        var compilation = CSharpCompilation.Create(compilationName);
-        XenialXpoBuilderGenerator generator = new();
+    protected Task RunSourceTest(string fileName, string source)
+        => RunTest(
+            options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false")),
+            compilationOptions: compilation => compilation.AddInlineXenialXpoBuilderAttribute(),
+            syntaxTrees: () => new[]
+            {
+                BuildSyntaxTree(fileName, source)
+            });
 
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            new[] { generator },
-            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new MockAnalyzerConfigOptions(xpoBuilderBuildPropertyName, "false"))
-        );
+//    [Fact]
+//    public Task DoesEmitDiagnosticIfNotPartial()
+//        => RunSourceTest("MyNonPartialClass.cs",
+//@"using Xenial;
+//namespace MyProject
+//{
+//    [XenialViewIds]
+//    public class MyNonPartialClass{ }
+//}");
 
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
-    }
+//    [Fact]
+//    public Task DoesEmitDiagnosticIfInGlobalNamespace()
+//        => RunSourceTest("MyNonPartialClass.cs",
+//@"using Xenial;
+//[XenialViewIds]
+//public partial class MyGlobalClass
+//{
+//}");
 
-    [Fact]
-    public async Task DoesEmitXpoBuilderAttributeIfOptedIn()
-    {
-        var compilation = CSharpCompilation.Create(compilationName);
-        XenialXpoBuilderGenerator generator = new();
+//    [Fact]
+//    public Task DoesNotEmitDiagnosticIfPartial()
+//        => RunSourceTest("MyPartialClass.cs",
+//@"namespace MyProject
+//{
+//    [Xenial.XenialViewIds]
+//    public partial class MyPartialClass { }
+//}");
 
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            new[] { generator },
-            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new MockAnalyzerConfigOptions(xpoBuilderBuildPropertyName, "true"))
-        );
+//    [Fact]
+//    public Task CollectsBasicDomainComponent()
+//        => RunSourceTest("MyPartialClass.cs",
+//@"namespace MyProject
+//{
+//    [DevExpress.ExpressApp.DC.DomainComponent]
+//    public class DomainComponent { }
 
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
-    }
+//    [Xenial.XenialViewIds]
+//    public partial class MyPartialClass { }
+//}");
 
-    [Fact]
-    public async Task DoesEmitDiagnosticIfNotBoolean()
-    {
-        var compilation = CSharpCompilation.Create(compilationName);
-        XenialXpoBuilderGenerator generator = new();
+//    [Fact]
+//    public Task CollectsBasicPersistentType()
+//        => RunSourceTest("MyPartialClass.cs",
+//@"namespace MyProject
+//{
+//    [DevExpress.Xpo.Persistent(""MyPersistent"")]
+//    public class PersistentObject { }
 
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            new[] { generator },
-            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(new MockAnalyzerConfigOptions(xpoBuilderBuildPropertyName, "ABC"))
-        );
+//    [Xenial.XenialViewIds]
+//    public partial class MyPartialClass { }
+//}");
 
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
-    }
+//    [Fact]
+//    public Task CollectsBasicNonPersistentType()
+//        => RunSourceTest("MyPartialClass.cs",
+//@"namespace MyProject
+//{
+//    [DevExpress.Xpo.NonPersistent]
+//    public class NonPersistentObject { }
 
-
-    [Fact]
-    public async Task EmitsCustomVisibility()
-    {
-        var compilation = CSharpCompilation.Create(compilationName);
-        XenialXpoBuilderGenerator generator = new();
-
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(
-            new[] { generator },
-            optionsProvider: MockAnalyzerConfigOptionsProvider.Empty
-                .WithGlobalOptions(
-                    new MockAnalyzerConfigOptions("build_property.XenialAttributesVisibility", "public")
-                )
-        );
-
-        driver = driver.RunGenerators(compilation);
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        await Verifier.Verify(driver, settings);
-    }
+//    [Xenial.XenialViewIds]
+//    public partial class MyPartialClass { }
+//}");
 }
 
+internal static partial class CompilationHelpers
+{
+    public static CSharpCompilation AddInlineXenialXpoBuilderAttribute(this CSharpCompilation compilation, string visibility = "internal")
+    {
+        (_, var syntaxTree) = XenialXpoBuilderGenerator.GenerateXenialXpoBuilderAttribute(visibility: visibility);
+
+        return compilation.AddSyntaxTrees(syntaxTree);
+    }
+}
