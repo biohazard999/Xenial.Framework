@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.Xpo;
 
@@ -28,19 +29,19 @@ public class XpoBuilderGeneratorTests : BaseGeneratorTests<XenialXpoBuilderGener
     {
         get
         {
-            yield return MetadataReference.CreateFromFile(typeof(DomainComponentAttribute).Assembly.Location);
             yield return MetadataReference.CreateFromFile(typeof(PersistentAttribute).Assembly.Location);
         }
     }
 
-    protected Task RunSourceTest(string fileName, string source)
+    protected Task RunSourceTest(string fileName, string source, Func<CSharpCompilation>? createCompilation = null)
         => RunTest(
             options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false")),
             compilationOptions: compilation => compilation.AddInlineXenialXpoBuilderAttribute(),
             syntaxTrees: () => new[]
             {
                 BuildSyntaxTree(fileName, source)
-            });
+            },
+            createCompilation: createCompilation);
 
     [Fact]
     public Task DoesEmitBasicBuilder()
@@ -134,9 +135,30 @@ namespace MyProject
     [XenialXpoBuilder]
     public class BasicXpoCtorObject : XPObject
     {
-        public BasicXpoCtorObject(Session session) : base(session) { }
+        public BasicXpoCtorObject(Session session)
+            : base(session) { }
     }
 }");
+
+    [Fact]
+    public Task BasicXpoWithObjectSpaceTest()
+        => RunSourceTest("BasicXpoWithObjectSpaceTest.cs",
+@"using Xenial;
+using DevExpress.Xpo;
+
+namespace MyProject
+{
+    [XenialXpoBuilder]
+    public class BasicXpoWithObjectSpace : XPObject
+    {
+        public BasicXpoWithObjectSpace(Session session)
+            : base(session) { }
+    }
+}", () => CreateCompilation(AdditionalReferences.Concat(new[]
+{
+    MetadataReference.CreateFromFile(typeof(IObjectSpace).Assembly.Location)
+})));
+
 }
 
 internal static partial class CompilationHelpers

@@ -34,7 +34,12 @@ namespace MyProject
         
         protected virtual TClass CreateTarget()
         {
-            return (TClass)new MyProject.BasicXpoCtorObject(this.Session);
+            if(this.SessionWasSet)
+            {
+                return (TClass)new MyProject.BasicXpoCtorObject(this.Session);
+            }
+            
+            throw new System.InvalidOperationException($"Could not create instance of type [MyProject.BasicXpoCtorObject] without a Session.{System.Environment.NewLine}Make sure to use the [WithSession] method when using the [{this.GetType().FullName}] type.");
         }
         
         public virtual TClass Build()

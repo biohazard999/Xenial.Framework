@@ -47,6 +47,13 @@ public abstract class BaseGeneratorTests<TGenerator>
 
     protected virtual IEnumerable<PortableExecutableReference> AdditionalReferences => Enumerable.Empty<PortableExecutableReference>();
 
+    protected static CSharpCompilation CreateCompilation(IEnumerable<PortableExecutableReference> additionalReferences)
+        => CSharpCompilation.Create(CompilationName,
+                references: DefaultReferenceAssemblies.Concat(additionalReferences),
+                //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+            );
+
     protected async Task RunTest(
         Func<MockAnalyzerConfigOptionsProvider, MockAnalyzerConfigOptionsProvider>? analyzerOptions = null,
         Action<VerifySettings>? verifySettings = null,
@@ -54,14 +61,13 @@ public abstract class BaseGeneratorTests<TGenerator>
         Func<SyntaxTree[]>? syntaxTrees = null,
         Func<IEnumerable<AdditionalText>>? additionalTexts = null,
         string? typeToLoad = null,
-        Func<TGenerator, TGenerator>? prepareGenerator = null
+        Func<TGenerator, TGenerator>? prepareGenerator = null,
+        Func<CSharpCompilation>? createCompilation = null
     )
     {
-        var compilation = CSharpCompilation.Create(CompilationName,
-                references: DefaultReferenceAssemblies.Concat(AdditionalReferences),
-                //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-        );
+        var compilation = createCompilation == null
+            ? CreateCompilation(AdditionalReferences)
+            : createCompilation();
 
         if (compilationOptions is not null)
         {

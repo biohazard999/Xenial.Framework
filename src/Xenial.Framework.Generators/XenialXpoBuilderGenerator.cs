@@ -138,6 +138,11 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
         var visibility = context.GetDefaultAttributeModifier();
         using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
         {
+            static bool IsObjectSpaceDefined(Compilation compilation)
+            {
+                return compilation.GetTypeByMetadataName("DevExpress.ExpressApp.IObjectSpace") is not null;
+            }
+
             static bool IsXpoClass(GeneratorExecutionContext context, Compilation compilation, TypeDeclarationSyntax syntax, INamedTypeSymbol classSymbol)
             {
                 var attributes = new[]
@@ -167,6 +172,7 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
             }
 
             var isXpoClass = IsXpoClass(context, compilation, @class, @classSymbol);
+            var isObjectSpaceDefined = IsObjectSpaceDefined(compilation);
 
             var builderClassName = $"{@classSymbol.Name}Builder";
 
@@ -201,6 +207,21 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                     builder.WriteLine();
                 }
 
+                if (isObjectSpaceDefined && isXpoClass)
+                {
+                    builder.WriteLine($"protected DevExpress.ExpressApp.IObjectSpace ObjectSpace {{ get; set; }}");
+                    builder.WriteLine($"protected bool WasObjectSpaceSet {{ get; private set; }}");
+                    builder.WriteLine();
+
+                    using (builder.OpenBrace($"public TBuilder WithObjectSpace(DevExpress.ExpressApp.IObjectSpace objectSpace)"))
+                    {
+                        builder.WriteLine($"this.ObjectSpace = objectSpace;");
+                        builder.WriteLine($"this.WasObjectSpaceSet = true;");
+                        builder.WriteLine("return This;");
+                    }
+                    builder.WriteLine();
+                }
+
                 using (builder.OpenBrace("protected TBuilder This"))
                 using (builder.OpenBrace("get"))
                 {
@@ -210,9 +231,29 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
 
                 using (builder.OpenBrace("protected virtual TClass CreateTarget()"))
                 {
+                    if (isObjectSpaceDefined)
+                    {
+                        using (builder.OpenBrace("if(this.ObjectSpaceWasSet)"))
+                        {
+                            builder.WriteLine($"return this.ObjectSpace.CreateObject<TClass>();");
+                        }
+                        builder.WriteLine();
+                    }
                     if (isXpoClass)
                     {
-                        builder.WriteLine($"return (TClass)new {@classSymbol.ToDisplayString()}(this.Session);");
+                        using (builder.OpenBrace("if(this.SessionWasSet)"))
+                        {
+                            builder.WriteLine($"return (TClass)new {@classSymbol.ToDisplayString()}(this.Session);");
+                        }
+                        builder.WriteLine();
+                        if (isXpoClass && isObjectSpaceDefined)
+                        {
+                            builder.WriteLine($"throw new System.InvalidOperationException($\"Could not create instance of type [{@classSymbol.ToDisplayString()}] without a Session or ObjectSpace.{{System.Environment.NewLine}}Make sure to use the [WithSession] or [WithObjectSpace] methods when using the [{{this.GetType().FullName}}] type.\");");
+                        }
+                        if (!isObjectSpaceDefined)
+                        {
+                            builder.WriteLine($"throw new System.InvalidOperationException($\"Could not create instance of type [{@classSymbol.ToDisplayString()}] without a Session.{{System.Environment.NewLine}}Make sure to use the [WithSession] method when using the [{{this.GetType().FullName}}] type.\");");
+                        }
                     }
                     else
                     {
