@@ -50,8 +50,8 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
     private const string xenialXpoBuilderAttributeFullName = $"{xenialNamespace}.{xenialXpoBuilderAttributeName}";
     public const string GenerateXenialXpoBuilderAttributeMSBuildProperty = $"Generate{xenialXpoBuilderAttributeName}";
 
-    //private const string fullQualifiedXpoPersistentAttribute = "DevExpress.Xpo.PersistentAttribute";
-    //private const string fullQualifiedXpoNonPersistentAttribute = "DevExpress.Xpo.NonPersistentAttribute";
+    private const string fullQualifiedXpoPersistentAttribute = "DevExpress.Xpo.PersistentAttribute";
+    private const string fullQualifiedXpoNonPersistentAttribute = "DevExpress.Xpo.NonPersistentAttribute";
 
     public Compilation Execute(
         GeneratorExecutionContext context,
@@ -138,6 +138,36 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
         var visibility = context.GetDefaultAttributeModifier();
         using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
         {
+            static bool IsXpoClass(GeneratorExecutionContext context, Compilation compilation, TypeDeclarationSyntax syntax, INamedTypeSymbol classSymbol)
+            {
+                var attributes = new[]
+                {
+                    fullQualifiedXpoPersistentAttribute,
+                    fullQualifiedXpoNonPersistentAttribute
+                }.Select(attr => compilation.GetTypeByMetadataName(attr))
+                 .Where(attr => attr is not null)
+                 .ToArray();
+
+                var isAttributeDeclared = attributes.Any(
+                    attr => attr is not null
+                    && classSymbol.IsAttributeDeclared(attr)
+                );
+
+                if (isAttributeDeclared)
+                {
+                    return true;
+                }
+
+                if (classSymbol.AllInterfaces.Any(x => x.ToDisplayString() == "DevExpress.Xpo.Helpers.ISessionProvider"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            var isXpoClass = IsXpoClass(context, compilation, @class, @classSymbol);
+
             var builderClassName = $"{@classSymbol.Name}Builder";
 
             builder.WriteLine("[CompilerGenerated]");

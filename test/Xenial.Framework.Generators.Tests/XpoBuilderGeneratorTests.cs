@@ -123,59 +123,20 @@ namespace MyProject
     }
 }");
 
-    //    [Fact]
-    //    public Task DoesEmitDiagnosticIfInGlobalNamespace()
-    //        => RunSourceTest("MyNonPartialClass.cs",
-    //@"using Xenial;
-    //[XenialViewIds]
-    //public partial class MyGlobalClass
-    //{
-    //}");
+    [Fact]
+    public Task BasicXpoCtorTest()
+        => RunSourceTest("BasicXpoCtorTest.cs",
+@"using Xenial;
+using DevExpress.Xpo;
 
-    //    [Fact]
-    //    public Task DoesNotEmitDiagnosticIfPartial()
-    //        => RunSourceTest("MyPartialClass.cs",
-    //@"namespace MyProject
-    //{
-    //    [Xenial.XenialViewIds]
-    //    public partial class MyPartialClass { }
-    //}");
-
-    //    [Fact]
-    //    public Task CollectsBasicDomainComponent()
-    //        => RunSourceTest("MyPartialClass.cs",
-    //@"namespace MyProject
-    //{
-    //    [DevExpress.ExpressApp.DC.DomainComponent]
-    //    public class DomainComponent { }
-
-    //    [Xenial.XenialViewIds]
-    //    public partial class MyPartialClass { }
-    //}");
-
-    //    [Fact]
-    //    public Task CollectsBasicPersistentType()
-    //        => RunSourceTest("MyPartialClass.cs",
-    //@"namespace MyProject
-    //{
-    //    [DevExpress.Xpo.Persistent(""MyPersistent"")]
-    //    public class PersistentObject { }
-
-    //    [Xenial.XenialViewIds]
-    //    public partial class MyPartialClass { }
-    //}");
-
-    //    [Fact]
-    //    public Task CollectsBasicNonPersistentType()
-    //        => RunSourceTest("MyPartialClass.cs",
-    //@"namespace MyProject
-    //{
-    //    [DevExpress.Xpo.NonPersistent]
-    //    public class NonPersistentObject { }
-
-    //    [Xenial.XenialViewIds]
-    //    public partial class MyPartialClass { }
-    //}");
+namespace MyProject
+{
+    [XenialXpoBuilder]
+    public class BasicXpoCtorObject : XPObject
+    {
+        public BasicXpoCtorObject(Session session) : base(session) { }
+    }
+}");
 }
 
 internal static partial class CompilationHelpers
