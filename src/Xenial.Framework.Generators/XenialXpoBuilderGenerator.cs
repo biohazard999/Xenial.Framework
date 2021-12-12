@@ -186,16 +186,40 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
             builder.UnIndent();
             using (builder.OpenBrace())
             {
+                if (isXpoClass)
+                {
+                    builder.WriteLine($"protected DevExpress.Xpo.Session Session {{ get; set; }}");
+                    builder.WriteLine($"protected bool WasSessionSet {{ get; private set; }}");
+                    builder.WriteLine();
+
+                    using (builder.OpenBrace($"public TBuilder WithSession(DevExpress.Xpo.Session session)"))
+                    {
+                        builder.WriteLine($"this.Session = session;");
+                        builder.WriteLine($"this.WasSessionSet = true;");
+                        builder.WriteLine("return This;");
+                    }
+                    builder.WriteLine();
+                }
+
                 using (builder.OpenBrace("protected TBuilder This"))
                 using (builder.OpenBrace("get"))
                 {
                     builder.WriteLine("return (TBuilder)this;");
                 }
                 builder.WriteLine();
+
                 using (builder.OpenBrace("protected virtual TClass CreateTarget()"))
                 {
-                    builder.WriteLine($"return (TClass)new {@classSymbol.ToDisplayString()}();");
+                    if (isXpoClass)
+                    {
+                        builder.WriteLine($"return (TClass)new {@classSymbol.ToDisplayString()}(this.Session);");
+                    }
+                    else
+                    {
+                        builder.WriteLine($"return (TClass)new {@classSymbol.ToDisplayString()}();");
+                    }
                 }
+
                 var mappedMembers = new List<(
                     SpecialType specialType,
                     ITypeSymbol type,
