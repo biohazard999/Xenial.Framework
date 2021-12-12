@@ -159,6 +159,31 @@ namespace MyProject
     MetadataReference.CreateFromFile(typeof(IObjectSpace).Assembly.Location)
 })));
 
+    [Fact]
+    public Task BasicXpoWithoutParentBuilder()
+        => RunSourceTest("BasicXpoWithoutParentBuilder.cs",
+@"using Xenial;
+using DevExpress.Xpo;
+
+namespace MyProject
+{
+    public class BasicXpoParent : XPObject
+    {
+        public BasicXpoParent(Session session)
+            : base(session) { }
+
+        public string ParentStringProperty { get; set;}
+    }
+
+    [XenialXpoBuilder]
+    public class BasicXpoWithoutParentBuilder : BasicXpoParent
+    {
+        public BasicXpoWithoutParentBuilder(Session session)
+            : base(session) { }
+
+        public string OwnStringProperty { get; set;}
+    }
+}");
 }
 
 internal static partial class CompilationHelpers
