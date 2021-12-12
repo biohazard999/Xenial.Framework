@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -165,13 +166,61 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                 {
                     builder.WriteLine($"return (TClass)new {@classSymbol.ToDisplayString()}();");
                 }
+                var mappedMembers = new List<(
+                    SpecialType specialType,
+                    ITypeSymbol type,
+                    string name,
+                    string wasCalledName
+                )>();
+
+                foreach (var memberName in @classSymbol.MemberNames)
+                {
+                    var members = classSymbol.GetMembers(memberName).OfType<IPropertySymbol>();
+                    foreach (var member in members)
+                    {
+                        if (member.SetMethod is not null && member.GetMethod is not null)
+                        {
+                            var specialType = member.Type.SpecialType;
+                            var typeName = member.Type.ToDisplayString();
+                            var name = member.Name;
+                            var parameterName = name.FirstCharToLowerCase();
+                            var wasCalledName = $"Was{name}Called";
+
+                            builder.WriteLine();
+                            builder.WriteLine($"protected {typeName} {name} {{ get; set; }}");
+                            builder.WriteLine($"protected bool {wasCalledName} {{ get; private set; }}");
+                            builder.WriteLine();
+
+                            using (builder.OpenBrace($"public TBuilder With{name}({typeName} {parameterName})"))
+                            {
+                                builder.WriteLine($"this.{name} = {parameterName};");
+                                builder.WriteLine($"this.{wasCalledName} = true;");
+                                builder.WriteLine("return This;");
+                            }
+                            mappedMembers.Add((specialType, member.Type, name, wasCalledName));
+                        }
+                    }
+                }
+
                 builder.WriteLine();
 
                 using (builder.OpenBrace("public virtual TClass Build()"))
                 {
                     builder.WriteLine($"TClass target = this.CreateTarget();");
+
+                    foreach (var mappedMember in mappedMembers)
+                    {
+                        builder.WriteLine();
+                        using (builder.OpenBrace($"if(this.{mappedMember.wasCalledName})"))
+                        {
+                            builder.WriteLine($"target.{mappedMember.name} = this.{mappedMember.name};");
+                        }
+                    }
+
+                    builder.WriteLine();
                     builder.WriteLine("return target;");
                 }
+
             }
             var builderFullName = $"{@classSymbol.ContainingNamespace}.{builderClassName}";
             builders.Add(@classSymbol, builderFullName);
@@ -319,3 +368,15 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
     }
 }
 
+public static class StringExtensions
+{
+    public static string FirstCharToLowerCase(this string str)
+    {
+        if (string.IsNullOrEmpty(str) || char.IsLower(str[0]))
+        {
+            return str;
+        }
+
+        return char.ToLower(str[0], CultureInfo.CurrentUICulture) + str.Substring(1);
+    }
+}

@@ -52,6 +52,20 @@ namespace MyProject
     public class MyNormalClassWithoutCtor { }
 }");
 
+    [Fact]
+    public Task BasicStringProperty()
+    => RunSourceTest("BasicStringProperty.cs",
+@"using Xenial;
+namespace MyProject
+{
+    [XenialXpoBuilder]
+    public class BasicStringProperty
+    {
+        public string StringProperty { get; set; }
+        public System.String StringProperty2 { get; set; }
+    }
+}");
+
     //    [Fact]
     //    public Task DoesEmitDiagnosticIfInGlobalNamespace()
     //        => RunSourceTest("MyNonPartialClass.cs",

@@ -30,6 +30,7 @@ namespace MyProject
         public virtual TClass Build()
         {
             TClass target = this.CreateTarget();
+            
             return target;
         }
     }
