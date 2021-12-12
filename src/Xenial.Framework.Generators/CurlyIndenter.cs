@@ -42,10 +42,11 @@ public class CurlyIndenter
         return new DisposableContext(this);
     }
 
-    public void OpenBrace()
+    public IDisposable OpenBrace()
     {
         WriteLine("{");
         Indent();
+        return new DisposableContext(this);
     }
 
     public void CloseBrace()
