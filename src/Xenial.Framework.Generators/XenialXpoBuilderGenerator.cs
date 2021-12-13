@@ -189,49 +189,69 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
             //We also don't need to specify the visibility for partial types
             builder.WriteLine($"{visibility} partial abstract class {builderClassName}<TClass, TBuilder>");
             builder.Indent();
+
+            var hasParentBuilder = false;
+            if (@classSymbol.BaseType is not null)
+            {
+                if (@classSymbol.BaseType.IsAttributeDeclared(generateXenialXpoBuilderAttribute))
+                {
+                    hasParentBuilder = true;
+                }
+            }
+
+            if (hasParentBuilder)
+            {
+                builder.WriteLine($": {@classSymbol.BaseType!.Name}Builder<TClass, TBuilder>");
+            }
+
             builder.WriteLine($"where TClass : {@classSymbol.ToDisplayString()}");
             builder.WriteLine($"where TBuilder : {builderClassName}<TClass, TBuilder>");
+
             builder.UnIndent();
+
             using (builder.OpenBrace())
             {
-                if (isXpoClass)
+                if (!hasParentBuilder)
                 {
-                    builder.WriteLine($"protected DevExpress.Xpo.Session Session {{ get; set; }}");
-                    builder.WriteLine($"protected bool WasSessionSet {{ get; private set; }}");
-                    builder.WriteLine();
-
-                    using (builder.OpenBrace($"public TBuilder WithSession(DevExpress.Xpo.Session session)"))
+                    if (isXpoClass)
                     {
-                        builder.WriteLine($"this.Session = session;");
-                        builder.WriteLine($"this.WasSessionSet = true;");
-                        builder.WriteLine("return This;");
+                        builder.WriteLine($"protected DevExpress.Xpo.Session Session {{ get; set; }}");
+                        builder.WriteLine($"protected bool WasSessionSet {{ get; private set; }}");
+                        builder.WriteLine();
+
+                        using (builder.OpenBrace($"public TBuilder WithSession(DevExpress.Xpo.Session session)"))
+                        {
+                            builder.WriteLine($"this.Session = session;");
+                            builder.WriteLine($"this.WasSessionSet = true;");
+                            builder.WriteLine("return This;");
+                        }
+                        builder.WriteLine();
+                    }
+
+                    if (isObjectSpaceDefined && isXpoClass)
+                    {
+                        builder.WriteLine($"protected DevExpress.ExpressApp.IObjectSpace ObjectSpace {{ get; set; }}");
+                        builder.WriteLine($"protected bool WasObjectSpaceSet {{ get; private set; }}");
+                        builder.WriteLine();
+
+                        using (builder.OpenBrace($"public TBuilder WithObjectSpace(DevExpress.ExpressApp.IObjectSpace objectSpace)"))
+                        {
+                            builder.WriteLine($"this.ObjectSpace = objectSpace;");
+                            builder.WriteLine($"this.WasObjectSpaceSet = true;");
+                            builder.WriteLine("return This;");
+                        }
+                        builder.WriteLine();
+                    }
+
+                    using (builder.OpenBrace("protected TBuilder This"))
+                    using (builder.OpenBrace("get"))
+                    {
+                        builder.WriteLine("return (TBuilder)this;");
                     }
                     builder.WriteLine();
                 }
 
-                if (isObjectSpaceDefined && isXpoClass)
-                {
-                    builder.WriteLine($"protected DevExpress.ExpressApp.IObjectSpace ObjectSpace {{ get; set; }}");
-                    builder.WriteLine($"protected bool WasObjectSpaceSet {{ get; private set; }}");
-                    builder.WriteLine();
-
-                    using (builder.OpenBrace($"public TBuilder WithObjectSpace(DevExpress.ExpressApp.IObjectSpace objectSpace)"))
-                    {
-                        builder.WriteLine($"this.ObjectSpace = objectSpace;");
-                        builder.WriteLine($"this.WasObjectSpaceSet = true;");
-                        builder.WriteLine("return This;");
-                    }
-                    builder.WriteLine();
-                }
-
-                using (builder.OpenBrace("protected TBuilder This"))
-                using (builder.OpenBrace("get"))
-                {
-                    builder.WriteLine("return (TBuilder)this;");
-                }
-                builder.WriteLine();
-
-                using (builder.OpenBrace("protected virtual TClass CreateTarget()"))
+                using (builder.OpenBrace($"protected {(hasParentBuilder ? "override" : "virtual")} TClass CreateTarget()"))
                 {
                     if (isObjectSpaceDefined)
                     {
@@ -365,9 +385,16 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
 
                 builder.WriteLine();
 
-                using (builder.OpenBrace("public virtual TClass Build()"))
+                using (builder.OpenBrace($"public {(hasParentBuilder ? "override" : "virtual")} TClass Build()"))
                 {
-                    builder.WriteLine($"TClass target = this.CreateTarget();");
+                    if (hasParentBuilder)
+                    {
+                        builder.WriteLine($"TClass target = base.CreateTarget();");
+                    }
+                    else
+                    {
+                        builder.WriteLine($"TClass target = this.CreateTarget();");
+                    }
 
                     foreach (var mappedMember in mappedMembers)
                     {

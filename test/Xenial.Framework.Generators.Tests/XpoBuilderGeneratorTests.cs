@@ -324,6 +324,34 @@ namespace MyProject
         public string OwnStringProperty { get; set;}
     }
 }");
+
+
+    [Fact]
+    public Task BasicXpoWithParentBuilder()
+        => RunSourceTest("BasicXpoWithoutParentBuilder.cs",
+    @"using Xenial;
+using DevExpress.Xpo;
+
+namespace MyProject
+{
+    [XenialXpoBuilder]
+    public class BasicXpo : BasicXpoParent
+    {
+        public BasicXpo(Session session)
+            : base(session) { }
+
+        public string OwnStringProperty { get; set;}
+    }
+
+    [XenialXpoBuilder]
+    public class BasicXpoParent : XPObject
+    {
+        public BasicXpoParent(Session session)
+            : base(session) { }
+
+        public string ParentStringProperty { get; set;}
+    }
+}");
 }
 
 internal static partial class CompilationHelpers
@@ -331,7 +359,7 @@ internal static partial class CompilationHelpers
     public static CSharpCompilation AddInlineXenialXpoBuilderAttribute(this CSharpCompilation compilation, string visibility = "internal")
     {
         (_, var syntaxTree) = XenialXpoBuilderGenerator.GenerateXenialXpoBuilderAttribute(visibility: visibility);
-
+        
         return compilation.AddSyntaxTrees(syntaxTree);
     }
 }
