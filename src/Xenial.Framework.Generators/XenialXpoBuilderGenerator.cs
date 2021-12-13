@@ -364,6 +364,19 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                                     builder.WriteLine($"protected bool {propertyBuilderWasCalledName} {{ get; private set; }}");
                                     builder.WriteLine();
 
+                                    using (builder.OpenBrace($"public TBuilder With{name}(Action<{propertyBuilderType}> {parameterName}Builder)"))
+                                    {
+                                        using (builder.OpenBrace($"if({parameterName}Builder != null)"))
+                                        {
+                                            builder.WriteLine($"{propertyBuilderType} builder = new {propertyBuilderType}();");
+                                            builder.WriteLine($"this.With{name}(builder);");
+                                            builder.WriteLine($"{parameterName}Builder.Invoke(builder);");
+                                        }
+                                        builder.WriteLine($"return This;");
+                                    }
+
+                                    builder.WriteLine();
+
                                     using (builder.OpenBrace($"public TBuilder With{name}({propertyBuilderType} {parameterName}Builder)"))
                                     {
                                         builder.WriteLine($"this.{nameBuilder} = {parameterName}Builder;");
