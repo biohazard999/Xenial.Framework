@@ -389,18 +389,18 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                                             {
                                                 using (builder.OpenBrace("if(this.WasSessionSet)"))
                                                 {
-                                                    builder.WriteLine($"return this.{nameBuilder}.WithSession(this.Session);");
+                                                    builder.WriteLine($"this.{nameBuilder}.WithSession(this.Session);");
                                                 }
                                                 using (builder.OpenBrace("if(this.WasObjectSpaceSet)"))
                                                 {
-                                                    builder.WriteLine($"return this.{nameBuilder}.WithObjectSpace(this.ObjectSpace);");
+                                                    builder.WriteLine($"this.{nameBuilder}.WithObjectSpace(this.ObjectSpace);");
                                                 }
                                             }
                                             else
                                             {
                                                 using (builder.OpenBrace("if(this.WasSessionSet)"))
                                                 {
-                                                    builder.WriteLine($"return this.{nameBuilder}.WithSession(this.Session);");
+                                                    builder.WriteLine($"this.{nameBuilder}.WithSession(this.Session);");
                                                 }
                                             }
                                         }
