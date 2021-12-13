@@ -93,3 +93,42 @@ public partial record LayoutPropertyEditorItem<TModelClass>(string ViewItemId) :
         return editor;
     }
 }
+
+/// <summary>
+/// 
+/// </summary>
+[XenialCheckLicense]
+public partial record LayoutPropertyEditorItem<TPropertyType, TModelClass>(string ViewItemId) : LayoutPropertyEditorItem<TModelClass>(ViewItemId)
+    where TModelClass : class
+{
+    public Type PropertyType => typeof(TPropertyType);
+
+    /// <summary>   Creates the specified expression. </summary>
+    ///
+    /// <param name="expression">   The expression. </param>
+    ///
+    /// <returns>
+    /// Xenial.Framework.Layouts.Items.LeafNodes.LayoutPropertyEditorItem&lt;TModelClass&gt;.
+    /// </returns>
+
+    public static LayoutPropertyEditorItem<TPropertyType, TModelClass> Create(Expression<Func<TModelClass, TPropertyType>> expression)
+        => new(ExpressionHelper.Property(expression));
+
+
+    /// <summary>   Creates the specified expression. </summary>
+    ///
+    /// <param name="expression">               The expression. </param>
+    /// <param name="configurePropertyEditor">  The configure property editor. </param>
+    ///
+    /// <returns>
+    /// Xenial.Framework.Layouts.Items.LeafNodes.LayoutPropertyEditorItem&lt;TModelClass&gt;.
+    /// </returns>
+
+    public static LayoutPropertyEditorItem<TPropertyType, TModelClass> Create(Expression<Func<TModelClass, TPropertyType>> expression, Action<LayoutPropertyEditorItem<TModelClass>> configurePropertyEditor)
+    {
+        _ = configurePropertyEditor ?? throw new ArgumentNullException(nameof(configurePropertyEditor));
+        var editor = new LayoutPropertyEditorItem<TPropertyType, TModelClass>(ExpressionHelper.Property(expression));
+        configurePropertyEditor(editor);
+        return editor;
+    }
+}
