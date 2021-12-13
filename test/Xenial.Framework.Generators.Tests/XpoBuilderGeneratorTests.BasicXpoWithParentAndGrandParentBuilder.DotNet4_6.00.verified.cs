@@ -10,14 +10,14 @@ namespace MyProject
     internal partial class BasicXpoBuilder : BasicXpoBuilder<MyProject.BasicXpo, BasicXpoBuilder> { }
     
     [CompilerGenerated]
-    internal partial abstract class BasicXpoBuilder<TClass, TBuilder>
+    internal abstract partial class BasicXpoBuilder<TClass, TBuilder>
         : BasicXpoParentBuilder<TClass, TBuilder>
         where TClass : MyProject.BasicXpo
         where TBuilder : BasicXpoBuilder<TClass, TBuilder>
     {
         protected override TClass CreateTarget()
         {
-            if(this.SessionWasSet)
+            if(this.WasSessionSet)
             {
                 return (TClass)new MyProject.BasicXpo(this.Session);
             }

@@ -10,7 +10,7 @@ namespace MyProject
     internal partial class BasicBoolPropertyBuilder : BasicBoolPropertyBuilder<MyProject.BasicBoolProperty, BasicBoolPropertyBuilder> { }
     
     [CompilerGenerated]
-    internal partial abstract class BasicBoolPropertyBuilder<TClass, TBuilder>
+    internal abstract partial class BasicBoolPropertyBuilder<TClass, TBuilder>
         where TClass : MyProject.BasicBoolProperty
         where TBuilder : BasicBoolPropertyBuilder<TClass, TBuilder>
     {

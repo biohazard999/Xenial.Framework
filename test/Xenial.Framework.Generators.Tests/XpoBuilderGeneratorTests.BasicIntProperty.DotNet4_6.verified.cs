@@ -10,7 +10,7 @@ namespace MyProject
     internal partial class BasicIntPropertyBuilder : BasicIntPropertyBuilder<MyProject.BasicIntProperty, BasicIntPropertyBuilder> { }
     
     [CompilerGenerated]
-    internal partial abstract class BasicIntPropertyBuilder<TClass, TBuilder>
+    internal abstract partial class BasicIntPropertyBuilder<TClass, TBuilder>
         where TClass : MyProject.BasicIntProperty
         where TBuilder : BasicIntPropertyBuilder<TClass, TBuilder>
     {

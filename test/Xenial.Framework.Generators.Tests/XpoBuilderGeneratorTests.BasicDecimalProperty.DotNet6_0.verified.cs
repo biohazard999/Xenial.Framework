@@ -10,7 +10,7 @@ namespace MyProject
     internal partial class BasicDecimalPropertyBuilder : BasicDecimalPropertyBuilder<MyProject.BasicDecimalProperty, BasicDecimalPropertyBuilder> { }
     
     [CompilerGenerated]
-    internal partial abstract class BasicDecimalPropertyBuilder<TClass, TBuilder>
+    internal abstract partial class BasicDecimalPropertyBuilder<TClass, TBuilder>
         where TClass : MyProject.BasicDecimalProperty
         where TBuilder : BasicDecimalPropertyBuilder<TClass, TBuilder>
     {

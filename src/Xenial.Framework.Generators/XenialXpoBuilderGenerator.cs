@@ -187,7 +187,7 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
             //We don't need to specify any other modifier
             //because the user can decide if he want it to be an instance type.
             //We also don't need to specify the visibility for partial types
-            builder.WriteLine($"{visibility} partial abstract class {builderClassName}<TClass, TBuilder>");
+            builder.WriteLine($"{visibility} abstract partial class {builderClassName}<TClass, TBuilder>");
             builder.Indent();
 
             var hasParentBuilder = false;
@@ -255,7 +255,7 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                 {
                     if (isObjectSpaceDefined)
                     {
-                        using (builder.OpenBrace("if(this.ObjectSpaceWasSet)"))
+                        using (builder.OpenBrace("if(this.WasObjectSpaceSet)"))
                         {
                             builder.WriteLine($"return this.ObjectSpace.CreateObject<TClass>();");
                         }
@@ -263,7 +263,7 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                     }
                     if (isXpoClass)
                     {
-                        using (builder.OpenBrace("if(this.SessionWasSet)"))
+                        using (builder.OpenBrace("if(this.WasSessionSet)"))
                         {
                             builder.WriteLine($"return (TClass)new {@classSymbol.ToDisplayString()}(this.Session);");
                         }

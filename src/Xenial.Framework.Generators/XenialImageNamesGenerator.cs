@@ -538,9 +538,10 @@ public record ImagesClass(
         }
 
         builder.WriteLine($"{modifier} static System.IO.Stream {(removeSuffix ? RemoveSuffix(imageInfo.Name, suffix) : imageInfo.Name)}()");
-        builder.OpenBrace();
-        builder.WriteLine($"return typeof({@class.Name}).Assembly.GetManifestResourceStream(\"{imageInfo.ResourceName}\");");
-        builder.CloseBrace();
+        using (builder.OpenBrace())
+        {
+            builder.WriteLine($"return typeof({@class.Name}).Assembly.GetManifestResourceStream(\"{imageInfo.ResourceName}\");");
+        }
         builder.WriteLine();
     }
 
@@ -570,15 +571,17 @@ public record ImagesClass(
         }
 
         builder.WriteLine($"{modifier} static byte[] {(removeSuffix ? RemoveSuffix(imageInfo.Name, suffix) : imageInfo.Name)}()");
-        builder.OpenBrace();
-        builder.WriteLine($"using(var stream = typeof({@class.Name}).Assembly.GetManifestResourceStream(\"{imageInfo.ResourceName}\"))");
+        using (builder.OpenBrace())
+        {
+            builder.WriteLine($"using(var stream = typeof({@class.Name}).Assembly.GetManifestResourceStream(\"{imageInfo.ResourceName}\"))");
 
-        builder.WriteLine("using(var ms = new System.IO.MemoryStream())");
-        builder.OpenBrace();
-        builder.WriteLine("stream.CopyTo(ms);");
-        builder.WriteLine("return ms.ToArray();");
-        builder.CloseBrace();
-        builder.CloseBrace();
+            builder.WriteLine("using(var ms = new System.IO.MemoryStream())");
+            using (builder.OpenBrace())
+            {
+                builder.WriteLine("stream.CopyTo(ms);");
+                builder.WriteLine("return ms.ToArray();");
+            }
+        }
         builder.WriteLine();
     }
 

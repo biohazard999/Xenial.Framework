@@ -10,7 +10,7 @@ namespace MyProject
     internal partial class BasicXpoWithObjectSpaceBuilder : BasicXpoWithObjectSpaceBuilder<MyProject.BasicXpoWithObjectSpace, BasicXpoWithObjectSpaceBuilder> { }
     
     [CompilerGenerated]
-    internal partial abstract class BasicXpoWithObjectSpaceBuilder<TClass, TBuilder>
+    internal abstract partial class BasicXpoWithObjectSpaceBuilder<TClass, TBuilder>
         where TClass : MyProject.BasicXpoWithObjectSpace
         where TBuilder : BasicXpoWithObjectSpaceBuilder<TClass, TBuilder>
     {
@@ -44,12 +44,12 @@ namespace MyProject
         
         protected virtual TClass CreateTarget()
         {
-            if(this.ObjectSpaceWasSet)
+            if(this.WasObjectSpaceSet)
             {
                 return this.ObjectSpace.CreateObject<TClass>();
             }
             
-            if(this.SessionWasSet)
+            if(this.WasSessionSet)
             {
                 return (TClass)new MyProject.BasicXpoWithObjectSpace(this.Session);
             }

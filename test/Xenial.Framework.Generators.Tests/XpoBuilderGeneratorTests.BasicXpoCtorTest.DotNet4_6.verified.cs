@@ -10,7 +10,7 @@ namespace MyProject
     internal partial class BasicXpoCtorObjectBuilder : BasicXpoCtorObjectBuilder<MyProject.BasicXpoCtorObject, BasicXpoCtorObjectBuilder> { }
     
     [CompilerGenerated]
-    internal partial abstract class BasicXpoCtorObjectBuilder<TClass, TBuilder>
+    internal abstract partial class BasicXpoCtorObjectBuilder<TClass, TBuilder>
         where TClass : MyProject.BasicXpoCtorObject
         where TBuilder : BasicXpoCtorObjectBuilder<TClass, TBuilder>
     {
@@ -34,7 +34,7 @@ namespace MyProject
         
         protected virtual TClass CreateTarget()
         {
-            if(this.SessionWasSet)
+            if(this.WasSessionSet)
             {
                 return (TClass)new MyProject.BasicXpoCtorObject(this.Session);
             }

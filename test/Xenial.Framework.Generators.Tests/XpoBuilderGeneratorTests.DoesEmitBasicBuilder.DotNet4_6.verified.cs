@@ -10,7 +10,7 @@ namespace MyProject
     internal partial class MyNormalClassWithoutCtorBuilder : MyNormalClassWithoutCtorBuilder<MyProject.MyNormalClassWithoutCtor, MyNormalClassWithoutCtorBuilder> { }
     
     [CompilerGenerated]
-    internal partial abstract class MyNormalClassWithoutCtorBuilder<TClass, TBuilder>
+    internal abstract partial class MyNormalClassWithoutCtorBuilder<TClass, TBuilder>
         where TClass : MyProject.MyNormalClassWithoutCtor
         where TBuilder : MyNormalClassWithoutCtorBuilder<TClass, TBuilder>
     {

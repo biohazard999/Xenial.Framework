@@ -10,7 +10,7 @@ namespace MyProject
     internal partial class BasicXpoWithNotGeneratedCtorIntKeyBuilder : BasicXpoWithNotGeneratedCtorIntKeyBuilder<MyProject.BasicXpoWithNotGeneratedCtorIntKey, BasicXpoWithNotGeneratedCtorIntKeyBuilder> { }
     
     [CompilerGenerated]
-    internal partial abstract class BasicXpoWithNotGeneratedCtorIntKeyBuilder<TClass, TBuilder>
+    internal abstract partial class BasicXpoWithNotGeneratedCtorIntKeyBuilder<TClass, TBuilder>
         where TClass : MyProject.BasicXpoWithNotGeneratedCtorIntKey
         where TBuilder : BasicXpoWithNotGeneratedCtorIntKeyBuilder<TClass, TBuilder>
     {
@@ -34,7 +34,7 @@ namespace MyProject
         
         protected virtual TClass CreateTarget()
         {
-            if(this.SessionWasSet)
+            if(this.WasSessionSet)
             {
                 return (TClass)new MyProject.BasicXpoWithNotGeneratedCtorIntKey(this.Session);
             }

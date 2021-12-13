@@ -10,7 +10,7 @@ namespace MyProject
     internal partial class BasicXpoGrandParentBuilder : BasicXpoGrandParentBuilder<MyProject.BasicXpoGrandParent, BasicXpoGrandParentBuilder> { }
     
     [CompilerGenerated]
-    internal partial abstract class BasicXpoGrandParentBuilder<TClass, TBuilder>
+    internal abstract partial class BasicXpoGrandParentBuilder<TClass, TBuilder>
         where TClass : MyProject.BasicXpoGrandParent
         where TBuilder : BasicXpoGrandParentBuilder<TClass, TBuilder>
     {
@@ -34,7 +34,7 @@ namespace MyProject
         
         protected virtual TClass CreateTarget()
         {
-            if(this.SessionWasSet)
+            if(this.WasSessionSet)
             {
                 return (TClass)new MyProject.BasicXpoGrandParent(this.Session);
             }
