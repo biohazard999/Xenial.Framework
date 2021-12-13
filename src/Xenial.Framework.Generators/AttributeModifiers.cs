@@ -239,4 +239,15 @@ public static class TypeSymbolExtensions
             _ => typedConstant.Value?.ToString() ?? string.Empty
         };
 
+    public static object? GetTypedConstantValue(this TypedConstant typedConstant)
+        => typedConstant switch
+        {
+            { Kind: TypedConstantKind.Type } => typedConstant.Value,
+            { Kind: TypedConstantKind.Primitive, Value: var v } when v is string => v,
+            { Kind: TypedConstantKind.Primitive, Value: var v } when v is bool => v,
+            { Kind: TypedConstantKind.Array, Type: var type } when type is IArrayTypeSymbol arr => typedConstant.Values,
+            { Kind: TypedConstantKind.Enum, Type: var type, Value: var val } when type is INamedTypeSymbol namedType => namedType.GetMembers().OfType<IFieldSymbol>().First(f => f.ConstantValue?.Equals(typedConstant.Value) ?? false),
+            _ => typedConstant.Value?.ToString() ?? string.Empty
+        };
+
 }
