@@ -390,7 +390,6 @@ namespace MyProject
     }
 }");
 
-
     [Fact]
     public Task BasicXpoWithReference()
         => RunSourceTest("BasicXpoWithReference.cs",
@@ -399,6 +398,36 @@ using DevExpress.Xpo;
 
 namespace MyProject
 {
+    public class ReferenceXpo : XPObject
+    {
+        public ReferenceXpo(Session session)
+            : base(session) { }
+
+        public string ReferenceStringProperty { get; set;}
+    }
+
+    [XenialXpoBuilder]
+    public class XpoObject : XPObject
+    {
+        public XpoObject(Session session)
+            : base(session) { }
+
+        public string StringProperty { get; set;}
+
+        public ReferenceXpo ReferenceProperty { get; set;}
+    }
+}");
+
+
+    [Fact]
+    public Task BasicXpoWithReferenceAndBuilder()
+        => RunSourceTest("BasicXpoWithReference.cs",
+    @"using Xenial;
+using DevExpress.Xpo;
+
+namespace MyProject
+{
+    [XenialXpoBuilder]
     public class ReferenceXpo : XPObject
     {
         public ReferenceXpo(Session session)

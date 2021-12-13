@@ -16,33 +16,6 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-
-//public class Class1
-//{
-//    public abstract class Class1Builder<TClass, TBuilder>
-//        where TClass : Class1
-//        where TBuilder : Class1Builder<TClass, TBuilder>
-//    {
-
-//    }
-//}
-
-//public class Class2 : Class1
-//{
-//    public class Class2Builder : Class2Builder<Class2, Class2Builder> { }
-//    public abstract partial class Class2Builder<TClass, TBuilder> : Class1Builder<TClass, TBuilder>
-//        where TClass : Class2
-//        where TBuilder : Class2Builder<TClass, TBuilder>
-//    {
-
-//    }
-
-//    public partial class Class2Builder<TClass, TBuilder>
-//    {
-
-//    }
-//}
-
 public class XenialXpoBuilderGenerator : IXenialSourceGenerator
 {
     private const string xenialXpoBuilderAttributeName = "XenialXpoBuilderAttribute";
@@ -296,12 +269,17 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                 {
                     if (!baseType.IsAttributeDeclared(generateXenialXpoBuilderAttribute))
                     {
-                        AddBuildMembers(compilation, baseType, builder, mappedMembers);
+                        AddBuildMembers(compilation, baseType, builder, generateXenialXpoBuilderAttribute, mappedMembers);
                     }
                     baseType = baseType.BaseType;
                 }
 
-                static void AddBuildMembers(Compilation compilation, INamedTypeSymbol @classSymbol, CurlyIndenter builder, List<(
+                static void AddBuildMembers(
+                    Compilation compilation,
+                    INamedTypeSymbol @classSymbol,
+                    CurlyIndenter builder,
+                    INamedTypeSymbol generateXenialXpoBuilderAttribute,
+                List<(
                     SpecialType specialType,
                     ITypeSymbol type,
                     string name,
@@ -374,6 +352,51 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                                     builder.WriteLine($"this.{wasCalledName} = true;");
                                     builder.WriteLine("return This;");
                                 }
+
+                                if (member.Type is INamedTypeSymbol propertyNamedTypeSymbol && propertyNamedTypeSymbol.IsAttributeDeclared(generateXenialXpoBuilderAttribute))
+                                {
+                                    var propertyBuilderType = $"{typeName}Builder";
+                                    var nameBuilder = $"{name}Builder";
+                                    var propertyBuilderWasCalledName = $"Was{nameBuilder}Called";
+
+                                    builder.WriteLine();
+                                    builder.WriteLine($"protected {propertyBuilderType} {nameBuilder} {{ get; set; }}");
+                                    builder.WriteLine($"protected bool {propertyBuilderWasCalledName} {{ get; private set; }}");
+                                    builder.WriteLine();
+
+                                    using (builder.OpenBrace($"public TBuilder With{name}({propertyBuilderType} {parameterName}Builder)"))
+                                    {
+                                        builder.WriteLine($"this.{nameBuilder} = {parameterName}Builder;");
+                                        builder.WriteLine($"this.{propertyBuilderWasCalledName} = true;");
+
+                                        if (propertyNamedTypeSymbol.AllInterfaces.Any(x => x.ToDisplayString() == "DevExpress.Xpo.Helpers.ISessionProvider"))
+                                        {
+                                            var isObjectSpaceDefined = IsObjectSpaceDefined(compilation);
+                                            if (isObjectSpaceDefined)
+                                            {
+                                                using (builder.OpenBrace("if(this.WasSessionSet)"))
+                                                {
+                                                    builder.WriteLine($"return this.{nameBuilder}.WithSession(this.Session);");
+                                                }
+                                                using (builder.OpenBrace("if(this.WasObjectSpaceSet)"))
+                                                {
+                                                    builder.WriteLine($"return this.{nameBuilder}.WithObjectSpace(this.ObjectSpace);");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                using (builder.OpenBrace("if(this.WasSessionSet)"))
+                                                {
+                                                    builder.WriteLine($"return this.{nameBuilder}.WithSession(this.Session);");
+                                                }
+                                            }
+                                        }
+
+                                        builder.WriteLine("return This;");
+                                    }
+                                }
+
+
                                 mappedMembers.Add((specialType, member.Type, name, wasCalledName));
                             }
                         }
@@ -381,7 +404,7 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
 
                 }
 
-                AddBuildMembers(compilation, classSymbol, builder, mappedMembers);
+                AddBuildMembers(compilation, classSymbol, builder, generateXenialXpoBuilderAttribute, mappedMembers);
 
                 builder.WriteLine();
 
