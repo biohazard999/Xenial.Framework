@@ -389,6 +389,35 @@ namespace MyProject
         public string GrantParentStringProperty { get; set;}
     }
 }");
+
+
+    [Fact]
+    public Task BasicXpoWithReference()
+        => RunSourceTest("BasicXpoWithReference.cs",
+    @"using Xenial;
+using DevExpress.Xpo;
+
+namespace MyProject
+{
+    public class ReferenceXpo : XPObject
+    {
+        public ReferenceXpo(Session session)
+            : base(session) { }
+
+        public string ReferenceStringProperty { get; set;}
+    }
+
+    [XenialXpoBuilder]
+    public class XpoObject : XPObject
+    {
+        public XpoObject(Session session)
+            : base(session) { }
+
+        public string StringProperty { get; set;}
+
+        public ReferenceXpo ReferenceProperty { get; set;}
+    }
+}");
 }
 
 internal static partial class CompilationHelpers
