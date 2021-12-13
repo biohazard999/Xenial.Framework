@@ -270,12 +270,15 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                     string wasCalledName
                 )>();
 
-                if (@classSymbol.BaseType is not null)
+                var baseType = @classSymbol.BaseType;
+
+                while (baseType is not null)
                 {
-                    if (!@classSymbol.BaseType.IsAttributeDeclared(generateXenialXpoBuilderAttribute))
+                    if (!baseType.IsAttributeDeclared(generateXenialXpoBuilderAttribute))
                     {
-                        AddBuildMembers(compilation, @classSymbol.BaseType, builder, mappedMembers);
+                        AddBuildMembers(compilation, baseType, builder, mappedMembers);
                     }
+                    baseType = baseType.BaseType;
                 }
 
                 static void AddBuildMembers(Compilation compilation, INamedTypeSymbol @classSymbol, CurlyIndenter builder, List<(
