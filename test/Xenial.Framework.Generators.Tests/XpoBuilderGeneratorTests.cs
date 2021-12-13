@@ -352,6 +352,43 @@ namespace MyProject
         public string ParentStringProperty { get; set;}
     }
 }");
+
+
+    [Fact]
+    public Task BasicXpoWithParentAndGrandParentBuilder()
+        => RunSourceTest("BasicXpoWithParentAndGrandParentBuilder.cs",
+    @"using Xenial;
+using DevExpress.Xpo;
+
+namespace MyProject
+{
+    [XenialXpoBuilder]
+    public class BasicXpo : BasicXpoParent
+    {
+        public BasicXpo(Session session)
+            : base(session) { }
+
+        public string OwnStringProperty { get; set;}
+    }
+
+    [XenialXpoBuilder]
+    public class BasicXpoParent : BasicXpoGrandParent
+    {
+        public BasicXpoParent(Session session)
+            : base(session) { }
+
+        public string ParentStringProperty { get; set;}
+    }
+
+    [XenialXpoBuilder]
+    public class BasicXpoGrandParent : XPObject
+    {
+        public BasicXpoGrandParent(Session session)
+            : base(session) { }
+
+        public string GrantParentStringProperty { get; set;}
+    }
+}");
 }
 
 internal static partial class CompilationHelpers
@@ -359,7 +396,7 @@ internal static partial class CompilationHelpers
     public static CSharpCompilation AddInlineXenialXpoBuilderAttribute(this CSharpCompilation compilation, string visibility = "internal")
     {
         (_, var syntaxTree) = XenialXpoBuilderGenerator.GenerateXenialXpoBuilderAttribute(visibility: visibility);
-        
+
         return compilation.AddSyntaxTrees(syntaxTree);
     }
 }
