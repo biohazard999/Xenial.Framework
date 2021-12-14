@@ -458,8 +458,8 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                                             var builderType = $"{typeName}Builder";
                                             var builderCollectionName = $"{member.Name}BuildersCollection";
                                             builder.WriteLine();
-                                            builder.WriteLine($"private System.Collections.Generic.IList<{builderType}> _{builderCollectionName} = new System.Collections.Generic.List<{builderCollectionName}>();");
-                                            builder.WriteLine($"protected System.Collections.Generic.IList<{builderType}> {builderCollectionName} {{ get {{ return _{builderType}; }} }}");
+                                            builder.WriteLine($"private System.Collections.Generic.IList<{builderType}> _{builderCollectionName} = new System.Collections.Generic.List<{builderType}>();");
+                                            builder.WriteLine($"protected System.Collections.Generic.IList<{builderType}> {builderCollectionName} {{ get {{ return _{builderCollectionName}; }} }}");
                                             builder.WriteLine();
 
                                             using (builder.OpenBrace($"public TBuilder With{name}(Action<{builderType}> {parameterName}Builder)"))

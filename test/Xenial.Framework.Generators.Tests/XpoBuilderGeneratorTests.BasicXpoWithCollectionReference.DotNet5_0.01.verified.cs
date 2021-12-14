@@ -52,8 +52,8 @@ namespace MyProject
             return This;
         }
         
-        private System.Collections.Generic.IList<MyProject.ReferenceXpoBuilder> _ReferencesBuildersCollection = new System.Collections.Generic.List<ReferencesBuildersCollection>();
-        protected System.Collections.Generic.IList<MyProject.ReferenceXpoBuilder> ReferencesBuildersCollection { get { return _MyProject.ReferenceXpoBuilder; } }
+        private System.Collections.Generic.IList<MyProject.ReferenceXpoBuilder> _ReferencesBuildersCollection = new System.Collections.Generic.List<MyProject.ReferenceXpoBuilder>();
+        protected System.Collections.Generic.IList<MyProject.ReferenceXpoBuilder> ReferencesBuildersCollection { get { return _ReferencesBuildersCollection; } }
         
         public TBuilder WithReferences(Action<MyProject.ReferenceXpoBuilder> referencesBuilder)
         {
