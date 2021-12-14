@@ -96,12 +96,12 @@ namespace MyProject
             
             foreach(MyProject.ReferenceXpoBuilder item in this.ReferencesBuildersCollection)
             {
-                this.WithReferences(item);
+                this.WithReferences(item.Build());
             }
             
             foreach(MyProject.ReferenceXpo item in this.ReferencesCollection)
             {
-                this.References.Add(item);
+                target.References.Add(item);
             }
             
             return target;
