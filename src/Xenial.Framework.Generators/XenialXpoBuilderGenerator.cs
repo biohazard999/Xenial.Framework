@@ -99,6 +99,19 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
         return compilation;
     }
 
+    private record MappedMember(SpecialType SpecialType, ITypeSymbol Type, string Name, string WasCalledName);
+
+    private record BuilderMappedMember(
+        SpecialType SpecialType,
+        ITypeSymbol Type,
+        string Name,
+        string WasCalledName,
+        string NameBuilder,
+        string TypeBuilder,
+        string WasCalledNameBuilder
+    )
+        : MappedMember(SpecialType, Type, Name, WasCalledName);
+
     private static Compilation BuildBuilderType(
         GeneratorExecutionContext context,
         Compilation compilation,
@@ -256,12 +269,7 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                     }
                 }
 
-                var mappedMembers = new List<(
-                    SpecialType specialType,
-                    ITypeSymbol type,
-                    string name,
-                    string wasCalledName
-                )>();
+                var mappedMembers = new List<MappedMember>();
 
                 var baseType = @classSymbol.BaseType;
 
@@ -274,17 +282,13 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                     baseType = baseType.BaseType;
                 }
 
+
                 static void AddBuildMembers(
                     Compilation compilation,
                     INamedTypeSymbol @classSymbol,
                     CurlyIndenter builder,
                     INamedTypeSymbol generateXenialXpoBuilderAttribute,
-                List<(
-                    SpecialType specialType,
-                    ITypeSymbol type,
-                    string name,
-                    string wasCalledName
-                )> mappedMembers)
+                List<MappedMember> mappedMembers)
                 {
                     foreach (var memberName in @classSymbol.MemberNames)
                     {
@@ -407,10 +411,10 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
 
                                         builder.WriteLine("return This;");
                                     }
+                                    mappedMembers.Add(new BuilderMappedMember(specialType, member.Type, name, wasCalledName, nameBuilder, propertyBuilderType, propertyBuilderWasCalledName));
                                 }
 
-
-                                mappedMembers.Add((specialType, member.Type, name, wasCalledName));
+                                mappedMembers.Add(new(specialType, member.Type, name, wasCalledName));
                             }
                         }
                     }
@@ -435,9 +439,20 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                     foreach (var mappedMember in mappedMembers)
                     {
                         builder.WriteLine();
-                        using (builder.OpenBrace($"if(this.{mappedMember.wasCalledName})"))
+
+                        if (mappedMember is BuilderMappedMember builderMappedMember)
                         {
-                            builder.WriteLine($"target.{mappedMember.name} = this.{mappedMember.name};");
+                            using (builder.OpenBrace($"if(this.{builderMappedMember.WasCalledNameBuilder})"))
+                            {
+                                builder.WriteLine($"this.With{builderMappedMember.Name}(this.{builderMappedMember.NameBuilder}.Build());");
+                            }
+                        }
+                        else
+                        {
+                            using (builder.OpenBrace($"if(this.{mappedMember.WasCalledName})"))
+                            {
+                                builder.WriteLine($"target.{mappedMember.Name} = this.{mappedMember.Name};");
+                            }
                         }
                     }
 
