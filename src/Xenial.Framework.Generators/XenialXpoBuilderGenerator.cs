@@ -99,7 +99,12 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
         return compilation;
     }
 
-    private record MappedMember(SpecialType SpecialType, ITypeSymbol Type, string Name, string WasCalledName);
+    private record MappedMember(
+        SpecialType SpecialType,
+        ITypeSymbol Type,
+        string Name,
+        string WasCalledName
+    );
 
     private record BuilderMappedMember(
         SpecialType SpecialType,
@@ -109,8 +114,24 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
         string NameBuilder,
         string TypeBuilder,
         string WasCalledNameBuilder
-    )
-        : MappedMember(SpecialType, Type, Name, WasCalledName);
+    ) : MappedMember(SpecialType, Type, Name, WasCalledName);
+
+    private record CollectionMappedMember(
+        SpecialType SpecialType,
+        ITypeSymbol Type,
+        string Name,
+        string WasCalledName,
+        string CollectionName
+    ) : MappedMember(SpecialType, Type, Name, WasCalledName);
+
+    private record BuilderCollectionMappedMember(
+        SpecialType SpecialType,
+        ITypeSymbol Type,
+        string Name,
+        string WasCalledName,
+        string CollectionName,
+        string BuilderType
+    ) : CollectionMappedMember(SpecialType, Type, Name, WasCalledName, CollectionName);
 
     private static Compilation BuildBuilderType(
         GeneratorExecutionContext context,
@@ -416,6 +437,101 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
 
                                 mappedMembers.Add(new(specialType, member.Type, name, wasCalledName));
                             }
+
+                            if (
+                                member.GetMethod is not null
+                                && member.GetMethod.ReturnType.AllInterfaces.Any(m => m.ToDisplayString() == "System.Collections.ICollection")
+                                && member.GetMethod.ReturnType is INamedTypeSymbol collectionType)
+                            {
+                                if (collectionType.IsGenericType)
+                                {
+                                    var targetType = collectionType.TypeArguments.FirstOrDefault();
+                                    if (targetType is INamedTypeSymbol targetTypeSymbol)
+                                    {
+                                        var typeName = targetType.ToDisplayString();
+                                        var collectionName = $"{member.Name}Collection";
+                                        var name = member.Name;
+                                        var parameterName = name.FirstCharToLowerCase();
+
+                                        if (targetTypeSymbol.IsAttributeDeclared(generateXenialXpoBuilderAttribute))
+                                        {
+                                            var builderType = $"{typeName}Builder";
+                                            var builderCollectionName = $"{member.Name}BuildersCollection";
+                                            builder.WriteLine();
+                                            builder.WriteLine($"private System.Collections.Generic.IList<{builderType}> _{builderCollectionName} = new System.Collections.Generic.List<{builderCollectionName}>();");
+                                            builder.WriteLine($"protected System.Collections.Generic.IList<{builderType}> {builderCollectionName} {{ get {{ return _{builderType}; }} }}");
+                                            builder.WriteLine();
+
+                                            using (builder.OpenBrace($"public TBuilder With{name}(Action<{builderType}> {parameterName}Builder)"))
+                                            {
+                                                using (builder.OpenBrace($"if({parameterName}Builder != null)"))
+                                                {
+                                                    builder.WriteLine($"{builderType} builder = new {builderType}();");
+                                                    builder.WriteLine($"this.With{name}(builder);");
+                                                    builder.WriteLine($"{parameterName}Builder.Invoke(builder);");
+                                                }
+                                                builder.WriteLine($"return This;");
+                                            }
+
+                                            builder.WriteLine();
+
+                                            using (builder.OpenBrace($"public TBuilder With{name}({builderType} {parameterName})"))
+                                            {
+                                                if (targetTypeSymbol.AllInterfaces.Any(x => x.ToDisplayString() == "DevExpress.Xpo.Helpers.ISessionProvider"))
+                                                {
+                                                    var isObjectSpaceDefined = IsObjectSpaceDefined(compilation);
+                                                    if (isObjectSpaceDefined)
+                                                    {
+                                                        using (builder.OpenBrace("if(this.WasSessionSet)"))
+                                                        {
+                                                            builder.WriteLine($"{parameterName}.WithSession(this.Session);");
+                                                        }
+                                                        using (builder.OpenBrace("if(this.WasObjectSpaceSet)"))
+                                                        {
+                                                            builder.WriteLine($"{parameterName}.WithObjectSpace(this.ObjectSpace);");
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        using (builder.OpenBrace("if(this.WasSessionSet)"))
+                                                        {
+                                                            builder.WriteLine($"{parameterName}.WithSession(this.Session);");
+                                                        }
+                                                    }
+                                                }
+                                                builder.WriteLine($"this.{builderCollectionName}.Add({parameterName});");
+                                                builder.WriteLine("return This;");
+                                                mappedMembers.Add(new BuilderCollectionMappedMember(targetType.SpecialType, targetType, name, string.Empty, builderCollectionName, builderType));
+                                            }
+                                        }
+
+
+                                        builder.WriteLine();
+                                        builder.WriteLine($"private System.Collections.Generic.IList<{typeName}> _{collectionName} = new System.Collections.Generic.List<{typeName}>();");
+                                        builder.WriteLine($"protected System.Collections.Generic.IList<{typeName}> {collectionName} {{ get {{ return _{collectionName}; }} }}");
+                                        builder.WriteLine();
+
+                                        using (builder.OpenBrace($"public TBuilder With{name}({typeName} {parameterName})"))
+                                        {
+                                            builder.WriteLine($"this.{collectionName}.Add({parameterName});");
+                                            builder.WriteLine("return This;");
+                                        }
+                                        mappedMembers.Add(new CollectionMappedMember(targetType.SpecialType, targetType, name, string.Empty, collectionName));
+                                    }
+                                }
+                                else
+                                {
+                                    ////TODO: Check for TargetType with CollectionAttribute
+                                    //var collectionTypeAttribute = compilation.GetTypeByMetadataName("DevExpress.Persistent.Base.CollectionAttribute");
+                                    //if (collectionTypeAttribute is not null)
+                                    //{
+                                    //    var collectionAttribute = member.GetAttributes().FirstOrDefault(attr => attr.AttributeClass?.ToDisplayString() == "DevExpress.Persistent.Base.CollectionAttribute");
+                                    //    if (collectionAttribute is not null)
+                                    //    {
+                                    //    }
+                                    //}
+                                }
+                            }
                         }
                     }
 
@@ -445,6 +561,20 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                             using (builder.OpenBrace($"if(this.{builderMappedMember.WasCalledNameBuilder})"))
                             {
                                 builder.WriteLine($"this.With{builderMappedMember.Name}(this.{builderMappedMember.NameBuilder}.Build());");
+                            }
+                        }
+                        else if (mappedMember is BuilderCollectionMappedMember builderCollectionMappedMember)
+                        {
+                            using (builder.OpenBrace($"foreach({builderCollectionMappedMember.BuilderType} item in this.{builderCollectionMappedMember.CollectionName})"))
+                            {
+                                builder.WriteLine($"this.With{builderCollectionMappedMember.Name}(item);");
+                            }
+                        }
+                        else if (mappedMember is CollectionMappedMember collectionMappedMember)
+                        {
+                            using (builder.OpenBrace($"foreach({collectionMappedMember.Type.ToDisplayString()} item in this.{collectionMappedMember.CollectionName})"))
+                            {
+                                builder.WriteLine($"this.{collectionMappedMember.Name}.Add(item);");
                             }
                         }
                         else

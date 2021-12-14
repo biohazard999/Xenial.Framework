@@ -176,7 +176,7 @@ namespace MyProject
         [Key(AutoGenerate = true)]
         public int KeyProperty { get; set; }
 
-        public string OwnStringProperty { get; set;}
+        public string OwnStringProperty { get; set; }
     }
 }");
 
@@ -197,7 +197,7 @@ namespace MyProject
         [Key(AutoGenerate = false)]
         public int KeyProperty { get; set; }
 
-        public string OwnStringProperty { get; set;}
+        public string OwnStringProperty { get; set; }
     }
 }");
 
@@ -218,7 +218,7 @@ namespace MyProject
         [Key(true)]
         public int KeyProperty { get; set; }
 
-        public string OwnStringProperty { get; set;}
+        public string OwnStringProperty { get; set; }
     }
 }");
 
@@ -239,7 +239,7 @@ namespace MyProject
         [Key(false)]
         public int KeyProperty { get; set; }
 
-        public string OwnStringProperty { get; set;}
+        public string OwnStringProperty { get; set; }
     }
 }");
 
@@ -260,7 +260,7 @@ namespace MyProject
         [Key]
         public int KeyProperty { get; set; }
 
-        public string OwnStringProperty { get; set;}
+        public string OwnStringProperty { get; set; }
     }
 }");
 
@@ -277,7 +277,7 @@ namespace MyProject
         public BasicXpoParent(Session session)
             : base(session) { }
 
-        public string ParentStringProperty { get; set;}
+        public string ParentStringProperty { get; set; }
     }
 
     [XenialXpoBuilder]
@@ -286,7 +286,7 @@ namespace MyProject
         public BasicXpoWithoutParentBuilder(Session session)
             : base(session) { }
 
-        public string OwnStringProperty { get; set;}
+        public string OwnStringProperty { get; set; }
     }
 }");
 
@@ -304,7 +304,7 @@ namespace MyProject
         public BasicXpoGrantParent(Session session)
             : base(session) { }
 
-        public string GrandParentStringProperty { get; set;}
+        public string GrandParentStringProperty { get; set; }
     }
 
     public class BasicXpoParent : BasicXpoGrantParent
@@ -312,7 +312,7 @@ namespace MyProject
         public BasicXpoParent(Session session)
             : base(session) { }
 
-        public string ParentStringProperty { get; set;}
+        public string ParentStringProperty { get; set; }
     }
 
     [XenialXpoBuilder]
@@ -321,7 +321,7 @@ namespace MyProject
         public BasicXpoWithoutParentBuilder(Session session)
             : base(session) { }
 
-        public string OwnStringProperty { get; set;}
+        public string OwnStringProperty { get; set; }
     }
 }");
 
@@ -340,7 +340,7 @@ namespace MyProject
         public BasicXpo(Session session)
             : base(session) { }
 
-        public string OwnStringProperty { get; set;}
+        public string OwnStringProperty { get; set; }
     }
 
     [XenialXpoBuilder]
@@ -349,7 +349,7 @@ namespace MyProject
         public BasicXpoParent(Session session)
             : base(session) { }
 
-        public string ParentStringProperty { get; set;}
+        public string ParentStringProperty { get; set; }
     }
 }");
 
@@ -368,7 +368,7 @@ namespace MyProject
         public BasicXpo(Session session)
             : base(session) { }
 
-        public string OwnStringProperty { get; set;}
+        public string OwnStringProperty { get; set; }
     }
 
     [XenialXpoBuilder]
@@ -377,7 +377,7 @@ namespace MyProject
         public BasicXpoParent(Session session)
             : base(session) { }
 
-        public string ParentStringProperty { get; set;}
+        public string ParentStringProperty { get; set; }
     }
 
     [XenialXpoBuilder]
@@ -386,7 +386,7 @@ namespace MyProject
         public BasicXpoGrandParent(Session session)
             : base(session) { }
 
-        public string GrantParentStringProperty { get; set;}
+        public string GrantParentStringProperty { get; set; }
     }
 }");
 
@@ -403,7 +403,7 @@ namespace MyProject
         public ReferenceXpo(Session session)
             : base(session) { }
 
-        public string ReferenceStringProperty { get; set;}
+        public string ReferenceStringProperty { get; set; }
     }
 
     [XenialXpoBuilder]
@@ -412,9 +412,9 @@ namespace MyProject
         public XpoObject(Session session)
             : base(session) { }
 
-        public string StringProperty { get; set;}
+        public string StringProperty { get; set; }
 
-        public ReferenceXpo ReferenceProperty { get; set;}
+        public ReferenceXpo ReferenceProperty { get; set; }
     }
 }");
 
@@ -433,7 +433,7 @@ namespace MyProject
         public ReferenceXpo(Session session)
             : base(session) { }
 
-        public string ReferenceStringProperty { get; set;}
+        public string ReferenceStringProperty { get; set; }
     }
 
     [XenialXpoBuilder]
@@ -444,7 +444,39 @@ namespace MyProject
 
         public string StringProperty { get; set;}
 
-        public ReferenceXpo ReferenceProperty { get; set;}
+        public ReferenceXpo ReferenceProperty { get; set; }
+    }
+}");
+
+
+    [Fact]
+    public Task BasicXpoWithCollectionReference()
+        => RunSourceTest("BasicXpoWithCollectionReference.cs",
+    @"using Xenial;
+using DevExpress.Xpo;
+
+namespace MyProject
+{
+    [XenialXpoBuilder]
+    public class ReferenceXpo : XPObject
+    {
+        public ReferenceXpo(Session session)
+            : base(session) { }
+
+        public string ReferenceStringProperty { get; set; }
+
+        public XpoObject Parent { get; set; }
+    }
+
+    [XenialXpoBuilder]
+    public class XpoObject : XPObject
+    {
+        public XpoObject(Session session)
+            : base(session) { }
+
+        public string StringProperty { get; set; }
+
+        public XPCollection<ReferenceXpo> References { get { return GetCollection<ReferenceXpo>(""References""); } }
     }
 }");
 }
