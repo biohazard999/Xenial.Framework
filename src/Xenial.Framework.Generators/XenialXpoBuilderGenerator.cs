@@ -567,14 +567,14 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
                         {
                             using (builder.OpenBrace($"foreach({builderCollectionMappedMember.BuilderType} item in this.{builderCollectionMappedMember.CollectionName})"))
                             {
-                                builder.WriteLine($"this.With{builderCollectionMappedMember.Name}(item);");
+                                builder.WriteLine($"this.With{builderCollectionMappedMember.Name}(item.Build());");
                             }
                         }
                         else if (mappedMember is CollectionMappedMember collectionMappedMember)
                         {
                             using (builder.OpenBrace($"foreach({collectionMappedMember.Type.ToDisplayString()} item in this.{collectionMappedMember.CollectionName})"))
                             {
-                                builder.WriteLine($"this.{collectionMappedMember.Name}.Add(item);");
+                                builder.WriteLine($"target.{collectionMappedMember.Name}.Add(item);");
                             }
                         }
                         else
