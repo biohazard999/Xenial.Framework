@@ -29,6 +29,8 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
     private const string xenialActionAttributeFullName = $"{xenialNamespace}.{xenialActionAttributeName}";
     public const string GenerateXenialActionAttributeMSBuildProperty = $"Generate{xenialActionAttributeName}";
 
+    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
+
     private record XenialMethodGeneratorContext(
         MethodDeclarationSyntax Syntax,
         IMethodSymbol Symbol,

@@ -30,6 +30,7 @@ public class LayoutBuilderGeneratorTests : BaseGeneratorTests<XenialLayoutBuilde
         {
             yield return MetadataReference.CreateFromFile(typeof(DomainComponentAttribute).Assembly.Location);
             yield return MetadataReference.CreateFromFile(typeof(PersistentAttribute).Assembly.Location);
+            yield return MetadataReference.CreateFromFile(typeof(Xenial.Framework.Layouts.LayoutBuilder<>).Assembly.Location);
         }
     }
 
@@ -53,6 +54,19 @@ namespace MyProject
     public class TargetClass { }
 
     public class MyNonPartialClass : LayoutBuilder<TargetClass> { }
+}");
+
+    [Fact]
+    public Task DoesNotEmitDiagnosticIfPartial()
+        => RunSourceTest("MyNonPartialClass.cs",
+@"using Xenial;
+using Xenial.Framework.Layouts;
+
+namespace MyProject
+{
+    public class TargetClass { }
+
+    public partial class MyPartialClass : LayoutBuilder<TargetClass> { }
 }");
 }
 

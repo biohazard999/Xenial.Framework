@@ -26,6 +26,8 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
     private const string fullQualifiedXpoPersistentAttribute = "DevExpress.Xpo.PersistentAttribute";
     private const string fullQualifiedXpoNonPersistentAttribute = "DevExpress.Xpo.NonPersistentAttribute";
 
+    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
+
     public Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
@@ -211,7 +213,7 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
         {
             context.ReportDiagnostic(
                 Diagnostic.Create(
-                    GeneratorDiagnostics.ClassNeedsToBePartial(xenialImageNamesAttributeFullName),
+                    GeneratorDiagnostics.ClassNeedsToBePartialWhenUsingAttribute(xenialImageNamesAttributeFullName),
                     @class.GetLocation()
             ));
 

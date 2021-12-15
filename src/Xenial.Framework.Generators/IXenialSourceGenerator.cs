@@ -14,4 +14,6 @@ public interface IXenialSourceGenerator
         IList<TypeDeclarationSyntax> types,
         IList<string> addedSourceFiles
     );
+
+    bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax);
 }

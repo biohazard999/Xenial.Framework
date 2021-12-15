@@ -26,6 +26,8 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
     private const string fullQualifiedXpoPersistentAttribute = "DevExpress.Xpo.PersistentAttribute";
     private const string fullQualifiedXpoNonPersistentAttribute = "DevExpress.Xpo.NonPersistentAttribute";
 
+    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
+
     public Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,

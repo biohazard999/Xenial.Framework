@@ -26,6 +26,8 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
 
     private const string imagesBaseFolder = "Images";
 
+    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
+
     public Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
@@ -178,7 +180,7 @@ public class XenialImageNamesGenerator : IXenialSourceGenerator
         {
             context.ReportDiagnostic(
                 Diagnostic.Create(
-                    GeneratorDiagnostics.ClassNeedsToBePartial(xenialImageNamesAttributeFullName),
+                    GeneratorDiagnostics.ClassNeedsToBePartialWhenUsingAttribute(xenialImageNamesAttributeFullName),
                     @class.GetLocation()
             ));
 

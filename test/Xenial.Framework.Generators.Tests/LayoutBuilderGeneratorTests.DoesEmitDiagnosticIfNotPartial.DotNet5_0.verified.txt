@@ -1,0 +1,15 @@
+﻿{
+  Diagnostics: [
+    {
+      Id: XENGEN0100,
+      Title: The class deriving from [Xenial.Framework.Layouts.LayoutBuilder<TModelClass>] should be partial,
+      Severity: Warning,
+      WarningLevel: 1,
+      Location: MyNonPartialClass.cs: (7,4)-(7,67),
+      Description: The class deriving from [Xenial.Framework.Layouts.LayoutBuilder<TModelClass>] should be partial,
+      MessageFormat: The class deriving from [Xenial.Framework.Layouts.LayoutBuilder<TModelClass>] should be partial,
+      Message: The class deriving from [Xenial.Framework.Layouts.LayoutBuilder<TModelClass>] should be partial,
+      Category: Usage
+    }
+  ]
+}

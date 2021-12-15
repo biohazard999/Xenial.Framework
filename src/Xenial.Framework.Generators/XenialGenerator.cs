@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -34,7 +35,11 @@ public class XenialGenerator : ISourceGenerator
         {
             if (context.Node is TypeDeclarationSyntax typeDeclarationSyntax)
             {
-                if (typeDeclarationSyntax.AttributeLists.Count > 0 || typeDeclarationSyntax.HasModifier(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))
+                if (
+                    typeDeclarationSyntax.AttributeLists.Count > 0
+                    || typeDeclarationSyntax.HasModifier(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword)
+                    || new XenialGenerator().Generators.Any(generator => generator.Accepts(typeDeclarationSyntax))
+                )
                 {
                     var classSymbol = context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax);
 

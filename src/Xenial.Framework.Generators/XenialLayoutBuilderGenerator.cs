@@ -22,6 +22,25 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
     private const string xenialLayoutBuilderAttributeFullName = $"{xenialNamespace}.{xenialLayoutBuilderAttributeName}";
     public const string GenerateXenialLayoutBuilderAttributeMSBuildProperty = $"Generate{xenialLayoutBuilderAttributeName}";
 
+    private const string layoutBuilderBaseType = "Xenial.Framework.Layouts.LayoutBuilder<TModelClass>";
+
+    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax)
+    {
+        _ = typeDeclarationSyntax ?? throw new ArgumentNullException(nameof(typeDeclarationSyntax));
+
+        if (typeDeclarationSyntax.BaseList is not null)
+        {
+            var baseTypeSyntax = typeDeclarationSyntax.BaseList.Types.OfType<SimpleBaseTypeSyntax>();
+
+            var derivesFromLayoutBuilder = baseTypeSyntax.Select(b => b.Type).OfType<GenericNameSyntax>()
+                .Any(g => g.Identifier.ToFullString().Contains("LayoutBuilder"));
+
+            return derivesFromLayoutBuilder;
+        }
+
+        return false;
+    }
+
     public Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
@@ -50,12 +69,41 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
             context.CancellationToken.ThrowIfCancellationRequested();
 
             var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, generateXenialLayoutBuilderAttribute);
-            if (!isAttributeDeclared || semanticModel is null || @classSymbol is null)
+            if (semanticModel is null || @classSymbol is null)
             {
                 continue;
             }
 
-            var @attribute = GetXenialLayoutBuilderAttribute(@classSymbol, generateXenialLayoutBuilderAttribute);
+            INamedTypeSymbol targetType;
+            if (
+                classSymbol.BaseType is not null
+                && classSymbol.BaseType.IsGenericType
+                && classSymbol.BaseType.OriginalDefinition.ToDisplayString() == layoutBuilderBaseType
+            )
+            {
+                targetType = classSymbol.BaseType.TypeArguments.OfType<INamedTypeSymbol>().FirstOrDefault();
+
+                if (targetType is not null && !@class.HasModifier(SyntaxKind.PartialKeyword))
+                {
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            GeneratorDiagnostics.ClassShouldBePartialWhenDerivingFrom(layoutBuilderBaseType),
+                            @class.GetLocation()
+                        ));
+                    continue;
+                }
+                if (targetType is null)
+                {
+                    continue;
+                }
+            }
+
+            if (!@class.HasModifier(SyntaxKind.PartialKeyword))
+            {
+                continue;
+            }
+
+            //var @attribute = GetXenialLayoutBuilderAttribute(@classSymbol, generateXenialLayoutBuilderAttribute);
 
             var builder = CurlyIndenter.Create();
 
@@ -154,7 +202,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
         {
             context.ReportDiagnostic(
                 Diagnostic.Create(
-                    GeneratorDiagnostics.ClassNeedsToBePartial(xenialLayoutBuilderAttributeFullName),
+                    GeneratorDiagnostics.ClassNeedsToBePartialWhenUsingAttribute(xenialLayoutBuilderAttributeFullName),
                     @class.GetLocation()
             ));
 

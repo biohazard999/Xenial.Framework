@@ -22,7 +22,7 @@ internal static class GeneratorDiagnostics
         description: $"Could not parse boolean MSBUILD variable ({msBuildPropertyName}), make sure it's in a boolean format. Actual value: {actualValue}"
     );
 
-    internal static DiagnosticDescriptor ClassNeedsToBePartial(string attributeName) => new(
+    internal static DiagnosticDescriptor ClassNeedsToBePartialWhenUsingAttribute(string attributeName) => new(
         "XENGEN0100",
         $"The class using the [{attributeName}] needs to be partial",
         $"The class using the [{attributeName}] needs to be partial",
@@ -30,6 +30,16 @@ internal static class GeneratorDiagnostics
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: $"The class using the [{attributeName}] needs to be partial"
+    );
+
+    internal static DiagnosticDescriptor ClassShouldBePartialWhenDerivingFrom(string classType) => new(
+        "XENGEN0100",
+        $"The class deriving from [{classType}] should be partial",
+        $"The class deriving from [{classType}] should be partial",
+        category,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: $"The class deriving from [{classType}] should be partial"
     );
 
     internal static DiagnosticDescriptor ClassShouldBePartial(string attributeName) => new(

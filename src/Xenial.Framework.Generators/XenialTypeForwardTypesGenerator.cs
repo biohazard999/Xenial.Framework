@@ -18,6 +18,8 @@ public record XenialTypeForwardTypesGenerator(bool AddSources = true) : IXenialS
     private const string xenialTypeForwardedTypes = "XenialTypeForwardedTypes";
     public const string GenerateXenialTypeForwardedTypesMSBuildProperty = $"Generate{xenialTypeForwardedTypes}";
 
+    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
+
     public Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
