@@ -18,8 +18,10 @@ namespace Xenial.Framework.Generators;
 public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 {
     private const string xenialLayoutBuilderAttributeName = "XenialLayoutBuilderAttribute";
+    private const string xenialExpandMemberAttributeName = "XenialExpandMemberAttribute";
     private const string xenialNamespace = "Xenial";
     private const string xenialLayoutBuilderAttributeFullName = $"{xenialNamespace}.{xenialLayoutBuilderAttributeName}";
+    private const string xenialExpandMemberAttributeFullName = $"{xenialNamespace}.{xenialExpandMemberAttributeName}";
     public const string GenerateXenialLayoutBuilderAttributeMSBuildProperty = $"Generate{xenialLayoutBuilderAttributeName}";
 
     private const string layoutBuilderBaseType = "Xenial.Framework.Layouts.LayoutBuilder<TModelClass>";
@@ -178,10 +180,21 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         }
                     }
 
+
+
                     if (targetType.GetMembers().OfType<IPropertySymbol>().Any())
                     {
                         builder.WriteLine();
                         var properties = targetType.GetMembers().OfType<IPropertySymbol>().ToList();
+
+                        using (builder.OpenBrace("private partial struct Constants"))
+                        {
+                            foreach (var property in properties)
+                            {
+                                builder.WriteLine($"public const string {property.Name} = \"{property.Name}\";");
+                            }
+                        }
+                        builder.WriteLine();
 
                         using (builder.OpenBrace("private partial struct Property"))
                         {
@@ -344,6 +357,20 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
                 //syntaxWriter.WriteLine("[EditorBrowsable(EditorBrowsableState.Never)]");
                 //syntaxWriter.WriteLine($"public string {AttributeNames.DefaultImageSize} {{ get; set; }} = \"{AttributeNames.DefaultImageSizeValue}\";");
+            }
+
+            syntaxWriter.WriteLine();
+
+            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]");
+
+            using (syntaxWriter.OpenBrace($"{visibility} sealed class XenialExpandMemberAttribute : Attribute"))
+            {
+                syntaxWriter.WriteLine($"public string ExpandMember {{ get; private set; }}");
+                syntaxWriter.WriteLine();
+                using (syntaxWriter.OpenBrace($"{visibility} XenialExpandMemberAttribute(string expandMember)"))
+                {
+                    syntaxWriter.WriteLine($"this.ExpandMember = expandMember;");
+                }
             }
         }
 

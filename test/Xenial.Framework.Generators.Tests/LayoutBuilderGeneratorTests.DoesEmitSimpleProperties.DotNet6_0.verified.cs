@@ -35,6 +35,15 @@ namespace MyProject
             }
         }
         
+        private partial struct Constants
+        {
+            public const string StringProperty = "StringProperty";
+            public const string IntProperty = "IntProperty";
+            public const string BoolProperty = "BoolProperty";
+            public const string ByteProperty = "ByteProperty";
+            public const string DecimalProperty = "DecimalProperty";
+        }
+        
         private partial struct Property
         {
             public static PropertyIdentifier StringProperty { get { return PropertyIdentifier.Create("StringProperty"); } }
