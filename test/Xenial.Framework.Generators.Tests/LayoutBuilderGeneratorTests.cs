@@ -88,6 +88,30 @@ namespace MyProject
 
     public partial class DoesEmitSimpleProperties : LayoutBuilder<TargetClass> { }
 }");
+
+
+    [Fact]
+    public Task DoesEmitSimpleRelation()
+        => RunSourceTest("DoesEmitSimpleRelation.cs",
+@"using System.Collections.Generic;
+using Xenial;
+using Xenial.Framework.Layouts;
+
+namespace MyProject
+{
+    public class ParentClass
+    {
+        public IList<TargetClass> Parents { get; }
+    }
+
+    public class TargetClass
+    {
+        public ParentClass Parent { get; set; }
+    }
+
+    public partial class DoesEmitSimpleRelation : LayoutBuilder<TargetClass> { }
+    public partial class DoesEmitSimpleRelationForParent : LayoutBuilder<ParentClass> { }
+}");
 }
 
 internal static partial class CompilationHelpers

@@ -156,7 +156,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                 ////We also don't need to specify the visibility for partial types
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
-                    using (builder.OpenBrace("private struct PropertyIdentifier"))
+                    using (builder.OpenBrace("private class PropertyIdentifier"))
                     {
                         builder.WriteLine("private string propertyName;");
                         builder.WriteLine("public string PropertyName { get { return this.propertyName; } }");
@@ -187,7 +187,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         builder.WriteLine();
                         var properties = targetType.GetMembers().OfType<IPropertySymbol>().ToList();
 
-                        using (builder.OpenBrace("private partial struct Constants"))
+                        using (builder.OpenBrace("private static partial class Constants"))
                         {
                             foreach (var property in properties)
                             {
@@ -196,7 +196,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         }
                         builder.WriteLine();
 
-                        using (builder.OpenBrace("private partial struct Property"))
+                        using (builder.OpenBrace("private static partial class Property"))
                         {
                             foreach (var property in properties)
                             {
@@ -206,7 +206,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         }
 
                         builder.WriteLine();
-                        using (builder.OpenBrace("private partial struct Editor"))
+                        using (builder.OpenBrace("private static partial class Editor"))
                         {
                             foreach (var property in properties)
                             {
@@ -229,7 +229,9 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
         Compilation compilation,
         TypeDeclarationSyntax @class,
         CurlyIndenter builder,
-        IList<string> addedSourceFiles
+        IList<string> addedSourceFiles,
+        string? hintName = null,
+        bool emitFile = true
     )
     {
         var syntax = builder.ToString();
@@ -242,12 +244,28 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
             fileName = Guid.NewGuid().ToString();
         }
 
-        var hintName = $"{fileName}.g.cs";
+        hintName = string.IsNullOrEmpty(hintName) ? $"{fileName}.{@class.Identifier}.g.cs" : $"{@class.Identifier}.{hintName}.g.cs";
+
         if (!addedSourceFiles.Contains(hintName))
         {
-            context.AddSource(hintName, source);
-            return compilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken));
+            addedSourceFiles.Add(hintName);
+            if (emitFile)
+            {
+                context.AddSource(hintName, source);
+            }
+
+            var syntaxTree = CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken);
+
+            return compilation.AddSyntaxTrees(syntaxTree);
         }
+
+        //context.ReportDiagnostic(
+        //    Diagnostic.Create(
+        //        GeneratorDiagnostics.ConflictingClasses(
+        //            xenialActionAttributeName,
+        //            @class.ToString()
+        //        ), @class.GetLocation()
+        //    ));
 
         return compilation;
     }
