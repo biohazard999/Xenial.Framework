@@ -183,7 +183,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         builder.WriteLine();
                         var properties = targetType.GetMembers().OfType<IPropertySymbol>().ToList();
 
-                        using (builder.OpenBrace("private struct Property"))
+                        using (builder.OpenBrace("private partial struct Property"))
                         {
                             foreach (var property in properties)
                             {
@@ -193,7 +193,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         }
 
                         builder.WriteLine();
-                        using (builder.OpenBrace("private struct Editor"))
+                        using (builder.OpenBrace("private partial struct Editor"))
                         {
                             foreach (var property in properties)
                             {

@@ -35,7 +35,7 @@ namespace MyProject
             }
         }
         
-        private struct Property
+        private partial struct Property
         {
             public static PropertyIdentifier StringProperty { get { return PropertyIdentifier.Create("StringProperty"); } }
             
@@ -49,7 +49,7 @@ namespace MyProject
             
         }
         
-        private struct Editor
+        private partial struct Editor
         {
             public static LayoutPropertyEditorItem StringProperty { get { return LayoutPropertyEditorItem.Create("StringProperty"); } }
             
