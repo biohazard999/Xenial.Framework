@@ -83,6 +83,11 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
             {
                 targetType = classSymbol.BaseType.TypeArguments.OfType<INamedTypeSymbol>().FirstOrDefault();
 
+                if (targetType is not null && @class.HasModifier(SyntaxKind.AbstractKeyword))
+                {
+                    continue;
+                }
+
                 if (targetType is not null && !@class.HasModifier(SyntaxKind.PartialKeyword))
                 {
                     context.ReportDiagnostic(
