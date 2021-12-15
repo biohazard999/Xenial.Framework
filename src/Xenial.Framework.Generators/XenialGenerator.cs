@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using Microsoft.CodeAnalysis;
@@ -67,12 +68,33 @@ public class XenialGenerator : ISourceGenerator
         foreach (var generator in Generators)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
-            compilation = generator.Execute(context, compilation, syntaxReceiver.Types, addedSourceFiles);
+#if DEBUG
+            try
+            {
+#endif
+                compilation = generator.Execute(context, compilation, syntaxReceiver.Types, addedSourceFiles);
+#if DEBUG
+            }
+            catch (ArgumentException)
+            {
+                if (!Debugger.IsAttached)
+                {
+                    Debugger.Launch();
+                }
+            }
+#endif
         }
     }
 
     private static void CheckForDebugger(GeneratorExecutionContext context)
     {
+        //if (System.Diagnostics.Debugger.IsAttached)
+        //{
+        //    return;
+        //}
+
+        //System.Diagnostics.Debugger.Launch();
+
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{xenialDebugSourceGenerators}", out var xenialDebugSourceGeneratorsAttrString))
         {
             if (bool.TryParse(xenialDebugSourceGeneratorsAttrString, out var xenialDebugSourceGeneratorsBool))

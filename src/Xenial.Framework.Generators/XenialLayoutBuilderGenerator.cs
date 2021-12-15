@@ -74,10 +74,18 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                 continue;
             }
 
+            if (
+                classSymbol.BaseType is null
+                || !classSymbol.BaseType.IsGenericType
+                || classSymbol.BaseType.OriginalDefinition.ToDisplayString() != layoutBuilderBaseType
+            )
+            {
+                continue;
+            }
+
             INamedTypeSymbol targetType;
             if (
-                classSymbol.BaseType is not null
-                && classSymbol.BaseType.IsGenericType
+                classSymbol.BaseType.IsGenericType
                 && classSymbol.BaseType.OriginalDefinition.ToDisplayString() == layoutBuilderBaseType
             )
             {
