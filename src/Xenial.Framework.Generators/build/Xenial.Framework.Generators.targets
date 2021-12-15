@@ -17,6 +17,7 @@
       <GenerateXenialImageNamesAttribute Condition="'$(GenerateXenialImageNamesAttribute)' == ''">true</GenerateXenialImageNamesAttribute>
       <GenerateXenialActionAttribute Condition="'$(GenerateXenialActionAttribute)' == ''">true</GenerateXenialActionAttribute>
       <GenerateXenialViewIdsAttribute Condition="'$(GenerateXenialViewIdsAttribute)' == ''">true</GenerateXenialViewIdsAttribute>
+      <GenerateXenialLayoutBuilderAttribute Condition="'$(GenerateXenialLayoutBuilderAttribute)' == ''">true</GenerateXenialLayoutBuilderAttribute>
       <GenerateXenialTypeForwardedTypes Condition="'$(GenerateXenialTypeForwardedTypes)' == ''">true</GenerateXenialTypeForwardedTypes>
       
 
@@ -30,6 +31,7 @@
       <CompilerVisibleProperty Include="GenerateXenialXpoBuilderAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialActionAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialViewIdsAttribute" />
+      <CompilerVisibleProperty Include="GenerateXenialLayoutBuilderAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialTypeForwardedTypes" />
       <CompilerVisibleProperty Include="XenialAttributesVisibility" />
       <CompilerVisibleProperty Include="XenialDebugSourceGenerators" />

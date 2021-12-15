@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 
 using DevExpress.ExpressApp.Layout;
 
-using Xenial.Framework.Layouts.ColumnItems;
 using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Layouts.Items.LeafNodes;

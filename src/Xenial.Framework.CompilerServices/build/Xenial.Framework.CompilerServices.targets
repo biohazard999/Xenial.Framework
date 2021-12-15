@@ -8,6 +8,7 @@
       <GenerateXenialActionAttribute Condition="'$(GenerateXenialActionAttribute)' == ''">false</GenerateXenialActionAttribute>
       <GenerateXenialTypeForwardedTypes Condition="'$(GenerateXenialTypeForwardedTypes)' == ''">false</GenerateXenialTypeForwardedTypes>
       <GenerateXenialViewIdsAttribute Condition="'$(GenerateXenialViewIdsAttribute)' == ''">false</GenerateXenialViewIdsAttribute>
+      <GenerateXenialLayoutBuilderAttribute Condition="'$(GenerateXenialLayoutBuilderAttribute)' == ''">false</GenerateXenialLayoutBuilderAttribute>
     </PropertyGroup>
 
   </Target>

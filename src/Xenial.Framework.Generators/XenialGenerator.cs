@@ -19,7 +19,8 @@ public class XenialGenerator : ISourceGenerator
         new XenialViewIdsGenerator(),
         new XenialImageNamesGenerator(),
         new XenialXpoBuilderGenerator(),
-        new XenialActionGenerator(new())
+        new XenialActionGenerator(new()),
+        new XenialLayoutBuilderGenerator()
     };
 
     public void Initialize(GeneratorInitializationContext context)

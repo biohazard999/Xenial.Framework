@@ -3,8 +3,6 @@
 #pragma warning disable IDE1006 // Naming Styles
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Templates;

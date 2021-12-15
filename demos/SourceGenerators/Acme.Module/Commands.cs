@@ -13,6 +13,7 @@ namespace Acme.Module.Commands;
 [DomainComponent]
 public class DomainComponent
 {
+
 }
 
 [XenialAction(
