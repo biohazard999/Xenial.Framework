@@ -148,7 +148,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                 ////We also don't need to specify the visibility for partial types
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
-                    using (builder.OpenBrace("private class PropertyIdentifier"))
+                    using (builder.OpenBrace("private struct PropertyIdentifier"))
                     {
                         builder.WriteLine("private string propertyName;");
                         builder.WriteLine("public string PropertyName { get { return this.propertyName; } }");
@@ -169,6 +169,19 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         using (builder.OpenBrace("public static PropertyIdentifier Create(string propertyName)"))
                         {
                             builder.WriteLine("return new PropertyIdentifier(propertyName);");
+                        }
+                    }
+
+                    if (classSymbol.GetMembers().OfType<IPropertySymbol>().Any())
+                    {
+                        using (builder.OpenBrace("private struct Property"))
+                        {
+
+                        }
+
+                        using (builder.OpenBrace("private struct Editor"))
+                        {
+
                         }
                     }
                 }
