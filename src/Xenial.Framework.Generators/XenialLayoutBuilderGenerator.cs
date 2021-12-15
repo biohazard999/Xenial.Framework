@@ -83,7 +83,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                 continue;
             }
 
-            INamedTypeSymbol targetType;
+            INamedTypeSymbol? targetType = null;
             if (
                 classSymbol.BaseType.IsGenericType
                 && classSymbol.BaseType.OriginalDefinition.ToDisplayString() == layoutBuilderBaseType
@@ -105,13 +105,14 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         ));
                     continue;
                 }
-                if (targetType is null)
-                {
-                    continue;
-                }
             }
 
             if (@class.HasModifier(SyntaxKind.AbstractKeyword) || !@class.HasModifier(SyntaxKind.PartialKeyword))
+            {
+                continue;
+            }
+
+            if (targetType is null)
             {
                 continue;
             }
@@ -124,6 +125,11 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
             builder.WriteLine();
             builder.WriteLine("using System;");
             builder.WriteLine("using System.Runtime.CompilerServices;");
+            builder.WriteLine();
+            builder.WriteLine("using Xenial.Framework.Layouts;");
+            builder.WriteLine("using Xenial.Framework.Layouts.Items;");
+            builder.WriteLine("using Xenial.Framework.Layouts.Items.Base;");
+            builder.WriteLine("using Xenial.Framework.Layouts.Items.LeafNodes;");
             builder.WriteLine();
 
             var isGlobalNamespace = classSymbol.ContainingNamespace.ToString() == "<global namespace>";
@@ -172,16 +178,28 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         }
                     }
 
-                    if (classSymbol.GetMembers().OfType<IPropertySymbol>().Any())
+                    if (targetType.GetMembers().OfType<IPropertySymbol>().Any())
                     {
+                        builder.WriteLine();
+                        var properties = targetType.GetMembers().OfType<IPropertySymbol>().ToList();
+
                         using (builder.OpenBrace("private struct Property"))
                         {
-
+                            foreach (var property in properties)
+                            {
+                                builder.WriteLine($"public static PropertyIdentifier {property.Name} {{ get {{ return PropertyIdentifier.Create(\"{property.Name}\"); }} }}");
+                                builder.WriteLine();
+                            }
                         }
 
+                        builder.WriteLine();
                         using (builder.OpenBrace("private struct Editor"))
                         {
-
+                            foreach (var property in properties)
+                            {
+                                builder.WriteLine($"public static LayoutPropertyEditorItem {property.Name} {{ get {{ return LayoutPropertyEditorItem.Create(\"{property.Name}\"); }} }}");
+                                builder.WriteLine();
+                            }
                         }
                     }
                 }

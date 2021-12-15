@@ -68,6 +68,26 @@ namespace MyProject
 
     public partial class MyPartialClass : LayoutBuilder<TargetClass> { }
 }");
+
+    [Fact]
+    public Task DoesEmitSimpleProperties()
+        => RunSourceTest("DoesEmitSimpleProperties.cs",
+@"using Xenial;
+using Xenial.Framework.Layouts;
+
+namespace MyProject
+{
+    public class TargetClass
+    {
+        public string StringProperty { get; set; }
+        public int IntProperty { get; set; }
+        public bool BoolProperty { get; set; }
+        public byte[] ByteProperty { get; set; }
+        public decimal DecimalProperty { get; set; }
+    }
+
+    public partial class DoesEmitSimpleProperties : LayoutBuilder<TargetClass> { }
+}");
 }
 
 internal static partial class CompilationHelpers
