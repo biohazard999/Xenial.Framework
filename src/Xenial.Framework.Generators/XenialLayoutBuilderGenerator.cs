@@ -103,7 +103,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                 }
             }
 
-            if (!@class.HasModifier(SyntaxKind.PartialKeyword))
+            if (@class.HasModifier(SyntaxKind.AbstractKeyword) || !@class.HasModifier(SyntaxKind.PartialKeyword))
             {
                 continue;
             }
@@ -134,17 +134,36 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
             var visibility = context.GetDefaultAttributeModifier();
             using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
             {
-                //builder.WriteLine("[CompilerGenerated]");
+                builder.WriteLine("[CompilerGenerated]");
                 ////We don't need to specify any other modifier
                 ////because the user can decide if he want it to be an instance type.
                 ////We also don't need to specify the visibility for partial types
-                //using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
-                //{
-                //    foreach (var viewId in collectedViewIds)
-                //    {
-                //        builder.WriteLine($"{visibility} const string {viewId} = \"{viewId}\";");
-                //    }
-                //}
+                using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
+                {
+                    using (builder.OpenBrace("private class PropertyIdentifier"))
+                    {
+                        builder.WriteLine("private string propertyName;");
+                        builder.WriteLine("public string PropertyName { get { return this.propertyName; } }");
+                        builder.WriteLine();
+
+                        using (builder.OpenBrace("private PropertyIdentifier(string propertyName)"))
+                        {
+                            builder.WriteLine("this.propertyName = propertyName;");
+                        }
+                        builder.WriteLine();
+
+                        using (builder.OpenBrace("public static implicit operator string(PropertyIdentifier identifier)"))
+                        {
+                            builder.WriteLine("return identifier.PropertyName;");
+                        }
+                        builder.WriteLine();
+
+                        using (builder.OpenBrace("public static PropertyIdentifier Create(string propertyName)"))
+                        {
+                            builder.WriteLine("return new PropertyIdentifier(propertyName);");
+                        }
+                    }
+                }
             }
 
             compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles);
