@@ -293,6 +293,49 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                     }
                     builder.WriteLine();
 
+                    using (builder.OpenBrace("private partial struct Property"))
+                    {
+                        foreach (var property in properties)
+                        {
+                            var isExpanded = expandMembers.Contains(property.Name);
+                            if (isExpanded)
+                            {
+                                var expandedType = property.Type;
+                                var expandedProperties = expandedType.GetMembers().OfType<IPropertySymbol>().ToList();
+                                using (builder.OpenBrace($"public partial struct _{property.Name}"))
+                                {
+                                    foreach (var expandedProperty in expandedProperties)
+                                    {
+                                        builder.WriteLine($"public static PropertyIdentifier {expandedProperty.Name} {{ get {{ return PropertyIdentifier.Create(\"{property.Name}.{expandedProperty.Name}\"); }} }}");
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    builder.WriteLine();
+
+                    using (builder.OpenBrace("private partial struct Editor"))
+                    {
+                        foreach (var property in properties)
+                        {
+                            var isExpanded = expandMembers.Contains(property.Name);
+                            if (isExpanded)
+                            {
+                                var expandedType = property.Type;
+                                var expandedProperties = expandedType.GetMembers().OfType<IPropertySymbol>().ToList();
+                                using (builder.OpenBrace($"public partial struct _{property.Name}"))
+                                {
+                                    foreach (var expandedProperty in expandedProperties)
+                                    {
+                                        builder.WriteLine($"public static LayoutPropertyEditorItem {expandedProperty.Name} {{ get {{ return LayoutPropertyEditorItem.Create(\"{property.Name}.{expandedProperty.Name}\"); }} }}");
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    builder.WriteLine();
                 }
             }
         }
