@@ -267,10 +267,6 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
             using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
             {
-                builder.WriteLine("[CompilerGenerated]");
-                ////We don't need to specify any other modifier
-                ////because the user can decide if he want it to be an instance type.
-                ////We also don't need to specify the visibility for partial types
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
                     builder.WriteLine();
