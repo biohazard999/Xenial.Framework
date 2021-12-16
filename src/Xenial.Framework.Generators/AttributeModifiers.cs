@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Microsoft.CodeAnalysis;
@@ -201,6 +202,17 @@ public static class TypeSymbolExtensions
         _ = symbol ?? throw new ArgumentNullException(nameof(symbol));
 
         return symbol.GetAttributes().First(m =>
+            m.AttributeClass is not null
+            //We can safely compare with ToString because it represents just the NamedTypeSymbol, not the attributes or overloads
+            && m.AttributeClass.ToString() == attributeSymbol.ToString()
+        );
+    }
+
+    public static IEnumerable<AttributeData> GetAttributes(this INamedTypeSymbol symbol, INamedTypeSymbol attributeSymbol)
+    {
+        _ = symbol ?? throw new ArgumentNullException(nameof(symbol));
+
+        return symbol.GetAttributes().Where(m =>
             m.AttributeClass is not null
             //We can safely compare with ToString because it represents just the NamedTypeSymbol, not the attributes or overloads
             && m.AttributeClass.ToString() == attributeSymbol.ToString()

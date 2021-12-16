@@ -59,8 +59,9 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
         compilation = GenerateAttribute(context, compilation);
 
         var generateXenialLayoutBuilderAttribute = compilation.GetTypeByMetadataName(xenialLayoutBuilderAttributeFullName);
+        var xenialExpandMemberAttribute = compilation.GetTypeByMetadataName(xenialExpandMemberAttributeFullName);
 
-        if (generateXenialLayoutBuilderAttribute is null)
+        if (generateXenialLayoutBuilderAttribute is null || xenialExpandMemberAttribute is null)
         {
             //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
             return compilation;
@@ -156,7 +157,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                 ////We also don't need to specify the visibility for partial types
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
-                    using (builder.OpenBrace("private class PropertyIdentifier"))
+                    using (builder.OpenBrace("private struct PropertyIdentifier"))
                     {
                         builder.WriteLine("private string propertyName;");
                         builder.WriteLine("public string PropertyName { get { return this.propertyName; } }");
@@ -180,14 +181,12 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         }
                     }
 
-
-
                     if (targetType.GetMembers().OfType<IPropertySymbol>().Any())
                     {
                         builder.WriteLine();
                         var properties = targetType.GetMembers().OfType<IPropertySymbol>().ToList();
 
-                        using (builder.OpenBrace("private static partial class Constants"))
+                        using (builder.OpenBrace("private partial struct Constants"))
                         {
                             foreach (var property in properties)
                             {
@@ -196,7 +195,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         }
                         builder.WriteLine();
 
-                        using (builder.OpenBrace("private static partial class Property"))
+                        using (builder.OpenBrace("private partial struct Property"))
                         {
                             foreach (var property in properties)
                             {
@@ -206,7 +205,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         }
 
                         builder.WriteLine();
-                        using (builder.OpenBrace("private static partial class Editor"))
+                        using (builder.OpenBrace("private partial struct Editor"))
                         {
                             foreach (var property in properties)
                             {
@@ -218,7 +217,88 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                 }
             }
 
+            compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, emitFile: false);
+
+            compilation = AddExpandedFields(compilation, xenialExpandMemberAttribute, classSymbol, targetType, builder);
+
             compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles);
+        }
+
+        return compilation;
+    }
+
+    private static Compilation AddExpandedFields(
+        Compilation compilation,
+        INamedTypeSymbol xenialExpandMemberAttribute,
+        INamedTypeSymbol? classSymbol,
+        INamedTypeSymbol? targetType,
+        CurlyIndenter builder
+    )
+    {
+        if (targetType is null || classSymbol is null)
+        {
+            return compilation;
+        }
+
+        targetType = compilation.GetTypeByMetadataName(targetType.ToDisplayString());
+        classSymbol = compilation.GetTypeByMetadataName(classSymbol.ToDisplayString());
+
+        if (targetType is null || classSymbol is null)
+        {
+            return compilation;
+        }
+
+        if (targetType.GetMembers().OfType<IPropertySymbol>().Any())
+        {
+            var properties = targetType.GetMembers().OfType<IPropertySymbol>().ToList();
+            var expandMemberAttributes = classSymbol.GetAttributes(xenialExpandMemberAttribute).ToList();
+            var expandMembers = expandMemberAttributes.Select(a => a.ConstructorArguments[0].Value!.ToString()).ToList();
+            if (expandMembers.Count <= 0)
+            {
+                return compilation;
+            }
+
+            var hasExpandedMembers = properties.Select(m => m.Name).Any(member => expandMembers.Contains(member));
+
+            if (!hasExpandedMembers)
+            {
+                return compilation;
+            }
+
+            using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
+            {
+                builder.WriteLine("[CompilerGenerated]");
+                ////We don't need to specify any other modifier
+                ////because the user can decide if he want it to be an instance type.
+                ////We also don't need to specify the visibility for partial types
+                using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
+                {
+                    builder.WriteLine();
+
+                    using (builder.OpenBrace("private partial struct Constants"))
+                    {
+                        foreach (var property in properties)
+                        {
+                            var isExpanded = expandMembers.Contains(property.Name);
+                            if (isExpanded)
+                            {
+                                var expandedType = property.Type;
+                                var expandedProperties = expandedType.GetMembers().OfType<IPropertySymbol>().ToList();
+                                using (builder.OpenBrace($"public partial struct _{property.Name}"))
+                                {
+                                    foreach (var expandedProperty in expandedProperties)
+                                    {
+                                        builder.WriteLine($"public const string {expandedProperty.Name} = \"{property.Name}.{expandedProperty.Name}\";");
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    builder.WriteLine();
+
+                }
+            }
         }
 
         return compilation;
@@ -246,18 +326,18 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
         hintName = string.IsNullOrEmpty(hintName) ? $"{fileName}.{@class.Identifier}.g.cs" : $"{@class.Identifier}.{hintName}.g.cs";
 
-        if (!addedSourceFiles.Contains(hintName))
+        if (emitFile)
         {
-            addedSourceFiles.Add(hintName);
-            if (emitFile)
+            if (!addedSourceFiles.Contains(hintName))
             {
+                addedSourceFiles.Add(hintName);
                 context.AddSource(hintName, source);
             }
-
-            var syntaxTree = CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken);
-
-            return compilation.AddSyntaxTrees(syntaxTree);
         }
+
+        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken);
+
+        return compilation.AddSyntaxTrees(syntaxTree);
 
         //context.ReportDiagnostic(
         //    Diagnostic.Create(

@@ -112,6 +112,30 @@ namespace MyProject
     public partial class DoesEmitSimpleRelation : LayoutBuilder<TargetClass> { }
     public partial class DoesEmitSimpleRelationForParent : LayoutBuilder<ParentClass> { }
 }");
+
+
+    [Fact]
+    public Task DoesExpandMembers()
+        => RunSourceTest("DoesExpandConstants.cs",
+@"using System.Collections.Generic;
+using Xenial;
+using Xenial.Framework.Layouts;
+
+namespace MyProject
+{
+    public class ParentClass
+    {
+        public IList<TargetClass> Parents { get; }
+    }
+
+    public class TargetClass
+    {
+        public ParentClass Parent { get; set; }
+    }
+
+    [XenialExpandMember(Constants.Parent)]
+    public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
+}");
 }
 
 internal static partial class CompilationHelpers
