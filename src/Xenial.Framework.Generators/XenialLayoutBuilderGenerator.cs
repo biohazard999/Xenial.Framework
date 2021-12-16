@@ -203,8 +203,8 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                                 builder.WriteLine();
                             }
                         }
-
                         builder.WriteLine();
+
                         using (builder.OpenBrace("private partial struct Editor"))
                         {
                             foreach (var property in properties)
@@ -269,8 +269,6 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
             {
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
-                    builder.WriteLine();
-
                     using (builder.OpenBrace("private partial struct Constants"))
                     {
                         foreach (var property in properties)
@@ -335,7 +333,6 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
                         }
                     }
-                    builder.WriteLine();
                 }
             }
         }
