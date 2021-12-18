@@ -219,7 +219,19 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
             compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, emitFile: false);
 
-            compilation = AddExpandedFields(compilation, xenialExpandMemberAttribute, classSymbol, targetType, builder);
+            var exandedFields = new List<string>();
+
+            compilation = AddExpandedFields(
+                context,
+                compilation,
+                @class,
+                xenialExpandMemberAttribute,
+                classSymbol,
+                targetType,
+                builder,
+                exandedFields,
+                addedSourceFiles
+            );
 
             compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles);
         }
@@ -228,11 +240,16 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
     }
 
     private static Compilation AddExpandedFields(
+        GeneratorExecutionContext context,
         Compilation compilation,
+        TypeDeclarationSyntax @class,
         INamedTypeSymbol xenialExpandMemberAttribute,
         INamedTypeSymbol? classSymbol,
         INamedTypeSymbol? targetType,
-        CurlyIndenter builder
+        CurlyIndenter builder,
+        List<string> expandedFields,
+        IList<string> addedSourceFiles,
+        string? parentPrefix = null
     )
     {
         if (targetType is null || classSymbol is null)
@@ -248,96 +265,142 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
             return compilation;
         }
 
-        if (targetType.GetMembers().OfType<IPropertySymbol>().Any())
+        var expandMemberAttributes = classSymbol.GetAttributes(xenialExpandMemberAttribute).ToList();
+
+        var expandMembers = expandMemberAttributes
+            .Where(a => a.ConstructorArguments.Length > 0)
+            .Select(a => a.ConstructorArguments[0].Value!.ToString())
+            .Where(expandMember => !expandedFields.Contains(expandMember))
+            .ToList();
+
+        if (expandMembers.Count <= 0)
         {
-            var properties = targetType.GetMembers().OfType<IPropertySymbol>().ToList();
-            var expandMemberAttributes = classSymbol.GetAttributes(xenialExpandMemberAttribute).ToList();
-            var expandMembers = expandMemberAttributes.Select(a => a.ConstructorArguments[0].Value!.ToString()).ToList();
-            if (expandMembers.Count <= 0)
-            {
-                return compilation;
-            }
+            return compilation;
+        }
 
-            var hasExpandedMembers = properties.Select(m => m.Name).Any(member => expandMembers.Contains(member));
+        foreach (var expandMember in expandMembers)
+        {
+            var expandMemberParts = expandMember.Split('.');
 
-            if (!hasExpandedMembers)
+            static (IEnumerable<string>, IEnumerable<IPropertySymbol>) FindMemberTrain(INamedTypeSymbol targetType, string[] expandMemberParts)
             {
-                return compilation;
-            }
-
-            using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
-            {
-                using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
+                var typeToExpandMembers = targetType;
+                foreach (var expandMemberPart in expandMemberParts)
                 {
-                    using (builder.OpenBrace("private partial struct Constants"))
+                    var foundPart = typeToExpandMembers.GetMembers().OfType<IPropertySymbol>().FirstOrDefault(m => m.Name == expandMemberPart);
+                    if (foundPart is not null && foundPart.Type is INamedTypeSymbol namedType)
                     {
-                        foreach (var property in properties)
-                        {
-                            var isExpanded = expandMembers.Contains(property.Name);
-                            if (isExpanded)
-                            {
-                                var expandedType = property.Type;
-                                var expandedProperties = expandedType.GetMembers().OfType<IPropertySymbol>().ToList();
-                                using (builder.OpenBrace($"public partial struct _{property.Name}"))
-                                {
-                                    foreach (var expandedProperty in expandedProperties)
-                                    {
-                                        builder.WriteLine($"public const string {expandedProperty.Name} = \"{property.Name}.{expandedProperty.Name}\";");
-                                    }
-                                }
-                            }
-
-                        }
+                        typeToExpandMembers = namedType;
                     }
-                    builder.WriteLine();
+                }
 
-                    using (builder.OpenBrace("private partial struct Property"))
+                return (
+                    expandMemberParts.ToArray(),
+                    typeToExpandMembers.GetMembers().OfType<IPropertySymbol>().ToArray()
+                );
+            }
+
+            var (parents, properties) = FindMemberTrain(targetType, expandMemberParts);
+
+            if (parents.Any() && properties.Any())
+            {
+                using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
+                {
+                    using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                     {
-                        foreach (var property in properties)
+                        using (builder.OpenBrace("private partial struct Constants"))
                         {
-                            var isExpanded = expandMembers.Contains(property.Name);
-                            if (isExpanded)
+                            using (WriteParentClassTrain(builder, parents))
                             {
-                                var expandedType = property.Type;
-                                var expandedProperties = expandedType.GetMembers().OfType<IPropertySymbol>().ToList();
-                                using (builder.OpenBrace($"public partial struct _{property.Name}"))
-                                {
-                                    foreach (var expandedProperty in expandedProperties)
-                                    {
-                                        builder.WriteLine($"public static PropertyIdentifier {expandedProperty.Name} {{ get {{ return PropertyIdentifier.Create(\"{property.Name}.{expandedProperty.Name}\"); }} }}");
-                                    }
-                                }
+                                WritePropertyConstants(builder, properties, parents);
                             }
-
                         }
-                    }
-                    builder.WriteLine();
+                        builder.WriteLine();
 
-                    using (builder.OpenBrace("private partial struct Editor"))
-                    {
-                        foreach (var property in properties)
+                        using (builder.OpenBrace("private partial struct Property"))
                         {
-                            var isExpanded = expandMembers.Contains(property.Name);
-                            if (isExpanded)
+                            using (WriteParentClassTrain(builder, parents))
                             {
-                                var expandedType = property.Type;
-                                var expandedProperties = expandedType.GetMembers().OfType<IPropertySymbol>().ToList();
-                                using (builder.OpenBrace($"public partial struct _{property.Name}"))
-                                {
-                                    foreach (var expandedProperty in expandedProperties)
-                                    {
-                                        builder.WriteLine($"public static LayoutPropertyEditorItem {expandedProperty.Name} {{ get {{ return LayoutPropertyEditorItem.Create(\"{property.Name}.{expandedProperty.Name}\"); }} }}");
-                                    }
-                                }
+                                WritePropertyIdentitfiers(builder, properties, parents);
                             }
+                        }
+                        builder.WriteLine();
 
+                        using (builder.OpenBrace("private partial struct Editor"))
+                        {
+                            using (WriteParentClassTrain(builder, parents))
+                            {
+                                WritePropertyLayoutItems(builder, properties, parents);
+                            }
                         }
                     }
                 }
             }
+            compilation = AddGeneratedCode(
+                context,
+                compilation,
+                @class,
+                builder,
+                addedSourceFiles,
+                emitFile: false
+            );
+
+            return AddExpandedFields(context, compilation, @class, xenialExpandMemberAttribute, classSymbol, targetType, builder, expandedFields, addedSourceFiles);
         }
 
         return compilation;
+    }
+
+    private static string ToPropertyTrain(IEnumerable<string> prefix, string name)
+        => string.Join(".", prefix.Concat(new[] { name }));
+
+    private static void WritePropertyConstants(
+        CurlyIndenter builder,
+        IEnumerable<IPropertySymbol> properties,
+        IEnumerable<string> prefix
+    )
+    {
+        foreach (var property in properties)
+        {
+            var value = ToPropertyTrain(prefix, property.Name);
+            builder.WriteLine($"public const string {property.Name} = \"{value}\";");
+        }
+    }
+
+    private static void WritePropertyIdentitfiers(
+        CurlyIndenter builder,
+        IEnumerable<IPropertySymbol> properties,
+        IEnumerable<string> prefix
+    )
+    {
+        foreach (var property in properties)
+        {
+            var value = ToPropertyTrain(prefix, property.Name);
+            builder.WriteLine($"public static PropertyIdentifier {property.Name} {{ get {{ return PropertyIdentifier.Create(\"{value}\"); }} }}");
+        }
+    }
+
+    private static void WritePropertyLayoutItems(
+        CurlyIndenter builder,
+        IEnumerable<IPropertySymbol> properties,
+        IEnumerable<string> prefix
+    )
+    {
+        foreach (var property in properties)
+        {
+            var value = ToPropertyTrain(prefix, property.Name);
+            builder.WriteLine($"public static LayoutPropertyEditorItem {property.Name} {{ get {{ return LayoutPropertyEditorItem.Create(\"{value}\"); }} }}");
+        }
+    }
+
+    private static IDisposable WriteParentClassTrain(CurlyIndenter builder, IEnumerable<string> parentTrain)
+    {
+        //We need to materialize the immediate, because otherwise it's called when disposed, which defeats the purpose
+        var disposables = parentTrain
+            .Select(parentName => builder.OpenBrace($"public partial struct _{parentName}"))
+            .ToList();
+
+        return new AggregateDisposable(disposables);
     }
 
     private static Compilation AddGeneratedCode(
@@ -512,6 +575,30 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
         var source = SourceText.From(syntax, Encoding.UTF8);
         var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
         return (source, syntaxTree);
+    }
+
+    private record AggregateDisposable(IList<IDisposable> Disposables) : IDisposable
+    {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "It collects and throws an AggregateException")]
+        void IDisposable.Dispose()
+        {
+            List<Exception> exceptions = new();
+            foreach (var disposable in Disposables)
+            {
+                try
+                {
+                    disposable.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
+            }
+        }
     }
 }
 

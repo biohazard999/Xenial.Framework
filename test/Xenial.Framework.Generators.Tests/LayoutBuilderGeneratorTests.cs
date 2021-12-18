@@ -136,6 +136,37 @@ namespace MyProject
     [XenialExpandMember(Constants.Parent)]
     public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
 }");
+
+    [Fact]
+    public Task DoesExpandComplexMemberTree()
+        => RunSourceTest("DoesExpandComplexMemberTree.cs",
+@"using System.Collections.Generic;
+using Xenial;
+using Xenial.Framework.Layouts;
+
+namespace MyProject
+{
+    public class GrandParentClass
+    {
+        public string GrandParentStringMember { get; set; }
+    }
+
+    public class ParentClass
+    {
+        public GrandParentClass GrandParent { get; set;}
+        public IList<TargetClass> Parents { get; }
+    }
+
+    public class TargetClass
+    {
+        public ParentClass Parent { get; set; }
+    }
+
+    [XenialExpandMember(Constants.Parent)]
+    [XenialExpandMember(Constants._Parent.GrandParent)]
+    public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
+}");
+
 }
 
 internal static partial class CompilationHelpers
