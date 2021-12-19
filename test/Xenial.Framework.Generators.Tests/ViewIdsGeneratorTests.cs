@@ -106,7 +106,6 @@ public partial class MyGlobalClass
     public partial class MyPartialClass { }
 }");
 
-
     [Fact]
     public Task CollectsXPCollection()
         => RunSourceTest("CollectsXPCollection.cs",
@@ -114,6 +113,30 @@ public partial class MyGlobalClass
 {
     [DevExpress.Xpo.Persistent]
     public class PersistentChildObject { }
+
+    [DevExpress.Xpo.Persistent]
+    public class PersistentObject
+    {
+        public DevExpress.Xpo.XPCollection<PersistentChildObject> Children
+            => throw null;
+    }
+
+    [Xenial.XenialViewIds]
+    public partial class MyPartialClass { }
+}");
+
+
+    [Fact]
+    public Task CollectsManyToMany()
+        => RunSourceTest("CollectsManyToMany.cs",
+@"namespace MyProject
+{
+    [DevExpress.Xpo.Persistent]
+    public class PersistentChildObject
+    {
+        public DevExpress.Xpo.XPCollection<PersistentObject> Parents
+            => throw null;
+    }
 
     [DevExpress.Xpo.Persistent]
     public class PersistentObject
