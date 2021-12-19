@@ -99,6 +99,19 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
                         collectedViewIds.Add($"{@classSymbol.Name}_DetailView");
                         collectedViewIds.Add($"{@classSymbol.Name}_ListView");
                         collectedViewIds.Add($"{@classSymbol.Name}_LookupListView");
+
+                        foreach (var property in classSymbol
+                            .GetMembers()
+                            .OfType<IPropertySymbol>()
+                            .Where(p =>
+                                p.GetMethod is not null
+                                && p.GetMethod.GetResultantVisibility() == SymbolVisibility.Public
+                                && p.GetMethod.ReturnType.AllInterfaces.Any(m => m.ToDisplayString() == "System.Collections.ICollection")
+                                && p.GetMethod.ReturnType is INamedTypeSymbol collectionType
+                            ))
+                        {
+                            collectedViewIds.Add($"{@classSymbol.Name}_{property.Name}_ListView");
+                        }
                     }
                 }
             }

@@ -105,6 +105,26 @@ public partial class MyGlobalClass
     [Xenial.XenialViewIds]
     public partial class MyPartialClass { }
 }");
+
+
+    [Fact]
+    public Task CollectsXPCollection()
+        => RunSourceTest("CollectsXPCollection.cs",
+@"namespace MyProject
+{
+    [DevExpress.Xpo.Persistent]
+    public class PersistentChildObject { }
+
+    [DevExpress.Xpo.Persistent]
+    public class PersistentObject
+    {
+        public DevExpress.Xpo.XPCollection<PersistentChildObject> Children
+            => throw null;
+    }
+
+    [Xenial.XenialViewIds]
+    public partial class MyPartialClass { }
+}");
 }
 
 internal static partial class CompilationHelpers
