@@ -111,6 +111,9 @@
   <PropertyGroup Condition="$(DxVersion) &gt; 21.2">
     <DefineConstants>$(DefineConstants);DX_GT_21_2</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.1.7">
+    <DefineConstants>$(DefineConstants);DX_GT_21_1_7</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="$(DxVersion) &gt; 21.2.2">
     <DefineConstants>$(DefineConstants);DX_GT_21_2_2</DefineConstants>
   </PropertyGroup>
