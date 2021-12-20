@@ -30,7 +30,7 @@ jobs:
       env:
           DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v2.2.4
       with:
         name: docs
         path: artifacts/docs.xenial.io/
