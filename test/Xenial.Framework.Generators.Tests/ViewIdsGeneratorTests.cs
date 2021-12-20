@@ -13,6 +13,8 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 using VerifyXunit;
 
+using Xenial.Framework.Base;
+
 using Xunit;
 
 namespace Xenial.Framework.Generators.Tests;
@@ -30,6 +32,7 @@ public class ViewIdsGeneratorTests : BaseGeneratorTests<XenialViewIdsGenerator>
         {
             yield return MetadataReference.CreateFromFile(typeof(DomainComponentAttribute).Assembly.Location);
             yield return MetadataReference.CreateFromFile(typeof(PersistentAttribute).Assembly.Location);
+            yield return MetadataReference.CreateFromFile(typeof(GenerateNoDetailViewAttribute).Assembly.Location);
         }
     }
 
@@ -139,6 +142,71 @@ public partial class MyGlobalClass
     }
 
     [DevExpress.Xpo.Persistent]
+    public class PersistentObject
+    {
+        public DevExpress.Xpo.XPCollection<PersistentChildObject> Children
+            => throw null;
+    }
+
+    [Xenial.XenialViewIds]
+    public partial class MyPartialClass { }
+}");
+
+    [Fact]
+    public Task RemovesDetailView()
+        => RunSourceTest("RemovesDetailView.cs",
+@"namespace MyProject
+{
+    [DevExpress.Xpo.Persistent]
+    [Xenial.Framework.Base.GenerateNoDetailView]
+    public class PersistentObject
+    {
+    }
+
+    [Xenial.XenialViewIds]
+    public partial class MyPartialClass { }
+}");
+
+    [Fact]
+    public Task RemovesListView()
+        => RunSourceTest("RemovesListView.cs",
+@"namespace MyProject
+{
+    [DevExpress.Xpo.Persistent]
+    [Xenial.Framework.Base.GenerateNoListView]
+    public class PersistentObject
+    {
+    }
+
+    [Xenial.XenialViewIds]
+    public partial class MyPartialClass { }
+}");
+
+    [Fact]
+    public Task RemovesLookupListView()
+        => RunSourceTest("RemovesLookupListView.cs",
+@"namespace MyProject
+{
+    [DevExpress.Xpo.Persistent]
+    [Xenial.Framework.Base.GenerateNoLookupListView]
+    public class PersistentObject
+    {
+    }
+
+    [Xenial.XenialViewIds]
+    public partial class MyPartialClass { }
+}");
+
+    [Fact]
+    public Task RemovesNestedListView()
+        => RunSourceTest("RemovesNestedListView.cs",
+@"namespace MyProject
+{
+    [DevExpress.Xpo.Persistent]
+    public class PersistentChildObject { }
+
+    [DevExpress.Xpo.Persistent]
+    [Xenial.Framework.Base.GenerateNoNestedListView(nameof(Children))]
     public class PersistentObject
     {
         public DevExpress.Xpo.XPCollection<PersistentChildObject> Children

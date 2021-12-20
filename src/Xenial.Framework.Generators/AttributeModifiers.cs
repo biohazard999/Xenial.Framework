@@ -197,6 +197,15 @@ public static class TypeSymbolExtensions
                 && m.AttributeClass.ToString() == attributeSymbol.ToString()
              );
 
+    public static bool IsAttributeDeclared(this INamedTypeSymbol symbol, string attributeSymbol)
+        => symbol == null ? false : symbol
+            .GetAttributes()
+            .Any(m =>
+                m.AttributeClass is not null
+                //We can safely compare with ToString because it represents just the NamedTypeSymbol, not the attributes or overloads
+                && m.AttributeClass.ToString() == attributeSymbol.ToString()
+             );
+
     public static AttributeData GetAttribute(this INamedTypeSymbol symbol, INamedTypeSymbol attributeSymbol)
     {
         _ = symbol ?? throw new ArgumentNullException(nameof(symbol));
@@ -209,6 +218,17 @@ public static class TypeSymbolExtensions
     }
 
     public static IEnumerable<AttributeData> GetAttributes(this INamedTypeSymbol symbol, INamedTypeSymbol attributeSymbol)
+    {
+        _ = symbol ?? throw new ArgumentNullException(nameof(symbol));
+
+        return symbol.GetAttributes().Where(m =>
+            m.AttributeClass is not null
+            //We can safely compare with ToString because it represents just the NamedTypeSymbol, not the attributes or overloads
+            && m.AttributeClass.ToString() == attributeSymbol.ToString()
+        );
+    }
+
+    public static IEnumerable<AttributeData> GetAttributes(this INamedTypeSymbol symbol, string attributeSymbol)
     {
         _ = symbol ?? throw new ArgumentNullException(nameof(symbol));
 

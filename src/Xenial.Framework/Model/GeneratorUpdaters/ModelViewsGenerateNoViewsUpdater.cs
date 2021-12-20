@@ -83,6 +83,17 @@ public sealed partial class ModelViewsGenerateNoViewsUpdater : ModelNodesGenerat
                             view.Remove();
                         }
                     }
+
+                    foreach (var attribute in view.ModelClass.TypeInfo.FindAttributes<GenerateNoNestedListViewAttribute>())
+                    {
+                        if (ModelNodeIdHelper.GetNestedListViewId(
+                            view.ModelClass.TypeInfo.Type,
+                            attribute.PropertyName
+                        ).Equals(view.Id))
+                        {
+                            view.Remove();
+                        }
+                    }
                 }
             }
         }

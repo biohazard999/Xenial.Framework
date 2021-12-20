@@ -26,6 +26,11 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
     private const string fullQualifiedXpoPersistentAttribute = "DevExpress.Xpo.PersistentAttribute";
     private const string fullQualifiedXpoNonPersistentAttribute = "DevExpress.Xpo.NonPersistentAttribute";
 
+    private const string fullQualifiedGenerateNoDetailViewAttribute = "Xenial.Framework.Base.GenerateNoDetailViewAttribute";
+    private const string fullQualifiedGenerateNoListViewAttribute = "Xenial.Framework.Base.GenerateNoListViewAttribute";
+    private const string fullQualifiedGenerateNoLookupListViewAttribute = "Xenial.Framework.Base.GenerateNoLookupListViewAttribute";
+    private const string fullQualifiedGenerateNoNestedListViewAttribute = "Xenial.Framework.Base.GenerateNoNestedListViewAttribute";
+
     public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
 
     public Compilation Execute(
@@ -96,9 +101,18 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
                     var (_, @classSymbol, isAttributeDeclared) = IsAttributeDeclared(context, compilation, @class, collectedAttribute);
                     if (isAttributeDeclared && @classSymbol is not null)
                     {
-                        collectedViewIds.Add($"{@classSymbol.Name}_DetailView");
-                        collectedViewIds.Add($"{@classSymbol.Name}_ListView");
-                        collectedViewIds.Add($"{@classSymbol.Name}_LookupListView");
+                        if (!classSymbol.IsAttributeDeclared(fullQualifiedGenerateNoDetailViewAttribute))
+                        {
+                            collectedViewIds.Add($"{@classSymbol.Name}_DetailView");
+                        }
+                        if (!classSymbol.IsAttributeDeclared(fullQualifiedGenerateNoListViewAttribute))
+                        {
+                            collectedViewIds.Add($"{@classSymbol.Name}_ListView");
+                        }
+                        if (!classSymbol.IsAttributeDeclared(fullQualifiedGenerateNoLookupListViewAttribute))
+                        {
+                            collectedViewIds.Add($"{@classSymbol.Name}_LookupListView");
+                        }
 
                         foreach (var property in classSymbol
                             .GetMembers()
@@ -110,7 +124,22 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
                                 && p.GetMethod.ReturnType is INamedTypeSymbol collectionType
                             ))
                         {
-                            collectedViewIds.Add($"{@classSymbol.Name}_{property.Name}_ListView");
+                            var viewId = $"{@classSymbol.Name}_{property.Name}_ListView";
+                            collectedViewIds.Add(viewId);
+                            if (classSymbol.IsAttributeDeclared(fullQualifiedGenerateNoNestedListViewAttribute))
+                            {
+                                foreach (var nestedListViewAttribute in classSymbol.GetAttributes(fullQualifiedGenerateNoNestedListViewAttribute))
+                                {
+                                    var argument = nestedListViewAttribute.ConstructorArguments.FirstOrDefault();
+                                    if (argument.Value is not null && argument.Value is string propertyName)
+                                    {
+                                        if (propertyName == property.Name)
+                                        {
+                                            collectedViewIds.Remove(viewId);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
