@@ -54,7 +54,7 @@ Whilst the Xenial.Framework can of course be used in platform specific modules, 
 
 There are a bunch of generators designed to tackle particular *problems* when developing a larger XAF source base. Because they are compile time features they may not reflect 100% runtime behavior, but are designed to be as close as possible.  Most of the generators focus on reliability and make it possible to create compile time safe, intellisense driven, faster XAF development cycle. Because we are inspecting source code, each generator has pro's and con's but most con's lay on the `reflective` nature of `XAF`.
 
-1. [ViewIdsGenerator]() - Emit view id constants based on your XAF model
+1. [ViewIdsGenerator](/guide/source-generators-view-ids-generator.md) - Emit view id constants based on your XAF model
 1. [ImageNamesGenerator]() - Emit image name constants and access resources statically
 1. [XpoBuilderGenerator]() - Emit a builder pattern for creating XPO and non persistent objects
 1. [ActionGenerator (CTP)]() - Emit controllers and actions in a command pattern style
@@ -75,6 +75,7 @@ Because each generator tries to solve a runtime the documentation will try to fo
 * Intent - Why this generator exists
 * Usage - What you need to implement
 * Generated-Code - What is the outcome based on a sample
+* Advantage - Why this is helpful
 * Drawbacks/Issues - What limitations the generator has
 * API-surface - What API's/Attributes are involved when using this generator
 * Diagnostics - What diagnostics the generator emits when a wrong usage is detected

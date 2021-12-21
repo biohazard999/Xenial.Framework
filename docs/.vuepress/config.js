@@ -58,6 +58,7 @@ module.exports = {
                   collapsable: false,
                   children: [
                       ['source-generators', 'Introduction'],
+                      ['source-generators-view-ids-generator', 'ViewIdsGenerator'],
                   ]
                 },
                 {
