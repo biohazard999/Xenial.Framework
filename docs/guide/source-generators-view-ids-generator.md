@@ -99,6 +99,30 @@ namespace Acme.Module
 
 ## API-surface
 
+A partial class marked with the `Xenial.XenialViewIdsAttribute` will follow the rules:
+
+* All classes inside the assembly marked with the following attributes will generate the default views (`XXX_DetailView`, `XXX_ListView`, `XXX_LookupListView`):
+
+  * `DevExpress.ExpressApp.DC.DomainComponentAttribute`
+  * `DevExpress.Xpo.PersistentAttribute`
+  * `DevExpress.Xpo.NonPersistentAttribute`
+
+* All `public ICollection` interface assignable members will generate a nested collection that follows:
+  * `XXX_NameOfTheCollectionProperty_ListView`
+
+* All classes inside the assembly marked with the following attributes will be added as defined if they are marked with the previous attributes:
+
+  * `Xenial.Framework.Base.DeclareDetailViewAttribute`
+  * `Xenial.Framework.Base.DeclareListViewAttribute`
+  * `Xenial.Framework.Base.DeclareDashboardViewAttribute`
+
+* All generated constants will be removed if they fit the criteria of:
+
+  * `Xenial.Framework.Base.GenerateNoDetailViewAttribute`
+  * `Xenial.Framework.Base.GenerateNoListViewAttribute`
+  * `Xenial.Framework.Base.GenerateNoLookupListViewAttribute`
+  * `Xenial.Framework.Base.GenerateNoNestedListViewAttribute`
+
 ## Diagnostics
 
 ## Options
