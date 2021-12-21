@@ -25,25 +25,21 @@ namespace Acme.Module
 
 Given you have business objects like:
 
-```cs
+```cs{4,5,13,17}
 
 namespace Acme.Module.BusinessObjects
 {
-    [Persistent]    
-    [Xenial.Framework.Base.DeclareDetailView("Person_Custom_DetailView")]
+    [Persistent] //We need to flag the class with either [Persistent] [NonPersistent] or [DomainComponent] to be collected by this source generator
+    [Xenial.Framework.Base.DeclareDetailView("Person_Custom_DetailView")] //Only place this magic string ever appears, afterwards we are able to use the generated code.
     public class Person : XPObject
     {
         public Person(Session session) : base(session) { }
 
         [Association("Person-Addresses")]
         [Aggregated]
+        // public ICollection members are considered as nested views, regardless of association or aggregation status
         public XPCollection<Address> Addresses
-        {
-            get
-            {
-                return GetCollection<Address>(nameof(Addresses));
-            }
-        }
+            => GetCollection<Address>(nameof(Addresses));
     }
 
     [Persistent]
@@ -142,4 +138,80 @@ A partial class marked with the `Xenial.XenialViewIdsAttribute` will follow the 
 
 ### Code
 
-None.
+Generator will follow the visibility of the Target Class:
+
+```cs{6-7,15-16}
+/* SourceGenerator will follow the visibility of the class */
+
+namespace Acme.Module
+{
+    [Xenial.XenialViewIds]
+    // Declared as public so...
+    public partial class ViewIds { }
+}
+
+namespace Acme.Module
+{
+    [CompilerGenerated]
+    partial class ViewIds
+    {
+        /* the output will be public constants */
+        public const string Person_DetailView = "Person_DetailView";
+        /*....*/
+    }
+}
+
+```
+
+## Tips and Tricks
+
+Use the new C# static using feature to remove the `ViewIds` prefix:
+
+```cs
+using static Acme.Module.ViewIds;
+
+//Know you have all constants in instant scope like:
+string personViewId = Person_DetailView;
+```
+
+You directly can use custom views when declared even on the same class:
+
+```cs{3-4}
+using Xenial.Framework.Base;
+
+[DeclareDetailView("CustomPersonView")]
+[CustomAttribute(ViewIds.CustomPersonView)]
+public class Person { /* ... */ }
+
+```
+
+Mark the the target class public and name according to your module so external modules can use them:
+
+```cs{6}
+using Xenial.Framework.Base;
+namespace Acme.Accounting.Module
+{
+    [Xenial.XenialViewIds]
+    /* this will make sure you can access the view id's across assembly boundaries and avoid conflicting names later */
+    public partial class AccountingViewIds { }
+}
+```
+
+Because those are partial, you can add custom code and mark them static
+
+```cs{6,8}
+using Xenial.Framework.Base;
+namespace Acme.Accounting.Module
+{
+    [Xenial.XenialViewIds]
+    /* this will make sure you can access the view id's across assembly boundaries and avoid conflicting names later */
+    public static partial class AccountingViewIds
+    {
+        public const string CustomConstant = "Whatever constant you need";
+    }
+}
+```
+
+::: warning CAUTION
+When updating from an older Xenial to a newer Xenial version, it's necessary to restart VisualStudio/VSCode after the upgrade, so Intellisense can reload the new SourceGenerator. So it may come to false positive warnings if they don't match.
+:::
