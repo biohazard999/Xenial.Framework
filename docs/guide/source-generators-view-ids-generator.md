@@ -125,4 +125,21 @@ A partial class marked with the `Xenial.XenialViewIdsAttribute` will follow the 
 
 ## Diagnostics
 
+|ID            | Severity | Message                                                                     | Reason                                                                                 |
+|:------------:|:--------:|-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+|XENGEN0010    | Error    | Could not parse boolean MSBUILD variable `<GenerateXenialViewIdsAttribute>` | MsBuild variable needs to be in boolean parsable format: `true`/`false`/`True`/`False` |
+|XENGEN0100    | Error    | The class using the `[XenialViewIdsAttribute]` needs to be partial          | We can not generate code for non partial classes                                       |
+|XENGEN0101    | Error    | The class using the `[XenialViewIdsAttribute]` needs to be in a namespace   | We can not generate code in the global namespace                                       |
+
 ## Options
+
+### MSBuild
+
+* `<GenerateXenialViewIdsAttribute>` - Control if `XenialViewIdsAttribute` will be emitted
+* `<XenialAttributesVisibility>` - Control's `XenialViewIdsAttribute` visibility modifier (`public`/`internal`)
+* `<EmitCompilerGeneratedFiles>` - Code will be flushed to disk (debug)
+* `<XenialDebugSourceGenerators>` - Debugger will launch on code generation (debug)
+
+### Code
+
+None.
