@@ -92,6 +92,7 @@ namespace Acme.Module
 * There is no way yet to use ModelBuilders to define custom views, yet
 * Assembly size will increase by a couple of bytes even if some constants are not used, yet
 * No Grouping by Type, yet
+* No customization of default ViewId generation
 
 ## API-surface
 
