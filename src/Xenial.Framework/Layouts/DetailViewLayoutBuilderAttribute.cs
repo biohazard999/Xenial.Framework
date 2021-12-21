@@ -112,11 +112,11 @@ public sealed partial class DetailViewLayoutBuilderAttribute : Attribute
 
     public string? BuildLayoutMethodName { get; internal set; }
 
-    ///// <summary>
-    ///// Gets or sets the detail view identifier.
-    ///// </summary>
-    ///// <value>The detail view identifier.</value>
-    //public string DetailViewId { get; set; }
+    /// <summary>
+    /// Gets or sets the detail view identifier.
+    /// </summary>
+    /// <value>The detail view identifier.</value>
+    public string? ViewId { get; set; }
 }
 
 /// <summary>   Delegate BuildLayoutDelegate. </summary>

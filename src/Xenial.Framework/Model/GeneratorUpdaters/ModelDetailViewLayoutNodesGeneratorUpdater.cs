@@ -44,9 +44,9 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
     ///
     /// <value> The ca 1725. </value>
 
-#pragma warning disable CA1725 //match identitfier of base class -> would conflict with nodes
+#pragma warning disable CA1725 //match identifier of base class -> would conflict with nodes
     public override void UpdateNode(ModelNode modelNode)
-#pragma warning restore CA1725 //match identitfier of base class -> would conflict with nodes
+#pragma warning restore CA1725 //match identifier of base class -> would conflict with nodes
     {
         _ = nodeBuilderFactory ?? throw new InvalidOperationException();
 
@@ -54,11 +54,21 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
         {
             if (modelViewLayout.Parent is IModelDetailView modelDetailView)
             {
-                if (modelDetailView.Equals(modelDetailView.ModelClass.DefaultDetailView))
+                var layoutBuilderAttributes = modelDetailView.ModelClass.TypeInfo.FindAttributes<DetailViewLayoutBuilderAttribute>();
+
+                foreach (var attribute in layoutBuilderAttributes)
                 {
-                    //TODO: multiple views and attributes
-                    var attribute = modelDetailView.ModelClass.TypeInfo.FindAttribute<DetailViewLayoutBuilderAttribute>();
-                    if (attribute is not null)
+                    var targetViewId =
+                        string.IsNullOrEmpty(attribute.ViewId)
+                        ? modelDetailView.ModelClass.DefaultDetailView?.Id
+                        : attribute.ViewId;
+
+                    if (string.IsNullOrEmpty(targetViewId))
+                    {
+                        targetViewId = ModelNodeIdHelper.GetDetailViewId(modelDetailView.ModelClass.TypeInfo.Type);
+                    }
+
+                    if (modelDetailView.Id == targetViewId)
                     {
                         if (!string.IsNullOrEmpty(attribute.BuildLayoutMethodName))
                         {
@@ -147,10 +157,7 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
                         }
                     }
                 }
-                else
-                {
 
-                }
             }
         }
 
