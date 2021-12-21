@@ -31,6 +31,10 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
     private const string fullQualifiedGenerateNoLookupListViewAttribute = "Xenial.Framework.Base.GenerateNoLookupListViewAttribute";
     private const string fullQualifiedGenerateNoNestedListViewAttribute = "Xenial.Framework.Base.GenerateNoNestedListViewAttribute";
 
+    private const string fullQualifiedDeclareDetailViewAttribute = "Xenial.Framework.Base.DeclareDetailViewAttribute";
+    private const string fullQualifiedDeclareListViewAttribute = "Xenial.Framework.Base.DeclareListViewAttribute";
+    private const string fullQualifiedDeclareDashboardViewAttribute = "Xenial.Framework.Base.DeclareDashboardViewAttribute";
+
     public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
 
     public Compilation Execute(
@@ -114,6 +118,29 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
                             collectedViewIds.Add($"{@classSymbol.Name}_LookupListView");
                         }
 
+                        static void AddViewByAttribute(
+                            INamedTypeSymbol classSymbol,
+                            List<string> collectedViewIds,
+                            string attributeName
+                        )
+                        {
+                            if (classSymbol.IsAttributeDeclared(attributeName))
+                            {
+                                foreach (var attribute in classSymbol.GetAttributes(attributeName))
+                                {
+                                    var argument = attribute.ConstructorArguments.FirstOrDefault();
+                                    if (argument.Value is not null && argument.Value is string viewId)
+                                    {
+                                        collectedViewIds.Add(viewId);
+                                    }
+                                }
+                            }
+                        }
+
+                        AddViewByAttribute(classSymbol, collectedViewIds, fullQualifiedDeclareDetailViewAttribute);
+                        AddViewByAttribute(classSymbol, collectedViewIds, fullQualifiedDeclareListViewAttribute);
+                        AddViewByAttribute(classSymbol, collectedViewIds, fullQualifiedDeclareDashboardViewAttribute);
+
                         foreach (var property in classSymbol
                             .GetMembers()
                             .OfType<IPropertySymbol>()
@@ -188,7 +215,7 @@ public class XenialViewIdsGenerator : IXenialSourceGenerator
                 //We also don't need to specify the visibility for partial types
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
-                    foreach (var viewId in collectedViewIds)
+                    foreach (var viewId in collectedViewIds.Distinct())
                     {
                         builder.WriteLine($"{visibility} const string {viewId} = \"{viewId}\";");
                     }

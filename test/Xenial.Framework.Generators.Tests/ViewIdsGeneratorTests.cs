@@ -216,6 +216,29 @@ public partial class MyGlobalClass
     [Xenial.XenialViewIds]
     public partial class MyPartialClass { }
 }");
+
+    [Fact]
+    public Task DeclareCustomViews()
+    => RunSourceTest("DeclareDetailView.cs",
+@"using DevExpress.Xpo;
+using Xenial.Framework.Base;
+
+namespace MyProject
+{
+    [Persistent]
+    [DeclareDetailView(""PersistentObject_Custom1_DetailView"")]
+    [DeclareDetailView(""PersistentObject_Custom2_DetailView"")]
+    [DeclareListView(""PersistentObject_Custom1_ListView"")]
+    [DeclareListView(""PersistentObject_Custom1_ListView"")]
+    [DeclareListView(""PersistentObject_Custom2_ListView"")]
+    [DeclareDashboardView(""PersistentObject_DashboardView"")]
+    public class PersistentObject
+    {
+    }
+
+    [Xenial.XenialViewIds]
+    public partial class MyPartialClass { }
+}");
 }
 
 internal static partial class CompilationHelpers
