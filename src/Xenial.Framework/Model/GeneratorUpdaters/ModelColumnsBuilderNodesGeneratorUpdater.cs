@@ -38,10 +38,21 @@ public sealed partial class ModelColumnsBuilderNodesGeneratorUpdater : ModelNode
         {
             if (modelColumns.Parent is IModelListView modelListView)
             {
-                if (modelListView.Equals(modelListView.ModelClass.DefaultListView))
+                var columnBuilderAttributes = modelListView.ModelClass.TypeInfo.FindAttributes<ListViewColumnsBuilderAttribute>();
+
+                foreach (var attribute in columnBuilderAttributes)
                 {
-                    var attribute = modelListView.ModelClass.TypeInfo.FindAttribute<ListViewColumnsBuilderAttribute>();
-                    if (attribute is not null)
+                    var targetViewId =
+                        string.IsNullOrEmpty(attribute.ViewId)
+                        ? modelListView.ModelClass.DefaultListView?.Id
+                        : attribute.ViewId;
+
+                    if (string.IsNullOrEmpty(targetViewId))
+                    {
+                        targetViewId = ModelNodeIdHelper.GetListViewId(modelListView.ModelClass.TypeInfo.Type);
+                    }
+
+                    if (modelListView.Id == targetViewId)
                     {
                         if (!string.IsNullOrEmpty(attribute.BuildColumnsMethodName))
                         {

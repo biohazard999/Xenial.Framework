@@ -81,11 +81,11 @@ public sealed partial class ListViewColumnsBuilderAttribute : Attribute
 
     public string? BuildColumnsMethodName { get; internal set; }
 
-    ///// <summary>
-    ///// Gets or sets the list view identifier.
-    ///// </summary>
-    ///// <value>The list view identifier.</value>
-    //public string ListViewId { get; set; }
+    /// <summary>
+    /// Gets or sets the list view identifier.
+    /// </summary>
+    /// <value>The list view identifier.</value>
+    public string? ViewId { get; set; }
 }
 
 /// <summary>   Delegate BuildColumnsDelegate. </summary>
