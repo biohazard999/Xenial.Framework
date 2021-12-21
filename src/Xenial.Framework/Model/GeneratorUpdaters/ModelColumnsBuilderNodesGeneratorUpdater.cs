@@ -10,6 +10,15 @@ using static Xenial.Framework.Model.GeneratorUpdaters.ModelColumnsBuilderNodesGe
 
 namespace Xenial.Framework.Model.GeneratorUpdaters;
 
+public partial class Foo
+{
+    public static partial Columns BuildLayout();
+}
+
+public partial class Foo
+{
+    public static partial Columns BuildLayout() => throw new NotImplementedException();
+}
 /// <summary>
 /// Class ModelColumnsBuilderNodesGeneratorUpdater. This class cannot be inherited. Implements the
 /// <see cref="DevExpress.ExpressApp.Model.ModelNodesGeneratorUpdater{DevExpress.ExpressApp.Model.NodeGenerators.ModelListViewColumnsNodesGenerator}" />
@@ -38,18 +47,24 @@ public sealed partial class ModelColumnsBuilderNodesGeneratorUpdater : ModelNode
         {
             if (modelColumns.Parent is IModelListView modelListView)
             {
-                var columnBuilderAttributes = modelListView.ModelClass.TypeInfo.FindAttributes<ListViewColumnsBuilderAttribute>();
+                var columnBuilderAttributes = modelListView.ModelClass.TypeInfo.FindAttributes<ColumnsBuilderAttribute>();
 
                 foreach (var attribute in columnBuilderAttributes)
                 {
                     var targetViewId =
                         string.IsNullOrEmpty(attribute.ViewId)
-                        ? modelListView.ModelClass.DefaultListView?.Id
+                        ?
+                            (attribute is ListViewColumnsBuilderAttribute
+                             ? modelListView.ModelClass.DefaultListView?.Id
+                             : modelListView.ModelClass.DefaultLookupListView?.Id
+                            )
                         : attribute.ViewId;
 
                     if (string.IsNullOrEmpty(targetViewId))
                     {
-                        targetViewId = ModelNodeIdHelper.GetListViewId(modelListView.ModelClass.TypeInfo.Type);
+                        targetViewId = attribute is ListViewColumnsBuilderAttribute
+                            ? ModelNodeIdHelper.GetListViewId(modelListView.ModelClass.TypeInfo.Type)
+                            : ModelNodeIdHelper.GetLookupListViewId(modelListView.ModelClass.TypeInfo.Type);
                     }
 
                     if (modelListView.Id == targetViewId)
@@ -66,7 +81,10 @@ public sealed partial class ModelColumnsBuilderNodesGeneratorUpdater : ModelNode
                         {
                             if (string.IsNullOrEmpty(attribute.BuildColumnsMethodName))
                             {
-                                attribute.BuildColumnsMethodName = "BuildColumns";
+                                attribute.BuildColumnsMethodName = attribute is ListViewColumnsBuilderAttribute
+                                    ? "BuildColumns"
+                                    : "BuildLookupColumns";
+
                                 if (attribute.GeneratorType is null)
                                 {
                                     attribute.GeneratorType = modelListView.ModelClass.TypeInfo.Type;
