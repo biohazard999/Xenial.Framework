@@ -13,6 +13,7 @@
   <Target Name="InjectXenialGeneratorAttributes" BeforeTargets="PrepareForBuild;CoreCompile;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
 
     <PropertyGroup>
+      <GenerateXenialDuckTypes Condition="'$(GenerateXenialDuckTypes)' == ''">true</GenerateXenialDuckTypes>
       <GenerateXenialXpoBuilderAttribute Condition="'$(GenerateXenialXpoBuilderAttribute)' == ''">true</GenerateXenialXpoBuilderAttribute>
       <GenerateXenialImageNamesAttribute Condition="'$(GenerateXenialImageNamesAttribute)' == ''">true</GenerateXenialImageNamesAttribute>
       <GenerateXenialActionAttribute Condition="'$(GenerateXenialActionAttribute)' == ''">true</GenerateXenialActionAttribute>
