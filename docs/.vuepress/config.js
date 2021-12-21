@@ -54,6 +54,13 @@ module.exports = {
                     ]
                 },
                 {
+                  title: 'SourceGenerators',
+                  collapsable: false,
+                  children: [
+                      ['source-generators', 'Introduction'],
+                  ]
+                },
+                {
                     title: 'ModelBuilders',
                     collapsable: false,
                     children: [
