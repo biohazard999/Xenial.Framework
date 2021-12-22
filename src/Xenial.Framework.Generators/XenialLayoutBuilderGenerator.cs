@@ -278,7 +278,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
             return compilation;
         }
 
-        foreach (var expandMember in expandMembers)
+        foreach (var expandMember in expandMembers.Distinct())
         {
             var expandMemberParts = expandMember.Split('.');
 
@@ -336,19 +336,18 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                     }
                 }
             }
-            compilation = AddGeneratedCode(
-                context,
-                compilation,
-                @class,
-                builder,
-                addedSourceFiles,
-                emitFile: false
-            );
-
-            return AddExpandedFields(context, compilation, @class, xenialExpandMemberAttribute, classSymbol, targetType, builder, expandedFields, addedSourceFiles);
         }
 
-        return compilation;
+        compilation = AddGeneratedCode(
+            context,
+            compilation,
+            @class,
+            builder,
+            addedSourceFiles,
+            emitFile: false
+        );
+
+        return AddExpandedFields(context, compilation, @class, xenialExpandMemberAttribute, classSymbol, targetType, builder, expandedFields, addedSourceFiles);
     }
 
     private static string ToPropertyTrain(IEnumerable<string> prefix, string name)

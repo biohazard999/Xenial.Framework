@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using System.Threading.Tasks;
 
 using DevExpress.ExpressApp.DC;
@@ -167,6 +165,54 @@ namespace MyProject
     public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
 }");
 
+    [Fact]
+    public Task DoesExpandComplexMemberTree2()
+        => RunSourceTest("DoesExpandComplexMemberTree2.cs",
+@"using System.Collections.Generic;
+using Xenial;
+using Xenial.Framework.Layouts;
+
+namespace MyProject
+{
+    public class ParentClass
+    {
+        public string ParentString { get; set;}
+    }
+
+    public class TargetClass
+    {
+        public ParentClass Parent1 { get; set; }
+        public ParentClass Parent2 { get; set; }
+    }
+
+    [XenialExpandMember(Constants.Parent1)]
+    [XenialExpandMember(Constants.Parent2)]
+    public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
+}");
+
+    [Fact]
+    public Task DoesExpandComplexMemberTree3()
+        => RunSourceTest("DoesExpandComplexMemberTree2.cs",
+@"using System.Collections.Generic;
+using Xenial;
+using Xenial.Framework.Layouts;
+
+namespace MyProject
+{
+    public class ParentClass
+    {
+        public string ParentString { get; set;}
+    }
+
+    public class TargetClass
+    {
+        public ParentClass Parent1 { get; set; }
+    }
+
+    [XenialExpandMember(Constants.Parent1)]
+    [XenialExpandMember(Constants.Parent1)]
+    public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
+}");
 }
 
 internal static partial class CompilationHelpers
