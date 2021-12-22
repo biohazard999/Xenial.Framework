@@ -28,7 +28,6 @@ XUnitAdapter.Tests();
 
 return await Run(args);
 
-//Waiting for NRE to resolve `https://github.com/xenial-io/Tasty/issues/129`
 public class XUnitAdapter
 {
     public static void Tests() => Describe(nameof(Xenial), () =>
