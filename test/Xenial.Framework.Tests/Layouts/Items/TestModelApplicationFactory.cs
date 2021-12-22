@@ -69,6 +69,29 @@ namespace Xenial.Framework.Tests.Layouts
             return detailView;
         }
 
+        internal static IModelDetailView? CreateNestedDetailViewWithLayout(Func<LayoutBuilder<ComplexBusinessObject>, Layout>? layoutFunctor = null)
+        {
+            var model = CreateApplication(new(new[]
+            {
+                typeof(ComplexBusinessObject),
+                typeof(SimpleBusinessObject),
+            },
+            typesInfo =>
+            {
+                ModelBuilder.Create<ComplexBusinessObject>(typesInfo)
+                    .RemoveAttribute(typeof(DetailViewLayoutBuilderAttribute))
+                    .WithDetailViewLayout(() =>
+                        layoutFunctor is null
+                            ? ComplexBusinessObjectLayoutBuilder.BuildLayout()
+                            : layoutFunctor.Invoke(new LayoutBuilder<ComplexBusinessObject>())
+                    )
+                .Build();
+            }));
+
+            var detailView = model.FindDetailView<ComplexBusinessObject>();
+            return detailView;
+        }
+
         internal static IModelListView? CreateComplexListViewWithLayout(Func<ColumnsBuilder<SimpleBusinessObject>, Columns> columnsFunctor)
         {
             var model = CreateApplication(new(new[]

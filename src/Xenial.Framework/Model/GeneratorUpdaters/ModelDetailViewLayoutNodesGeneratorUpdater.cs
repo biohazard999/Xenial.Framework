@@ -54,6 +54,8 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
         {
             if (modelViewLayout.Parent is IModelDetailView modelDetailView)
             {
+                _ = modelDetailView.Items; //Access items to force item generation
+
                 var layoutBuilderAttributes = modelDetailView.ModelClass.TypeInfo.FindAttributes<DetailViewLayoutBuilderAttribute>();
 
                 foreach (var attribute in layoutBuilderAttributes)
