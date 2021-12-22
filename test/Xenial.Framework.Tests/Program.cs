@@ -22,6 +22,8 @@ using Xunit;
 
 using static Xenial.Tasty;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+
 XUnitAdapter.Tests();
 
 return await Run(args);

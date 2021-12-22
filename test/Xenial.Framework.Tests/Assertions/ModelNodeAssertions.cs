@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.ExpressApp.Utils;
+
 using Shouldly;
+
 using Xenial.Data;
 using Xenial.Framework.Tests.Assertions.Xml;
 using Xenial.Utils;
@@ -34,7 +37,7 @@ namespace Xenial.Framework.Tests.Assertions
             where TModelType : class
                 => model.FindListView(typeof(TModelType));
 
-        internal static void VisualizeModelNode(this IModelNode? modelNode)
+        internal static (string html, string xml) VisualizeModelNode(this IModelNode? modelNode)
         {
             _ = modelNode ?? throw new ArgumentNullException(nameof(modelNode));
             var xml = UserDifferencesHelper.GetUserDifferences(modelNode)[""];
@@ -53,9 +56,7 @@ namespace Xenial.Framework.Tests.Assertions
         <script src='https://unpkg.com/prismjs@1.22.0/plugins/autoloader/prism-autoloader.min.js'></script>
     </body>
 </html>";
-#if DEBUG
-            System.IO.File.WriteAllText(@"C:\F\tmp\Xenial\1.html", html);
-#endif
+            return (html, prettyXml);
         }
 
 
