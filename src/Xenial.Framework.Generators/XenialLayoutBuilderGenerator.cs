@@ -484,9 +484,6 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
         return (semanticModel, symbol, isAttributeDeclared);
     }
 
-    private static AttributeData GetXenialLayoutBuilderAttribute(INamedTypeSymbol symbol, INamedTypeSymbol generateXenialLayoutBuilderAttribubute)
-        => symbol.GetAttribute(generateXenialLayoutBuilderAttribubute);
-
     private static Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation)
     {
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialLayoutBuilderAttributeMSBuildProperty}", out var generateXenialViewIdsAttrStr))
