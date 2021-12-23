@@ -62,6 +62,7 @@ public partial class ModelDetailViewLayoutNodesGeneratorUpdater
                         {
                             newItem.PropertyEditorType = oldPropertyEditor.PropertyEditorType;
                         }
+                        modelLayoutViewItem.ViewItem = newItem;
                     }
                 }
                 else
