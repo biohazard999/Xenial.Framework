@@ -40,6 +40,9 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                 {
                     var modelViewItemNode = viewItems.FirstOrDefault(m => m.Id == layoutViewItemNode.Id);
 
+                    //This is the most weird side effect so far.
+                    //For whatever reason we need to specify the caption
+                    //to generate a deterministic model tree
                     if (modelViewItemNode is not null)
                     {
                         modelViewItemNode.Caption =

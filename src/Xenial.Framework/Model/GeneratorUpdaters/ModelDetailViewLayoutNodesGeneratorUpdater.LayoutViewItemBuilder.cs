@@ -60,7 +60,8 @@ public partial class ModelDetailViewLayoutNodesGeneratorUpdater
                         newItem.PropertyName = layoutViewItemNode.ViewItemId;
                         if (viewItem is IModelPropertyEditor oldPropertyEditor)
                         {
-                            newItem.PropertyEditorType = null;
+                            newItem.ClearValue(nameof(newItem.PropertyEditorType));
+                            //newItem.PropertyEditorType = null;
                         }
                         modelLayoutViewItem.ViewItem = newItem;
                     }
