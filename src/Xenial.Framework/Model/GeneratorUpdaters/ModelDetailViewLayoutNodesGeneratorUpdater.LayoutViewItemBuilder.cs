@@ -49,13 +49,31 @@ public partial class ModelDetailViewLayoutNodesGeneratorUpdater
             var viewItems = FindViewItems(parentNode);
             if (viewItems is not null)
             {
-                var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
-                if (viewItem is null)
+                if (layoutViewItemNode.IsDuplicate)
                 {
-                    //TODO: property factory for view items
-                    viewItem = viewItems.AddNode<IModelPropertyEditor>(layoutViewItemNode.ViewItemId);
+                    var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
+                    if (viewItem is not null)
+                    {
+                        var newItem = viewItems.AddNode<IModelPropertyEditor>(layoutViewItemNode.Id);
+                        viewItem = newItem;
+
+                        newItem.PropertyName = layoutViewItemNode.ViewItemId;
+                        if (viewItem is IModelPropertyEditor oldPropertyEditor)
+                        {
+                            newItem.PropertyEditorType = oldPropertyEditor.PropertyEditorType;
+                        }
+                    }
                 }
-                modelLayoutViewItem.ViewItem = viewItem;
+                else
+                {
+                    var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
+                    if (viewItem is null)
+                    {
+                        //TODO: property factory for view items
+                        viewItem = viewItems.AddNode<IModelPropertyEditor>(layoutViewItemNode.ViewItemId);
+                    }
+                    modelLayoutViewItem.ViewItem = viewItem;
+                }
             }
 
             if (modelLayoutViewItem is IModelNode genericModelNode)
