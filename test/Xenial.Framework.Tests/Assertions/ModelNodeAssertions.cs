@@ -40,6 +40,20 @@ namespace Xenial.Framework.Tests.Assertions
         internal static (string html, string xml) VisualizeModelNode(this IModelNode? modelNode)
         {
             _ = modelNode ?? throw new ArgumentNullException(nameof(modelNode));
+
+            //Force generation before generating the differences
+            //To make sure all nodes are created
+            //This does not happen in production code
+            if (modelNode is IModelDetailView modelDetailView)
+            {
+                _ = modelDetailView.Items?.FirstOrDefault();
+                _ = modelDetailView.Layout?.FirstOrDefault();
+            }
+            if (modelNode is IModelListView modelListView)
+            {
+                _ = modelListView.Columns?.FirstOrDefault();
+            }
+
             var xml = UserDifferencesHelper.GetUserDifferences(modelNode)[""];
             var prettyXml = new XmlFormatter().Format(xml);
             var encode = WebUtility.HtmlEncode(prettyXml);

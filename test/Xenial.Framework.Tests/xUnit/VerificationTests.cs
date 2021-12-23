@@ -85,6 +85,22 @@ public class VerificationTests
 
         await Verifier.Verify(xml).UseExtension("xml");
     }
+
+    [Fact]
+    public async Task NestedLayoutDuplicatedVerificationSimpleXml()
+    {
+        var detailView = CreateNestedDetailViewWithLayout(l => new()
+        {
+            l.PropertyEditor(m => m.OwnString),
+            l.PropertyEditor(m => m.OwnString) with { Caption = "Second String" },
+            l.PropertyEditor(m => m.NestedObject.BoolProperty),
+            l.PropertyEditor(m => m.NestedObject.BoolProperty) with { Caption = "Second Bool" }
+        });
+
+        var (_, xml) = detailView.VisualizeModelNode();
+
+        await Verifier.Verify(xml).UseExtension("xml");
+    }
 }
 
 public partial class LayoutBuilderSimpleBusinessObject : LayoutBuilder<SimpleBusinessObject>

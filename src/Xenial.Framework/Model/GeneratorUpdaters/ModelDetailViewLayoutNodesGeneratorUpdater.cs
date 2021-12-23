@@ -54,8 +54,6 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
         {
             if (modelViewLayout.Parent is IModelDetailView modelDetailView)
             {
-                _ = modelDetailView.Items; //Access items to force item generation
-
                 var layoutBuilderAttributes = modelDetailView.ModelClass.TypeInfo.FindAttributes<DetailViewLayoutBuilderAttribute>();
 
                 foreach (var attribute in layoutBuilderAttributes)
@@ -125,6 +123,22 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
                             var modelMainNode = modelViewLayout
                                 .AddNode<IModelLayoutGroup>(ModelDetailViewLayoutNodesGenerator.MainLayoutGroupName)
                                 ?? throw new InvalidOperationException($"Cannot generate 'Main' node on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}'");
+
+                            var duplicatedIds = VisitNodes<LayoutPropertyEditorItem>(layout)
+                                .GroupBy(i => i.Id)
+                                .Where(i => i.Count() > 1)
+                                .Select(i => (i.Key, i.ToList()));
+
+                            foreach (var (id, duplicates) in duplicatedIds)
+                            {
+                                var i = 1;
+                                foreach (var duplicate in duplicates.Skip(1).ToList())
+                                {
+                                    duplicate.Id = $"{duplicate.Id}{i}";
+                                    duplicate.IsDuplicate = true;
+                                    i++;
+                                }
+                            }
 
                             var currentIndex = 0;
                             foreach (var layoutItemNode in layout)
