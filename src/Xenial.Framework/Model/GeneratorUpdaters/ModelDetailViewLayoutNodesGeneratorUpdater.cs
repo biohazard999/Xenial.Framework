@@ -14,6 +14,67 @@ using Xenial.Framework.Layouts.Items.LeafNodes;
 namespace Xenial.Framework.Model.GeneratorUpdaters;
 
 /// <summary>
+/// 
+/// </summary>
+[XenialCheckLicense]
+public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenerator : ModelNodesGeneratorUpdater<ModelDetailViewItemsNodesGenerator>
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="node"></param>
+    public override void UpdateNode(ModelNode node)
+    {
+        if (node is IModelViewItems viewItems)
+        {
+            if (viewItems.Parent is IModelDetailView modelDetailView)
+            {
+                var builder = ModelDetailViewLayoutNodesGeneratorUpdater.FindFunctor(modelDetailView);
+                if (builder is null)
+                {
+                    return;
+                }
+
+                var layout = ModelDetailViewLayoutNodesGeneratorUpdater.InvokeBuilder(builder, modelDetailView);
+                foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
+                {
+                    var modelViewItemNode = viewItems.FirstOrDefault(m => m.Id == layoutViewItemNode.Id);
+
+                    if (modelViewItemNode is not null)
+                    {
+                        modelViewItemNode.Caption =
+                            string.IsNullOrEmpty(layoutViewItemNode.Caption)
+                            ? modelViewItemNode.Caption
+                            : layoutViewItemNode.Caption;
+                    }
+                }
+            }
+        }
+
+        static IEnumerable<TItem> VisitNodes<TItem>(LayoutItemNode node)
+            where TItem : LayoutItemNode
+        {
+            if (node is TItem targetNode)
+            {
+                yield return targetNode;
+            }
+
+            if (node is IEnumerable<LayoutItemNode> items)
+            {
+                foreach (var item in items)
+                {
+                    foreach (var nestedItem in VisitNodes<TItem>(item))
+                    {
+                        yield return nestedItem;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+/// <summary>
 /// Class ModelDetailViewLayoutNodesGeneratorUpdater. Implements the
 /// <see cref="DevExpress.ExpressApp.Model.ModelNodesGeneratorUpdater{DevExpress.ExpressApp.Model.NodeGenerators.ModelDetailViewLayoutNodesGenerator}" />
 /// </summary>
@@ -32,6 +93,79 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
             .Register<LayoutEmptySpaceItem, EmptySpaceItemBuilder>(() => new EmptySpaceItemBuilder())
             .Register<LayoutViewItem, LayoutViewItemBuilder>(() => new LayoutViewItemBuilder())
         ;
+
+
+    internal static BuildLayoutFunctor? FindFunctor(IModelDetailView modelDetailView)
+    {
+        var layoutBuilderAttributes = modelDetailView.ModelClass.TypeInfo.FindAttributes<DetailViewLayoutBuilderAttribute>();
+        foreach (var attribute in layoutBuilderAttributes)
+        {
+            var targetViewId =
+                string.IsNullOrEmpty(attribute.ViewId)
+                ? modelDetailView.ModelClass.DefaultDetailView?.Id
+                : attribute.ViewId;
+
+            if (string.IsNullOrEmpty(targetViewId))
+            {
+                targetViewId = ModelNodeIdHelper.GetDetailViewId(modelDetailView.ModelClass.TypeInfo.Type);
+            }
+
+            if (modelDetailView.Id == targetViewId)
+            {
+                if (!string.IsNullOrEmpty(attribute.BuildLayoutMethodName))
+                {
+                    if (attribute.GeneratorType is null)
+                    {
+                        attribute.GeneratorType = modelDetailView.ModelClass.TypeInfo.Type;
+                    }
+                }
+
+                if (attribute.BuildLayoutDelegate is null)
+                {
+                    if (string.IsNullOrEmpty(attribute.BuildLayoutMethodName))
+                    {
+                        attribute.BuildLayoutMethodName = "BuildLayout";
+                        if (attribute.GeneratorType is null)
+                        {
+                            attribute.GeneratorType = modelDetailView.ModelClass.TypeInfo.Type;
+                        }
+                    }
+
+                    if (attribute.GeneratorType is not null)
+                    {
+                        var method = attribute.GeneratorType.GetMethod(attribute.BuildLayoutMethodName);
+                        if (method is not null)
+                        {
+                            if (method.IsStatic)
+                            {
+                                var @delegate = Delegate.CreateDelegate(typeof(BuildLayoutFunctor), method);
+                                attribute.BuildLayoutDelegate = (BuildLayoutFunctor)@delegate;
+                            }
+                            else
+                            {
+                                //TODO: Cleanup instance and factory
+                                var generatorInstance = Activator.CreateInstance(attribute.GeneratorType);
+
+                                var @delegate = Delegate.CreateDelegate(typeof(BuildLayoutFunctor), generatorInstance, method);
+                                attribute.BuildLayoutDelegate = (BuildLayoutFunctor)@delegate;
+                            }
+                        } //TODO: ERROR HANDLING
+                    }
+                }
+
+                //TODO: Factory
+                if (attribute.BuildLayoutDelegate is not null)
+                {
+                    return attribute.BuildLayoutDelegate;
+                }
+            }
+        }
+        return null;
+    }
+
+    internal static Layout InvokeBuilder(BuildLayoutFunctor builder, IModelDetailView modelDetailView)
+        => builder.Invoke()
+           ?? throw new InvalidOperationException($"LayoutBuilder on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}' must return an object of Type '{typeof(Layout)}'");
 
     /// <summary>
     /// Updates the Application Model node content generated by the Nodes Generator, specified by the
@@ -54,146 +188,86 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
         {
             if (modelViewLayout.Parent is IModelDetailView modelDetailView)
             {
-                var layoutBuilderAttributes = modelDetailView.ModelClass.TypeInfo.FindAttributes<DetailViewLayoutBuilderAttribute>();
-
-                foreach (var attribute in layoutBuilderAttributes)
+                var builder = FindFunctor(modelDetailView);
+                if (builder is null)
                 {
-                    var targetViewId =
-                        string.IsNullOrEmpty(attribute.ViewId)
-                        ? modelDetailView.ModelClass.DefaultDetailView?.Id
-                        : attribute.ViewId;
+                    return;
+                }
 
-                    if (string.IsNullOrEmpty(targetViewId))
+                var layout = InvokeBuilder(builder, modelDetailView);
+
+                modelViewLayout.ClearNodes();
+
+                var modelMainNode = modelViewLayout
+                    .AddNode<IModelLayoutGroup>(ModelDetailViewLayoutNodesGenerator.MainLayoutGroupName)
+                    ?? throw new InvalidOperationException($"Cannot generate 'Main' node on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}'");
+
+                var duplicatedIds = VisitNodes<LayoutPropertyEditorItem>(layout)
+                    .GroupBy(i => i.Id)
+                    .Where(i => i.Count() > 1)
+                    .Select(i => (i.Key, i.ToList()));
+
+                foreach (var (id, duplicates) in duplicatedIds)
+                {
+                    var i = 1;
+                    foreach (var duplicate in duplicates.Skip(1).ToList())
                     {
-                        targetViewId = ModelNodeIdHelper.GetDetailViewId(modelDetailView.ModelClass.TypeInfo.Type);
-                    }
-
-                    if (modelDetailView.Id == targetViewId)
-                    {
-                        if (!string.IsNullOrEmpty(attribute.BuildLayoutMethodName))
-                        {
-                            if (attribute.GeneratorType is null)
-                            {
-                                attribute.GeneratorType = modelDetailView.ModelClass.TypeInfo.Type;
-                            }
-                        }
-
-                        if (attribute.BuildLayoutDelegate is null)
-                        {
-                            if (string.IsNullOrEmpty(attribute.BuildLayoutMethodName))
-                            {
-                                attribute.BuildLayoutMethodName = "BuildLayout";
-                                if (attribute.GeneratorType is null)
-                                {
-                                    attribute.GeneratorType = modelDetailView.ModelClass.TypeInfo.Type;
-                                }
-                            }
-
-                            if (attribute.GeneratorType is not null)
-                            {
-                                var method = attribute.GeneratorType.GetMethod(attribute.BuildLayoutMethodName);
-                                if (method is not null)
-                                {
-                                    if (method.IsStatic)
-                                    {
-                                        var @delegate = Delegate.CreateDelegate(typeof(BuildLayoutFunctor), method);
-                                        attribute.BuildLayoutDelegate = (BuildLayoutFunctor)@delegate;
-                                    }
-                                    else
-                                    {
-                                        //TODO: Cleanup instance and factory
-                                        var generatorInstance = Activator.CreateInstance(attribute.GeneratorType);
-
-                                        var @delegate = Delegate.CreateDelegate(typeof(BuildLayoutFunctor), generatorInstance, method);
-                                        attribute.BuildLayoutDelegate = (BuildLayoutFunctor)@delegate;
-                                    }
-                                } //TODO: ERROR HANDLING
-                            }
-                        }
-
-                        //TODO: Factory
-                        if (attribute.BuildLayoutDelegate is not null)
-                        {
-                            var builder = attribute.BuildLayoutDelegate;
-                            var layout = builder.Invoke()
-                                ?? throw new InvalidOperationException($"LayoutBuilder on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}' must return an object of Type '{typeof(Layout)}'");
-
-                            modelViewLayout.ClearNodes();
-
-                            var modelMainNode = modelViewLayout
-                                .AddNode<IModelLayoutGroup>(ModelDetailViewLayoutNodesGenerator.MainLayoutGroupName)
-                                ?? throw new InvalidOperationException($"Cannot generate 'Main' node on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}'");
-
-                            var duplicatedIds = VisitNodes<LayoutPropertyEditorItem>(layout)
-                                .GroupBy(i => i.Id)
-                                .Where(i => i.Count() > 1)
-                                .Select(i => (i.Key, i.ToList()));
-
-                            foreach (var (id, duplicates) in duplicatedIds)
-                            {
-                                var i = 1;
-                                foreach (var duplicate in duplicates.Skip(1).ToList())
-                                {
-                                    duplicate.Id = $"{duplicate.Id}{i}";
-                                    duplicate.IsDuplicate = true;
-                                    i++;
-                                }
-                            }
-
-                            var currentIndex = 0;
-                            foreach (var layoutItemNode in layout)
-                            {
-                                var (el, newIndex, node) = FactorNodes(nodeBuilderFactory, currentIndex, modelMainNode, layoutItemNode);
-                                currentIndex = newIndex + 1;
-                                if (el is not null)
-                                {
-                                    AutoFactorName(nodeBuilderFactory, el, newIndex, node);
-                                }
-
-                                static void AutoFactorName(NodeBuilderFactory nodeBuilderFactory, IModelViewLayoutElement el, int index, LayoutItemNode n)
-                                {
-                                    if (string.IsNullOrEmpty(n.Id))
-                                    {
-                                        var newId = nodeBuilderFactory.CreateAutoGeneratedId(n, index);
-                                        if (!string.IsNullOrEmpty(newId))
-                                        {
-                                            el.Id = newId;
-                                        }
-                                    }
-                                }
-
-                                static (IModelViewLayoutElement? el, int index, LayoutItemNode n) FactorNodes(NodeBuilderFactory nodeBuilderFactory, int index, IModelNode parentNode, LayoutItemNode layoutItemNode)
-                                {
-                                    var node = nodeBuilderFactory.CreateViewLayoutElement(parentNode, layoutItemNode);
-                                    if (node is not null && node.Index is null)
-                                    {
-                                        node.Index = index;
-                                    }
-                                    if (layoutItemNode is IEnumerable<LayoutItemNode> layoutNodeWithChildren
-                                        && node is not null)
-                                    {
-                                        var xIndex = 0;
-                                        foreach (var childNode in layoutNodeWithChildren)
-                                        {
-                                            var (n, cI, factoredNode) = FactorNodes(nodeBuilderFactory, xIndex, node, childNode);
-                                            if (n is not null && n.Index is null)
-                                            {
-                                                n.Index = cI;
-                                            }
-                                            if (n is not null)
-                                            {
-                                                AutoFactorName(nodeBuilderFactory, n, cI, factoredNode);
-                                            }
-                                            xIndex = cI + 1;
-                                        }
-                                    }
-                                    return (node, node?.Index ?? 0, layoutItemNode);
-                                }
-                            }
-                        }
+                        duplicate.Id = $"{duplicate.Id}{i}";
+                        duplicate.IsDuplicate = true;
+                        i++;
                     }
                 }
 
+                var currentIndex = 0;
+                foreach (var layoutItemNode in layout)
+                {
+                    var (el, newIndex, node) = FactorNodes(nodeBuilderFactory, currentIndex, modelMainNode, layoutItemNode);
+                    currentIndex = newIndex + 1;
+                    if (el is not null)
+                    {
+                        AutoFactorName(nodeBuilderFactory, el, newIndex, node);
+                    }
+
+                    static void AutoFactorName(NodeBuilderFactory nodeBuilderFactory, IModelViewLayoutElement el, int index, LayoutItemNode n)
+                    {
+                        if (string.IsNullOrEmpty(n.Id))
+                        {
+                            var newId = nodeBuilderFactory.CreateAutoGeneratedId(n, index);
+                            if (!string.IsNullOrEmpty(newId))
+                            {
+                                el.Id = newId;
+                            }
+                        }
+                    }
+
+                    static (IModelViewLayoutElement? el, int index, LayoutItemNode n) FactorNodes(NodeBuilderFactory nodeBuilderFactory, int index, IModelNode parentNode, LayoutItemNode layoutItemNode)
+                    {
+                        var node = nodeBuilderFactory.CreateViewLayoutElement(parentNode, layoutItemNode);
+                        if (node is not null && node.Index is null)
+                        {
+                            node.Index = index;
+                        }
+                        if (layoutItemNode is IEnumerable<LayoutItemNode> layoutNodeWithChildren
+                            && node is not null)
+                        {
+                            var xIndex = 0;
+                            foreach (var childNode in layoutNodeWithChildren)
+                            {
+                                var (n, cI, factoredNode) = FactorNodes(nodeBuilderFactory, xIndex, node, childNode);
+                                if (n is not null && n.Index is null)
+                                {
+                                    n.Index = cI;
+                                }
+                                if (n is not null)
+                                {
+                                    AutoFactorName(nodeBuilderFactory, n, cI, factoredNode);
+                                }
+                                xIndex = cI + 1;
+                            }
+                        }
+                        return (node, node?.Index ?? 0, layoutItemNode);
+                    }
+                }
             }
         }
 

@@ -24,6 +24,7 @@ public static partial class ModelNodesGeneratorUpdatersExtentions
         _ = updaters ?? throw new ArgumentNullException(nameof(updaters));
 
         updaters.Add(new ModelNodesGeneratorUpdaterLayoutBuilder());
+        updaters.Add(new ModelDetailViewLayoutModelDetailViewItemsNodesGenerator());
         updaters.Add(new ModelDetailViewLayoutNodesGeneratorUpdater());
 
         return updaters;

@@ -22,27 +22,27 @@ namespace Xenial.Framework.Model.GeneratorUpdaters;
 [XenialCheckLicense]
 public sealed partial class ModelNodesGeneratorUpdaterLayoutBuilder : ModelNodesGeneratorUpdater<ModelViewsNodesGenerator>
 {
-    /// <summary>   Gets or sets a value indicating whether [build layouts delayed]. </summary>
-    ///
-    /// <value> <c>true</c> if [build layouts delayed]; otherwise, <c>false</c>. </value>
+    ///// <summary>   Gets or sets a value indicating whether [build layouts delayed]. </summary>
+    /////
+    ///// <value> <c>true</c> if [build layouts delayed]; otherwise, <c>false</c>. </value>
 
-    public bool BuildLayoutsDelayed { get; set; }
+    //public bool BuildLayoutsDelayed { get; set; }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether [automatic generate missing view items].
-    /// </summary>
-    ///
-    /// <value>
-    /// <c>true</c> if [automatic generate missing view items]; otherwise, <c>false</c>.
-    /// </value>
+    ///// <summary>
+    ///// Gets or sets a value indicating whether [automatic generate missing view items].
+    ///// </summary>
+    /////
+    ///// <value>
+    ///// <c>true</c> if [automatic generate missing view items]; otherwise, <c>false</c>.
+    ///// </value>
 
-    public bool AutoGenerateMissingDetailViewItems { get; set; } = true;
+    //public bool AutoGenerateMissingDetailViewItems { get; set; } = true;
 
-    /// <summary>   Gets or sets a value indicating whether [remove unused view items]. </summary>
-    ///
-    /// <value> <c>true</c> if [remove unused view items]; otherwise, <c>false</c>. </value>
+    ///// <summary>   Gets or sets a value indicating whether [remove unused view items]. </summary>
+    /////
+    ///// <value> <c>true</c> if [remove unused view items]; otherwise, <c>false</c>. </value>
 
-    public bool RemoveUnusedDetailViewItems { get; set; } = true;
+    //public bool RemoveUnusedDetailViewItems { get; set; } = true;
 
     /// <summary>
     /// Gets or sets a value indicating whether [automatic generate missing views].
@@ -67,33 +67,33 @@ public sealed partial class ModelNodesGeneratorUpdaterLayoutBuilder : ModelNodes
     {
         if (node is IModelViews modelViews)
         {
-            if (AutoGenerateMissingDetailViewItems)
-            {
-                foreach (var possibleModelDetailView in modelViews.OfType<IModelDetailView>())
-                {
-                    var attribute = possibleModelDetailView.ModelClass.TypeInfo.FindAttribute<DetailViewLayoutBuilderAttribute>();
-                    //TODO: Factory
-                    if (attribute is not null && attribute.BuildLayoutDelegate is not null)
-                    {
-                        var builder = attribute.BuildLayoutDelegate;
-                        var layout = builder.Invoke()
-                            ?? throw new InvalidOperationException($"LayoutBuilder on Type '{possibleModelDetailView.ModelClass.TypeInfo.Type}' for View '{possibleModelDetailView.Id}' must return an object of Type '{typeof(Layout)}'");
+            //if (AutoGenerateMissingDetailViewItems)
+            //{
+            //    foreach (var possibleModelDetailView in modelViews.OfType<IModelDetailView>())
+            //    {
+            //        var attribute = possibleModelDetailView.ModelClass.TypeInfo.FindAttribute<DetailViewLayoutBuilderAttribute>();
+            //        //TODO: Factory
+            //        if (attribute is not null && attribute.BuildLayoutDelegate is not null)
+            //        {
+            //            var builder = attribute.BuildLayoutDelegate;
+            //            var layout = builder.Invoke()
+            //                ?? throw new InvalidOperationException($"LayoutBuilder on Type '{possibleModelDetailView.ModelClass.TypeInfo.Type}' for View '{possibleModelDetailView.Id}' must return an object of Type '{typeof(Layout)}'");
 
-                        foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
-                        {
-                            var modelViewItemNode = possibleModelDetailView.Items.FirstOrDefault(m => m.Id == layoutViewItemNode.Id);
+            //            foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
+            //            {
+            //                var modelViewItemNode = possibleModelDetailView.Items.FirstOrDefault(m => m.Id == layoutViewItemNode.Id);
 
-                            if (modelViewItemNode is not null)
-                            {
-                                modelViewItemNode.Caption =
-                                    string.IsNullOrEmpty(layoutViewItemNode.Caption)
-                                    ? modelViewItemNode.Caption
-                                    : layoutViewItemNode.Caption;
-                            }
-                        }
-                    }
-                }
-            }
+            //                if (modelViewItemNode is not null)
+            //                {
+            //                    modelViewItemNode.Caption =
+            //                        string.IsNullOrEmpty(layoutViewItemNode.Caption)
+            //                        ? modelViewItemNode.Caption
+            //                        : layoutViewItemNode.Caption;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         static IEnumerable<TItem> VisitNodes<TItem>(LayoutItemNode node)

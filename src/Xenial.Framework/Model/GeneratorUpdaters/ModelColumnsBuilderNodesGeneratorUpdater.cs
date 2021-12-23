@@ -10,15 +10,6 @@ using static Xenial.Framework.Model.GeneratorUpdaters.ModelColumnsBuilderNodesGe
 
 namespace Xenial.Framework.Model.GeneratorUpdaters;
 
-public partial class Foo
-{
-    public static partial Columns BuildLayout();
-}
-
-public partial class Foo
-{
-    public static partial Columns BuildLayout() => throw new NotImplementedException();
-}
 /// <summary>
 /// Class ModelColumnsBuilderNodesGeneratorUpdater. This class cannot be inherited. Implements the
 /// <see cref="DevExpress.ExpressApp.Model.ModelNodesGeneratorUpdater{DevExpress.ExpressApp.Model.NodeGenerators.ModelListViewColumnsNodesGenerator}" />
