@@ -49,13 +49,17 @@ public partial class ModelDetailViewLayoutNodesGeneratorUpdater
             var viewItems = FindViewItems(parentNode);
             if (viewItems is not null)
             {
-                var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
-                //if (viewItem is null)
-                //{
-                //    //TODO: property factory for view items
-                //    viewItem = viewItems.AddNode<IModelPropertyEditor>(layoutViewItemNode.ViewItemId);
-                //}
-                modelLayoutViewItem.ViewItem = viewItem;
+                if (layoutViewItemNode.IsDuplicate)
+                {
+                    //TODO: Better duplicated node handler
+                    var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.Id);
+                    modelLayoutViewItem.ViewItem = viewItem;
+                }
+                else
+                {
+                    var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
+                    modelLayoutViewItem.ViewItem = viewItem;
+                }
             }
 
             if (modelLayoutViewItem is IModelNode genericModelNode)

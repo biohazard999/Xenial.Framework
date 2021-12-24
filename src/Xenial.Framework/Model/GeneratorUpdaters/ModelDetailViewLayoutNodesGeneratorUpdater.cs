@@ -54,11 +54,11 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                         newViewItem.PropertyName = layoutViewItemNode.ViewItemId;
                         ////For whatever reason we need to reset the editor here
                         ////may be removed if we switch this code to the IModelViewItems node builder
-                        //if (newViewItem is IModelPropertyEditor oldPropertyEditor)
-                        //{
-                        //    //newViewItem.ClearValue(nameof(newViewItem.PropertyEditorType));
-                        //    //newViewItem.PropertyEditorType = typeof(DevExpress.ExpressApp.Editors.DetailPropertyEditor);
-                        //}
+                        if (newViewItem is IModelPropertyEditor oldPropertyEditor)
+                        {
+                            newViewItem.ClearValue(nameof(newViewItem.PropertyEditorType));
+                            //newViewItem.PropertyEditorType = typeof(DevExpress.ExpressApp.Editors.DetailPropertyEditor);
+                        }
                     }
                 }
 
