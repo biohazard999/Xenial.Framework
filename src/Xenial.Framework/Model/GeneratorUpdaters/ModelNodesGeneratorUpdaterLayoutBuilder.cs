@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
-
-using Xenial.Framework.Layouts;
-using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters;
 
@@ -94,31 +90,6 @@ public sealed partial class ModelNodesGeneratorUpdaterLayoutBuilder : ModelNodes
             //        }
             //    }
             //}
-        }
-
-        static IEnumerable<TItem> VisitNodes<TItem>(LayoutItemNode node)
-            where TItem : LayoutItemNode
-        {
-            if (node is TItem targetNode)
-            {
-                yield return targetNode;
-            }
-
-            if (node is IEnumerable<LayoutItemNode> items)
-            {
-                foreach (var item in items)
-                {
-                    if (item is TItem tItem)
-                    {
-                        yield return tItem;
-                    }
-
-                    foreach (var nestedItem in VisitNodes<TItem>(item))
-                    {
-                        yield return nestedItem;
-                    }
-                }
-            }
         }
     }
 }

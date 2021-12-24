@@ -11,6 +11,8 @@ using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Layouts.Items.LeafNodes;
 
+using static Xenial.Framework.Model.GeneratorUpdaters.NodeVisitors;
+
 namespace Xenial.Framework.Model.GeneratorUpdaters;
 
 /// <summary>
@@ -61,28 +63,7 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                 }
             }
         }
-
-        static IEnumerable<TItem> VisitNodes<TItem>(LayoutItemNode node)
-            where TItem : LayoutItemNode
-        {
-            if (node is TItem targetNode)
-            {
-                yield return targetNode;
-            }
-
-            if (node is IEnumerable<LayoutItemNode> items)
-            {
-                foreach (var item in items)
-                {
-                    foreach (var nestedItem in VisitNodes<TItem>(item))
-                    {
-                        yield return nestedItem;
-                    }
-                }
-            }
-        }
     }
-
 }
 
 /// <summary>
@@ -104,7 +85,6 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
             .Register<LayoutEmptySpaceItem, EmptySpaceItemBuilder>(() => new EmptySpaceItemBuilder())
             .Register<LayoutViewItem, LayoutViewItemBuilder>(() => new LayoutViewItemBuilder())
         ;
-
 
     internal static BuildLayoutFunctor? FindFunctor(IModelDetailView modelDetailView)
     {
@@ -178,7 +158,6 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
         => builder.Invoke()
            ?? throw new InvalidOperationException($"LayoutBuilder on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}' must return an object of Type '{typeof(Layout)}'");
 
-
     internal static void MarkDuplicateNodes(Layout layout)
     {
         var duplicatedIds = VisitNodes<LayoutPropertyEditorItem>(layout)
@@ -194,26 +173,6 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
                 duplicate.Id = $"{duplicate.Id}{i}";
                 duplicate.IsDuplicate = true;
                 i++;
-            }
-        }
-    }
-
-    private static IEnumerable<TItem> VisitNodes<TItem>(LayoutItemNode node)
-            where TItem : LayoutItemNode
-    {
-        if (node is TItem targetNode)
-        {
-            yield return targetNode;
-        }
-
-        if (node is IEnumerable<LayoutItemNode> items)
-        {
-            foreach (var item in items)
-            {
-                foreach (var nestedItem in VisitNodes<TItem>(item))
-                {
-                    yield return nestedItem;
-                }
             }
         }
     }
