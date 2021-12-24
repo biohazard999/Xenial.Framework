@@ -50,33 +50,15 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                     if (viewItem is null)
                     {
                         var newViewItem = viewItems.AddNode<IModelPropertyEditor>(layoutViewItemNode.Id);
-
                         newViewItem.PropertyName = layoutViewItemNode.ViewItemId;
-                        ////For whatever reason we need to reset the editor here
-                        ////may be removed if we switch this code to the IModelViewItems node builder
+
+                        //For whatever reason we need to reset the editor here
                         if (newViewItem is IModelPropertyEditor oldPropertyEditor)
                         {
                             newViewItem.ClearValue(nameof(newViewItem.PropertyEditorType));
-                            //newViewItem.PropertyEditorType = typeof(DevExpress.ExpressApp.Editors.DetailPropertyEditor);
                         }
                     }
                 }
-
-                //foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
-                //{
-                //    var modelViewItemNode = viewItems.FirstOrDefault(m => m.Id == layoutViewItemNode.Id);
-
-                //    //This is the most weird side effect so far.
-                //    //For whatever reason we need to specify the caption
-                //    //to generate a deterministic model tree
-                //    if (modelViewItemNode is not null)
-                //    {
-                //        //modelViewItemNode.Caption =
-                //        //    string.IsNullOrEmpty(layoutViewItemNode.Caption)
-                //        //    ? modelViewItemNode.Caption
-                //        //    : layoutViewItemNode.Caption;
-                //    }
-                //}
             }
         }
 

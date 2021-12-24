@@ -2,23 +2,17 @@
             ClassName="Xenial.Framework.Tests.Layouts.Items.SimpleBusinessObject">
   <Items>
     <PropertyEditor Id="BoolProperty"
-                    PropertyName="BoolProperty"
-                    Caption="Bool Property" />
+                    PropertyName="BoolProperty" />
     <PropertyEditor Id="IntegerProperty"
-                    PropertyName="IntegerProperty"
-                    Caption="Integer Property" />
+                    PropertyName="IntegerProperty" />
     <PropertyEditor Id="NullableBoolProperty"
-                    PropertyName="NullableBoolProperty"
-                    Caption="Nullable Bool Property" />
+                    PropertyName="NullableBoolProperty" />
     <PropertyEditor Id="NullableIntegerProperty"
-                    PropertyName="NullableIntegerProperty"
-                    Caption="Nullable Integer Property" />
+                    PropertyName="NullableIntegerProperty" />
     <PropertyEditor Id="ObjectProperty"
-                    PropertyName="ObjectProperty"
-                    Caption="Object Property" />
+                    PropertyName="ObjectProperty" />
     <PropertyEditor Id="StringProperty"
-                    PropertyName="StringProperty"
-                    Caption="String Property" />
+                    PropertyName="StringProperty" />
   </Items>
   <Layout>
     <LayoutGroup Id="Main">
