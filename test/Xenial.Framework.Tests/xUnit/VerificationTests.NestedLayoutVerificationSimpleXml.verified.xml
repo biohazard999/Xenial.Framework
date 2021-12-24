@@ -1,10 +1,13 @@
-<DetailView Id="ComplexBusinessObject_DetailView"
+﻿<DetailView Id="ComplexBusinessObject_DetailView"
             ClassName="Xenial.Framework.Tests.Layouts.Items.ComplexBusinessObject">
   <Items>
     <PropertyEditor Id="NestedObject"
                     PropertyName="NestedObject"
                     Caption="Nested Object" />
-    <PropertyEditor Id="NestedObject.StringProperty" />
+    <PropertyEditor Id="NestedObject.StringProperty"
+                    PropertyName="NestedObject.StringProperty"
+                    PropertyEditorType="DevExpress.ExpressApp.Editors.DetailPropertyEditor"
+                    Caption="String Property" />
     <PropertyEditor Id="OwnString"
                     PropertyName="OwnString"
                     Caption="Own String" />

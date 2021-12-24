@@ -49,35 +49,13 @@ public partial class ModelDetailViewLayoutNodesGeneratorUpdater
             var viewItems = FindViewItems(parentNode);
             if (viewItems is not null)
             {
-                if (layoutViewItemNode.IsDuplicate)
-                {
-                    var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
-                    if (viewItem is not null)
-                    {
-                        var newItem = viewItems.AddNode<IModelPropertyEditor>(layoutViewItemNode.Id);
-                        viewItem = newItem;
-
-                        newItem.PropertyName = layoutViewItemNode.ViewItemId;
-                        //For whatever reason we need to reset the editor here
-                        //may be removed if we switch this code to the IModelViewItems node builder
-                        if (viewItem is IModelPropertyEditor oldPropertyEditor)
-                        {
-                            newItem.ClearValue(nameof(newItem.PropertyEditorType));
-                            newItem.PropertyEditorType = typeof(DevExpress.ExpressApp.Editors.DetailPropertyEditor);
-                        }
-                        modelLayoutViewItem.ViewItem = newItem;
-                    }
-                }
-                else
-                {
-                    var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
-                    if (viewItem is null)
-                    {
-                        //TODO: property factory for view items
-                        viewItem = viewItems.AddNode<IModelPropertyEditor>(layoutViewItemNode.ViewItemId);
-                    }
-                    modelLayoutViewItem.ViewItem = viewItem;
-                }
+                var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m => m.Id == layoutViewItemNode.ViewItemId);
+                //if (viewItem is null)
+                //{
+                //    //TODO: property factory for view items
+                //    viewItem = viewItems.AddNode<IModelPropertyEditor>(layoutViewItemNode.ViewItemId);
+                //}
+                modelLayoutViewItem.ViewItem = viewItem;
             }
 
             if (modelLayoutViewItem is IModelNode genericModelNode)
