@@ -49,7 +49,7 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
 
                     if (viewItem is null)
                     {
-                        var newViewItem = viewItems.AddNode<IModelMemberViewItem>(layoutViewItemNode.Id);
+                        var newViewItem = viewItems.AddNode<IModelPropertyEditor>(layoutViewItemNode.Id);
                         newViewItem.PropertyName = layoutViewItemNode.ViewItemId;
                     }
                 }
