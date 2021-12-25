@@ -32,7 +32,9 @@ namespace MailClient.Module.Win
         protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
-            editorDescriptorsFactory.UseTokenStringPropertyEditorsWin();
+            editorDescriptorsFactory
+                .UseTokenStringPropertyEditorsWin()
+                .UseLabelStringPropertyEditorsWin();
         }
     }
 }

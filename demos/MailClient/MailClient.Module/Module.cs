@@ -47,7 +47,9 @@ namespace MailClient.Module
         protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
-            editorDescriptorsFactory.UseTokenStringPropertyEditors();
+            editorDescriptorsFactory
+                .UseTokenStringPropertyEditors()
+                .UseLabelStringPropertyEditors();
         }
 
         public override void ExtendModelInterfaces(ModelInterfaceExtenders extenders)
