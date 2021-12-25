@@ -23,7 +23,7 @@ namespace MailClient.Win
         public MailClientWindowsFormsApplication()
         {
             IgnoreUserModelDiffs = true;
-            ConnectionString = DevExpress.Xpo.DB.MSSqlConnectionProvider.GetConnectionString(@"DESKTOP-4NVFKC3\SQLEXPRESS", "MailClient");
+            ConnectionString = DevExpress.Xpo.DB.MSSqlConnectionProvider.GetConnectionString(@"MANUEL-SURFACE-\SQLEXPRESS", "MailClient");
             DatabaseUpdateMode = DatabaseUpdateMode.UpdateDatabaseAlways;
             CheckCompatibilityType = CheckCompatibilityType.DatabaseSchema;
 

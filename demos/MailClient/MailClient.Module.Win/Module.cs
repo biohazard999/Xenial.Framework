@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Editors;
@@ -18,6 +19,10 @@ namespace MailClient.Module.Win
                 typeof(ValidationWindowsFormsModule),
                 typeof(MailClientModule)
             });
+
+        protected override IEnumerable<Type> GetDeclaredControllerTypes()
+            => base.GetDeclaredControllerTypes()
+                .UseXenialWindowsFormsControllers();
 
         protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
         {
