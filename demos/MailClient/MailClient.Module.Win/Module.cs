@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Editors;
@@ -22,7 +23,11 @@ namespace MailClient.Module.Win
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
             => base.GetDeclaredControllerTypes()
-                .UseXenialWindowsFormsControllers();
+                .UseXenialWindowsFormsControllers()
+                .Concat(new[]
+                {
+                    typeof(CustomHRController)
+                });
 
         protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
         {

@@ -8,7 +8,12 @@ namespace MailClient.Module.BusinessObjects
     {
         public Layout BuildLayout() => new()
         {
-            Editor.Account
+            Editor.Account,
+            Editor.Subject,
+            Editor.From,
+            Editor.To,
+            Editor.CC,
+            Editor.AttachmentCount
         };
     }
 }

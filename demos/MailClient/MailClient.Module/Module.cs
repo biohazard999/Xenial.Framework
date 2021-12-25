@@ -92,6 +92,7 @@ namespace MailClient.Module
                 }
             });
 
+            updaters.UseXenialImages();
             updaters.UseSingletonNavigationItems();
             updaters.UseNoViewsGeneratorUpdater();
             updaters.UseDetailViewLayoutBuilders();

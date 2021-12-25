@@ -34,7 +34,8 @@ public sealed class XenialHotReloadDetailViewController : ViewController
         ReloadCurrentViewSimpleAction = new SimpleAction(this, $"{GetType().FullName}.{nameof(ReloadCurrentViewSimpleAction)}", DevExpress.Persistent.Base.PredefinedCategory.Tools)
         {
             Caption = "Reload View",
-            ImageName = "Action_HotReload"
+            ImageName = "Action_HotReload",
+            Shortcut = "CtrlShiftF3"
         };
         ReloadCurrentViewSimpleAction.Execute += ReloadCurrentViewSimpleAction_Execute;
     }
@@ -75,8 +76,8 @@ public sealed class XenialHotReloadDetailViewController : ViewController
     /// <param name="application"></param>
     /// <param name="frame"></param>
     /// <param name="view"></param>
-    /// <param name="type"></param>
-    public static void ReloadCurrentView(XafApplication application, DetailView view, Frame frame, Type? type)
+    /// <param name="generatorType"></param>
+    public static void ReloadCurrentView(XafApplication application, DetailView view, Frame frame, Type? generatorType)
     {
         if (application is null || view is null || frame is null)
         {
@@ -84,9 +85,9 @@ public sealed class XenialHotReloadDetailViewController : ViewController
         }
 
         var builderAttributes = view.ObjectTypeInfo.FindAttributes<DetailViewLayoutBuilderAttribute>();
-        var builderAttribute = type is null
+        var builderAttribute = generatorType is null
             ? builderAttributes.FirstOrDefault()
-            : builderAttributes.FirstOrDefault(a => a.GeneratorType == type);
+            : builderAttributes.FirstOrDefault(a => a.GeneratorType == generatorType);
 
         if (builderAttribute is null)
         {
