@@ -57,13 +57,33 @@ public sealed class XenialHotReloadDetailViewController : ViewController
         => ReloadCurrentView(e.Type);
 #endif
 
-    /// <summary>
+    /// <summary>    /// 
     /// For internal use only.
     /// </summary>
     /// <param name="type"></param>
     public void ReloadCurrentView(Type? type)
     {
-        var builderAttributes = View.ObjectTypeInfo.FindAttributes<DetailViewLayoutBuilderAttribute>();
+        if (View is DetailView detailView)
+        {
+            ReloadCurrentView(Application, detailView, Frame, type);
+        }
+    }
+
+    /// <summary>
+    /// For internal use only.
+    /// </summary>
+    /// <param name="application"></param>
+    /// <param name="frame"></param>
+    /// <param name="view"></param>
+    /// <param name="type"></param>
+    public static void ReloadCurrentView(XafApplication application, DetailView view, Frame frame, Type? type)
+    {
+        if (application is null || view is null || frame is null)
+        {
+            return;
+        }
+
+        var builderAttributes = view.ObjectTypeInfo.FindAttributes<DetailViewLayoutBuilderAttribute>();
         var builderAttribute = type is null
             ? builderAttributes.FirstOrDefault()
             : builderAttributes.FirstOrDefault(a => a.GeneratorType == type);
@@ -72,22 +92,23 @@ public sealed class XenialHotReloadDetailViewController : ViewController
         {
             return;
         }
-        if (View.Model is IModelDetailView detailView)
+
+        if (view.Model is IModelDetailView detailView)
         {
             var builder = new ModelDetailViewLayoutNodesGeneratorUpdater();
 
             var layout = (ModelNode)detailView.Layout;
             builder.UpdateNode(layout);
-            View.SaveModel();
-            if (View.Control is System.Windows.Forms.Control control)
+            view.SaveModel();
+            if (view.Control is System.Windows.Forms.Control control)
             {
                 if (control.InvokeRequired)
                 {
-                    control.BeginInvoke(() => UpdateLayout(Application, Frame));
+                    control.BeginInvoke(() => UpdateLayout(application, frame));
                 }
                 else
                 {
-                    UpdateLayout(Application, Frame);
+                    UpdateLayout(application, frame);
                 }
 
                 static void UpdateLayout(XafApplication application, Frame frame)
