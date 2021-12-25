@@ -6,8 +6,11 @@ namespace Xenial.Framework.LabelEditors.PubTernal;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class LabelEditorAliases
 {
-
     /// <summary>   (Immutable) the label string property editor. </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public const string LabelStringPropertyEditor = "Xenial.LabelStringPropertyEditor";
+
+    /// <summary>   (Immutable) the label string property editor. </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public const string LabelHyperlinkStringPropertyEditor = "Xenial.LabelHyperlinkStringPropertyEditor";
 }

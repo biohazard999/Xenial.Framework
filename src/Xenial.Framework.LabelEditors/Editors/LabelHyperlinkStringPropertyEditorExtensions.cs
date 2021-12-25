@@ -4,9 +4,9 @@ using System;
 namespace DevExpress.ExpressApp.Editors;
 
 /// <summary>   Class LabelStringPropertyEditorExtensions. </summary>
-public static class LabelStringPropertyEditorExtensions
+public static partial class LabelStringPropertyEditorExtensions
 {
-    /// <summary>   Uses the token objects property editor. </summary>
+    /// <summary>   Uses the label hyperlink string property editor. </summary>
     ///
     /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
     ///                                             null. </exception>
@@ -15,12 +15,12 @@ public static class LabelStringPropertyEditorExtensions
     ///
     /// <returns>   EditorDescriptorsFactory. </returns>
 
-    public static EditorDescriptorsFactory UseLabelStringPropertyEditors(this EditorDescriptorsFactory editorDescriptorsFactory)
+    public static EditorDescriptorsFactory UseLabelHyperlinkStringPropertyEditors(this EditorDescriptorsFactory editorDescriptorsFactory)
     {
         _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
 
         editorDescriptorsFactory.RegisterPropertyEditorAlias(
-            Xenial.Framework.LabelEditors.PubTernal.LabelEditorAliases.LabelStringPropertyEditor,
+            Xenial.Framework.LabelEditors.PubTernal.LabelEditorAliases.LabelHyperlinkStringPropertyEditor,
             typeof(string),
             true
         );

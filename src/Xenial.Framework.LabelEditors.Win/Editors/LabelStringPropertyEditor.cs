@@ -1,18 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
-using System.Windows.Forms;
 
-using DevExpress.ExpressApp.DC;
-using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.Utils;
-using DevExpress.ExpressApp.Utils.Reflection;
 using DevExpress.ExpressApp.Win.Editors;
-using DevExpress.ExpressApp.Win.Utils;
-using DevExpress.Utils;
-using DevExpress.Utils.Controls;
 using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Repository;
 
 using Xenial.Framework.LabelEditors.Win.Editors;
 
@@ -31,17 +21,18 @@ namespace Xenial.Framework.LabelEditors.Win.Editors
     /// 
     /// </summary>
     /// <seealso cref="DevExpress.ExpressApp.Win.Editors.WinPropertyEditor" />
-    /// <seealso cref="DevExpress.ExpressApp.Win.Editors.IInplaceEditSupport" />
-    public class LabelStringPropertyEditor : WinPropertyEditor, IInplaceEditSupport
+    public class LabelStringPropertyEditor : WinPropertyEditor
+    //TODO: InplaceEditSupport
+    //, IInplaceEditSupport
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LabelStringPropertyEditor"/> class.
         /// </summary>
         /// <param name="objectType">Type of the object.</param>
         /// <param name="model">The model.</param>
-        public LabelStringPropertyEditor(Type objectType, IModelMemberViewItem model)
+        public LabelStringPropertyEditor(Type objectType, DevExpress.ExpressApp.Model.IModelMemberViewItem model)
             : base(objectType, model)
-                => ControlBindingProperty = nameof(Control.Text);
+            => ControlBindingProperty = nameof(Control.Text);
 
         /// <summary>
         /// Creates the control core.
@@ -49,44 +40,14 @@ namespace Xenial.Framework.LabelEditors.Win.Editors
         /// <returns></returns>
         protected override object CreateControlCore()
         {
-            var control = new HyperlinkLabelControl
+            var control = new LabelControl
             {
                 AllowHtmlString = true,
-                AutoSizeMode = LabelAutoSizeMode.None,
             };
 
-            //control.HyperlinkClick += Control_HyperlinkClick;
-
-            control.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
-
+            control.Appearance.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
             return control;
         }
-
-        //private void Control_HyperlinkClick(object sender, HyperlinkClickEventArgs e)
-        //    => Process.Start(e.Link);
-
-        /// <summary>
-        /// Unsubscribes from the control's events and, depending on the parameter, also disposes of the control and removes the link to the control.
-        /// </summary>
-        /// <param name="unwireEventsOnly">true to only unsubscribe from events, false to also dispose of the control and remove the link to the control.</param>
-        public override void BreakLinksToControl(bool unwireEventsOnly)
-        {
-            if (Control != null)
-            {
-                //Control.HyperlinkClick -= Control_HyperlinkClick;
-            }
-
-            base.BreakLinksToControl(unwireEventsOnly);
-        }
-
-        /// <summary>
-        /// Creates a Repository Item corresponding to the editor control used by the Property Editor.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="T:DevExpress.XtraEditors.Repository.RepositoryItem" /> object corresponding to the editor control used by the Property Editor.
-        /// </returns>
-        public RepositoryItem CreateRepositoryItem()
-            => new RepositoryItemHypertextLabel();
 
         /// <summary>
         /// Provides access to the control that represents the current Property Editor in a UI.
@@ -94,14 +55,14 @@ namespace Xenial.Framework.LabelEditors.Win.Editors
         /// <value>
         /// A <see cref="T:System.Windows.Forms.Control" /> object used to display the current Property Editor in a UI.
         /// </value>
-        public new HyperlinkLabelControl Control => (HyperlinkLabelControl)base.Control;
+        public new LabelControl Control => (LabelControl)base.Control;
     }
 }
 
 namespace DevExpress.ExpressApp.Editors
 {
     /// <summary>   Class LabelStringPropertyEditorWinExtensions. </summary>
-    public static class LabelStringPropertyEditorWinExtensions
+    public static partial class LabelStringPropertyEditorWinExtensions
     {
         /// <summary>   Uses the label string property editors windows forms. </summary>
         ///

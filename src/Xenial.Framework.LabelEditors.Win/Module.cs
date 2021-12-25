@@ -34,6 +34,9 @@ public sealed partial class XenialLabelEditorsWindowsFormsModule : XenialModuleB
     protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
     {
         base.RegisterEditorDescriptors(editorDescriptorsFactory);
-        editorDescriptorsFactory.UseLabelStringPropertyEditorsWin();
+
+        editorDescriptorsFactory
+            .UseLabelStringPropertyEditorsWin()
+            .UseLabelHyperlinkStringPropertyEditorsWin();
     }
 }

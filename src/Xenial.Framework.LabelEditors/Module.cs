@@ -20,6 +20,9 @@ public sealed partial class XenialLabelEditorsModule : XenialModuleBase
     protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
     {
         base.RegisterEditorDescriptors(editorDescriptorsFactory);
-        editorDescriptorsFactory.UseLabelStringPropertyEditors();
+
+        editorDescriptorsFactory
+            .UseLabelStringPropertyEditors()
+            .UseLabelHyperlinkStringPropertyEditors();
     }
 }
