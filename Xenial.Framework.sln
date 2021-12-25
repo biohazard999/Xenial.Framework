@@ -85,9 +85,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Generators
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Generators.Tests", "test\Xenial.Framework.Generators.Tests\Xenial.Framework.Generators.Tests.csproj", "{AF944FE3-0000-4400-907E-0681F92C3D3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Framework.CompilerServices", "src\Xenial.Framework.CompilerServices\Xenial.Framework.CompilerServices.csproj", "{6056382C-02F0-4484-8C58-0D2602C8EFCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.CompilerServices", "src\Xenial.Framework.CompilerServices\Xenial.Framework.CompilerServices.csproj", "{6056382C-02F0-4484-8C58-0D2602C8EFCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Framework.Images", "src\Xenial.Framework.Images\Xenial.Framework.Images.csproj", "{D8FBB0AA-4362-4DB6-BD58-194CC352AF56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Images", "src\Xenial.Framework.Images\Xenial.Framework.Images.csproj", "{D8FBB0AA-4362-4DB6-BD58-194CC352AF56}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.LabelEditors", "src\Xenial.Framework.LabelEditors\Xenial.Framework.LabelEditors.csproj", "{42448A9C-7F07-4597-9574-2C551D4F2298}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.LabelEditors.Win", "src\Xenial.Framework.LabelEditors.Win\Xenial.Framework.LabelEditors.Win.csproj", "{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LabelEditors", "LabelEditors", "{F6E72FB4-D648-440F-8B0F-CBF588311AAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -387,6 +393,30 @@ Global
 		{D8FBB0AA-4362-4DB6-BD58-194CC352AF56}.Release|x64.Build.0 = Release|Any CPU
 		{D8FBB0AA-4362-4DB6-BD58-194CC352AF56}.Release|x86.ActiveCfg = Release|Any CPU
 		{D8FBB0AA-4362-4DB6-BD58-194CC352AF56}.Release|x86.Build.0 = Release|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Debug|x64.Build.0 = Debug|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Debug|x86.Build.0 = Debug|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Release|x64.ActiveCfg = Release|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Release|x64.Build.0 = Release|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Release|x86.ActiveCfg = Release|Any CPU
+		{42448A9C-7F07-4597-9574-2C551D4F2298}.Release|x86.Build.0 = Release|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Debug|x64.Build.0 = Debug|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Debug|x86.Build.0 = Debug|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Release|x64.ActiveCfg = Release|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Release|x64.Build.0 = Release|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Release|x86.ActiveCfg = Release|Any CPU
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -424,6 +454,9 @@ Global
 		{AF944FE3-0000-4400-907E-0681F92C3D3E} = {D7059831-CCB9-41AA-9EAF-0F0EED485003}
 		{6056382C-02F0-4484-8C58-0D2602C8EFCF} = {BBC9F78B-FCA3-4E8B-BE69-DFF8533377E7}
 		{D8FBB0AA-4362-4DB6-BD58-194CC352AF56} = {BBC9F78B-FCA3-4E8B-BE69-DFF8533377E7}
+		{42448A9C-7F07-4597-9574-2C551D4F2298} = {F6E72FB4-D648-440F-8B0F-CBF588311AAF}
+		{EDA05479-2A81-4D8A-8989-B37F4F5F80A4} = {F6E72FB4-D648-440F-8B0F-CBF588311AAF}
+		{F6E72FB4-D648-440F-8B0F-CBF588311AAF} = {4E58D432-9D7F-4719-B15B-4E334A478D14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C7E850AC-B423-49A9-8D5E-6B21CA22F615}
