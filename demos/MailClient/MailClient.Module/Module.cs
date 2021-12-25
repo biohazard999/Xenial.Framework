@@ -28,14 +28,14 @@ namespace MailClient.Module
         });
 
         protected override IEnumerable<Type> GetRegularTypes() => base.GetRegularTypes()
-            .UseTokenStringEditorRegularTypes();
+            .UseXenialTokenStringEditorRegularTypes();
 
         protected override IEnumerable<Type> GetDeclaredExportedTypes() => ModelTypeList.PersistentTypes;
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
             => new[]
             {
-                typeof(Xenial.Framework.SystemModule.SingletonController), //TODO: Extension method for feature slice
+                typeof(Xenial.Framework.SystemModule.XenialSingletonViewController), //TODO: Extension method for feature slice
                 typeof(ReceiveMailsViewController)
             };
 

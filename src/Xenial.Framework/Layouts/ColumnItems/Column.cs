@@ -53,7 +53,7 @@ public partial record Column
         TrimWhitespace = true,
         StringReplacements =
             {
-                ["."] = "-",
+                ["."] = ".",
                 [" "] = "-",
                 ["/"] = "-",
                 ["\\"] = "-",
