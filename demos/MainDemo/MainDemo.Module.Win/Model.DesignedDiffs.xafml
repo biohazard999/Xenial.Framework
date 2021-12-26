@@ -11,12 +11,12 @@
     <LayoutManagerOptions EnableLayoutGroupImages="False" GroupStyle="Title" ItemToBorderHorizontalDistance="12" ItemToItemHorizontalDistance="24" />
   </Options>
   <SchemaModules>
-    <SchemaModule Name="SchedulerModuleBase" Version="18.2.0.0" IsNewNode="True" />
-    <SchemaModule Name="SchedulerWindowsFormsModule" Version="18.2.0.0" IsNewNode="True" />
-    <SchemaModule Name="SystemModule" Version="18.2.0.0" />
-    <SchemaModule Name="SystemWindowsFormsModule" Version="18.2.0.0" IsNewNode="True" />
-    <SchemaModule Name="ValidationModule" Version="18.2.0.0" />
-    <SchemaModule Name="ViewVariantsModule" Version="18.2.0.0" />
+    <SchemaModule Name="SchedulerModuleBase" Version="21.2.4.0" IsNewNode="True" />
+    <SchemaModule Name="SchedulerWindowsFormsModule" Version="21.2.4.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="21.2.4.0" />
+    <SchemaModule Name="SystemWindowsFormsModule" Version="21.2.4.0" IsNewNode="True" />
+    <SchemaModule Name="ValidationModule" Version="21.2.4.0" />
+    <SchemaModule Name="ViewVariantsModule" Version="21.2.4.0" />
   </SchemaModules>
   <Views>
     <DetailView Id="AuthenticationStandardLogonParameters_DetailView_Demo">
