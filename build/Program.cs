@@ -79,8 +79,8 @@ namespace Xenial.Build
             );
 
             Target("lint", DependsOn("pack.lic", "ensure-tools"),
-                () => RunAsync("dotnet", "--version")
-                //() => RunAsync("dotnet", $"format {sln} --exclude ext --check --verbosity diagnostic")
+                //() => RunAsync("dotnet", "--version")
+                () => RunAsync("dotnet", $"format {sln} --exclude ext --check --verbosity diagnostic")
             );
 
             Target("restore", DependsOn("pack.lic", "lint"),
@@ -219,6 +219,8 @@ namespace Xenial.Build
 
             Target("publish:Xenial.FeatureCenter.Win", DependsOn("pack"), async () =>
             {
+                await RunAsync("dotnet", "--version");
+
                 await RunAsync("dotnet", "zip install");
 
                 await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj {logOptions("publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false");
