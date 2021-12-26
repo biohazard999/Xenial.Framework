@@ -80,61 +80,63 @@ Do you want to download and install it now?
     public static async Task EnsureCoreWebView2AndInstallAsync(this WebView2 control)
     {
         _ = control ?? throw new ArgumentNullException(nameof(control));
-        try
-        {
-            await control.EnsureCoreWebView2Async().ConfigureAwait(false);
-        }
-        catch (EdgeNotFoundException ex)
-        {
-            Tracing.LogError(new Guid("369655EA-E64B-45C6-8481-6098F7D96183"), ex);
-            if (await DownloadAndInstallWebView2Runtime().ConfigureAwait(false))
-            {
-                static void SetPrivateFieldValue<T>(object obj, string propName, T val)
-                {
-                    _ = obj ?? throw new ArgumentNullException(nameof(obj));
-                    var t = obj.GetType();
-                    FieldInfo? fi = null;
-                    while (fi == null && t != null)
-                    {
-                        fi = t.GetField(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                        t = t.BaseType;
-                    }
-                    _ = fi ?? throw new ArgumentOutOfRangeException(nameof(propName), $"Field {propName} was not found in Type {obj.GetType().FullName}");
-                    fi.SetValue(obj, val);
-                }
+        //try
+        //{
+        await control.EnsureCoreWebView2Async().ConfigureAwait(false);
+        //TODO: how to auto install WebView2 runtime
+        //TODO: This should throw an WebView2RuntimeNotFoundException
+        //        }
+        //        catch (EdgeNotFoundException ex)
+        //        {
+        //            Tracing.LogError(new Guid("369655EA-E64B-45C6-8481-6098F7D96183"), ex);
+        //            if (await DownloadAndInstallWebView2Runtime().ConfigureAwait(false))
+        //            {
+        //                static void SetPrivateFieldValue<T>(object obj, string propName, T val)
+        //                {
+        //                    _ = obj ?? throw new ArgumentNullException(nameof(obj));
+        //                    var t = obj.GetType();
+        //                    FieldInfo? fi = null;
+        //                    while (fi == null && t != null)
+        //                    {
+        //                        fi = t.GetField(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        //                        t = t.BaseType;
+        //                    }
+        //                    _ = fi ?? throw new ArgumentOutOfRangeException(nameof(propName), $"Field {propName} was not found in Type {obj.GetType().FullName}");
+        //                    fi.SetValue(obj, val);
+        //                }
 
-                SetPrivateFieldValue<Task?>(control, "_initTask", null);
-                try
-                {
-                    await control.EnsureCoreWebView2Async().ConfigureAwait(false);
-                }
-                catch (COMException ex2) { HandleCOMException(control, ex2); }
-#pragma warning disable CA1031 // Do not catch general exception types
-                catch (Exception ex2) { HandleGenericException(control, ex2); }
-#pragma warning restore CA1031 // Do not catch general exception types
-            }
-        }
-        catch (COMException ex) { HandleCOMException(control, ex); }
-#pragma warning disable CA1031 // Do not catch general exception types
-        catch (Exception ex) { HandleGenericException(control, ex); }
-#pragma warning restore CA1031 // Do not catch general exception types
+        //                SetPrivateFieldValue<Task?>(control, "_initTask", null);
+        //                try
+        //                {
+        //                    await control.EnsureCoreWebView2Async().ConfigureAwait(false);
+        //                }
+        //                catch (COMException ex2) { HandleCOMException(control, ex2); }
+        //#pragma warning disable CA1031 // Do not catch general exception types
+        //                catch (Exception ex2) { HandleGenericException(control, ex2); }
+        //#pragma warning restore CA1031 // Do not catch general exception types
+        //            }
+        //        }
+        //        catch (COMException ex) { HandleCOMException(control, ex); }
+        //#pragma warning disable CA1031 // Do not catch general exception types
+        //        catch (Exception ex) { HandleGenericException(control, ex); }
+        //#pragma warning restore CA1031 // Do not catch general exception types
 
-        static void HandleCOMException(WebView2 ctrl, COMException ex)
-        {
-            Tracing.LogError(new Guid("FF39957F-C7E7-4498-B6B5-79317D53EAB7"), ex);
-            if (!ctrl.IsDisposed)
-            {
-                WinApplication.Messaging.ShowException(ex.ToString());
-            }
-        }
+        //        static void HandleCOMException(WebView2 ctrl, COMException ex)
+        //        {
+        //            Tracing.LogError(new Guid("FF39957F-C7E7-4498-B6B5-79317D53EAB7"), ex);
+        //            if (!ctrl.IsDisposed)
+        //            {
+        //                WinApplication.Messaging.ShowException(ex.ToString());
+        //            }
+        //        }
 
-        static void HandleGenericException(WebView2 ctrl, Exception ex)
-        {
-            Tracing.LogError(new Guid("0985D675-A93B-48B7-AC88-E3622DD86DAC"), ex);
-            if (!ctrl.IsDisposed)
-            {
-                WinApplication.Messaging.ShowException(ex.ToString());
-            }
-        }
+        //        static void HandleGenericException(WebView2 ctrl, Exception ex)
+        //        {
+        //            Tracing.LogError(new Guid("0985D675-A93B-48B7-AC88-E3622DD86DAC"), ex);
+        //            if (!ctrl.IsDisposed)
+        //            {
+        //                WinApplication.Messaging.ShowException(ex.ToString());
+        //            }
+        //        }
     }
 }

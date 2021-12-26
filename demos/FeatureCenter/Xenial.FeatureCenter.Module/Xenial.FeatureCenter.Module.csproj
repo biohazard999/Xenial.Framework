@@ -6,6 +6,7 @@
 
   <ItemGroup Condition="'$(XenialDebug)' == 'false'">
     <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.Images" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Xpo" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.WebView" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.TokenEditors" Version="$(XenialDemoPackageVersion)" />
@@ -15,6 +16,7 @@
 
   <ItemGroup Condition="$(XenialDebug)">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Images/Xenial.Framework.Images.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Xpo/Xenial.Framework.Xpo.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.WebView/Xenial.Framework.WebView.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors/Xenial.Framework.TokenEditors.csproj" />

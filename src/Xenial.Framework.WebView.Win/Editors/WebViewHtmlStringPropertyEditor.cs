@@ -3,6 +3,8 @@
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Win.Editors;
 
+using Microsoft.Web.WebView2.Core;
+
 using Xenial.Framework.WebView.Win.Editors;
 using Xenial.Framework.WebView.Win.Helpers;
 
@@ -106,14 +108,21 @@ namespace Xenial.Framework.WebView.Win.Editors
         /// Initializes a new instance of the <see cref="XenialHtmlStringWebView2"/> class.
         /// </summary>
 
-        public XenialHtmlStringWebView2() => CoreWebView2Ready += XenialWebView2_CoreWebView2Ready;
+        public XenialHtmlStringWebView2() => CoreWebView2InitializationCompleted += XenialWebView2_CoreWebView2Ready;
 
-        private async void XenialWebView2_CoreWebView2Ready(object? sender, EventArgs e)
+        private async void XenialWebView2_CoreWebView2Ready(object? sender, CoreWebView2InitializationCompletedEventArgs e)
         {
-            CoreWebView2Ready -= XenialWebView2_CoreWebView2Ready;
-            isReady = true;
-            await this.EnsureCoreWebView2AndInstallAsync().ConfigureAwait(true);
-            NavigateToHtmlContent();
+            CoreWebView2InitializationCompleted -= XenialWebView2_CoreWebView2Ready;
+            if (e.IsSuccess)
+            {
+                isReady = true;
+                await this.EnsureCoreWebView2AndInstallAsync().ConfigureAwait(true);
+                NavigateToHtmlContent();
+            }
+            else
+            {
+                throw e.InitializationException;
+            }
         }
 
         private void NavigateToHtmlContent()
@@ -124,8 +133,15 @@ namespace Xenial.Framework.WebView.Win.Editors
             }
             catch (ArgumentException)
             {
-                NavigateToString("<html><head></head><body>Content is to long.</body></html>");
+                NavigateToContentIsTooLongUserMessage();
             }
+            catch (InvalidOperationException)
+            {
+                NavigateToContentIsTooLongUserMessage();
+            }
+
+            void NavigateToContentIsTooLongUserMessage()
+                => NavigateToString("<html><head></head><body>Content is too long.</body></html>");
         }
 
         private string? htmlContent;
