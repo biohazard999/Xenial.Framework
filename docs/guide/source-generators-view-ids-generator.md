@@ -120,13 +120,7 @@ A partial class marked with the `Xenial.XenialViewIdsAttribute` will follow the 
   * `Xenial.Framework.Base.GenerateNoLookupListViewAttribute`
   * `Xenial.Framework.Base.GenerateNoNestedListViewAttribute`
 
-## Diagnostics
-
-|ID            | Severity | Message                                                                     | Reason                                                                                 |
-|:------------:|:--------:|-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-|XENGEN0010    | Error    | Could not parse boolean MSBUILD variable `<GenerateXenialViewIdsAttribute>` | MsBuild variable needs to be in boolean parsable format: `true`/`false`/`True`/`False` |
-|XENGEN0100    | Error    | The class using the `[XenialViewIdsAttribute]` needs to be partial          | We can not generate code for non partial classes                                       |
-|XENGEN0101    | Error    | The class using the `[XenialViewIdsAttribute]` needs to be in a namespace   | We can not generate code in the global namespace                                       |
+* It will respect the visibility of the target class
 
 ## Options
 
@@ -221,3 +215,11 @@ namespace Acme.Accounting.Module
 ::: warning CAUTION
 When updating from an older Xenial to a newer Xenial version, it's necessary to restart VisualStudio/VSCode after the upgrade, so Intellisense can reload the new SourceGenerator. So it may come to false positive warnings if they don't match.
 :::
+
+## Diagnostics
+
+|ID            | Severity | Message                                                                     | Reason                                                                                 |
+|:------------:|:--------:|-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+|XENGEN0010    | Error    | Could not parse boolean MSBUILD variable `<GenerateXenialViewIdsAttribute>` | MsBuild variable needs to be in boolean parsable format: `true`/`false`/`True`/`False` |
+|XENGEN0100    | Error    | The class using the `[XenialViewIdsAttribute]` needs to be partial          | We can not generate code for non partial classes                                       |
+|XENGEN0101    | Error    | The class using the `[XenialViewIdsAttribute]` needs to be in a namespace   | We can not generate code in the global namespace                                       |

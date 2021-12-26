@@ -72,4 +72,10 @@ namespace Acme.Module
 
 ## API-surface
 
-A partial class marked with the `Xenial.XenialViewIdsAttribute` will follow the rules:
+A partial class marked with the `Xenial.XenialImageNames` will follow the rules:
+
+* All MSBuild `Includes` that follow either/or
+  * `<XenialImageNames Include="Images/*.*" />`
+  * `<AdditionalFiles Include="Images/*.*" XenialImageNames="true" />`
+
+* It will respect the visibility of the target class
