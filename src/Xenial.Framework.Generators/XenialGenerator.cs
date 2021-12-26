@@ -23,6 +23,7 @@ public class XenialGenerator : ISourceGenerator
         new XenialImageNamesGenerator(),
         new XenialXpoBuilderGenerator(),
         new XenialActionGenerator(new()),
+        new XenialModelBuilderGenerator(),
         new XenialLayoutBuilderGenerator()
     };
 

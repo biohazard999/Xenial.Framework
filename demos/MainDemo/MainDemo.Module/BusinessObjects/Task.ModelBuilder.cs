@@ -6,7 +6,7 @@ using Xenial.Framework.ModelBuilders;
 
 namespace MainDemo.Module.BusinessObjects
 {
-    public class DemoTaskModelBuilder : ModelBuilder<DemoTask>
+    public partial class DemoTaskModelBuilder : ModelBuilder<DemoTask>
     {
         public DemoTaskModelBuilder(ITypeInfo typeInfo) : base(typeInfo) { }
 
@@ -17,7 +17,7 @@ namespace MainDemo.Module.BusinessObjects
             this.HasCaption("Task")
                 .WithDefaultClassOptions();
 
-            For(m => m.Employees)
+            Employees
                 .HasTooltip("View, assign or remove employees for the current task");
         }
     }
