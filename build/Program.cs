@@ -79,6 +79,7 @@ namespace Xenial.Build
             );
 
             Target("lint", DependsOn("pack.lic", "ensure-tools"),
+                //TODO: Linting is currently failing
                 () => RunAsync("dotnet", "--version")
                 //() => RunAsync("dotnet", $"format {sln} --exclude ext --check --verbosity diagnostic")
             );
