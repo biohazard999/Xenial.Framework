@@ -3,39 +3,32 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
 
-namespace MainDemo.Module.BusinessObjects {
+namespace MainDemo.Module.BusinessObjects
+{
     [FileAttachment(nameof(File))]
     [DefaultClassOptions, ImageName("BO_Resume")]
-    public class Resume : BaseObject {
+    public class Resume : BaseObject
+    {
         private Employee employee;
         private FileData file;
         public Resume(Session session)
-            : base(session) {
+            : base(session)
+        {
         }
         [Aggregated, ExpandObjectMembers(ExpandObjectMembers.Never)]
         [RuleRequiredField]
-        public FileData File {
-            get {
-                return file;
-            }
-            set {
-                SetPropertyValue(nameof(File), ref file, value);
-            }
+        public FileData File
+        {
+            get => file;
+            set => SetPropertyValue(nameof(File), ref file, value);
         }
         [RuleRequiredField]
-        public Employee Employee {
-            get {
-                return employee;
-            }
-            set {
-                SetPropertyValue(nameof(Employee), ref employee, value);
-            }
+        public Employee Employee
+        {
+            get => employee;
+            set => SetPropertyValue(nameof(Employee), ref employee, value);
         }
         [Aggregated, Association("Resume-PortfolioFileData")]
-        public XPCollection<PortfolioFileData> Portfolio {
-            get {
-                return GetCollection<PortfolioFileData>(nameof(Portfolio));
-            }
-        }
+        public XPCollection<PortfolioFileData> Portfolio => GetCollection<PortfolioFileData>(nameof(Portfolio));
     }
 }

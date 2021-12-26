@@ -2,9 +2,6 @@
 {
     public partial class EmployeeListReport : DevExpress.XtraReports.UI.XtraReport
     {
-        public EmployeeListReport()
-        {
-            InitializeComponent();
-        }
+        public EmployeeListReport() => InitializeComponent();
     }
 }

@@ -1,40 +1,40 @@
 ﻿using System;
-using DevExpress.Xpo;
-using DevExpress.Persistent.Base;
 using System.Collections.Generic;
-using DevExpress.Persistent.BaseImpl;
 
-namespace MainDemo.Module.BusinessObjects {
+using DevExpress.Persistent.Base;
+using DevExpress.Persistent.BaseImpl;
+using DevExpress.Xpo;
+
+namespace MainDemo.Module.BusinessObjects
+{
     [ImageName("BO_FileAttachment")]
-    public class PortfolioFileData : FileAttachmentBase {
+    public class PortfolioFileData : FileAttachmentBase
+    {
         public PortfolioFileData(Session session)
-            : base(session) {
+            : base(session)
+        {
         }
-        public override void AfterConstruction() {
+        public override void AfterConstruction()
+        {
             base.AfterConstruction();
             documentType = DocumentType.Unknown;
         }
         protected Resume resume;
         [Association("Resume-PortfolioFileData")]
-        public Resume Resume {
-            get {
-                return resume;
-            }
-            set {
-                SetPropertyValue<Resume>(nameof(Resume), ref resume, value);
-            }
+        public Resume Resume
+        {
+            get => resume;
+            set => SetPropertyValue<Resume>(nameof(Resume), ref resume, value);
         }
         private DocumentType documentType;
-        public DocumentType DocumentType {
-            get {
-                return documentType;
-            }
-            set {
-                SetPropertyValue<DocumentType>(nameof(DocumentType), ref documentType, value);
-            }
+        public DocumentType DocumentType
+        {
+            get => documentType;
+            set => SetPropertyValue<DocumentType>(nameof(DocumentType), ref documentType, value);
         }
     }
-    public enum DocumentType {
+    public enum DocumentType
+    {
         SourceCode = 1,
         Tests = 2,
         Documentation = 3,

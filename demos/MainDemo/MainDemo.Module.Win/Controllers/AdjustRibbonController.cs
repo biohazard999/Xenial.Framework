@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Templates.ActionControls;
@@ -11,60 +12,79 @@ using DevExpress.XtraBars.Ribbon;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 
-namespace MainDemo.Module.Win.Controllers {
-    public class AdjustRibbonController : WindowController {
+namespace MainDemo.Module.Win.Controllers
+{
+    public class AdjustRibbonController : WindowController
+    {
         private ActionControlsSiteController actionControlsSiteController;
-        private string[] needWordWrapActionsId = { "SaveAs", "SaveTo", "RichEdit_Open", "Task.MarkCompleted", "NextObject" };
-        private string[] beginGroupActionsId = { "Save", "Delete", "Cancel", "ResetView", "OpenObject", "ResetViewSettings", "ShowInReportV2", "ShowAllContexts" };
+        private readonly string[] needWordWrapActionsId = { "SaveAs", "SaveTo", "RichEdit_Open", "Task.MarkCompleted", "NextObject" };
+        private readonly string[] beginGroupActionsId = { "Save", "Delete", "Cancel", "ResetView", "OpenObject", "ResetViewSettings", "ShowInReportV2", "ShowAllContexts" };
         public AdjustRibbonController() : base() { }
-        protected override void OnActivated() {
+        protected override void OnActivated()
+        {
             base.OnActivated();
             actionControlsSiteController = Frame.GetController<ActionControlsSiteController>();
-            if(actionControlsSiteController != null) {
+            if (actionControlsSiteController != null)
+            {
                 actionControlsSiteController.CustomizeActionControl += new EventHandler<ActionControlEventArgs>(ActionControlsSiteController_CustomizeActionControl);
                 actionControlsSiteController.CustomAddActionControlToContainer += ActionControlsSiteController_CustomAddActionControlToContainer;
             }
         }
-        protected override void OnDeactivated() {
+        protected override void OnDeactivated()
+        {
             base.OnDeactivated();
-            if(actionControlsSiteController != null) {
+            if (actionControlsSiteController != null)
+            {
                 actionControlsSiteController.CustomizeActionControl -= new EventHandler<ActionControlEventArgs>(ActionControlsSiteController_CustomizeActionControl);
                 actionControlsSiteController.CustomAddActionControlToContainer -= ActionControlsSiteController_CustomAddActionControlToContainer;
             }
         }
-        public BarItemLink GetBarItemLinkForBarItem(IActionControlsSite actionControlsSite, BarItem barItem) {
+        public BarItemLink GetBarItemLinkForBarItem(IActionControlsSite actionControlsSite, BarItem barItem)
+        {
             BarItemLink result = null;
-            foreach(IActionControlContainer controlContainer in actionControlsSite.ActionContainers) {
-                if(controlContainer is BarLinkActionControlContainer) {
+            foreach (var controlContainer in actionControlsSite.ActionContainers)
+            {
+                if (controlContainer is BarLinkActionControlContainer)
+                {
                     result = ((BarLinkActionControlContainer)controlContainer).BarContainerItem.ItemLinks.FirstOrDefault<BarItemLink>(x => x.Item == barItem);
-                    if(result != null) {
+                    if (result != null)
+                    {
                         break;
                     }
                 }
             }
             return result;
         }
-        private void ActionControlsSiteController_CustomizeActionControl(object sender, ActionControlEventArgs e) {
-            if((Frame.Template is RibbonForm) && needWordWrapActionsId.Contains(e.ActionControl.ActionId) && (e.ActionControl.NativeControl is BarButtonItem)) {
-                BarItemLink barItemLink = GetBarItemLinkForBarItem((IActionControlsSite)Frame.Template, (BarItem)e.ActionControl.NativeControl);
-                if((barItemLink != null) && (!barItemLink.IsLinkInMenu)) {
+        private void ActionControlsSiteController_CustomizeActionControl(object sender, ActionControlEventArgs e)
+        {
+            if ((Frame.Template is RibbonForm) && needWordWrapActionsId.Contains(e.ActionControl.ActionId) && (e.ActionControl.NativeControl is BarButtonItem))
+            {
+                var barItemLink = GetBarItemLinkForBarItem((IActionControlsSite)Frame.Template, (BarItem)e.ActionControl.NativeControl);
+                if ((barItemLink != null) && (!barItemLink.IsLinkInMenu))
+                {
                     barItemLink.UserCaption = barItemLink.Item.Caption.Replace(' ', '\n');
                 }
             }
-            if(beginGroupActionsId.Contains(e.ActionControl.ActionId) && (e.ActionControl.NativeControl is BarItem)) {
-                BarItemLink barItemLink = GetBarItemLinkForBarItem((IActionControlsSite)Frame.Template, (BarItem)e.ActionControl.NativeControl);
-                if(barItemLink != null) {
+            if (beginGroupActionsId.Contains(e.ActionControl.ActionId) && (e.ActionControl.NativeControl is BarItem))
+            {
+                var barItemLink = GetBarItemLinkForBarItem((IActionControlsSite)Frame.Template, (BarItem)e.ActionControl.NativeControl);
+                if (barItemLink != null)
+                {
                     barItemLink.BeginGroup = true;
                 }
             }
         }
-        private void ActionControlsSiteController_CustomAddActionControlToContainer(object sender, DevExpress.ExpressApp.Templates.ActionControls.CustomAddActionControlEventArgs e) {
-            if(!(Frame.Template is RibbonForm)) {
+        private void ActionControlsSiteController_CustomAddActionControlToContainer(object sender, DevExpress.ExpressApp.Templates.ActionControls.CustomAddActionControlEventArgs e)
+        {
+            if (!(Frame.Template is RibbonForm))
+            {
                 return;
             }
-            if((e.Container is BarLinkActionControlContainer) && (e.Action.Id == ChangeVariantController.ChangeVariantActionId)) {
-                BarLinkActionControlContainer barLinkControlContainer = (BarLinkActionControlContainer)e.Container;
-                if(!barLinkControlContainer.IsMenuMode) {
+            if ((e.Container is BarLinkActionControlContainer) && (e.Action.Id == ChangeVariantController.ChangeVariantActionId))
+            {
+                var barLinkControlContainer = (BarLinkActionControlContainer)e.Container;
+                if (!barLinkControlContainer.IsMenuMode)
+                {
                     barLinkControlContainer.AddBarButtonItemSingleChoiceActionControl(ChangeVariantController.ChangeVariantActionId, DevExpress.ExpressApp.Actions.SingleChoiceActionItemType.ItemIsMode);
                     e.Handled = true;
                 }

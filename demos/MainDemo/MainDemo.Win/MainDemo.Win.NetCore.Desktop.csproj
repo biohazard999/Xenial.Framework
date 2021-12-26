@@ -14,8 +14,14 @@
     <RootNamespace>MainDemo.Win</RootNamespace>
     <DefineConstants>DXCORE3</DefineConstants>
     <!-- TODO: net462 app config -->
-    <AppConfig>App.NetCore.Desktop.config</AppConfig>
     <Configurations>Debug;Release;EasyTest</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <AppConfig>App.config</AppConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == '$(WindowsFrameworkVersion6)'">
+    <AppConfig>App.NetCore.Desktop.config</AppConfig>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -57,7 +63,7 @@
     <EmbeddedResource Include="Images\SplashScreenImage.svg" />
     <Content Include="Model.xafml">
       <Subtype>Designer</Subtype>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
