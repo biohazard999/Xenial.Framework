@@ -57,12 +57,12 @@ namespace Demos.Data
             {
                 sqlConnection.Open();
                 var accessQueryString = string.Format("SELECT HAS_DBACCESS('{0}')", databaseName);
-                var accessCommand = new SqlCommand(accessQueryString, sqlConnection);
+                using var accessCommand = new SqlCommand(accessQueryString, sqlConnection);
                 var canAccess = accessCommand.ExecuteScalar();
                 if (canAccess is DBNull)
                 {
                     var createQueryString = "SELECT has_perms_by_name(null, null, 'CREATE ANY DATABASE');";
-                    var createCommand = new SqlCommand(createQueryString, sqlConnection);
+                    using var createCommand = new SqlCommand(createQueryString, sqlConnection);
                     var canCreate = (int)createCommand.ExecuteScalar();
                     if (canCreate == 0)
                     {
@@ -80,16 +80,11 @@ namespace Demos.Data
             }
             finally
             {
-                if (sqlConnection != null)
-                {
-                    sqlConnection.Close();
-                    sqlConnection.Dispose();
-                }
-                if (sqlConnection1 != null)
-                {
-                    sqlConnection1.Close();
-                    sqlConnection1.Dispose();
-                }
+                sqlConnection.Close();
+                sqlConnection.Dispose();
+
+                sqlConnection1.Close();
+                sqlConnection1.Dispose();
             }
             return result;
         }

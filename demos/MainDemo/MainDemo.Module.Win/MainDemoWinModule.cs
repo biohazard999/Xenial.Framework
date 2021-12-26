@@ -34,6 +34,8 @@ namespace MainDemo.Module.Win
             base.Setup(application);
             var helper = new Demos.Feedback.XAFFeedbackHelper(application);
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Handled by XAF")]
         public override IList<PopupWindowShowAction> GetStartupActions()
         {
             if (UseSQLAlternativeInfoSingleton.Instance.UseAlternative)

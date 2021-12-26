@@ -19,7 +19,7 @@ namespace MainDemo.Module.BusinessObjects
             base.AfterConstruction();
             documentType = DocumentType.Unknown;
         }
-        protected Resume resume;
+        private Resume resume;
         [Association("Resume-PortfolioFileData")]
         public Resume Resume
         {
@@ -35,6 +35,7 @@ namespace MainDemo.Module.BusinessObjects
     }
     public enum DocumentType
     {
+        None = 0,
         SourceCode = 1,
         Tests = 2,
         Documentation = 3,

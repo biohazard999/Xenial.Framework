@@ -26,7 +26,7 @@ namespace MainDemo.Module.BusinessObjects
         {
             var latitudePrefix = Latitude > 0 ? "N" : "S";
             var longitudePrefix = Longitude > 0 ? "E" : "W";
-            return string.Format("{0}{1:0.###}, {2}{3:0.###}", latitudePrefix, Math.Abs(Latitude), longitudePrefix, Math.Abs(Longitude));
+            return $"{latitudePrefix}{Math.Abs(Latitude):0.###}, {longitudePrefix}{Math.Abs(Longitude):0.###}";
         }
 
         [Browsable(false)]

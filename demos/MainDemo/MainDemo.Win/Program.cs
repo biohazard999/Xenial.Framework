@@ -24,10 +24,10 @@ using DevExpress.XtraEditors;
 
 namespace MainDemo.Win
 {
-    public class Program
+    public static class Program
     {
 #if NETCOREAPP
-        [SupportedOSPlatform("windows")]
+        [SupportedOSPlatform("windows7.0")]
 #endif
         [STAThread]
         public static void Main(string[] arguments)
@@ -43,7 +43,7 @@ namespace MainDemo.Win
                 Tracing.LocalUserAppDataPath = Application.LocalUserAppDataPath;
             }
             Tracing.Initialize();
-            var winApplication = new MainDemoWinApplication();
+            using var winApplication = new MainDemoWinApplication();
             DevExpress.ExpressApp.Utils.ImageLoader.Instance.UseSvgImages = true;
 #if DEBUG
             DevExpress.ExpressApp.Win.EasyTest.EasyTestRemotingRegistration.Register();
@@ -147,7 +147,9 @@ namespace MainDemo.Win
         }
 
 #if NETCOREAPP
-        [SupportedOSPlatform("windows")]
+        [SupportedOSPlatform("windows7.0")]
+        private
+#else
         private
 #endif
         static void winApplication_CustomizeFormattingCulture(object sender, CustomizeFormattingCultureEventArgs e) => e.FormattingCulture = CultureInfo.GetCultureInfo("en-US");

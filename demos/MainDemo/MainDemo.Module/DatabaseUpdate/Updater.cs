@@ -525,14 +525,14 @@ namespace MainDemo.Module.DatabaseUpdate
             ObjectSpace.CommitChanges();
         }
 
-        private DataTable employeesDataTable = null;
+        private DataTable employeesDataTable;
         private DataTable GetEmployeesDataTable()
         {
             if (employeesDataTable == null)
             {
                 var shortName = "EmployeesWithPhoto.xml";
                 var stream = GetResourceByName(shortName);
-                var ds = new DataSet();
+                using var ds = new DataSet();
                 ds.ReadXml(stream);
                 employeesDataTable = ds.Tables["Employee"];
             }
@@ -542,7 +542,7 @@ namespace MainDemo.Module.DatabaseUpdate
         {
             var shortName = "Tasks.xml";
             var stream = GetResourceByName(shortName);
-            var ds = new DataSet();
+            using var ds = new DataSet();
             ds.ReadXml(stream);
             return ds.Tables["Task"];
         }
@@ -550,7 +550,7 @@ namespace MainDemo.Module.DatabaseUpdate
         {
             var shortName = "Departments.xml";
             var stream = GetResourceByName(shortName);
-            var ds = new DataSet();
+            using var ds = new DataSet();
             ds.ReadXml(stream);
             return ds.Tables["Department"];
         }
@@ -560,7 +560,7 @@ namespace MainDemo.Module.DatabaseUpdate
             var stream = GetType().Assembly.GetManifestResourceStream(embeddedResourceName);
             if (stream == null)
             {
-                throw new Exception(string.Format("Cannot read data from the {0} file!", shortName));
+                throw new InvalidOperationException(string.Format("Cannot read data from the {0} file!", shortName));
             }
             return stream;
         }
@@ -576,10 +576,10 @@ namespace MainDemo.Module.DatabaseUpdate
 #if !NET5_0 || WINDOWS
     public abstract class TaskAnalysis1LayoutUpdaterBase
     {
-        protected IObjectSpace objectSpace;
+        protected IObjectSpace objectSpace { get; }
         protected abstract IAnalysisControl CreateAnalysisControl();
         protected abstract IPivotGridSettingsStore CreatePivotGridSettingsStore(IAnalysisControl control);
-        public TaskAnalysis1LayoutUpdaterBase(IObjectSpace objectSpace) => this.objectSpace = objectSpace;
+        protected TaskAnalysis1LayoutUpdaterBase(IObjectSpace objectSpace) => this.objectSpace = objectSpace;
         public void Update(Analysis analysis)
         {
             if (analysis != null && !PivotGridSettingsHelper.HasPivotGridSettings(analysis))
@@ -598,7 +598,7 @@ namespace MainDemo.Module.DatabaseUpdate
         protected IObjectSpace objectSpace;
         protected abstract IAnalysisControl CreateAnalysisControl();
         protected abstract IPivotGridSettingsStore CreatePivotGridSettingsStore(IAnalysisControl control);
-        public TaskAnalysis2LayoutUpdaterBase(IObjectSpace objectSpace) => this.objectSpace = objectSpace;
+        protected TaskAnalysis2LayoutUpdaterBase(IObjectSpace objectSpace) => this.objectSpace = objectSpace;
         public void Update(Analysis analysis)
         {
             if (analysis != null && !PivotGridSettingsHelper.HasPivotGridSettings(analysis))
