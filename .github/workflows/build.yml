@@ -116,7 +116,7 @@ jobs:
         asset_content_type: application/zip
 
     - name: Upload Release Asset net6.0-win64
-      id: upload-release-asset-net6.0-win64
+      id: upload-release-asset-net6_0-win64
       if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
       uses: actions/upload-release-asset@v1
       env:
@@ -128,7 +128,7 @@ jobs:
         asset_content_type: application/zip
 
     - name: Upload Release Asset net6.0-win86
-      id: upload-release-asset-net6.0-win86
+      id: upload-release-asset-net6_0-win86
       if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
       uses: actions/upload-release-asset@v1
       env:
