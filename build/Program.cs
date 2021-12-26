@@ -224,11 +224,19 @@ namespace Xenial.Build
 
                 await RunAsync("dotnet", "zip install");
 
-                foreach (var tfm in new[] { "net462", "net6.0-windows" })
+                foreach (var (tfm, rid) in new[] { ("net462", ""), ("net6.0-windows", "win-x64"), ("net6.0-windows", "win-x86") })
                 {
-                    //await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj --framework {tfm} {logOptions($"publish:Xenial.FeatureCenter.Win.{tfm}")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false");
+                    //TODO: remove /p:ErrorOnDuplicatePublishOutputFiles=false
+                    //TODO: and investigate https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/duplicate-files-in-output
 
-                    await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions($"zip:Xenial.FeatureCenter.Win.{tfm}")} {GetProperties()} /p:TargetFramework={tfm} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.AnyCPU.{tfm} /p:PackageDir={artifactsDirectory}");
+                    var r2r = string.IsNullOrEmpty(rid) ? "" : "/p:PublishReadyToRun=true";
+                    var ridP = string.IsNullOrEmpty(rid) ? "" : $"/p:RuntimeIdentifier={rid}";
+                    var suffix = string.IsNullOrEmpty(rid) ? "" : $".{rid.Substring("win-".Length)}";
+                    var package = string.IsNullOrEmpty(tfm) ? "" : tfm.Split('-')[0];
+
+                    await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj --framework {tfm} {ridP} {r2r} /p:ErrorOnDuplicatePublishOutputFiles=false {logOptions($"publish:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false");
+
+                    await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions($"zip:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:ErrorOnDuplicatePublishOutputFiles=false /p:TargetFramework={tfm} {r2r} {ridP} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.AnyCPU.{package}{suffix} /p:PackageDir={artifactsDirectory}");
                 }
             });
 
