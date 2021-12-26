@@ -232,7 +232,20 @@ namespace Xenial.Build
                     var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
                     var isTagged = !string.IsNullOrWhiteSpace(tagName);
 
-                    var r2r = isTagged ? "" : "/p:PublishReadyToRun=true";
+                    var r2r = isTagged ? "/p:PublishReadyToRun=true" : "";
+
+                    if (isTagged)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"This is a tagged commit {tagName}, will increase performance by using R2R");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("This is not a tagged commit, skip R2R");
+                        Console.ResetColor();
+                    }
 
                     var ridP = string.IsNullOrEmpty(rid) ? "" : $"/p:RuntimeIdentifier={rid}";
                     var suffix = string.IsNullOrEmpty(rid) ? "" : $".{rid.Substring("win-".Length)}";
