@@ -236,7 +236,7 @@ namespace Xenial.Build
 
                     await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj --framework {tfm} {ridP} {r2r} /p:ErrorOnDuplicatePublishOutputFiles=false {logOptions($"publish:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false");
 
-                    await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions($"zip:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:ErrorOnDuplicatePublishOutputFiles=false /p:TargetFramework={tfm} {r2r} {ridP} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.AnyCPU.{package}{suffix} /p:PackageDir={artifactsDirectory}");
+                    await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions($"zip:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:ErrorOnDuplicatePublishOutputFiles=false /p:TargetFramework={tfm} {r2r} {ridP} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.{package}{suffix} /p:PackageDir={artifactsDirectory}");
                 }
             });
 
