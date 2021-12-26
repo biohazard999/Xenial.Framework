@@ -15,6 +15,8 @@ using MainDemo.Module.BusinessObjects;
 using MainDemo.Module.CodeRules;
 using MainDemo.Module.Reports;
 
+using Xenial.Framework.ModelBuilders;
+
 namespace MainDemo.Module
 {
     public sealed partial class MainDemoModule : ModuleBase
@@ -31,7 +33,12 @@ namespace MainDemo.Module
         {
             base.CustomizeTypesInfo(typesInfo);
             CalculatedPersistentAliasHelper.CustomizeTypesInfo(typesInfo);
+
+            typesInfo
+                .CreateModelBuilder<DemoTaskModelBuilder>()
+                .Build();
         }
+
         public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB)
         {
             ModuleUpdater updater = new DatabaseUpdate.Updater(objectSpace, versionFromDB);

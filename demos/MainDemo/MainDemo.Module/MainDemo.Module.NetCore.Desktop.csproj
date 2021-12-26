@@ -45,4 +45,18 @@
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="4.6.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
+    <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="**\*.ModelBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ModelBuilder', '.cs'))</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
 </Project>
