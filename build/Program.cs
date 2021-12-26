@@ -229,7 +229,11 @@ namespace Xenial.Build
                     //TODO: remove /p:ErrorOnDuplicatePublishOutputFiles=false
                     //TODO: and investigate https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/duplicate-files-in-output
 
-                    var r2r = string.IsNullOrEmpty(rid) ? "" : "/p:PublishReadyToRun=true";
+                    var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
+                    var isTagged = !string.IsNullOrWhiteSpace(tagName);
+
+                    var r2r = isTagged ? "" : "/p:PublishReadyToRun=true";
+
                     var ridP = string.IsNullOrEmpty(rid) ? "" : $"/p:RuntimeIdentifier={rid}";
                     var suffix = string.IsNullOrEmpty(rid) ? "" : $".{rid.Substring("win-".Length)}";
                     var package = string.IsNullOrEmpty(tfm) ? "" : tfm.Split('-')[0];

@@ -34,16 +34,17 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)' And $(Configuration) == 'Release'">
+  <ItemGroup Condition="'$(PublishReadyToRun)' != '' And '$(TargetFramework)' == '$(FullFrameworkVersion)' And $(Configuration) == 'Release'">
     <PackageReference Include="Microsoft.DotNet.Framework.NativeImageCompiler" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  
+
   <Target Name="DeleteFiles" AfterTargets="Publish">
     <Delete Files="$(PublishDir)DevExpress.BonusSkins.$(DxVersionPart).dll" />
     <Delete Files="$(PublishDir)Microsoft.Web.WebView2.Wpf.dll" />
+    <!-- TODO: Remove webview2 runtimes -->
   </Target>
-  
+
 </Project>
