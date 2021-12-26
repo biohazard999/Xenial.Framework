@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  
+  <PropertyGroup>
+    <TargetFrameworks>$(WindowsFrameworkVersion6);$(FullFrameworkVersion)</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <CheckXenialLicense>false</CheckXenialLicense>
+    <GenerateXenialLicense>false</GenerateXenialLicense>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MainDemo.Module.Win</RootNamespace>
+    <AssemblyName>MainDemo.Module.Win</AssemblyName>
+    <DefineConstants>DXCORE3</DefineConstants>
+    <Configurations>Debug;Release;EasyTest</Configurations>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>DEBUG;TRACE;DXCORE3</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>TRACE;DXCORE3</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'EasyTest|AnyCPU' ">
+    <DefineConstants>TRACE;DEBUG;EASYTEST;DXCORE3</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == '$(WindowsFrameworkVersion6)'">
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp.Win.All" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.Win.Demos" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MainDemo.Module\MainDemo.Module.NetCore.Desktop.csproj" />
+  </ItemGroup>
+
+</Project>
