@@ -59,6 +59,7 @@ module.exports = {
                   children: [
                       ['source-generators', 'Introduction'],
                       ['source-generators-view-ids-generator', 'ViewIdsGenerator'],
+                      ['source-generators-image-names-generator', 'ImageNamesGenerator'],
                   ]
                 },
                 {

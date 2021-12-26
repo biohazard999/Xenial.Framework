@@ -133,9 +133,9 @@ A partial class marked with the `Xenial.XenialViewIdsAttribute` will follow the 
 ### MSBuild
 
 * `<GenerateXenialViewIdsAttribute>` - Control if `XenialViewIdsAttribute` will be emitted
-* `<XenialAttributesVisibility>` - Control's `XenialViewIdsAttribute` visibility modifier (`public`/`internal`)
-* `<EmitCompilerGeneratedFiles>` - Code will be flushed to disk (debug)
-* `<XenialDebugSourceGenerators>` - Debugger will launch on code generation (debug)
+* `<XenialAttributesVisibility>` (global) - Control's `XenialViewIdsAttribute` visibility modifier (`public`/`internal`)
+* `<EmitCompilerGeneratedFiles>` (global) - Code will be flushed to disk (debug)
+* `<XenialDebugSourceGenerators>` (global) - Debugger will launch on code generation (debug)
 
 ### Code
 
@@ -156,9 +156,8 @@ namespace Acme.Module
     [CompilerGenerated]
     partial class ViewIds
     {
-        /* the output will be public constants */
+        // ...the output will be public constants
         public const string Person_DetailView = "Person_DetailView";
-        /*....*/
     }
 }
 
@@ -166,7 +165,7 @@ namespace Acme.Module
 
 ## Tips and Tricks
 
-Use the new C# static using feature to remove the `ViewIds` prefix:
+Use the [C# static using](//docs.microsoft.com/dotnet/csharp/language-reference/keywords/using-directive#static-modifier) feature to remove the `ViewIds` prefix:
 
 ```cs
 using static Acme.Module.ViewIds;
@@ -175,7 +174,7 @@ using static Acme.Module.ViewIds;
 string personViewId = Person_DetailView;
 ```
 
-You directly can use custom views when declared even on the same class:
+You directly can use custom views when declared even on the same class (so the magic string only appears once in the source base):
 
 ```cs{3-4}
 using Xenial.Framework.Base;
@@ -184,6 +183,12 @@ using Xenial.Framework.Base;
 [CustomAttribute(ViewIds.CustomPersonView)]
 public class Person { /* ... */ }
 
+```
+
+You can use [constant interpolated strings](//docs.microsoft.com/dotnet/csharp/language-reference/proposals/csharp-10.0/constant_interpolated_strings) to eliminate string magic in Attributes:
+
+```cs
+[MyAttribute($"{ViewIds.Person_ListView};{ViewIds.Person_LookupListView}")]
 ```
 
 Mark the the target class public and name according to your module so external modules can use them:
