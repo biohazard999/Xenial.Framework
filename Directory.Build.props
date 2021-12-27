@@ -52,6 +52,7 @@
     <RazorLangVersion>3.0</RazorLangVersion>
     <!-- Xenial Default Package Version -->
     <XenialTFMs>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version);$(Net6Version)</XenialTFMs>
+    <XenialTFMsExecutable>$(Net6Version);$(Net5Version);$(FullFrameworkVersion)</XenialTFMsExecutable>
     <WindowsFrameworkVersion>$(WindowsFrameworkVersion6)</WindowsFrameworkVersion>
     <XenialWinTFMs>$(FullFrameworkVersion);$(WindowsFrameworkVersion5);$(WindowsFrameworkVersion6)</XenialWinTFMs>
     <XenialBlazorTFMs>$(NetBlazorLibVersion)</XenialBlazorTFMs>

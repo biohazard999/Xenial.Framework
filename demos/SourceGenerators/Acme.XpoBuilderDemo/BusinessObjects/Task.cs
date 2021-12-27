@@ -7,7 +7,7 @@ using DevExpress.Xpo;
 
 using Xenial;
 
-namespace Acme.Module;
+namespace Acme.Module.BusinessObjects;
 
 [Persistent]
 [XenialXpoBuilder]

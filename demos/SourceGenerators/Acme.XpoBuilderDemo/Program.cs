@@ -1,13 +1,6 @@
 ﻿using System;
 
-using Acme.Module;
-using Acme.Module.Helpers;
-
-using DevExpress.ExpressApp.Xpo;
-using DevExpress.Xpo;
-using DevExpress.Xpo.Metadata;
-
-using Newtonsoft.Json;
+using Acme.Module.BusinessObjects;
 
 using static Acme.Module.Helpers.DemoHelper;
 
@@ -34,6 +27,16 @@ var person = new PersonBuilder()
 
 session.Save(person);
 
+
 WriteXPObjectToConsole(person);
 
+var manuel = new ManuelGrundnerPersonBuilder(session)
+    .WithManager(person)
+    .Build();
+
+session.Save(manuel);
+
+WriteXPObjectToConsole(manuel);
+
 Console.ReadLine();
+

@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Acme.Module.BusinessObjects;
+
 using DevExpress.ExpressApp.Xpo;
 using DevExpress.Xpo;
 using DevExpress.Xpo.Metadata;

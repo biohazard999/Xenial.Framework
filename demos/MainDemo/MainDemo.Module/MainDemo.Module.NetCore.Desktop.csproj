@@ -62,9 +62,6 @@
   </ItemGroup>
   
   <ItemGroup>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="**\*.ModelBuilder.cs">
       <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ModelBuilder', '.cs'))</DependentUpon>
     </Compile>
