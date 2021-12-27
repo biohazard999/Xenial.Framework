@@ -442,7 +442,7 @@ public class XenialXpoBuilderGenerator : IXenialSourceGenerator
 
                             if (
                                 member.GetMethod is not null
-                                && member.GetMethod.ReturnType.AllInterfaces.Any(m => m.ToDisplayString() == "System.Collections.ICollection")
+                                && member.GetMethod.ReturnType.AllInterfaces.Any(m => m.ToDisplayString() == "System.Collections.ICollection" || m.ToDisplayString() == "System.Collections.IList")
                                 && member.GetMethod.ReturnType is INamedTypeSymbol collectionType)
                             {
                                 if (collectionType.IsGenericType)
