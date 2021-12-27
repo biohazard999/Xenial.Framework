@@ -204,7 +204,6 @@ using Xenial.Framework.Base;
 namespace Acme.Accounting.Module
 {
     [Xenial.XenialViewIds]
-    /* this will make sure you can access the view id's across assembly boundaries and avoid conflicting names later */
     public static partial class AccountingViewIds
     {
         public const string CustomConstant = "Whatever constant you need";

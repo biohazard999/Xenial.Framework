@@ -78,8 +78,8 @@ Because each generator tries to solve a runtime the documentation will try to fo
 * Advantage - Why this is helpful
 * Drawbacks/Issues - What limitations the generator has
 * API-surface - What API's/Attributes are involved when using this generator
-* Diagnostics - What diagnostics the generator emits when a wrong usage is detected
 * Options - Often source generators have additional options that change the shape of the generated code to help with very large code bases
+* Diagnostics - What diagnostics the generator emits when a wrong usage is detected
 
 ::: tip
 There are a lot of [Features](/guide/appendix-enhance-xenial-source-generators.md) that are enhanced when using SourceGenerators we highly recommend to use them as a best practice.  However all features are designed to be usable without them. If you encounter a problem when using other features without the use of SourceGenerators [let us know](https://github.com/xenial-io/Xenial.Framework/issues/)!
