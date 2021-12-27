@@ -5,7 +5,8 @@ using Xenial;
 namespace Acme.Module
 {
     [XenialViewIds]
-    internal partial class ViewIds
+    public static partial class ViewIds
     {
+        /* Build to look at ViewIds.g.cs */
     }
 }

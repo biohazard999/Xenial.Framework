@@ -1,0 +1,29 @@
+﻿<Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <XenialDebug Condition="'$(XENIAL_DEBUG)' != ''">true</XenialDebug>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <XenialDebug>false</XenialDebug>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(XenialDemoPackageVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Generators/Xenial.Framework.Generators.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"
+                      PrivateAssets="all" />
+
+  </ItemGroup>
+
+
+</Project>

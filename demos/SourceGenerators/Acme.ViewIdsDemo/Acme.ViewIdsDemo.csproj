@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Xpo" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+  
+  <!-- BEGIN: This is internal debug code, you don't need this in your project -->
+
+  <ItemGroup>
+    <None Include="obj/$(Configuration)/$(TargetFramework)/generated/Xenial.Framework.Generators/Xenial.Framework.Generators.XenialGenerator/ViewIds.g.cs" Link="ViewIds.g.cs" />
+  </ItemGroup>
+
+  <!-- END: This is internal debug code, you don't need this in your project -->
+
+</Project>
