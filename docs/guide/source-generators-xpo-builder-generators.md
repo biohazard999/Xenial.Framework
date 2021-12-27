@@ -14,10 +14,28 @@ When writing XPO/XAF code we need to deal object creation all the time. Most of 
 ## Usage
 
 ```cs
+using DevExpress.Xpo;
+
 namespace Acme.Module
 {
-    public class Person : XPBaseObject
+    [Xenial.XenialXpoBuilder]
+    public class Person : XPObject
     {
+        public Person(Session session) : base(session) { }
+
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+        public Person Manager { get; set; }
+
+        [Association]
+        public XPCollection<Task> Tasks => GetCollection<Task>(nameof(Tasks));
+    }
+
+    [Xenial.XenialXpoBuilder]
+    public class Task : XPObject
+    {
+        
     }
 }
 ```

@@ -3,9 +3,16 @@ const fs = require('fs');
 const parser = require('xml2json');
 
 let gitTag = git.tag();
+let gitBranch = git.branch();
+let gitRemote = git.remoteUrl();
+let gitHubUrl = git.remoteUrl();
 
 if (gitTag) {
     gitTag = gitTag.substring(1);
+}
+
+if(gitHubUrl){
+  gitHubUrl = gitHubUrl.substring(0, gitHubUrl.length - 4);
 }
 
 const directoryBuildPropsPath = `${process.cwd()}/../Directory.Build.props`;
@@ -122,7 +129,7 @@ module.exports = {
         lineNumbers: true
     },
     plugins: [
-        ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag, dxVersion } }],
+        ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag, dxVersion, gitBranch, gitRemote, gitHubUrl } }],
         ['@vuepress/back-to-top'],
         ['@vuepress/nprogress'],
         ['@vuepress/medium-zoom']

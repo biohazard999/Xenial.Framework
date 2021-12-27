@@ -222,3 +222,9 @@ When updating from an older Xenial to a newer Xenial version, it's necessary to 
 |XENGEN0010    | Error    | Could not parse boolean MSBUILD variable `<GenerateXenialViewIdsAttribute>` | MsBuild variable needs to be in boolean parsable format: `true`/`false`/`True`/`False` |
 |XENGEN0100    | Error    | The class using the `[XenialViewIdsAttribute]` needs to be partial          | We can not generate code for non partial classes                                       |
 |XENGEN0101    | Error    | The class using the `[XenialViewIdsAttribute]` needs to be in a namespace   | We can not generate code in the global namespace                                       |
+
+## Demo-Source
+
+<!-- markdownlint-disable MD033 -->
+You can find the sources in the <a target="_blank" :href=" $var['gitHubUrl'] + '/tree/' + $var['gitBranch'] + '/demos/SourceGenerators/' + 'Acme.ViewIdsDemo'">Xenial.Framework repository</a> for in depth information.
+<!-- markdownlint-enable MD033 -->
