@@ -67,6 +67,7 @@ module.exports = {
                       ['source-generators', 'Introduction'],
                       ['source-generators-view-ids-generator', 'ViewIdsGenerator'],
                       ['source-generators-image-names-generator', 'ImageNamesGenerator'],
+                      ['source-generators-xpo-builder-generators', 'XpoBuilderGenerator'],
                   ]
                 },
                 {

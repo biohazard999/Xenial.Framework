@@ -1,6 +1,7 @@
 ---
 title: SourceGenerators - ViewIdsGenerator
 sidebarDepth: 5
+demoName: Acme.ViewIdsDemo
 ---
 
 # ViewIdsGenerator - Introduction
@@ -13,7 +14,7 @@ When writing XAF code we often need to deal with View-Ids. Most of the time thos
 
 ## Usage
 
-```cs
+```cs{3}
 namespace Acme.Module
 {
     [Xenial.XenialViewIds]
@@ -226,5 +227,5 @@ When updating from an older Xenial to a newer Xenial version, it's necessary to 
 ## Demo-Source
 
 <!-- markdownlint-disable MD033 -->
-You can find the sources in the <a target="_blank" :href=" $var['gitHubUrl'] + '/tree/' + $var['gitBranch'] + '/demos/SourceGenerators/' + 'Acme.ViewIdsDemo'">Xenial.Framework repository</a> for in depth information.
+You can find demo sources in the <a target="_blank" :href=" $var['gitHubUrl'] + '/tree/' + $var['gitBranch'] + '/demos/SourceGenerators/' + $frontmatter.demoName">Xenial.Framework repository</a> for in depth usage information.
 <!-- markdownlint-enable MD033 -->

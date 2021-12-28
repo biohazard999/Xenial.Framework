@@ -1,6 +1,7 @@
 ---
 title: SourceGenerators - ImageNamesGenerator
 sidebarDepth: 5
+demoName: Acme.ImagesDemo
 ---
 
 # ImageNamesGenerator - Introduction
@@ -13,7 +14,7 @@ When writing XAF code we often need to deal with `ImageNames`. Most of the time 
 
 ## Usage
 
-```cs
+```cs{3}
 namespace Acme.Module
 {
     [Xenial.XenialImageNames]
@@ -21,7 +22,7 @@ namespace Acme.Module
 }
 ```
 
-```xml
+```xml{3,4}
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <XenialImageNames Include="Images/*.png" />
@@ -179,3 +180,9 @@ When updating from an older Xenial to a newer Xenial version, it's necessary to 
 |XENGEN0010    | Error    | Could not parse boolean MSBUILD variable `<XenialImageNames>`                  | MsBuild variable needs to be in boolean parsable format: `true`/`false`/`True`/`False` |
 |XENGEN0100    | Error    | The class using the `[XenialImageNamesAttribute]` needs to be partial          | We can not generate code for non partial classes                                       |
 |XENGEN0101    | Error    | The class using the `[XenialImageNamesAttribute]` needs to be in a namespace   | We can not generate code in the global namespace                                       |
+
+## Demo-Source
+
+<!-- markdownlint-disable MD033 -->
+You can find demo sources in the <a target="_blank" :href=" $var['gitHubUrl'] + '/tree/' + $var['gitBranch'] + '/demos/SourceGenerators/' + $frontmatter.demoName">Xenial.Framework repository</a> for in depth usage information.
+<!-- markdownlint-enable MD033 -->
