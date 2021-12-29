@@ -124,7 +124,7 @@ namespace Acme.Module
 
 ## Tips and Tricks
 
-Use the [C# static using](//docs.microsoft.com/dotnet/csharp/language-reference/keywords/using-directive#static-modifier) feature to remove the `ImageNames` prefix:
+Use the [C# static using](https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/using-directive#static-modifier) feature to remove the `ImageNames` prefix:
 
 ```cs
 using static Acme.Module.ImageNames;

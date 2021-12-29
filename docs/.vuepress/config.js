@@ -67,7 +67,8 @@ module.exports = {
                       ['source-generators', 'Introduction'],
                       ['source-generators-view-ids-generator', 'ViewIdsGenerator'],
                       ['source-generators-image-names-generator', 'ImageNamesGenerator'],
-                      ['source-generators-xpo-builder-generators', 'XpoBuilderGenerator'],
+                      ['source-generators-xpo-builder-generator', 'XpoBuilderGenerator'],
+                      ['source-generators-layout-builder-generator', 'LayoutBuilderGenerator'],
                   ]
                 },
                 {
@@ -130,6 +131,7 @@ module.exports = {
         lineNumbers: true
     },
     plugins: [
+        ['check-md'],
         ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag, dxVersion, gitBranch, gitRemote, gitHubUrl } }],
         ['@vuepress/back-to-top'],
         ['@vuepress/nprogress'],

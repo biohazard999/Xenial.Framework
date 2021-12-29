@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "vuepress dev --open",
-    "build": "vuepress build && cpy '**/*.*' '../../../artifacts/docs.xenial.io' --parents --cwd='./.vuepress/dist/'"
+    "build": "vuepress build && cpy '**/*.*' '../../../artifacts/docs.xenial.io' --parents --cwd='./.vuepress/dist/'",
+    "check": "vuepress check-md"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "git-rev-sync": "^3.0.1",
     "prettier": "^2.2.1",
     "vuepress": "^1.8.2",
+    "vuepress-plugin-check-md": "^0.0.2",
     "vuepress-plugin-global-variables": "^0.2.0",
     "watchpack-chokidar2": "^2.0.1",
     "xml2json": "^0.12.0"

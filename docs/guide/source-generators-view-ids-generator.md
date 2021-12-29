@@ -160,7 +160,7 @@ namespace Acme.Module
 
 ## Tips and Tricks
 
-Use the [C# static using](//docs.microsoft.com/dotnet/csharp/language-reference/keywords/using-directive#static-modifier) feature to remove the `ViewIds` prefix:
+Use the [C# static using](https://docs.microsoft.com/dotnet/csharp/language-reference/keywords/using-directive#static-modifier) feature to remove the `ViewIds` prefix:
 
 ```cs
 using static Acme.Module.ViewIds;
@@ -180,7 +180,7 @@ public class Person { /* ... */ }
 
 ```
 
-You can use [constant interpolated strings](//docs.microsoft.com/dotnet/csharp/language-reference/proposals/csharp-10.0/constant_interpolated_strings) to eliminate string magic in Attributes:
+You can use [constant interpolated strings](https://docs.microsoft.com/dotnet/csharp/language-reference/proposals/csharp-10.0/constant_interpolated_strings) to eliminate string magic in Attributes:
 
 ```cs
 [MyAttribute($"{ViewIds.Person_ListView};{ViewIds.Person_LookupListView}")]
