@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(XenialDebug)' == ''">
+    <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
+  </ItemGroup>
+
+  <!-- BEGIN: This is internal debug code, you don't need this in your project -->
+
+  <PropertyGroup>
+    <!-- Only use Executable Targets to support F5 experiance -->
+    <TargetFrameworks>$(XenialTFMsExecutable)</TargetFrameworks>
+    <Nullable>disable</Nullable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="..\..\..\src\Xenial.Framework\Xenial.Framework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="obj/$(Configuration)/$(TargetFramework)/generated/Xenial.Framework.Generators/Xenial.Framework.Generators.XenialGenerator/Person.Layout.PersonLayout.g.cs" Link="BusinessObjects\\Person.Layout.PersonLayout.g.cs" />
+  </ItemGroup>
+
+  <!-- END: This is internal debug code, you don't need this in your project -->
+
+</Project>

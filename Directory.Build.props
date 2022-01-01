@@ -39,17 +39,20 @@
     <Nullable>enable</Nullable>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeFormatting.ruleset</CodeAnalysisRuleSet>
+
     <DxVersion>21.2.4</DxVersion>
-    <XenialVersion>$(PackageVersion)</XenialVersion>
-    <AspNetCoreVersion>5.0.2</AspNetCoreVersion>
-    <!-- <DxPackageVersion>[21.1.3-beta]</DxPackageVersion> -->
-    <DxPackageVersion>[$(DxVersion)]</DxPackageVersion>
     <DxVersionPostFix>v21.2</DxVersionPostFix>
+    <DxPackageVersion>[$(DxVersion)]</DxPackageVersion>
+    <!-- <DxPackageVersion>[21.1.3-beta]</DxPackageVersion> -->
+
+    <XenialVersion>$(PackageVersion)</XenialVersion>
     <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>
-    <XenialDemoPackageVersion>
-    </XenialDemoPackageVersion>
+    <XenialDemoPackageVersion></XenialDemoPackageVersion>
+
+    <AspNetCoreVersion>5.0.2</AspNetCoreVersion>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <RazorLangVersion>3.0</RazorLangVersion>
+
     <!-- Xenial Default Package Version -->
     <XenialTFMs>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version);$(Net6Version)</XenialTFMs>
     <XenialTFMsExecutable>$(Net6Version);$(Net5Version);$(FullFrameworkVersion)</XenialTFMsExecutable>
