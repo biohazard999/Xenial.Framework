@@ -32,8 +32,28 @@ internal static class GeneratorDiagnostics
         description: $"The class using the [{attributeName}] needs to be partial"
     );
 
+    internal static DiagnosticDescriptor ClassNeedsToBeInNamespace(string attributeName) => new(
+        "XENGEN0101",
+        $"The class using the [{attributeName}] needs to be in a namespace",
+        $"The class using the [{attributeName}] needs to be in a namespace",
+        category,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: $"The class using the [{attributeName}] needs to be namespace"
+    );
+
+    internal static DiagnosticDescriptor ClassShouldBeInNamespaceWhenDerivingFrom(string classType) => new(
+       "XENGEN0101",
+       $"The class deriving from [{classType}] should be in a namespace",
+       $"The class deriving from [{classType}] should be in a namespace",
+       category,
+       DiagnosticSeverity.Warning,
+       isEnabledByDefault: true,
+       description: $"The class deriving from [{classType}] should be in a namespace"
+   );
+
     internal static DiagnosticDescriptor ClassShouldBePartialWhenDerivingFrom(string classType) => new(
-        "XENGEN0100",
+        "XENGEN0102",
         $"The class deriving from [{classType}] should be partial",
         $"The class deriving from [{classType}] should be partial",
         category,
@@ -50,16 +70,6 @@ internal static class GeneratorDiagnostics
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: $"The class using the [{attributeName}] should be partial"
-    );
-
-    internal static DiagnosticDescriptor ClassNeedsToBeInNamespace(string attributeName) => new(
-        "XENGEN0101",
-        $"The class using the [{attributeName}] needs to be in a namespace",
-        $"The class using the [{attributeName}] needs to be in a namespace",
-        category,
-        DiagnosticSeverity.Error,
-        isEnabledByDefault: true,
-        description: $"The class using the [{attributeName}] needs to be namespace"
     );
 
     internal static DiagnosticDescriptor ConflictingAttributes(string attributeName, IEnumerable<string> conflictingAttributeProperties) => new(

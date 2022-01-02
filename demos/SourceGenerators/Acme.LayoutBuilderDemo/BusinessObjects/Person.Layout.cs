@@ -25,34 +25,22 @@ namespace Acme.Module.BusinessObjects
                 Editor.DateOfBirth,
                 EmptySpaceItem()
             ),
-            TabbedGroup() with
-            {
-                Children = new()
-                {
-                    Tab(Constants.Address1) with
-                    {
-                        Children = new()
-                        {
-                            VerticalGroup(
-                                Editor._Address1.Street,
-                                Editor._Address1.City,
-                                Editor._Address1._Country.CountryName
-                            )
-                        }
-                    },
-                    Tab(Constants.Address2) with
-                    {
-                        Children = new()
-                        {
-                            VerticalGroup(
-                                Editor._Address2.Street,
-                                Editor._Address2.City,
-                                Editor._Address2._Country.CountryName
-                            )
-                        }
-                    }
-                }
-            }
+            TabbedGroup(
+                Tab(Constants.Address1,
+                    VerticalGroup(
+                        Editor._Address1.Street,
+                        Editor._Address1.City,
+                        Editor._Address1._Country.CountryName
+                    )
+                ),
+                Tab(Constants.Address2,
+                    VerticalGroup(
+                        Editor._Address2.Street,
+                        Editor._Address2.City,
+                        Editor._Address2._Country.CountryName
+                    )
+                )
+            )
         };
     }
 }

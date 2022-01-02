@@ -171,9 +171,31 @@ public partial class PersonLayout : LayoutBuilder<Person> { }
 
 This will generate additional nested classes that will be prefixed with the `_{PropertyName}` (due to language restrictions) and will resolved in a recursive manner.
 
+```cs
+Layout BuildLayout() => new()
+{
+    //Access the nested objects by using the _{PropertyName} syntax
+    Editor._Address1.Street,
+    Editor._Address1.City,
+    //This works even with deep nesting
+    Editor._Address1._Country.CountryName
+};
+```
+
 ::: tip TIP
 For a detailed usage please see the [demo source](#demo-source)
 :::
+
+## Options
+
+### MSBuild
+
+* `<EmitCompilerGeneratedFiles>` (global) - Code will be flushed to disk (debug)
+* `<XenialDebugSourceGenerators>` (global) - Debugger will launch on code generation (debug)
+
+### Code
+
+* `Xenial.XenialExpandMember("XXX")` (multiple) defines what members get expanded
 
 ::: warning CAUTION
 When updating from an older Xenial to a newer Xenial version, it's necessary to restart VisualStudio/VSCode after the upgrade, so Intellisense can reload the new SourceGenerator. So it may come to false positive warnings if they don't match.
@@ -181,11 +203,10 @@ When updating from an older Xenial to a newer Xenial version, it's necessary to 
 
 ## Diagnostics
 
-|ID            | Severity | Message                                                                     | Reason                                                                                 |
-|:------------:|:--------:|-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-|XENGEN0010    | Error    | Could not parse boolean MSBUILD variable `<GenerateXenialViewIdsAttribute>` | MsBuild variable needs to be in boolean parsable format: `true`/`false`/`True`/`False` |
-|XENGEN0100    | Error    | The class using the `[XenialViewIdsAttribute]` needs to be partial          | We can not generate code for non partial classes                                       |
-|XENGEN0101    | Error    | The class using the `[XenialViewIdsAttribute]` needs to be in a namespace   | We can not generate code in the global namespace                                       |
+|ID            | Severity | Message                                                                                                  | Reason                                                                                 |
+|:------------:|:--------:|----------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+|XENGEN0101    | Warning  | The class deriving from [`Xenial.Framework.Layouts.LayoutBuilder<TModelClass>`] should be in a namespace | We can not generate code in the global namespace                                       |
+|XENGEN0102    | Warning  | The class deriving from [`Xenial.Framework.Layouts.LayoutBuilder<TModelClass>`] should be partial        | We can not generate code for non partial classes                                       |
 
 ## Demo-Source
 

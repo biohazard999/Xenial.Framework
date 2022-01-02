@@ -140,8 +140,8 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
             {
                 context.ReportDiagnostic(
                     Diagnostic.Create(
-                        GeneratorDiagnostics.ClassNeedsToBeInNamespace(
-                        xenialLayoutBuilderAttributeName
+                        GeneratorDiagnostics.ClassShouldBeInNamespaceWhenDerivingFrom(
+                        layoutBuilderBaseType
                     ), @class.GetLocation())
                 );
 
@@ -436,16 +436,6 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
         var syntaxTree = CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken);
 
         return compilation.AddSyntaxTrees(syntaxTree);
-
-        //context.ReportDiagnostic(
-        //    Diagnostic.Create(
-        //        GeneratorDiagnostics.ConflictingClasses(
-        //            xenialActionAttributeName,
-        //            @class.ToString()
-        //        ), @class.GetLocation()
-        //    ));
-
-        return compilation;
     }
 
     private static (SemanticModel? semanticModel, INamedTypeSymbol? @classSymbol, bool isAttributeDeclared) TryGetTargetType(
