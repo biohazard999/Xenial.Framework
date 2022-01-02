@@ -131,25 +131,6 @@ namespace Xenial.Framework.TokenEditors.Blazor.Editors
                     false => false,
                     _ => componentModel.AllowCustomTags
                 };
-
-                if (componentModel.AllowCustomTags)
-                {
-                    componentModel.TagsChanged = EventCallback.Factory.Create<IEnumerable<string>>(this, arg =>
-                    {
-                        if (CurrentObject is not null)
-                        {
-                            if (arg is null)
-                            {
-                                MemberInfo.SetValue(CurrentObject, null);
-                            }
-                            else
-                            {
-                                MemberInfo.SetValue(CurrentObject, string.Join(";", arg.Where(v => !string.IsNullOrEmpty(v)).Distinct()));
-                            }
-                        }
-                    });
-                }
-
             }
 
             return new XenialStringToStringAdapter(componentModel);
