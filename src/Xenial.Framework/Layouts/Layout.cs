@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 
 using DevExpress.ExpressApp.Layout;
 
+using Xenial.Data;
 using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Layouts.Items.LeafNodes;
@@ -20,6 +21,12 @@ namespace Xenial.Framework.Layouts;
 public partial class LayoutBuilder<TModelClass> : LayoutBuilder
     where TModelClass : class
 {
+    /// <summary>   Gets the expression helper. </summary>
+    ///
+    /// <value> The expression helper. </value>
+
+    protected static ExpressionHelper<TModelClass> ExpressionHelper { get; } = Xenial.Utils.ExpressionHelper.Create<TModelClass>();
+
     /// <summary>   Properties the editor. </summary>
     ///
     /// <typeparam name="TProperty">    The type of the t property. </typeparam>
@@ -29,8 +36,8 @@ public partial class LayoutBuilder<TModelClass> : LayoutBuilder
     /// Xenial.Framework.Layouts.Items.LayoutPropertyEditorItem&lt;TModelClass&gt;.
     /// </returns>
 
-    public LayoutPropertyEditorItem<TModelClass> PropertyEditor<TProperty>(Expression<Func<TModelClass, TProperty>> expression)
-        => LayoutPropertyEditorItem<TModelClass>.Create(expression);
+    public LayoutPropertyEditorItem PropertyEditor<TProperty>(Expression<Func<TModelClass, TProperty>> expression)
+        => LayoutPropertyEditorItem.Create(ExpressionHelper.Property(expression));
 
     /// <summary>   Properties the editor. </summary>
     ///
@@ -40,8 +47,8 @@ public partial class LayoutBuilder<TModelClass> : LayoutBuilder
     ///
     /// <returns>   LayoutPropertyEditorItem&lt;TModelClass&gt;. </returns>
 
-    public LayoutPropertyEditorItem<TModelClass> PropertyEditor<TProperty>(Expression<Func<TModelClass, TProperty>> expression, Action<LayoutPropertyEditorItem<TModelClass>> configurePropertyEditor)
-        => LayoutPropertyEditorItem<TModelClass>.Create(expression, configurePropertyEditor);
+    public LayoutPropertyEditorItem PropertyEditor<TProperty>(Expression<Func<TModelClass, TProperty>> expression, Action<LayoutPropertyEditorItem> configurePropertyEditor)
+        => LayoutPropertyEditorItem.Create(ExpressionHelper.Property(expression), configurePropertyEditor);
 }
 
 /// <summary>
@@ -51,33 +58,6 @@ public partial class LayoutBuilder<TModelClass> : LayoutBuilder
 public partial class LayoutBuilder
 {
     #region Leaf Items
-
-    /// <summary>   Properties the editor. </summary>
-    ///
-    /// <typeparam name="TModelClass">  The type of the t model class. </typeparam>
-    /// <typeparam name="TProperty">    The type of the t property. </typeparam>
-    /// <param name="expression">   The expression. </param>
-    ///
-    /// <returns>
-    /// Xenial.Framework.Layouts.Items.LayoutPropertyEditorItem&lt;TModelClass&gt;.
-    /// </returns>
-
-    public LayoutPropertyEditorItem<TModelClass> PropertyEditor<TModelClass, TProperty>(Expression<Func<TModelClass, TProperty>> expression)
-        where TModelClass : class
-            => LayoutPropertyEditorItem<TModelClass>.Create(expression);
-
-    /// <summary>   Properties the editor. </summary>
-    ///
-    /// <typeparam name="TModelClass">  The type of the t model class. </typeparam>
-    /// <typeparam name="TProperty">    The type of the t property. </typeparam>
-    /// <param name="expression">               The expression. </param>
-    /// <param name="configurePropertyEditor">  The configure property editor. </param>
-    ///
-    /// <returns>   LayoutPropertyEditorItem&lt;TModelClass&gt;. </returns>
-
-    public LayoutPropertyEditorItem<TModelClass> PropertyEditor<TModelClass, TProperty>(Expression<Func<TModelClass, TProperty>> expression, Action<LayoutPropertyEditorItem<TModelClass>> configurePropertyEditor)
-        where TModelClass : class
-            => LayoutPropertyEditorItem<TModelClass>.Create(expression, configurePropertyEditor);
 
     /// <summary>   Properties the editor. </summary>
     ///

@@ -86,6 +86,13 @@ internal static class AttributeDataExtensions
 
         return null;
     }
+
+    public static bool HasAttribute(
+        this IPropertySymbol property,
+        INamedTypeSymbol attributeSymbol)
+        => property.GetAttributes()
+                   .Any(m => m.AttributeClass?.ToString() == attributeSymbol.ToString());
+
     public static bool HasAttribute(
         this AttributeData attribute,
         string attributeName)

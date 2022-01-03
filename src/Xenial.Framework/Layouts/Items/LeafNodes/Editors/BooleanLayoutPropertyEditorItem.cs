@@ -9,17 +9,6 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 /// </summary>
 [XenialCheckLicense]
 [XenialLayoutPropertyEditorItem(typeof(bool), typeof(IModelPropertyEditor))]
-public partial record BooleanLayoutPropertyEditorItem<TModelClass>(string ViewItemId)
-    : LayoutPropertyEditorItem<bool, TModelClass>(ViewItemId)
-    where TModelClass : class
-{
-}
-
-/// <summary>
-/// 
-/// </summary>
-[XenialCheckLicense]
-[XenialLayoutPropertyEditorItem(typeof(bool), typeof(IModelPropertyEditor))]
 public partial record BooleanLayoutPropertyEditorItem(string ViewItemId)
     : LayoutPropertyEditorItem(ViewItemId)
 {
@@ -31,4 +20,9 @@ public partial record BooleanLayoutPropertyEditorItem(string ViewItemId)
 
     public static new BooleanLayoutPropertyEditorItem Create(string propertyEditorId)
         => new(propertyEditorId);
+}
+
+[XenialLayoutPropertyEditorItemMapper(typeof(BooleanLayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
+partial class LayoutPropertyEditorItemMapper
+{
 }

@@ -20,13 +20,7 @@ public partial record NumberLayoutPropertyEditorItem(string ViewItemId)
         => new(propertyEditorId);
 }
 
-/// <summary>
-/// 
-/// </summary>
-[XenialCheckLicense]
-[XenialLayoutPropertyEditorItem(typeof(int), typeof(IModelPropertyEditor))]
-public partial record NumberLayoutPropertyEditorItem<TModelClass>(string ViewItemId)
-    : LayoutPropertyEditorItem<int, TModelClass>(ViewItemId)
-    where TModelClass : class
+[XenialLayoutPropertyEditorItemMapper(typeof(NumberLayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
+partial class LayoutPropertyEditorItemMapper
 {
 }
