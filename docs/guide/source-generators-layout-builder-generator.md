@@ -159,7 +159,7 @@ A partial class inherited from `Xenial.Framework.Layouts.LayoutBuilder<T>` will 
 ### Property Trains
 
 In XAF you can define editors and criteria using the property train syntax by concatenation property names with a dot (for example `Person.Address.Country.CountryName`)
-In order to access those in a type safe fashion you can use the `[Xenial.XenialExpandMember("XXX")]` which helps generating additional code that defines a boundary which properties should be generated (this would generate a lot of unused code)
+In order to access those in a type safe fashion you can use the `[Xenial.XenialExpandMember("XXX")]` which helps generating additional code that defines a boundary which properties should be generated (this would otherwise generate a lot of unused code)
 
 ```cs
 [XenialExpandMember(Constants.Address1)]

@@ -8,23 +8,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Xenial.Framework.Generators.Internal;
 
-namespace Xenial.Framework.Generators;
+namespace Xenial.Framework.Generators.XAF;
 
 [Generator]
 public class XenialGenerator : ISourceGenerator
 {
-    private const string xenialDebugSourceGenerators = "XenialDebugSourceGenerators";
-
     public IList<IXenialSourceGenerator> Generators { get; } = new List<IXenialSourceGenerator>
     {
-        new XenialDuckTypesGenerator(),
-        new XenialTypeForwardTypesGenerator(),
-        new XenialViewIdsGenerator(),
-        new XenialImageNamesGenerator(),
-        new XenialXpoBuilderGenerator(),
-        new XenialActionGenerator(new()),
-        new XenialModelBuilderGenerator(),
-        new XenialLayoutBuilderGenerator()
+        new XenialLayoutPropertyEditorItemGenerator()
     };
 
     public void Initialize(GeneratorInitializationContext context)
@@ -62,8 +53,6 @@ public class XenialGenerator : ISourceGenerator
             return;
         }
 
-        CheckForDebugger(context);
-
         var compilation = context.Compilation;
 
         var addedSourceFiles = new List<string>();
@@ -85,43 +74,6 @@ public class XenialGenerator : ISourceGenerator
                 }
             }
 #endif
-        }
-    }
-
-    private static void CheckForDebugger(GeneratorExecutionContext context)
-    {
-        //if (System.Diagnostics.Debugger.IsAttached)
-        //{
-        //    return;
-        //}
-
-        //System.Diagnostics.Debugger.Launch();
-
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{xenialDebugSourceGenerators}", out var xenialDebugSourceGeneratorsAttrString))
-        {
-            if (bool.TryParse(xenialDebugSourceGeneratorsAttrString, out var xenialDebugSourceGeneratorsBool))
-            {
-                if (xenialDebugSourceGeneratorsBool)
-                {
-                    if (Debugger.IsAttached)
-                    {
-                        return;
-                    }
-
-                    Debugger.Launch();
-                }
-            }
-            else
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            xenialDebugSourceGenerators,
-                            xenialDebugSourceGeneratorsAttrString
-                        )
-                        , null
-                    ));
-            }
         }
     }
 }

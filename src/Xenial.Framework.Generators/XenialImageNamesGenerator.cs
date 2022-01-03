@@ -694,9 +694,3 @@ public record struct ImageInformation(
         );
 }
 
-internal enum SymbolVisibility
-{
-    Public,
-    Internal,
-    Private,
-}

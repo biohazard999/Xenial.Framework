@@ -14,7 +14,8 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
 /// <summary>   (Immutable) a layout property editor item. </summary>
 [XenialCheckLicense]
-public partial record LayoutPropertyEditorItem(string PropertyEditorId) : LayoutViewItem(PropertyEditorId)
+public partial record LayoutPropertyEditorItem(string PropertyEditorId)
+    : LayoutViewItem(PropertyEditorId)
 {
     /// <summary>   Creates the specified property editor identifier. </summary>
     ///
@@ -54,7 +55,8 @@ public partial record LayoutPropertyEditorItem(string PropertyEditorId) : Layout
 /// 
 /// </summary>
 [XenialCheckLicense]
-public partial record LayoutPropertyEditorItem<TModelClass>(string ViewItemId) : LayoutPropertyEditorItem(ViewItemId)
+public partial record LayoutPropertyEditorItem<TModelClass>(string ViewItemId)
+    : LayoutPropertyEditorItem(ViewItemId)
     where TModelClass : class
 {
     /// <summary>   Gets the expression helper. </summary>
@@ -98,7 +100,8 @@ public partial record LayoutPropertyEditorItem<TModelClass>(string ViewItemId) :
 /// 
 /// </summary>
 [XenialCheckLicense]
-public partial record LayoutPropertyEditorItem<TPropertyType, TModelClass>(string ViewItemId) : LayoutPropertyEditorItem<TModelClass>(ViewItemId)
+public partial record LayoutPropertyEditorItem<TPropertyType, TModelClass>(string ViewItemId)
+    : LayoutPropertyEditorItem<TModelClass>(ViewItemId)
     where TModelClass : class
 {
     public Type PropertyType => typeof(TPropertyType);

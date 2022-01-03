@@ -283,3 +283,10 @@ public static class TypeSymbolExtensions
         };
 
 }
+
+internal enum SymbolVisibility
+{
+    Public,
+    Internal,
+    Private,
+}
