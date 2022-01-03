@@ -18,6 +18,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 using Xenial.Framework.Generators.Internal;
+using Xenial.Framework.Generators.XAF.Utils;
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators.XAF;
@@ -473,18 +474,31 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
 
         hintName = string.IsNullOrEmpty(hintName) ? $"{fileName}.{@class.Identifier}.g.cs" : $"{@class.Identifier}.{hintName}.g.cs";
 
+        AddFileToContext(context, addedSourceFiles, emitFile, hintName, source);
+
+        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken);
+
+        return compilation.AddSyntaxTrees(syntaxTree);
+    }
+
+    private static void AddFileToContext(
+        GeneratorExecutionContext context,
+        IList<string> addedSourceFiles,
+        bool emitFile,
+        string hintName,
+        SourceText source
+    )
+    {
         if (emitFile)
         {
             if (!addedSourceFiles.Contains(hintName))
             {
                 addedSourceFiles.Add(hintName);
-                context.AddSource(hintName, source);
+                var indexOf = addedSourceFiles.IndexOf(hintName);
+                var contextHintName = $"{ShortNameHelper.Encode(indexOf)}.g.cs";
+                context.AddSource(contextHintName, source);
             }
         }
-
-        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken);
-
-        return compilation.AddSyntaxTrees(syntaxTree);
     }
 
     private (Compilation, INamedTypeSymbol) GenerateXenialLayoutPropertyEditorItemAttribute(GeneratorExecutionContext context, Compilation compilation, IList<string> addedSourceFiles)
