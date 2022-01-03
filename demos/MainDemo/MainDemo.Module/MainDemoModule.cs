@@ -9,6 +9,7 @@ using DevExpress.ExpressApp.Updating;
 using DevExpress.ExpressApp.Validation;
 using DevExpress.ExpressApp.Xpo;
 using DevExpress.Persistent.BaseImpl;
+using DevExpress.Persistent.BaseImpl.PermissionPolicy;
 using DevExpress.Persistent.Validation;
 
 using MainDemo.Module.BusinessObjects;
@@ -33,6 +34,66 @@ namespace MainDemo.Module
         {
             base.CustomizeTypesInfo(typesInfo);
             CalculatedPersistentAliasHelper.CustomizeTypesInfo(typesInfo);
+
+            ModelBuilder.Create<PermissionPolicyUser>(typesInfo)
+                .HasCaption("Base User")
+                .Build();
+
+            ModelBuilder.Create<Analysis>(typesInfo)
+                .HasCaption("Analytics")
+                .Build();
+
+            ModelBuilder.Create<Task>(typesInfo)
+                .HasCaption("Base Task")
+                .Build();
+
+            ModelBuilder.Create<Note>(typesInfo)
+                .HasObjectCaptionFormat("")
+                .Build();
+
+            var phoneNumberBuilder = ModelBuilder.Create<PhoneNumber>(typesInfo);
+
+            phoneNumberBuilder.For(m => m.Number)
+                .HasEditMask("(000) 000-0000", null)
+                .HasDisplayFormat("{0:(###) ###-####}");
+
+            phoneNumberBuilder.Build();
+
+
+            var partyBuilder = ModelBuilder.Create<Party>(typesInfo);
+
+            partyBuilder.For(m => m.Address1)
+                .HasCaption("Address");
+
+            partyBuilder.Build();
+
+
+            var personBuilder = ModelBuilder.Create<Person>(typesInfo);
+
+            personBuilder.For(m => m.Birthday)
+                .HasCaption("Birth Date");
+
+            personBuilder.Build();
+
+            var employeeBuilder = ModelBuilder.Create<Employee>(typesInfo);
+
+            employeeBuilder
+                .HasObjectCaptionFormat(m => m.FullName)
+                .HasImage("BO_Employee")
+                .HasDefaultListViewId("Employee_ListView_Varied");
+
+            employeeBuilder.For(m => m.Anniversary)
+                .HasCaption("Wedding Date");
+
+            employeeBuilder.For(m => m.SpouseName)
+                .HasCaption("Spouse");
+
+            employeeBuilder.For(m => m.TitleOfCourtesy)
+                .HasCaption("Title");
+
+            employeeBuilder.For(m => m.Position);
+
+            employeeBuilder.Build();
 
             typesInfo
                 .CreateModelBuilder<DemoTaskModelBuilder>()

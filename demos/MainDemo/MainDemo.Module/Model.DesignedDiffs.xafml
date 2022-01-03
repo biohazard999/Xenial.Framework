@@ -27,32 +27,11 @@
     </ActionToContainerMapping>
   </ActionDesign>
   <BOModel>
-    <Class Name="DevExpress.Persistent.BaseImpl.PermissionPolicy.PermissionPolicyUser" Caption="Base User" />
-    <Class Name="DevExpress.Persistent.BaseImpl.PhoneNumber">
+    <Class Name="DevExpress.Persistent.BaseImpl.Person" IsCloneable="true" />
+    <Class Name="DevExpress.Persistent.BaseImpl.Task" IsCloneable="true" />
+    <Class Name="MainDemo.Module.BusinessObjects.Employee">
       <OwnMembers>
-        <Member Name="Number" EditMask="(000) 000-0000" DisplayFormat="{0:(###) ###-####}" />
-      </OwnMembers>
-    </Class>
-    <Class Name="DevExpress.ExpressApp.Security.AuthenticationStandardLogonParameters" DefaultDetailView="AuthenticationStandardLogonParameters_DetailView_Demo" />
-    <Class Name="DevExpress.Persistent.BaseImpl.Analysis" Caption="Analytics" />
-    <Class Name="DevExpress.Persistent.BaseImpl.Note" ObjectCaptionFormat="" />
-    <Class Name="DevExpress.Persistent.BaseImpl.Party">
-      <OwnMembers>
-        <Member Name="Address1" Caption="Address" />
-      </OwnMembers>
-    </Class>
-    <Class Name="DevExpress.Persistent.BaseImpl.Person" IsCloneable="true">
-      <OwnMembers>
-        <Member Name="Birthday" Caption="Birth Date" />
-      </OwnMembers>
-    </Class>
-    <Class Name="DevExpress.Persistent.BaseImpl.Task" Caption="Base Task" IsCloneable="true" />
-    <Class Name="MainDemo.Module.BusinessObjects.Employee" ObjectCaptionFormat="{0:FullName}" ImageName="BO_Employee" DefaultListView="Employee_ListView_Varied">
-      <OwnMembers>
-        <Member Name="Anniversary" Caption="Wedding Date" />
         <Member Name="Position" DataSourceProperty="Department.Positions" DataSourcePropertyIsNullMode="SelectAll" />
-        <Member Name="SpouseName" Caption="Spouse" />
-        <Member Name="TitleOfCourtesy" Caption="Title" />
       </OwnMembers>
     </Class>
     <Class Name="MainDemo.Module.BusinessObjects.Department" ImageName="BO_Department">
@@ -180,7 +159,7 @@
                   <LayoutItem Id="FullName" ViewItem="FullName" Index="3" RelativeSize="21.428571428571427" IsNewNode="True" />
                 </LayoutGroup>
                 <LayoutGroup Id="Person_col1b" ShowCaption="False" Index="1" RelativeSize="55" IsNewNode="True">
-                  <LayoutItem Id="TitleOfCourtesy" ViewItem="TitleOfCourtesy" Index="0" RelativeSize="28.571428571428573" IsNewNode="True" />
+                  <LayoutItem Id="TitleOfCourtesy" ViewItem="TitleOfCourtesy" Incdex="0" RelativeSize="28.571428571428573" IsNewNode="True" />
                   <LayoutItem Id="Email" ViewItem="Email" Index="1" RelativeSize="21.428571428571427" IsNewNode="True" />
                   <LayoutItem Id="Birthday" ViewItem="Birthday" Index="2" RelativeSize="21.428571428571427" IsNewNode="True" />
                   <LayoutItem Id="Address1" ViewItem="Address1" Index="3" RelativeSize="28.571428571428573" IsNewNode="True" />
