@@ -62,7 +62,12 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
             using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
             {
                 builder.WriteLine("[CompilerGenerated]");
-                using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
+
+                var genericArguments = @classSymbol.IsGenericType
+                    ? $"<{string.Join(", ", classSymbol.TypeArguments)}>"
+                    : "";
+
+                using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}{genericArguments}"))
                 {
                     foreach (var property in properties)
                     {
@@ -76,17 +81,21 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
 
                         if (shouldBeAdded)
                         {
-                            builder.WriteLine($"/// <summary>");
-                            builder.WriteLine($"/// {GetDescription(property)}");
-                            builder.WriteLine($"/// </summary>");
-                            builder.WriteLine($"public {property.PropertyType.FullName} {property.Name} {{ get; set; }}");
+                            //builder.WriteLine($"/// <summary>");
+                            //builder.WriteLine($"/// {GetDescription(property)}");
+                            //builder.WriteLine($"/// </summary>");
+                            builder.WriteLine($"public {property.PropertyType.FullName}? {property.Name} {{ get; set; }}");
                             builder.WriteLine();
                         }
                     }
                 }
             }
 
-            compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, emitFile: AddSources);
+            var hintName = @classSymbol.IsGenericType
+                ? $"{@classSymbol.Name}.{string.Join(".", classSymbol.TypeArguments)}"
+                : null;
+
+            compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSources);
         }
 
         return compilation;
@@ -131,6 +140,62 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
         if (specialTypes.Contains(property.Name))
         {
             return false;
+        }
+
+        if (targetTypeString.SpecialType == SpecialType.System_Boolean)
+        {
+            var booleanSpecialTypes = new[]
+            {
+                nameof(IModelPropertyEditor.EditMask),
+                nameof(IModelPropertyEditor.EditMaskType),
+                nameof(IModelPropertyEditor.IsPassword),
+                nameof(IModelPropertyEditor.DisplayFormat),
+                nameof(IModelPropertyEditor.LookupProperty),
+                nameof(IModelPropertyEditor.DataSourcePropertyIsNullMode),
+                nameof(IModelPropertyEditor.DataSourcePropertyIsNullCriteria),
+                nameof(IModelPropertyEditor.DataSourceCriteria)
+            };
+
+            if (booleanSpecialTypes.Contains(property.Name))
+            {
+                return false;
+            }
+        }
+
+        if (targetTypeString.SpecialType == SpecialType.System_Int16
+            || targetTypeString.SpecialType == SpecialType.System_Int32
+            || targetTypeString.SpecialType == SpecialType.System_Int64
+        )
+        {
+            var intSpecialTypes = new[]
+            {
+                nameof(IModelPropertyEditor.IsPassword),
+                nameof(IModelPropertyEditor.LookupProperty),
+                nameof(IModelPropertyEditor.DataSourcePropertyIsNullMode),
+                nameof(IModelPropertyEditor.DataSourcePropertyIsNullCriteria),
+                nameof(IModelPropertyEditor.DataSourceCriteria)
+            };
+
+            if (intSpecialTypes.Contains(property.Name))
+            {
+                return false;
+            }
+        }
+
+        if (targetTypeString.SpecialType == SpecialType.System_String)
+        {
+            var intSpecialTypes = new[]
+            {
+                nameof(IModelPropertyEditor.LookupProperty),
+                nameof(IModelPropertyEditor.DataSourcePropertyIsNullMode),
+                nameof(IModelPropertyEditor.DataSourcePropertyIsNullCriteria),
+                nameof(IModelPropertyEditor.DataSourceCriteria)
+            };
+
+            if (intSpecialTypes.Contains(property.Name))
+            {
+                return false;
+            }
         }
 
         foreach (var browsableAttribute in property.GetCustomAttributes<BrowsableAttribute>())

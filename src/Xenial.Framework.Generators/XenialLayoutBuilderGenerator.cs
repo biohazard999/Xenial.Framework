@@ -385,10 +385,30 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
         IEnumerable<string> prefix
     )
     {
+        const string booleanEditor = "BooleanLayoutPropertyEditorItem";
+        const string stringEditor = "StringLayoutPropertyEditorItem";
+        const string numberEditor = "NumberLayoutPropertyEditorItem";
+        const string defaultEditor = "LayoutPropertyEditorItem";
+
+        static string GetLayoutPropertyEditorItemType(IPropertySymbol property)
+            => property.Type.SpecialType switch
+            {
+                SpecialType.System_Boolean => booleanEditor,
+                SpecialType.System_String => stringEditor,
+                SpecialType.System_Int16 => numberEditor,
+                SpecialType.System_Int32 => numberEditor,
+                SpecialType.System_Int64 => numberEditor,
+                SpecialType.System_Double => numberEditor,
+                SpecialType.System_Single => numberEditor,
+                SpecialType.System_Decimal => numberEditor,
+                _ => defaultEditor
+            };
+
         foreach (var property in properties)
         {
+            var editor = GetLayoutPropertyEditorItemType(property);
             var value = ToPropertyTrain(prefix, property.Name);
-            builder.WriteLine($"public static LayoutPropertyEditorItem {property.Name} {{ get {{ return LayoutPropertyEditorItem.Create(\"{value}\"); }} }}");
+            builder.WriteLine($"public static {editor} {property.Name} {{ get {{ return {editor}.Create(\"{value}\"); }} }}");
         }
     }
 

@@ -1,16 +1,14 @@
 ﻿using DevExpress.ExpressApp.Model;
 
-using Xenial;
-
 namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
 /// <summary>
 /// 
 /// </summary>
 [XenialCheckLicense]
-[XenialLayoutPropertyEditorItem(typeof(bool), typeof(IModelPropertyEditor))]
-public partial record BooleanLayoutPropertyEditorItem<TModelClass>(string ViewItemId)
-    : LayoutPropertyEditorItem<bool, TModelClass>(ViewItemId)
+[XenialLayoutPropertyEditorItem(typeof(string), typeof(IModelPropertyEditor))]
+public partial record StringLayoutPropertyEditorItem<TModelClass>(string ViewItemId)
+    : LayoutPropertyEditorItem<string, TModelClass>(ViewItemId)
     where TModelClass : class
 {
 }
@@ -19,8 +17,8 @@ public partial record BooleanLayoutPropertyEditorItem<TModelClass>(string ViewIt
 /// 
 /// </summary>
 [XenialCheckLicense]
-[XenialLayoutPropertyEditorItem(typeof(bool), typeof(IModelPropertyEditor))]
-public partial record BooleanLayoutPropertyEditorItem(string ViewItemId)
+[XenialLayoutPropertyEditorItem(typeof(string), typeof(IModelPropertyEditor))]
+public partial record StringLayoutPropertyEditorItem(string ViewItemId)
     : LayoutPropertyEditorItem(ViewItemId)
 {
     /// <summary>   Creates the specified property editor identifier. </summary>
@@ -29,6 +27,6 @@ public partial record BooleanLayoutPropertyEditorItem(string ViewItemId)
     ///
     /// <returns>   Xenial.Framework.Layouts.Items.LeafNodes.StringLayoutPropertyEditorItem. </returns>
 
-    public static new BooleanLayoutPropertyEditorItem Create(string propertyEditorId)
+    public static new StringLayoutPropertyEditorItem Create(string propertyEditorId)
         => new(propertyEditorId);
 }
