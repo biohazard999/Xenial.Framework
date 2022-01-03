@@ -188,30 +188,19 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
                         using (builder.OpenBrace("private partial struct Constants"))
                         {
-                            foreach (var property in properties)
-                            {
-                                builder.WriteLine($"public const string {property.Name} = \"{property.Name}\";");
-                            }
+                            WritePropertyConstants(builder, properties, Enumerable.Empty<string>());
                         }
                         builder.WriteLine();
 
                         using (builder.OpenBrace("private partial struct Property"))
                         {
-                            foreach (var property in properties)
-                            {
-                                builder.WriteLine($"public static PropertyIdentifier {property.Name} {{ get {{ return PropertyIdentifier.Create(\"{property.Name}\"); }} }}");
-                                builder.WriteLine();
-                            }
+                            WritePropertyConstants(builder, properties, Enumerable.Empty<string>());
                         }
                         builder.WriteLine();
 
                         using (builder.OpenBrace("private partial struct Editor"))
                         {
-                            foreach (var property in properties)
-                            {
-                                builder.WriteLine($"public static LayoutPropertyEditorItem {property.Name} {{ get {{ return LayoutPropertyEditorItem.Create(\"{property.Name}\"); }} }}");
-                                builder.WriteLine();
-                            }
+                            WritePropertyLayoutItems(builder, properties, Enumerable.Empty<string>());
                         }
                     }
                 }
