@@ -18,10 +18,8 @@ namespace Xenial.Framework.Generators;
 public class XenialModelBuilderGenerator : IXenialSourceGenerator
 {
     private const string xenialLayoutBuilderAttributeName = "XenialModelBuilderAttribute";
-    //private const string xenialExpandMemberAttributeName = "XenialExpandMemberAttribute";
     private const string xenialNamespace = "Xenial";
     private const string xenialLayoutBuilderAttributeFullName = $"{xenialNamespace}.{xenialLayoutBuilderAttributeName}";
-    //private const string xenialExpandMemberAttributeFullName = $"{xenialNamespace}.{xenialExpandMemberAttributeName}";
     public const string GenerateXenialModelBuilderAttributeMSBuildProperty = $"Generate{xenialLayoutBuilderAttributeName}";
 
     private const string modelBuilderBaseType = "Xenial.Framework.ModelBuilders.ModelBuilder<TClassType>";
@@ -59,11 +57,8 @@ public class XenialModelBuilderGenerator : IXenialSourceGenerator
         compilation = GenerateAttribute(context, compilation);
 
         var generateXenialLayoutBuilderAttribute = compilation.GetTypeByMetadataName(xenialLayoutBuilderAttributeFullName);
-        //var xenialExpandMemberAttribute = compilation.GetTypeByMetadataName(xenialExpandMemberAttributeFullName);
 
-        if (generateXenialLayoutBuilderAttribute is null
-        //|| xenialExpandMemberAttribute is null
-        )
+        if (generateXenialLayoutBuilderAttribute is null)
         {
             //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
             return compilation;
@@ -312,62 +307,15 @@ public class XenialModelBuilderGenerator : IXenialSourceGenerator
 
             using (syntaxWriter.OpenBrace($"{visibility} sealed class {xenialLayoutBuilderAttributeName} : Attribute"))
             {
-                //syntaxWriter.WriteLine($"{visibility} {xenialViewIdsAttributeName}() {{ }}");
-
-                //syntaxWriter.WriteLine();
-
-                ////Properties need to be public in order to be used
-                //syntaxWriter.WriteLine($"public bool {AttributeNames.Sizes} {{ get; set; }}");
-                //syntaxWriter.WriteLine($"public bool {AttributeNames.SmartComments} {{ get; set; }}");
-                //syntaxWriter.WriteLine($"public bool {AttributeNames.ResourceAccessors} {{ get; set; }}");
-
-                //syntaxWriter.WriteLine("[EditorBrowsable(EditorBrowsableState.Never)]");
-                //syntaxWriter.WriteLine($"public string {AttributeNames.DefaultImageSize} {{ get; set; }} = \"{AttributeNames.DefaultImageSizeValue}\";");
             }
 
             syntaxWriter.WriteLine();
-
-            //syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]");
-
-            //using (syntaxWriter.OpenBrace($"{visibility} sealed class XenialExpandMemberAttribute : Attribute"))
-            //{
-            //    syntaxWriter.WriteLine($"public string ExpandMember {{ get; private set; }}");
-            //    syntaxWriter.WriteLine();
-            //    using (syntaxWriter.OpenBrace($"{visibility} XenialExpandMemberAttribute(string expandMember)"))
-            //    {
-            //        syntaxWriter.WriteLine($"this.ExpandMember = expandMember;");
-            //    }
-            //}
         }
 
         var syntax = syntaxWriter.ToString();
         var source = SourceText.From(syntax, Encoding.UTF8);
         var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
         return (source, syntaxTree);
-    }
-
-    private record AggregateDisposable(IList<IDisposable> Disposables) : IDisposable
-    {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "It collects and throws an AggregateException")]
-        void IDisposable.Dispose()
-        {
-            List<Exception> exceptions = new();
-            foreach (var disposable in Disposables)
-            {
-                try
-                {
-                    disposable.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    exceptions.Add(ex);
-                }
-            }
-            if (exceptions.Count > 0)
-            {
-                throw new AggregateException(exceptions);
-            }
-        }
     }
 }
 

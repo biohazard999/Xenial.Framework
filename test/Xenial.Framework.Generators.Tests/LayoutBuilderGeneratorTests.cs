@@ -19,7 +19,7 @@ public class LayoutBuilderGeneratorTests : BaseGeneratorTests<XenialLayoutBuilde
 {
     protected override XenialLayoutBuilderGenerator CreateTargetGenerator() => new();
 
-    protected override string GeneratorEmitProperty => XenialLayoutBuilderGenerator.GenerateXenialLayoutBuilderAttributeMSBuildProperty;
+    protected override string GeneratorEmitProperty => XenialExpandMemberAttributeGenerator.GenerateXenialXenialExpandMemberAttributeMSBuildProperty;
 
     protected override IEnumerable<PortableExecutableReference> AdditionalReferences
     {
@@ -34,7 +34,6 @@ public class LayoutBuilderGeneratorTests : BaseGeneratorTests<XenialLayoutBuilde
     protected Task RunSourceTest(string fileName, string source)
         => RunTest(
             options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false")),
-            compilationOptions: compilation => compilation.AddInlineXenialLayoutBuilderAttribute(),
             syntaxTrees: () => new[]
             {
                 BuildSyntaxTree(fileName, source)
@@ -212,14 +211,4 @@ namespace MyProject
     [XenialExpandMember(Constants.Parent1)]
     public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
 }");
-}
-
-internal static partial class CompilationHelpers
-{
-    public static CSharpCompilation AddInlineXenialLayoutBuilderAttribute(this CSharpCompilation compilation, string visibility = "internal")
-    {
-        (_, var syntaxTree) = XenialLayoutBuilderGenerator.GenerateXenialLayoutBuilderAttribute(visibility: visibility);
-
-        return compilation.AddSyntaxTrees(syntaxTree);
-    }
 }

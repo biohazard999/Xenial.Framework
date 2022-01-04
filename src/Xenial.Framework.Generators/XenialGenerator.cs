@@ -25,7 +25,8 @@ public class XenialGenerator : ISourceGenerator
         new XenialActionGenerator(new()),
         new XenialModelBuilderGenerator(),
         new XenialExpandMemberAttributeGenerator(),
-        new XenialLayoutBuilderGenerator()
+        new XenialLayoutBuilderGenerator(),
+        new XenialColumnsBuilderGenerator(),
     };
 
     public void Initialize(GeneratorInitializationContext context)

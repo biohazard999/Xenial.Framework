@@ -87,9 +87,20 @@ public sealed partial class ModelColumnsBuilderNodesGeneratorUpdater : ModelNode
                                 var method = attribute.GeneratorType.GetMethod(attribute.BuildColumnsMethodName);
                                 if (method is not null)
                                 {
-                                    var @delegate = Delegate.CreateDelegate(typeof(BuildColumnsFunctor), method);
-                                    attribute.BuildColumnsDelegate = (BuildColumnsFunctor)@delegate;
-                                } //TODO: ERROR HANDLING
+                                    if (method.IsStatic)
+                                    {
+                                        var @delegate = Delegate.CreateDelegate(typeof(BuildColumnsFunctor), method);
+                                        attribute.BuildColumnsDelegate = (BuildColumnsFunctor)@delegate;
+                                    }
+                                    else
+                                    {
+                                        //TODO: Cleanup instance and factory
+                                        var generatorInstance = Activator.CreateInstance(attribute.GeneratorType);
+
+                                        var @delegate = Delegate.CreateDelegate(typeof(BuildColumnsFunctor), generatorInstance, method);
+                                        attribute.BuildColumnsDelegate = (BuildColumnsFunctor)@delegate;
+                                    }
+                                }
                             }
                         }
 

@@ -78,6 +78,7 @@ internal static class ApplicationModelCreator
             base.AddGeneratorUpdaters(updaters);
 
             updaters.UseDetailViewLayoutBuilders();
+            updaters.UseListViewColumnBuilders();
         }
     }
 }
