@@ -24,6 +24,7 @@ public class XenialGenerator : ISourceGenerator
         new XenialXpoBuilderGenerator(),
         new XenialActionGenerator(new()),
         new XenialModelBuilderGenerator(),
+        new XenialExpandMemberAttributeGenerator(),
         new XenialLayoutBuilderGenerator()
     };
 

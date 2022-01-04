@@ -52,12 +52,12 @@ public partial record Column
         ForceLowerCase = false,
         TrimWhitespace = true,
         StringReplacements =
-            {
-                ["."] = ".",
-                [" "] = "-",
-                ["/"] = "-",
-                ["\\"] = "-",
-            }
+        {
+            ["."] = ".",
+            [" "] = "-",
+            ["/"] = "-",
+            ["\\"] = "-",
+        }
     };
 
     private static Slugifier defaultSlugifier = new(CreateDefaultSlugifierConfig());

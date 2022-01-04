@@ -17,13 +17,6 @@ namespace Xenial.Framework.Generators;
 
 public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 {
-    private const string xenialLayoutBuilderAttributeName = "XenialLayoutBuilderAttribute";
-    private const string xenialExpandMemberAttributeName = "XenialExpandMemberAttribute";
-    private const string xenialNamespace = "Xenial";
-    private const string xenialLayoutBuilderAttributeFullName = $"{xenialNamespace}.{xenialLayoutBuilderAttributeName}";
-    private const string xenialExpandMemberAttributeFullName = $"{xenialNamespace}.{xenialExpandMemberAttributeName}";
-    public const string GenerateXenialLayoutBuilderAttributeMSBuildProperty = $"Generate{xenialLayoutBuilderAttributeName}";
-
     private const string layoutBuilderBaseType = "Xenial.Framework.Layouts.LayoutBuilder<TModelClass>";
 
     public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax)
@@ -56,12 +49,9 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        compilation = GenerateAttribute(context, compilation);
+        var xenialExpandMemberAttribute = compilation.GetTypeByMetadataName(XenialExpandMemberAttributeGenerator.XenialExpandMemberAttributeFullName);
 
-        var generateXenialLayoutBuilderAttribute = compilation.GetTypeByMetadataName(xenialLayoutBuilderAttributeFullName);
-        var xenialExpandMemberAttribute = compilation.GetTypeByMetadataName(xenialExpandMemberAttributeFullName);
-
-        if (generateXenialLayoutBuilderAttribute is null || xenialExpandMemberAttribute is null)
+        if (xenialExpandMemberAttribute is null)
         {
             //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
             return compilation;
@@ -71,7 +61,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
         {
             context.CancellationToken.ThrowIfCancellationRequested();
 
-            var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, generateXenialLayoutBuilderAttribute);
+            var (semanticModel, @classSymbol) = TryGetTargetType(context, compilation, @class);
             if (semanticModel is null || @classSymbol is null)
             {
                 continue;
@@ -119,8 +109,6 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
             {
                 continue;
             }
-
-            //var @attribute = GetXenialLayoutBuilderAttribute(@classSymbol, generateXenialLayoutBuilderAttribute);
 
             var builder = CurlyIndenter.Create();
 
@@ -447,129 +435,26 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
         return compilation.AddSyntaxTrees(syntaxTree);
     }
 
-    private static (SemanticModel? semanticModel, INamedTypeSymbol? @classSymbol, bool isAttributeDeclared) TryGetTargetType(
+    private static (SemanticModel? semanticModel, INamedTypeSymbol? @classSymbol) TryGetTargetType(
         GeneratorExecutionContext context,
         Compilation compilation,
-        TypeDeclarationSyntax @class,
-        INamedTypeSymbol generateXenialImageNamesAttribute
+        TypeDeclarationSyntax @class
     )
     {
         var semanticModel = compilation.GetSemanticModel(@class.SyntaxTree);
         if (semanticModel is null)
         {
-            return (semanticModel, null, false);
+            return (semanticModel, null);
         }
 
         var symbol = semanticModel.GetDeclaredSymbol(@class, context.CancellationToken);
 
         if (symbol is null)
         {
-            return (semanticModel, null, false);
+            return (semanticModel, null);
         }
 
-        var isAttributeDeclared = symbol.IsAttributeDeclared(generateXenialImageNamesAttribute);
-
-        if (isAttributeDeclared && !@class.HasModifier(SyntaxKind.PartialKeyword))
-        {
-            context.ReportDiagnostic(
-                Diagnostic.Create(
-                    GeneratorDiagnostics.ClassNeedsToBePartialWhenUsingAttribute(xenialLayoutBuilderAttributeFullName),
-                    @class.GetLocation()
-            ));
-
-            return (semanticModel, symbol, false);
-        }
-
-        return (semanticModel, symbol, isAttributeDeclared);
-    }
-
-    private static Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation)
-    {
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialLayoutBuilderAttributeMSBuildProperty}", out var generateXenialViewIdsAttrStr))
-        {
-            if (bool.TryParse(generateXenialViewIdsAttrStr, out var generateXenialViewIdsAttr))
-            {
-                if (!generateXenialViewIdsAttr)
-                {
-                    return compilation;
-                }
-            }
-            else
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            GenerateXenialLayoutBuilderAttributeMSBuildProperty,
-                            generateXenialViewIdsAttrStr
-                        )
-                        , null
-                    ));
-                return compilation;
-            }
-        }
-
-        var (source, syntaxTree) = GenerateXenialLayoutBuilderAttribute(
-            (CSharpParseOptions)context.ParseOptions,
-            context.GetDefaultAttributeModifier(),
-            context.CancellationToken
-        );
-
-        context.AddSource($"{xenialLayoutBuilderAttributeName}.g.cs", source);
-
-        return compilation.AddSyntaxTrees(syntaxTree);
-    }
-
-    public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialLayoutBuilderAttribute(
-        CSharpParseOptions? parseOptions = null,
-        string visibility = "internal",
-        CancellationToken cancellationToken = default)
-    {
-        parseOptions = parseOptions ?? CSharpParseOptions.Default;
-
-        var syntaxWriter = CurlyIndenter.Create();
-
-        syntaxWriter.WriteLine($"using System;");
-        syntaxWriter.WriteLine($"using System.ComponentModel;");
-        syntaxWriter.WriteLine();
-
-        using (syntaxWriter.OpenBrace($"namespace {xenialNamespace}"))
-        {
-            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]");
-
-            using (syntaxWriter.OpenBrace($"{visibility} sealed class {xenialLayoutBuilderAttributeName} : Attribute"))
-            {
-                //syntaxWriter.WriteLine($"{visibility} {xenialViewIdsAttributeName}() {{ }}");
-
-                //syntaxWriter.WriteLine();
-
-                ////Properties need to be public in order to be used
-                //syntaxWriter.WriteLine($"public bool {AttributeNames.Sizes} {{ get; set; }}");
-                //syntaxWriter.WriteLine($"public bool {AttributeNames.SmartComments} {{ get; set; }}");
-                //syntaxWriter.WriteLine($"public bool {AttributeNames.ResourceAccessors} {{ get; set; }}");
-
-                //syntaxWriter.WriteLine("[EditorBrowsable(EditorBrowsableState.Never)]");
-                //syntaxWriter.WriteLine($"public string {AttributeNames.DefaultImageSize} {{ get; set; }} = \"{AttributeNames.DefaultImageSizeValue}\";");
-            }
-
-            syntaxWriter.WriteLine();
-
-            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]");
-
-            using (syntaxWriter.OpenBrace($"{visibility} sealed class XenialExpandMemberAttribute : Attribute"))
-            {
-                syntaxWriter.WriteLine($"public string ExpandMember {{ get; private set; }}");
-                syntaxWriter.WriteLine();
-                using (syntaxWriter.OpenBrace($"{visibility} XenialExpandMemberAttribute(string expandMember)"))
-                {
-                    syntaxWriter.WriteLine($"this.ExpandMember = expandMember;");
-                }
-            }
-        }
-
-        var syntax = syntaxWriter.ToString();
-        var source = SourceText.From(syntax, Encoding.UTF8);
-        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
-        return (source, syntaxTree);
+        return (semanticModel, symbol);
     }
 
     private record AggregateDisposable(IList<IDisposable> Disposables) : IDisposable

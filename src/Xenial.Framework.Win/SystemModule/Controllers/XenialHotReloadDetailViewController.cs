@@ -96,8 +96,11 @@ public sealed class XenialHotReloadDetailViewController : ViewController
 
         if (view.Model is IModelDetailView detailView)
         {
+            var itemsBuilder = new ModelDetailViewLayoutModelDetailViewItemsNodesGenerator();
             var builder = new ModelDetailViewLayoutNodesGeneratorUpdater();
 
+            var items = (ModelNode)detailView.Items;
+            itemsBuilder.UpdateNode(items);
             var layout = (ModelNode)detailView.Layout;
             builder.UpdateNode(layout);
             view.SaveModel();
