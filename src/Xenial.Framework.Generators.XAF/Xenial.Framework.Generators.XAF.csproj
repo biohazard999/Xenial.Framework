@@ -34,6 +34,7 @@
     <Compile Include="..\Xenial.Framework.Generators\AttributeModifiers.cs" Link="AttributeModifiers.cs" />
     <Compile Include="..\Xenial.Framework.Generators\CurlyIndenter.cs" Link="CurlyIndenter.cs" />
     <Compile Include="..\Xenial.Framework.Generators\IXenialSourceGenerator.cs" Link="IXenialSourceGenerator.cs" />
+    <Compile Include="..\Xenial.Framework.Generators\StringExtensions.cs" Link="StringExtensions.cs" />
     <Compile Include="..\Xenial.Framework.Generators\_DuckTyping.cs" Link="_DuckTyping.cs" />
   </ItemGroup>
 

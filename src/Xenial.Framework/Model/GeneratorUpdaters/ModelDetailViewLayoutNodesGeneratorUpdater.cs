@@ -21,6 +21,8 @@ namespace Xenial.Framework.Model.GeneratorUpdaters;
 [XenialCheckLicense]
 public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenerator : ModelNodesGeneratorUpdater<ModelDetailViewItemsNodesGenerator>
 {
+    private static readonly LayoutPropertyEditorItemMapper itemMapper = new();
+
     /// <summary>
     /// 
     /// </summary>
@@ -49,6 +51,7 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                         : layoutViewItemNode.ViewItemId)
                     );
 
+
                     if (viewItem is null)
                     {
                         var newViewItem = viewItems.AddNode<IModelPropertyEditor>(layoutViewItemNode.Id);
@@ -59,7 +62,10 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                         {
                             newViewItem.ClearValue(nameof(newViewItem.PropertyEditorType));
                         }
+                        viewItem = newViewItem;
                     }
+
+                    itemMapper.Map(layoutViewItemNode, viewItem);
                 }
             }
         }
