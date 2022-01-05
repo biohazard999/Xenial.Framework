@@ -9,6 +9,7 @@ using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.SystemModule;
+using DevExpress.ExpressApp.Win;
 
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Model.GeneratorUpdaters;
@@ -67,6 +68,10 @@ public sealed class XenialHotReloadDetailViewController : ViewController
         if (View is DetailView detailView)
         {
             ReloadCurrentView(Application, detailView, Frame, type);
+        }
+        if (View is ListView listView)
+        {
+            ReloadCurrentView(Application, listView, Frame, type);
         }
     }
 
@@ -147,6 +152,59 @@ public sealed class XenialHotReloadDetailViewController : ViewController
                             view.LoadModel(delayedViewItemsInitialization);
                             frame.SetView(view);
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// For internal use only.
+    /// </summary>
+    /// <param name="application"></param>
+    /// <param name="frame"></param>
+    /// <param name="view"></param>
+    /// <param name="generatorType"></param>
+    public static void ReloadCurrentView(XafApplication application, ListView view, Frame frame, Type? generatorType)
+    {
+        if (application is null || view is null || frame is null)
+        {
+            return;
+        }
+
+        var builderAttributes = view.ObjectTypeInfo.FindAttributes<ColumnsBuilderAttribute>();
+        var builderAttribute = generatorType is null
+            ? builderAttributes.FirstOrDefault()
+            : builderAttributes.FirstOrDefault(a => a.GeneratorType == generatorType);
+
+        if (builderAttribute is null)
+        {
+            return;
+        }
+
+        if (view.Model is IModelListView listView && application is WinApplication winApplication && winApplication.MainWindow is WinWindow winWindow)
+        {
+            if (winWindow.Form is System.Windows.Forms.Control control)
+            {
+                if (control.InvokeRequired)
+                {
+                    control.BeginInvoke(() => UpdateLayout(application, frame, listView));
+                }
+                else
+                {
+                    UpdateLayout(application, frame, listView);
+                }
+
+                static void UpdateLayout(XafApplication application, Frame frame, IModelListView listView)
+                {
+                    var itemsBuilder = new ModelColumnsBuilderNodesGeneratorUpdater();
+                    var shortcut = frame.View.CreateShortcut();
+
+                    if (frame.SetView(null))
+                    {
+                        var items = (ModelNode)listView.Columns;
+                        itemsBuilder.UpdateNode(items);
+                        frame.SetView(application.ProcessShortcut(shortcut), true, frame);
                     }
                 }
             }

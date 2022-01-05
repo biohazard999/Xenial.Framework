@@ -214,7 +214,8 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
         return compilation;
     }
-    private static IEnumerable<IPropertySymbol> GetAllProperties(INamedTypeSymbol targetType)
+
+    internal static IEnumerable<IPropertySymbol> GetAllProperties(INamedTypeSymbol targetType)
     {
         var members = targetType.GetMembers().OfType<IPropertySymbol>();
 

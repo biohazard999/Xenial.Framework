@@ -43,7 +43,11 @@ namespace MainDemo.Win
                 Tracing.LocalUserAppDataPath = Application.LocalUserAppDataPath;
             }
             Tracing.Initialize();
-            using var winApplication = new MainDemoWinApplication();
+            using var winApplication = new MainDemoWinApplication()
+            {
+                IgnoreUserModelDiffs = true
+            };
+
             DevExpress.ExpressApp.Utils.ImageLoader.Instance.UseSvgImages = true;
 #if DEBUG
             DevExpress.ExpressApp.Win.EasyTest.EasyTestRemotingRegistration.Register();

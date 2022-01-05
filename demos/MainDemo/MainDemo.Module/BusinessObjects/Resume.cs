@@ -3,10 +3,13 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
 
+using Xenial.Framework.Layouts;
+
 namespace MainDemo.Module.BusinessObjects
 {
     [FileAttachment(nameof(File))]
     [DefaultClassOptions, ImageName("BO_Resume")]
+    [ListViewColumnsBuilder(typeof(ResumeColumnsBuilder))]
     public class Resume : BaseObject
     {
         private Employee employee;

@@ -487,13 +487,6 @@
     <ListView Id="ApplicationUser_ListView" Caption="Users" />
     <ListView Id="Position_ListView" Caption="Positions" />
     <ListView Id="Resume_ListView" Caption="Resumes">
-      <Columns>
-        <ColumnInfo Id="Employee" Index="0" />
-        <ColumnInfo Id="File" Index="1" />
-        <ColumnInfo Id="Employee.Email" PropertyName="Employee.Email" Index="2" IsNewNode="True" />
-        <ColumnInfo Id="Employee.Department" PropertyName="Employee.Department" Index="3" IsNewNode="True" />
-        <ColumnInfo Id="Employee.Address" PropertyName="Employee.Address1" Index="4" IsNewNode="True" />
-      </Columns>
     </ListView>
     <DetailView Id="UseSQLAlternativeInfo_DetailView" Caption="Warning!">
       <Items>

@@ -145,34 +145,34 @@ public class XenialColumnsBuilderGenerator : IXenialSourceGenerator
                 ////We also don't need to specify the visibility for partial types
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
-                    using (builder.OpenBrace("private struct PropertyIdentifier"))
+                    //using (builder.OpenBrace("private struct PropertyIdentifier"))
+                    //{
+                    //    builder.WriteLine("private string propertyName;");
+                    //    builder.WriteLine("public string PropertyName { get { return this.propertyName; } }");
+                    //    builder.WriteLine();
+
+                    //    using (builder.OpenBrace("private PropertyIdentifier(string propertyName)"))
+                    //    {
+                    //        builder.WriteLine("this.propertyName = propertyName;");
+                    //    }
+                    //    builder.WriteLine();
+
+                    //    using (builder.OpenBrace("public static implicit operator string(PropertyIdentifier identifier)"))
+                    //    {
+                    //        builder.WriteLine("return identifier.PropertyName;");
+                    //    }
+                    //    builder.WriteLine();
+
+                    //    using (builder.OpenBrace("public static PropertyIdentifier Create(string propertyName)"))
+                    //    {
+                    //        builder.WriteLine("return new PropertyIdentifier(propertyName);");
+                    //    }
+                    //}
+
+                    if (XenialLayoutBuilderGenerator.GetAllProperties(targetType).Any())
                     {
-                        builder.WriteLine("private string propertyName;");
-                        builder.WriteLine("public string PropertyName { get { return this.propertyName; } }");
                         builder.WriteLine();
-
-                        using (builder.OpenBrace("private PropertyIdentifier(string propertyName)"))
-                        {
-                            builder.WriteLine("this.propertyName = propertyName;");
-                        }
-                        builder.WriteLine();
-
-                        using (builder.OpenBrace("public static implicit operator string(PropertyIdentifier identifier)"))
-                        {
-                            builder.WriteLine("return identifier.PropertyName;");
-                        }
-                        builder.WriteLine();
-
-                        using (builder.OpenBrace("public static PropertyIdentifier Create(string propertyName)"))
-                        {
-                            builder.WriteLine("return new PropertyIdentifier(propertyName);");
-                        }
-                    }
-
-                    if (targetType.GetMembers().OfType<IPropertySymbol>().Any())
-                    {
-                        builder.WriteLine();
-                        var properties = targetType.GetMembers().OfType<IPropertySymbol>().ToList();
+                        var properties = XenialLayoutBuilderGenerator.GetAllProperties(targetType).ToList();
 
                         using (builder.OpenBrace("private partial struct Constants"))
                         {
@@ -180,11 +180,11 @@ public class XenialColumnsBuilderGenerator : IXenialSourceGenerator
                         }
                         builder.WriteLine();
 
-                        using (builder.OpenBrace("private partial struct Property"))
-                        {
-                            WritePropertyConstants(builder, properties, Enumerable.Empty<string>());
-                        }
-                        builder.WriteLine();
+                        //using (builder.OpenBrace("private partial struct Property"))
+                        //{
+                        //    WritePropertyConstants(builder, properties, Enumerable.Empty<string>());
+                        //}
+                        //builder.WriteLine();
 
                         using (builder.OpenBrace("private partial struct Column"))
                         {
@@ -264,7 +264,7 @@ public class XenialColumnsBuilderGenerator : IXenialSourceGenerator
                 var typeToExpandMembers = targetType;
                 foreach (var expandMemberPart in expandMemberParts)
                 {
-                    var foundPart = typeToExpandMembers.GetMembers().OfType<IPropertySymbol>().FirstOrDefault(m => m.Name == expandMemberPart);
+                    var foundPart = XenialLayoutBuilderGenerator.GetAllProperties(typeToExpandMembers).FirstOrDefault(m => m.Name == expandMemberPart);
                     if (foundPart is not null && foundPart.Type is INamedTypeSymbol namedType)
                     {
                         typeToExpandMembers = namedType;
@@ -273,7 +273,7 @@ public class XenialColumnsBuilderGenerator : IXenialSourceGenerator
 
                 return (
                     expandMemberParts.ToArray(),
-                    typeToExpandMembers.GetMembers().OfType<IPropertySymbol>().ToArray()
+                    XenialLayoutBuilderGenerator.GetAllProperties(typeToExpandMembers).ToArray()
                 );
             }
 
@@ -294,14 +294,14 @@ public class XenialColumnsBuilderGenerator : IXenialSourceGenerator
                         }
                         builder.WriteLine();
 
-                        using (builder.OpenBrace("private partial struct Property"))
-                        {
-                            using (WriteParentClassTrain(builder, parents))
-                            {
-                                WritePropertyIdentitfiers(builder, properties, parents);
-                            }
-                        }
-                        builder.WriteLine();
+                        //using (builder.OpenBrace("private partial struct Property"))
+                        //{
+                        //    using (WriteParentClassTrain(builder, parents))
+                        //    {
+                        //        WritePropertyIdentitfiers(builder, properties, parents);
+                        //    }
+                        //}
+                        //builder.WriteLine();
 
                         using (builder.OpenBrace("private partial struct Column"))
                         {
