@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -145,34 +144,34 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                 ////We also don't need to specify the visibility for partial types
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
-                    using (builder.OpenBrace("private struct PropertyIdentifier"))
+                    //using (builder.OpenBrace("private struct PropertyIdentifier"))
+                    //{
+                    //    builder.WriteLine("private string propertyName;");
+                    //    builder.WriteLine("public string PropertyName { get { return this.propertyName; } }");
+                    //    builder.WriteLine();
+
+                    //    using (builder.OpenBrace("private PropertyIdentifier(string propertyName)"))
+                    //    {
+                    //        builder.WriteLine("this.propertyName = propertyName;");
+                    //    }
+                    //    builder.WriteLine();
+
+                    //    using (builder.OpenBrace("public static implicit operator string(PropertyIdentifier identifier)"))
+                    //    {
+                    //        builder.WriteLine("return identifier.PropertyName;");
+                    //    }
+                    //    builder.WriteLine();
+
+                    //    using (builder.OpenBrace("public static PropertyIdentifier Create(string propertyName)"))
+                    //    {
+                    //        builder.WriteLine("return new PropertyIdentifier(propertyName);");
+                    //    }
+                    //}
+
+                    if (GetAllProperties(targetType).Any())
                     {
-                        builder.WriteLine("private string propertyName;");
-                        builder.WriteLine("public string PropertyName { get { return this.propertyName; } }");
                         builder.WriteLine();
-
-                        using (builder.OpenBrace("private PropertyIdentifier(string propertyName)"))
-                        {
-                            builder.WriteLine("this.propertyName = propertyName;");
-                        }
-                        builder.WriteLine();
-
-                        using (builder.OpenBrace("public static implicit operator string(PropertyIdentifier identifier)"))
-                        {
-                            builder.WriteLine("return identifier.PropertyName;");
-                        }
-                        builder.WriteLine();
-
-                        using (builder.OpenBrace("public static PropertyIdentifier Create(string propertyName)"))
-                        {
-                            builder.WriteLine("return new PropertyIdentifier(propertyName);");
-                        }
-                    }
-
-                    if (targetType.GetMembers().OfType<IPropertySymbol>().Any())
-                    {
-                        builder.WriteLine();
-                        var properties = targetType.GetMembers().OfType<IPropertySymbol>().ToList();
+                        var properties = GetAllProperties(targetType).ToList();
 
                         using (builder.OpenBrace("private partial struct Constants"))
                         {
@@ -180,11 +179,11 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         }
                         builder.WriteLine();
 
-                        using (builder.OpenBrace("private partial struct Property"))
-                        {
-                            WritePropertyConstants(builder, properties, Enumerable.Empty<string>());
-                        }
-                        builder.WriteLine();
+                        //using (builder.OpenBrace("private partial struct Property"))
+                        //{
+                        //    WritePropertyConstants(builder, properties, Enumerable.Empty<string>());
+                        //}
+                        //builder.WriteLine();
 
                         using (builder.OpenBrace("private partial struct Editor"))
                         {
@@ -214,6 +213,35 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
         }
 
         return compilation;
+    }
+    private static IEnumerable<IPropertySymbol> GetAllProperties(INamedTypeSymbol targetType)
+    {
+        var members = targetType.GetMembers().OfType<IPropertySymbol>();
+
+        static bool ShouldYieldMember(IPropertySymbol member)
+            => !member.IsAbstract
+                && !member.IsIndexer
+                && !member.IsStatic
+                && member.GetResultantVisibility() == SymbolVisibility.Public;
+
+        foreach (var member in members)
+        {
+            if (ShouldYieldMember(member))
+            {
+                yield return member;
+            }
+        }
+
+        if (targetType.BaseType is not null)
+        {
+            foreach (var baseMember in GetAllProperties(targetType.BaseType))
+            {
+                if (ShouldYieldMember(baseMember))
+                {
+                    yield return baseMember;
+                }
+            }
+        }
     }
 
     private static Compilation AddExpandedFields(
@@ -264,7 +292,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                 var typeToExpandMembers = targetType;
                 foreach (var expandMemberPart in expandMemberParts)
                 {
-                    var foundPart = typeToExpandMembers.GetMembers().OfType<IPropertySymbol>().FirstOrDefault(m => m.Name == expandMemberPart);
+                    var foundPart = GetAllProperties(typeToExpandMembers).FirstOrDefault(m => m.Name == expandMemberPart);
                     if (foundPart is not null && foundPart.Type is INamedTypeSymbol namedType)
                     {
                         typeToExpandMembers = namedType;
@@ -273,7 +301,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
                 return (
                     expandMemberParts.ToArray(),
-                    typeToExpandMembers.GetMembers().OfType<IPropertySymbol>().ToArray()
+                    GetAllProperties(typeToExpandMembers).ToArray()
                 );
             }
 
@@ -294,14 +322,14 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
                         }
                         builder.WriteLine();
 
-                        using (builder.OpenBrace("private partial struct Property"))
-                        {
-                            using (WriteParentClassTrain(builder, parents))
-                            {
-                                WritePropertyIdentitfiers(builder, properties, parents);
-                            }
-                        }
-                        builder.WriteLine();
+                        //using (builder.OpenBrace("private partial struct Property"))
+                        //{
+                        //    using (WriteParentClassTrain(builder, parents))
+                        //    {
+                        //        WritePropertyIdentitfiers(builder, properties, parents);
+                        //    }
+                        //}
+                        //builder.WriteLine();
 
                         using (builder.OpenBrace("private partial struct Editor"))
                         {

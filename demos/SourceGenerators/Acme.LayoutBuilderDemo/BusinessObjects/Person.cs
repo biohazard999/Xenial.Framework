@@ -7,7 +7,7 @@ using Xenial.Framework.Layouts;
 namespace Acme.Module.BusinessObjects
 {
     [DetailViewLayoutBuilder(typeof(PersonLayout))]
-    public class Person : NonPersistentBaseObject
+    public partial class Person : NonPersistentBaseObject
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

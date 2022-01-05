@@ -34,7 +34,7 @@
         <ColumnInfo Id="Text" CustomHeight="20" />
       </Columns>
     </ListView>
-    <DetailView Id="Employee_DetailView">
+    <!--<DetailView Id="Employee_DetailView">
       <Layout>
         <LayoutGroup Id="Main">
           <LayoutGroup Id="SimpleEditors" RelativeSize="60" >
@@ -62,7 +62,7 @@
           </TabbedGroup>
         </LayoutGroup>
       </Layout>
-    </DetailView>
+    </DetailView>-->
     <DetailView Id="UseSQLAlternativeInfo_DetailView">
       <Layout>
         <LayoutGroup Id="Main" Direction="Vertical" RelativeSize="100">

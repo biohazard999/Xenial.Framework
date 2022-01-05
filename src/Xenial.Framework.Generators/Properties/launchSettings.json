@@ -4,6 +4,10 @@
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\..\\demos\\SourceGenerators\\Acme.Module\\Acme.Module.csproj"
     },
+    "MainDemo.Module": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\..\\demos\\MainDemo\\MainDemo.Module\\MainDemo.Module.csproj"
+    },
     "Xenial.Framework.Generators.Images": {
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\Xenial.Framework.Images\\Xenial.Framework.Images.csproj"

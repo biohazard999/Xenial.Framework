@@ -58,5 +58,9 @@ namespace MainDemo.Module.Win
                 return base.GetStartupActions();
             }
         }
+
+        protected override IEnumerable<Type> GetDeclaredControllerTypes()
+            => base.GetDeclaredControllerTypes()
+                .UseXenialWindowsFormsControllers();
     }
 }

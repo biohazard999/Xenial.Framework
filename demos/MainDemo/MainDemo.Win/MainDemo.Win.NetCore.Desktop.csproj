@@ -69,7 +69,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MainDemo.Module.Win\MainDemo.Module.Win.NetCore.Desktop.csproj" />
-    <ProjectReference Include="..\MainDemo.Module\MainDemo.Module.NetCore.Desktop.csproj" />
+    <ProjectReference Include="..\MainDemo.Module\MainDemo.Module.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,9 +8,12 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
 
+using Xenial.Framework.Layouts;
+
 namespace MainDemo.Module.BusinessObjects
 {
     [DefaultClassOptions]
+    [DetailViewLayoutBuilder(typeof(EmployeeLayoutBuilder))]
     public class Employee : Person, IMapsMarker
     {
         private string webPageAddress;

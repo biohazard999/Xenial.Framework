@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
+using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.ReportsV2;
 using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Updating;
@@ -107,6 +108,16 @@ namespace MainDemo.Module
             predefinedReportsUpdater.AddPredefinedReport<EmployeeListReport>("Employee List Report", typeof(Employee), true);
             return new ModuleUpdater[] { updater, predefinedReportsUpdater };
         }
+
+        public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
+        {
+            base.AddGeneratorUpdaters(updaters);
+
+            updaters
+                .UseDetailViewLayoutBuilders()
+                .UseListViewColumnBuilders();
+        }
+
         static MainDemoModule()
         {
             /*Note that you can specify the required format in a configuration file:

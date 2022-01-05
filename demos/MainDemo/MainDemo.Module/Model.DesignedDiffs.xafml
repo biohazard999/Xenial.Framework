@@ -138,7 +138,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
-    <DetailView Id="Employee_DetailView">
+    <!--<DetailView Id="Employee_DetailView">
       <Items>
         <PropertyEditor Id="Address1" Caption="Address" />
         <PropertyEditor Id="Address2" Removed="True" />
@@ -159,7 +159,7 @@
                   <LayoutItem Id="FullName" ViewItem="FullName" Index="3" RelativeSize="21.428571428571427" IsNewNode="True" />
                 </LayoutGroup>
                 <LayoutGroup Id="Person_col1b" ShowCaption="False" Index="1" RelativeSize="55" IsNewNode="True">
-                  <LayoutItem Id="TitleOfCourtesy" ViewItem="TitleOfCourtesy" Incdex="0" RelativeSize="28.571428571428573" IsNewNode="True" />
+                  <LayoutItem Id="TitleOfCourtesy" ViewItem="TitleOfCourtesy" Index="0" RelativeSize="28.571428571428573" IsNewNode="True" />
                   <LayoutItem Id="Email" ViewItem="Email" Index="1" RelativeSize="21.428571428571427" IsNewNode="True" />
                   <LayoutItem Id="Birthday" ViewItem="Birthday" Index="2" RelativeSize="21.428571428571427" IsNewNode="True" />
                   <LayoutItem Id="Address1" ViewItem="Address1" Index="3" RelativeSize="28.571428571428573" IsNewNode="True" />
@@ -215,7 +215,7 @@
           </TabbedGroup>
         </LayoutGroup>
       </Layout>
-    </DetailView>
+    </DetailView>-->
     <ListView Id="Employee_ListView" Caption="Employees" IsGroupPanelVisible="True" AutoExpandAllGroups="True">
       <Columns>
         <ColumnInfo Id="Anniversary" PropertyName="Anniversary" Index="-1" />

@@ -43,12 +43,20 @@
     <PackageReference Include="DevExpress.Win.Demos" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
+    <PackageReference Include="Xenial.Framework.Win" Version="$(XenialDemoPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Win/Xenial.Framework.Win.csproj" />
+  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MainDemo.Module\MainDemo.Module.NetCore.Desktop.csproj" />
+    <ProjectReference Include="..\MainDemo.Module\MainDemo.Module.csproj" />
   </ItemGroup>
 
 </Project>

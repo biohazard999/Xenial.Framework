@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 16.0.22
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainDemo.Module.Win.NetCore.Desktop", "MainDemo.Module.Win\MainDemo.Module.Win.NetCore.Desktop.csproj", "{70AC2425-F2E8-480A-825C-9E42C8F071E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainDemo.Module.NetCore.Desktop", "MainDemo.Module\MainDemo.Module.NetCore.Desktop.csproj", "{D7B72244-7C11-414B-ABE5-A3EB78567D93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainDemo.Module", "MainDemo.Module\MainDemo.Module.csproj", "{D7B72244-7C11-414B-ABE5-A3EB78567D93}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainDemo.Win.NetCore.Desktop", "MainDemo.Win\MainDemo.Win.NetCore.Desktop.csproj", "{6ABA08C0-4C39-490C-9F2E-8C97EC101FB0}"
 EndProject

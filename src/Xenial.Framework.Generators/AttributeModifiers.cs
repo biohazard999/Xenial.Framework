@@ -176,6 +176,7 @@ public static class TypeSymbolExtensions
                 // If we see anything private, then the symbol is private.
                 case Accessibility.NotApplicable:
                 case Accessibility.Private:
+                case Accessibility.Protected:
                     return SymbolVisibility.Private;
 
                 // If we see anything internal, then knock it down from public to
