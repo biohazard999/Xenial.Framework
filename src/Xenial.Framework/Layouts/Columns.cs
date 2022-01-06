@@ -19,6 +19,18 @@ namespace Xenial.Framework.Layouts;
 public class Columns : IEnumerable<Column>
 {
     /// <summary>
+    /// 
+    /// </summary>
+    public Columns() { }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="options"></param>
+    public Columns(ListViewOptions options)
+        => Options = options ?? new();
+
+    /// <summary>
     /// Specifies the <see cref="Xenial.Framework.Layouts.ListViewOptions"></see> to set the options for the ListView
     /// This only will work on top level View nodes, not included ones.
     /// </summary>

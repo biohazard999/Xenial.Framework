@@ -43,10 +43,7 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
 
                 if (layout.Options is not null)
                 {
-                    if (layout.Options.WasCaptionSet)
-                    {
-                        modelDetailView.Caption = layout.Options.Caption;
-                    }
+                    new ViewOptionsMapper().Map(layout.Options, modelDetailView);
                 }
 
                 ModelDetailViewLayoutNodesGeneratorUpdater.MarkDuplicateNodes(layout);

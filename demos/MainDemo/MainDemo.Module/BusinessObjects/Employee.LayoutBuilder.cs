@@ -10,9 +10,14 @@ namespace MainDemo.Module.BusinessObjects;
 [Xenial.XenialExpandMember(Constants.Department)]
 public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
 {
-    public Layout BuildLayout() => new()
+    public Layout BuildLayout() => new(new()
     {
-        HorizontalGroup("Details",
+        Caption = "Employee",
+        ImageName = "BO_Employee",
+        EnableLayoutGroupImages = false,
+    })
+    {
+        HorizontalGroup("Details", "BO_Employee",
             HorizontalGroup(
                 VerticalGroup(
                     Editor.FirstName,
@@ -34,7 +39,7 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
                 { RelativeSize = 15 }
             )
         ),
-        HorizontalGroup("Additional Information",
+        HorizontalGroup("Additional Information", "Action_AboutInfo",
             VerticalGroup(
                 Editor.NickName,
                 Editor.SpouseName,

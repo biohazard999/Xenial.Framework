@@ -111,6 +111,11 @@ public sealed partial class ModelColumnsBuilderNodesGeneratorUpdater : ModelNode
                             var columns = builder.Invoke()
                                 ?? throw new InvalidOperationException($"ColumnsBuilder on Type '{modelListView.ModelClass.TypeInfo.Type}' for View '{modelListView.Id}' must return an object of Type '{typeof(Columns)}'");
 
+                            if (columns.Options is not null)
+                            {
+                                new ViewOptionsMapper().Map(columns.Options, modelListView);
+                            }
+
                             modelColumns.ClearNodes();
 
                             var index = 0;

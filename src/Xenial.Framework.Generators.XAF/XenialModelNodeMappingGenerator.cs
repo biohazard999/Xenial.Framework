@@ -36,7 +36,8 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
         (compilation, var modelOptionsMapperAttribute) = GenerateXenialModelOptionsMapperAttribute(context, compilation, addedSourceFiles);
 
         (compilation, var optionTypes) = GenerateXenialModelOptionsCode(context, compilation, types, modelOptionsAttribute, autoMappedAttribute, addedSourceFiles);
-        compilation = GenerationXenialModelOptionsMapperCode(context, compilation, types, optionTypes, modelOptionsMapperAttribute, autoMappedAttribute, addedSourceFiles);
+        (compilation, var mappedTypes) = GenerateXenialModelOptionsMapperCode(context, compilation, types, optionTypes, modelOptionsMapperAttribute, autoMappedAttribute, addedSourceFiles);
+        compilation = GenerateXenialModelOptionsMapCode(context, compilation, mappedTypes, addedSourceFiles);
 
         return compilation;
     }
@@ -121,8 +122,10 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
         return (compilation, optionTypes);
     }
 
-    private Compilation GenerationXenialModelOptionsMapperCode(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types, List<(INamedTypeSymbol classSymbol, INamedTypeSymbol targetType)> optionTypes, INamedTypeSymbol modelOptionsMapperAttribute, INamedTypeSymbol autoMappedAttribute, IList<string> addedSourceFiles)
+    private (Compilation compilation, Dictionary<(TypeDeclarationSyntax, INamedTypeSymbol), List<(INamedTypeSymbol fromType, INamedTypeSymbol toType)>>) GenerateXenialModelOptionsMapperCode(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types, List<(INamedTypeSymbol classSymbol, INamedTypeSymbol targetType)> optionTypes, INamedTypeSymbol modelOptionsMapperAttribute, INamedTypeSymbol autoMappedAttribute, IList<string> addedSourceFiles)
     {
+        var mappedItems = new Dictionary<(TypeDeclarationSyntax, INamedTypeSymbol), List<(INamedTypeSymbol editorType, INamedTypeSymbol modelMemberType)>>();
+
         foreach (var @class in types)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
@@ -154,41 +157,47 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
                     builder.WriteLine("#nullable disable");
                     builder.WriteLine();
 
+                    var (from, to) = (fromTypeSymbol, targetInterface);
+
                     using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
                     {
                         var genericArguments = @classSymbol.IsGenericType
                             ? $"<{string.Join(", ", classSymbol.TypeArguments)}>"
                             : "";
 
+                        var properties = GetAutoMappedPropertySymbols(fromTypeSymbol, autoMappedAttribute);
+                        var targetTypeProperties = GetPropertySymbols(targetInterface, Array.Empty<string>())
+                            .Select(m => m.Name)
+                            .ToArray();
+
+                        var propertiesToGenerate = properties.Where(m => targetTypeProperties.Contains(m.Name))
+                            .ToArray();
+
                         using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}{genericArguments}"))
                         {
-                            //foreach (var property in properties)
-                            //{
-                            //    var privateField = property.Name.FirstCharToLowerCase();
-
-                            //    builder.WriteLine($"private {property.Type} {privateField};");
-                            //    builder.WriteLine($"internal System.Boolean Was{property.Name}Set {{ get; set; }}");
-
-                            //    builder.WriteLine($"/// <summary>");
-                            //    builder.WriteLine($"/// {GetDescription(compilation, property)}");
-                            //    builder.WriteLine($"/// </summary>");
-                            //    builder.WriteLine($"[{autoMappedAttribute}]");
-                            //    using (builder.OpenBrace($"public {property.Type} {property.Name}"))
-                            //    {
-                            //        using (builder.OpenBrace("get"))
-                            //        {
-                            //            builder.WriteLine($"return this.{privateField};");
-                            //        }
-                            //        using (builder.OpenBrace("set"))
-                            //        {
-                            //            builder.WriteLine($"this.Was{property.Name}Set = true;");
-                            //            builder.WriteLine($"this.{privateField} = value;");
-                            //        }
-                            //    }
-                            //    builder.WriteLine();
-                            //}
+                            using (builder.OpenBrace($"private void Map({from} from, {to} to)"))
+                            {
+                                foreach (var property in propertiesToGenerate)
+                                {
+                                    using (builder.OpenBrace($"if(from.Was{property.Name}Set)"))
+                                    {
+                                        builder.WriteLine($"to.{property.Name} = from.{property.Name};");
+                                    }
+                                    builder.WriteLine();
+                                }
+                                builder.WriteLine($"this.MapCore(from, to);");
+                            }
+                            builder.WriteLine();
+                            builder.WriteLine($"partial void MapCore({from} from, {to} to);");
                         }
                     }
+
+                    if (!mappedItems.ContainsKey((@class, @classSymbol)))
+                    {
+                        mappedItems[(@class, @classSymbol)] = new();
+                    }
+
+                    mappedItems[(@class, @classSymbol)].Add((from, to));
 
                     var hintName = @classSymbol.IsGenericType
                         ? $"{@classSymbol.Name}.{fromTypeSymbol}.{targetInterface}.{string.Join(".", classSymbol.TypeArguments)}"
@@ -197,10 +206,103 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
                     compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSources);
                 }
             }
-
         }
+
+        return (compilation, mappedItems);
+    }
+
+    private Compilation GenerateXenialModelOptionsMapCode(GeneratorExecutionContext context, Compilation compilation, Dictionary<(TypeDeclarationSyntax, INamedTypeSymbol), List<(INamedTypeSymbol from, INamedTypeSymbol to)>> mappedClasses, IList<string> addedSourceFiles)
+    {
+        foreach (var (key, members) in mappedClasses)
+        {
+            var (@class, @classSymbol) = key;
+            var builder = CurlyIndenter.Create();
+
+            builder.WriteLine("// <auto-generated />");
+            builder.WriteLine();
+            builder.WriteLine("using System;");
+            builder.WriteLine("using System.Runtime.CompilerServices;");
+            builder.WriteLine();
+
+            using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
+            {
+                using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
+                {
+                    foreach (var members2 in members.GroupBy(m => m.from.ToString()))
+                    {
+                        var methodSigniture = $"internal void Map({members2.Key} from, DevExpress.ExpressApp.Model.IModelNode to)";
+                        using (builder.OpenBrace(methodSigniture))
+                        {
+                            foreach (var (_, to) in members2)
+                            {
+                                using (builder.OpenBrace($"if(to is {to})"))
+                                {
+                                    builder.WriteLine($"{to} toCasted = ({to})to;");
+                                    builder.WriteLine($"this.Map(from, toCasted);");
+                                }
+
+                                builder.WriteLine();
+                            }
+                            builder.WriteLine("this.MapCore(from, to);");
+                        }
+                        builder.WriteLine();
+                        builder.WriteLine($"partial void MapCore({members2.Key} from, DevExpress.ExpressApp.Model.IModelNode to);");
+                        builder.WriteLine();
+                    }
+                }
+            }
+
+            var hintName = $"{@classSymbol.Name}.BaseMapper";
+
+            compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSources);
+        }
+
         return compilation;
     }
+
+
+    private static IPropertySymbol[] GetAutoMappedPropertySymbols(INamedTypeSymbol @classSymbol, INamedTypeSymbol autoMappedAttribute)
+    {
+        var propertyInfos = new List<IPropertySymbol>();
+        var considered = new List<INamedTypeSymbol>();
+        var queue = new Queue<INamedTypeSymbol>();
+        considered.Add(@classSymbol);
+        queue.Enqueue(@classSymbol);
+
+        var baseType = @classSymbol.BaseType;
+
+        while (baseType is not null)
+        {
+            if (!considered.Contains(baseType))
+            {
+                considered.Add(baseType);
+                queue.Enqueue(baseType);
+            }
+            baseType = baseType.BaseType;
+        }
+
+        while (queue.Count > 0)
+        {
+            var subType = queue.Dequeue();
+
+            var typeProperties = subType.GetMembers().OfType<IPropertySymbol>();
+
+            var newPropertyInfos = typeProperties
+                .Where(x => !propertyInfos.Contains(x));
+
+            propertyInfos.InsertRange(0, newPropertyInfos);
+        }
+
+        return WithAutoMappedAttribute(
+            WithSetterAndGetter(
+                DistinctByName(propertyInfos.ToArray()
+            )), autoMappedAttribute
+        ).ToArray();
+    }
+
+    private static IPropertySymbol[] WithAutoMappedAttribute(IPropertySymbol[] propertySymbols, INamedTypeSymbol autoMappedAttribute)
+        => propertySymbols.Where(m => m.HasAttribute(autoMappedAttribute)).ToArray();
+
 
     private static string GetDescription(Compilation compilation, IPropertySymbol propertySymbol)
     {

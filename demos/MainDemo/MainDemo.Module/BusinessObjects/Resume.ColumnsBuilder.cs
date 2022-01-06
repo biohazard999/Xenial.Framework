@@ -9,7 +9,10 @@ namespace MainDemo.Module.BusinessObjects;
 [Xenial.XenialExpandMember(Constants.Employee)]
 public partial class ResumeColumnsBuilder : ColumnsBuilder<Resume>
 {
-    public Columns BuildColumns() => new()
+    public Columns BuildColumns() => new(new()
+    {
+        Caption = "Resumes"
+    })
     {
         Column.Employee,
         Column.File,

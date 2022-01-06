@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Xenial.Framework.Layouts;
 
-[Xenial.XenialModelOptionsMapper(typeof(DetailViewOptions))]
+[XenialModelOptionsMapper(typeof(DetailViewOptions))]
+[XenialModelOptionsMapper(typeof(ListViewOptions))]
 internal partial class ViewOptionsMapper
 {
 }
