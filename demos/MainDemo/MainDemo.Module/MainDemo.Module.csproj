@@ -55,7 +55,7 @@
   
   <ItemGroup Condition="$(XenialDebug)">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
-    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Generators\Xenial.Framework.Generators.csproj"
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Generators/Xenial.Framework.Generators.csproj"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false"
                       PrivateAssets="all" />
@@ -64,6 +64,12 @@
   <ItemGroup>
     <Compile Update="**\*.ModelBuilder.cs">
       <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ModelBuilder', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.LayoutBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.LayoutBuilder', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.ColumnsBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ColumnsBuilder', '.cs'))</DependentUpon>
     </Compile>
   </ItemGroup>
   

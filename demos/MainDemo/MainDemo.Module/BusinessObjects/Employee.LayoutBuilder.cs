@@ -12,7 +12,7 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
 {
     public Layout BuildLayout() => new(new()
     {
-        Caption = "Employee",
+        Caption = "YoxAlex",
         ImageName = "BO_Employee",
         EnableLayoutGroupImages = false,
     })
