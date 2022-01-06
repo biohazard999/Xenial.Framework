@@ -37,50 +37,7 @@ public sealed partial class ModelAppOptionsNodesGeneratorUpdater : ModelNodesGen
     {
         if (node is IModelOptions options && options.Application is not null)
         {
-            if (Options.AboutInfoString is not null)
-            {
-                options.Application.AboutInfoString = Options.AboutInfoString;
-            }
-
-            if (Options.Company is not null)
-            {
-                options.Application.Company = Options.Company;
-            }
-
-            if (Options.Copyright is not null)
-            {
-                options.Application.Copyright = Options.Copyright;
-            }
-
-            if (Options.Description is not null)
-            {
-                options.Application.Description = Options.Description;
-            }
-
-            if (Options.Logo is not null)
-            {
-                options.Application.Logo = Options.Logo;
-            }
-
-            if (Options.PreferredLanguage is not null)
-            {
-                options.Application.PreferredLanguage = Options.PreferredLanguage;
-            }
-
-            if (Options.ProtectedContentText is not null)
-            {
-                options.Application.ProtectedContentText = Options.ProtectedContentText;
-            }
-
-            if (Options.Title is not null)
-            {
-                options.Application.Title = Options.Title;
-            }
-
-            if (Options.VersionFormat is not null)
-            {
-                options.Application.VersionFormat = Options.VersionFormat;
-            }
+            new AppOptionsMapper().Map(Options, options.Application);
         }
     }
 }

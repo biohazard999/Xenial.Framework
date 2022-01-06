@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Generators
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Images", "..\..\src\Xenial.Framework.Images\Xenial.Framework.Images.csproj", "{999984FE-D63D-4040-871D-517B41AE4DF3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Generators.XAF", "..\..\src\Xenial.Framework.Generators.XAF\Xenial.Framework.Generators.XAF.csproj", "{B33FF281-5C48-49CD-884F-A7891809C718}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,12 @@ Global
 		{999984FE-D63D-4040-871D-517B41AE4DF3}.EasyTest|Any CPU.Build.0 = Debug|Any CPU
 		{999984FE-D63D-4040-871D-517B41AE4DF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{999984FE-D63D-4040-871D-517B41AE4DF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B33FF281-5C48-49CD-884F-A7891809C718}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B33FF281-5C48-49CD-884F-A7891809C718}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B33FF281-5C48-49CD-884F-A7891809C718}.EasyTest|Any CPU.ActiveCfg = Debug|Any CPU
+		{B33FF281-5C48-49CD-884F-A7891809C718}.EasyTest|Any CPU.Build.0 = Debug|Any CPU
+		{B33FF281-5C48-49CD-884F-A7891809C718}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B33FF281-5C48-49CD-884F-A7891809C718}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +99,7 @@ Global
 		{37E784C4-9C33-4EE1-BBC8-C52767FF5900} = {AF4B7C32-FBE9-4609-BCC8-D14DE09CA829}
 		{598EE1C2-B7AF-4CD4-971B-C76919371EE1} = {AF4B7C32-FBE9-4609-BCC8-D14DE09CA829}
 		{999984FE-D63D-4040-871D-517B41AE4DF3} = {AF4B7C32-FBE9-4609-BCC8-D14DE09CA829}
+		{B33FF281-5C48-49CD-884F-A7891809C718} = {AF4B7C32-FBE9-4609-BCC8-D14DE09CA829}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27157A80-E084-469A-9410-B85FE2C0C323}

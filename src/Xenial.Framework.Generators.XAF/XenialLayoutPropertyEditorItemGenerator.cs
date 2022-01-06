@@ -180,7 +180,7 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
                     {
                         using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                         {
-                            var methodSigniture = $"private void Map({editorNamedTypeSymbol} from, {targetTypeSymbol} to)";
+                            var methodSigniture = $"private void MapNode({editorNamedTypeSymbol} from, {targetTypeSymbol} to)";
                             using (builder.OpenBrace(methodSigniture))
                             {
                                 foreach (var property in mappingProperties)
@@ -191,10 +191,10 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
                                     }
                                 }
                                 builder.WriteLine();
-                                builder.WriteLine("this.MapCore(from, to);");
+                                builder.WriteLine("this.MapNodeCore(from, to);");
                             }
                             builder.WriteLine();
-                            builder.WriteLine($"partial void MapCore({editorNamedTypeSymbol} from,{targetTypeSymbol} to);");
+                            builder.WriteLine($"partial void MapNodeCore({editorNamedTypeSymbol} from,{targetTypeSymbol} to);");
                         }
                     }
 
@@ -245,15 +245,15 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
                                 using (builder.OpenBrace($"if(to is {targetNamedTypeSymbol})"))
                                 {
                                     builder.WriteLine($"{targetNamedTypeSymbol} toCasted = ({targetNamedTypeSymbol})to;");
-                                    builder.WriteLine($"this.Map(fromCasted, toCasted);");
+                                    builder.WriteLine($"this.MapNodeCore(fromCasted, toCasted);");
                                 }
                             }
                             builder.WriteLine();
                         }
-                        builder.WriteLine("this.MapCore(from, to);");
+                        builder.WriteLine("this.MapNodeCore(from, to);");
                     }
                     builder.WriteLine();
-                    builder.WriteLine("partial void MapCore(Xenial.Framework.Layouts.Items.Base.LayoutItemNode from, DevExpress.ExpressApp.Model.IModelNode to);");
+                    builder.WriteLine("partial void MapNodeCore(Xenial.Framework.Layouts.Items.Base.LayoutItemNode from, DevExpress.ExpressApp.Model.IModelNode to);");
                 }
             }
 

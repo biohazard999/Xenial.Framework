@@ -175,7 +175,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
 
                         using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}{genericArguments}"))
                         {
-                            using (builder.OpenBrace($"private void Map({from} from, {to} to)"))
+                            using (builder.OpenBrace($"private void MapNode({from} from, {to} to)"))
                             {
                                 foreach (var property in propertiesToGenerate)
                                 {
@@ -185,10 +185,10 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
                                     }
                                     builder.WriteLine();
                                 }
-                                builder.WriteLine($"this.MapCore(from, to);");
+                                builder.WriteLine($"this.MapNodeCore(from, to);");
                             }
                             builder.WriteLine();
-                            builder.WriteLine($"partial void MapCore({from} from, {to} to);");
+                            builder.WriteLine($"partial void MapNodeCore({from} from, {to} to);");
                         }
                     }
 
@@ -238,15 +238,15 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
                                 using (builder.OpenBrace($"if(to is {to})"))
                                 {
                                     builder.WriteLine($"{to} toCasted = ({to})to;");
-                                    builder.WriteLine($"this.Map(from, toCasted);");
+                                    builder.WriteLine($"this.MapNode(from, toCasted);");
                                 }
 
                                 builder.WriteLine();
                             }
-                            builder.WriteLine("this.MapCore(from, to);");
+                            builder.WriteLine("this.MapNodeCore(from, to);");
                         }
                         builder.WriteLine();
-                        builder.WriteLine($"partial void MapCore({members2.Key} from, DevExpress.ExpressApp.Model.IModelNode to);");
+                        builder.WriteLine($"partial void MapNodeCore({members2.Key} from, DevExpress.ExpressApp.Model.IModelNode to);");
                         builder.WriteLine();
                     }
                 }
