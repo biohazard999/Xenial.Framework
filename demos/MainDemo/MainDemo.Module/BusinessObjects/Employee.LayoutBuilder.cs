@@ -10,8 +10,11 @@ namespace MainDemo.Module.BusinessObjects;
 [Xenial.XenialExpandMember(Constants.Department)]
 public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
 {
-    public Layout BuildLayout() => new()
+    public Layout BuildLayout() => new Layout().WithOptions(o => o with
     {
+        Caption = "FOOOOO21333132"
+
+    }).WithChildren(
         HorizontalGroup("Details",
             HorizontalGroup(
                 VerticalGroup(
@@ -59,5 +62,5 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
             Tab("Change History", Editor.ChangeHistory),
             Tab("Phone Numbers", Editor.PhoneNumbers)
         )
-    };
+    );
 }

@@ -41,6 +41,14 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
 
                 var layout = ModelDetailViewLayoutNodesGeneratorUpdater.InvokeBuilder(builder, modelDetailView);
 
+                if (layout.Options is not null)
+                {
+                    if (layout.Options.WasCaptionSet)
+                    {
+                        modelDetailView.Caption = layout.Options.Caption;
+                    }
+                }
+
                 ModelDetailViewLayoutNodesGeneratorUpdater.MarkDuplicateNodes(layout);
 
                 foreach (var layoutViewItemNode in VisitNodes<LayoutPropertyEditorItem>(layout))

@@ -73,6 +73,22 @@ internal static class AttributeDataExtensions
         return defaultValue;
     }
 
+    public static IEnumerable<TValue> GetAttributeValues<TValue>(
+      this AttributeData attribute,
+      string attributeName)
+    {
+        var namedArgument = attribute.NamedArguments.FirstOrDefault(argument => argument.Key == attributeName);
+
+        if (namedArgument.Key == attributeName
+           && namedArgument.Value.Kind == TypedConstantKind.Array)
+        {
+            foreach (var value in namedArgument.Value.Values)
+            {
+                yield return (TValue)value.Value!;
+            }
+        }
+    }
+
     public static TypedConstant? GetAttribute(
         this AttributeData attribute,
         string attributeName)
@@ -89,7 +105,7 @@ internal static class AttributeDataExtensions
 
     public static bool HasAttribute(
         this IPropertySymbol property,
-        INamedTypeSymbol attributeSymbol)
+        ISymbol attributeSymbol)
         => property.GetAttributes()
                    .Any(m => m.AttributeClass?.ToString() == attributeSymbol.ToString());
 
@@ -196,7 +212,7 @@ public static class TypeSymbolExtensions
         return visibility;
     }
 
-    public static bool IsAttributeDeclared(this INamedTypeSymbol symbol, INamedTypeSymbol attributeSymbol)
+    public static bool IsAttributeDeclared(this ISymbol symbol, INamedTypeSymbol attributeSymbol)
         => symbol == null ? false : symbol
             .GetAttributes()
             .Any(m =>
@@ -205,7 +221,7 @@ public static class TypeSymbolExtensions
                 && m.AttributeClass.ToString() == attributeSymbol.ToString()
              );
 
-    public static bool IsAttributeDeclared(this INamedTypeSymbol symbol, string attributeSymbol)
+    public static bool IsAttributeDeclared(this ISymbol symbol, string attributeSymbol)
         => symbol == null ? false : symbol
             .GetAttributes()
             .Any(m =>
@@ -214,7 +230,7 @@ public static class TypeSymbolExtensions
                 && m.AttributeClass.ToString() == attributeSymbol.ToString()
              );
 
-    public static AttributeData GetAttribute(this INamedTypeSymbol symbol, INamedTypeSymbol attributeSymbol)
+    public static AttributeData GetAttribute(this ISymbol symbol, INamedTypeSymbol attributeSymbol)
     {
         _ = symbol ?? throw new ArgumentNullException(nameof(symbol));
 
@@ -225,7 +241,7 @@ public static class TypeSymbolExtensions
         );
     }
 
-    public static IEnumerable<AttributeData> GetAttributes(this INamedTypeSymbol symbol, INamedTypeSymbol attributeSymbol)
+    public static IEnumerable<AttributeData> GetAttributes(this ISymbol symbol, INamedTypeSymbol attributeSymbol)
     {
         _ = symbol ?? throw new ArgumentNullException(nameof(symbol));
 
@@ -236,7 +252,7 @@ public static class TypeSymbolExtensions
         );
     }
 
-    public static IEnumerable<AttributeData> GetAttributes(this INamedTypeSymbol symbol, string attributeSymbol)
+    public static IEnumerable<AttributeData> GetAttributes(this ISymbol symbol, string attributeSymbol)
     {
         _ = symbol ?? throw new ArgumentNullException(nameof(symbol));
 
@@ -247,7 +263,7 @@ public static class TypeSymbolExtensions
         );
     }
 
-    public static AttributeData? FindAttribute(this INamedTypeSymbol symbol, INamedTypeSymbol attributeSymbol)
+    public static AttributeData? FindAttribute(this ISymbol symbol, INamedTypeSymbol attributeSymbol)
     {
         _ = symbol ?? throw new ArgumentNullException(nameof(symbol));
 

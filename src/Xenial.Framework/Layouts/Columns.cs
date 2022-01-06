@@ -18,6 +18,12 @@ namespace Xenial.Framework.Layouts;
 
 public class Columns : IEnumerable<Column>
 {
+    /// <summary>
+    /// Specifies the <see cref="Xenial.Framework.Layouts.ListViewOptions"></see> to set the options for the ListView
+    /// This only will work on top level View nodes, not included ones.
+    /// </summary>
+    public ListViewOptions Options { get; set; } = new();
+
     IEnumerator<Column> IEnumerable<Column>.GetEnumerator() => Items.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();
 

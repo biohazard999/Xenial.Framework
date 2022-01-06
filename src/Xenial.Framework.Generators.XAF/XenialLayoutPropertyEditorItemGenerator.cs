@@ -30,7 +30,7 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
 
     public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types, IList<string> addedSourceFiles)
     {
-        (compilation, var autoMappedAttribute) = GenerateXenialAutoMappedAttribute(context, compilation, addedSourceFiles);
+        (compilation, var autoMappedAttribute) = XenialAutoMappedAttributeGenerator.FindXenialAutoMappedAttribute(compilation);
         compilation = GenerateLayoutEditorItemCode(context, compilation, types, autoMappedAttribute, addedSourceFiles);
         (compilation, var mappedItems) = GenerateLayoutEditorItemMapperCode(context, compilation, types, autoMappedAttribute, addedSourceFiles);
         compilation = GenerateLayoutEditorItemMapperMapCode(context, compilation, mappedItems, addedSourceFiles);
@@ -430,12 +430,6 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
             .Select(g => g.First())
             .ToArray();
 
-    //private static PropertyInfo[] DistinctByName(PropertyInfo[] propertySymbols)
-    //    => propertySymbols
-    //        .GroupBy(car => car.Name)
-    //        .Select(g => g.First())
-    //        .ToArray();
-
     private static IPropertySymbol[] GetPropertySymbols(INamedTypeSymbol @classSymbol)
     {
         var propertyInfos = new List<IPropertySymbol>();
@@ -601,27 +595,6 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
         compilation = compilation.AddSyntaxTrees(syntaxTree);
 
         var attribute = compilation.GetTypeByMetadataName("Xenial.XenialLayoutPropertyEditorItemAttribute");
-
-        return (compilation, attribute!);
-    }
-
-    private (Compilation, INamedTypeSymbol) GenerateXenialAutoMappedAttribute(GeneratorExecutionContext context, Compilation compilation, IList<string> addedSourceFiles)
-    {
-        var (source, syntaxTree) = GenerateXenialAutoMappedAttribute(
-            (CSharpParseOptions)context.ParseOptions,
-            cancellationToken: context.CancellationToken
-        );
-
-        if (AddSources)
-        {
-            var fileName = $"XenialAutoMappedAttribute.g.cs";
-            addedSourceFiles.Add(fileName);
-            context.AddSource(fileName, source);
-        }
-
-        compilation = compilation.AddSyntaxTrees(syntaxTree);
-
-        var attribute = compilation.GetTypeByMetadataName("Xenial.XenialAutoMappedAttribute");
 
         return (compilation, attribute!);
     }
