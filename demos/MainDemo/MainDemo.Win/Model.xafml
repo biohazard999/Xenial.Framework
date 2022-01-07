@@ -139,7 +139,6 @@
         <ActionLink ActionId="ShowInReportV2" Index="3" IsNewNode="True" />
         <ActionLink ActionId="ChangeVariant" Index="4" />
         <ActionLink ActionId="Close" Index="5" IsNewNode="True" />
-        <ActionLink ActionId="ResetViewSettings" Removed ="True" />
       </ActionContainer>
       <ActionContainer Id="LookupNew" IsNewNode="True">
         <ActionLink ActionId="New" IsNewNode="True" />

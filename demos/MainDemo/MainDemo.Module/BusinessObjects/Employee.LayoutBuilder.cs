@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
+using Xenial.Framework.Images;
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items.Base;
 
@@ -12,9 +13,10 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
 {
     public Layout BuildLayout() => new(new()
     {
-        Caption = "YoxAlex",
-        ImageName = "BO_Employee",
-        EnableLayoutGroupImages = false,
+        Caption = "Hot Reload!!!",
+        ImageName = XenialImages.Action_HotReload,
+        //ImageName = "BO_Employee",
+        EnableLayoutGroupImages = true
     })
     {
         HorizontalGroup("Details", "BO_Employee",
@@ -55,14 +57,14 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
             ) with
             { RelativeSize = 61 }
         ),
-        HorizontalGroup("Notes",
+        HorizontalGroup("Notes", "BO_Note",
             Editor.Notes with { ShowCaption = false }
         ) with
         { RelativeSize = 10 },
         TabbedGroup(
             Tab("Tasks", Editor.Tasks) with { ToolTip = "View, assign or remove tasks for the current employee" },
-            Tab("Change History", Editor.ChangeHistory),
-            Tab("Phone Numbers", Editor.PhoneNumbers)
+            Tab("Change History", "BO_Audit_ChangeHistory", Editor.ChangeHistory),
+            Tab("Phone Numbers", "BO_Phone", Editor.PhoneNumbers)
         )
     };
 }

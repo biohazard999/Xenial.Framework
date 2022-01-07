@@ -8,12 +8,20 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
 
+using Xenial.Framework.Base;
 using Xenial.Framework.Layouts;
 
 namespace MainDemo.Module.BusinessObjects
 {
+    [Persistent]
     [DefaultClassOptions]
+    [DeclareListView("Employee_ListView_Varied")]
+    [DeclareListView("Employee_ListView_AllColumns")]
     [DetailViewLayoutBuilder(typeof(EmployeeLayoutBuilder))]
+    [ListViewColumnsBuilder(typeof(EmployeeColumnsBuilder))]
+    [ListViewColumnsBuilder(typeof(EmployeeColumnsBuilder), nameof(EmployeeColumnsBuilder.BuildAllColumns), ViewId = ViewIds.Employee_ListView_AllColumns)]
+    [ListViewColumnsBuilder(typeof(EmployeeColumnsBuilder), nameof(EmployeeColumnsBuilder.BuildVariantColumns), ViewId = ViewIds.Employee_ListView_Varied)]
+    [LookupListViewColumnsBuilder(typeof(EmployeeColumnsBuilder))]
     public class Employee : Person, IMapsMarker
     {
         private string webPageAddress;

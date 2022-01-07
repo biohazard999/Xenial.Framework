@@ -85,6 +85,7 @@ public class XenialGenerator : ISourceGenerator
                 {
                     Debugger.Launch();
                 }
+                throw;
             }
 #endif
         }

@@ -47,6 +47,7 @@
 
   <ItemGroup Condition="'$(XenialDebug)' == 'false'">
     <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.Images" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Generators" Version="$(XenialDemoPackageVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -55,6 +56,7 @@
   
   <ItemGroup Condition="$(XenialDebug)">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Images/Xenial.Framework.Images.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Generators/Xenial.Framework.Generators.csproj"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false"

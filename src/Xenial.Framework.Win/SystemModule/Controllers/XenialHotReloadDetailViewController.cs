@@ -99,28 +99,33 @@ public sealed class XenialHotReloadDetailViewController : ViewController
             return;
         }
 
-        if (view.Model is IModelDetailView detailView)
+        if (view.Model is IModelDetailView detailView && application is WinApplication winApplication && winApplication.MainWindow is WinWindow winWindow)
         {
             var itemsBuilder = new ModelDetailViewLayoutModelDetailViewItemsNodesGenerator();
             var builder = new ModelDetailViewLayoutNodesGeneratorUpdater();
+
+            var imageName = detailView.ImageName;
 
             var items = (ModelNode)detailView.Items;
             itemsBuilder.UpdateNode(items);
             var layout = (ModelNode)detailView.Layout;
             builder.UpdateNode(layout);
             view.SaveModel();
+
+            var shouldFullReload = detailView.ImageName != imageName;
+
             if (view.Control is System.Windows.Forms.Control control)
             {
                 if (control.InvokeRequired)
                 {
-                    control.BeginInvoke(() => UpdateLayout(application, frame));
+                    control.BeginInvoke(() => UpdateLayout(application, frame, shouldFullReload));
                 }
                 else
                 {
-                    UpdateLayout(application, frame);
+                    UpdateLayout(application, frame, shouldFullReload);
                 }
 
-                static void UpdateLayout(XafApplication application, Frame frame)
+                static void UpdateLayout(XafApplication application, Frame frame, bool shouldFullReload)
                 {
                     var view = frame.View;
                     var delayedViewItemsInitialization = view is CompositeView compositeView
@@ -129,7 +134,7 @@ public sealed class XenialHotReloadDetailViewController : ViewController
 
                     delayedViewItemsInitialization = false;
 
-                    if (view.Control is DevExpress.ExpressApp.Win.Layout.XafLayoutControl control)
+                    if (!shouldFullReload && view.Control is DevExpress.ExpressApp.Win.Layout.XafLayoutControl control)
                     {
                         control.BeginUpdate();
                         try
@@ -155,6 +160,37 @@ public sealed class XenialHotReloadDetailViewController : ViewController
                     }
                 }
             }
+
+            //FULL RELOAD
+            //if (winWindow.Form is System.Windows.Forms.Control control)
+            //{
+            //    if (control.InvokeRequired)
+            //    {
+            //        control.BeginInvoke(() => UpdateLayout(application, frame, detailView));
+            //    }
+            //    else
+            //    {
+            //        UpdateLayout(application, frame, detailView);
+            //    }
+
+            //    static void UpdateLayout(XafApplication application, Frame frame, IModelDetailView detailView)
+            //    {
+            //        var itemsBuilder = new ModelDetailViewLayoutModelDetailViewItemsNodesGenerator();
+            //        var builder = new ModelDetailViewLayoutNodesGeneratorUpdater();
+
+            //        var shortcut = frame.View.CreateShortcut();
+
+            //        if (frame.SetView(null))
+            //        {
+            //            var items = (ModelNode)detailView.Items;
+            //            itemsBuilder.UpdateNode(items);
+            //            var layout = (ModelNode)detailView.Layout;
+            //            builder.UpdateNode(layout);
+
+            //            frame.SetView(application.ProcessShortcut(shortcut), true, frame);
+            //        }
+            //    }
+            //}
         }
     }
 

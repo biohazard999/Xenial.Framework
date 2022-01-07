@@ -216,61 +216,11 @@
         </LayoutGroup>
       </Layout>
     </DetailView>-->
-    <ListView Id="Employee_ListView" Caption="Employees" IsGroupPanelVisible="True" AutoExpandAllGroups="True">
-      <Columns>
-        <ColumnInfo Id="Anniversary" PropertyName="Anniversary" Index="-1" />
-        <ColumnInfo Id="Department" PropertyName="Department" Index="-1" GroupIndex="0" />
-        <ColumnInfo Id="FullName" Index="-1" />
-        <ColumnInfo Id="Manager" PropertyName="Manager" Index="-1" />
-        <ColumnInfo Id="NickName" PropertyName="NickName" Index="-1" />
-        <ColumnInfo Id="SpouseName" PropertyName="SpouseName" Index="-1" />
-        <ColumnInfo Id="WebPageAddress" PropertyName="WebPageAddress" Index="-1" />
-        <ColumnInfo Id="TitleOfCourtesy" PropertyName="TitleOfCourtesy" Index="0" />
-        <ColumnInfo Id="FirstName" PropertyName="FirstName" Index="2" IsNewNode="True" />
-        <ColumnInfo Id="LastName" PropertyName="LastName" Index="3" SortIndex="0" SortOrder="Ascending" Width="100" IsNewNode="True" />
-        <ColumnInfo Id="Position" Index="4" SortIndex="-1" SortOrder="None" />
-        <ColumnInfo Id="Email" Index="5" />
-        <ColumnInfo Id="Birthday" Index="6" />
-      </Columns>
-      <Filters CurrentFilterId="AllEmployees" IsNewNode="True">
-        <Filter Id="AllEmployees" Caption="All Employees" IsNewNode="True" />
-        <Filter Id="Managers" Criteria="Contains([Position.Title], 'Manager')" IsNewNode="True" />
-        <Filter Id="TopExecutives" Caption="Top Executives" Criteria="Contains([Position.Title], 'President') Or Contains([Position.Title], 'Director') Or StartsWith([Position.Title], 'Chief') And EndsWith([Position.Title], 'Officer')" IsNewNode="True" />
-        <Filter Id="Developers" Criteria="Position.Title = 'Developer'" IsNewNode="True" />
-      </Filters>
-    </ListView>
-    <ListView Id="Employee_ListView_AllColumns" Caption="Employees" ClassName="MainDemo.Module.BusinessObjects.Employee" IsGroupPanelVisible="False" IsFooterVisible="True" AllowEdit="False" IsNewNode="True">
-      <Columns IsNewNode="True">
-        <ColumnInfo Id="Address2" PropertyName="Address2" Index="-1" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="DisplayName" PropertyName="DisplayName" Index="-1" Width="400" IsNewNode="True" />
-        <ColumnInfo Id="FullName" PropertyName="FullName" Index="-1" IsNewNode="True" />
-        <ColumnInfo Id="Manager" PropertyName="Manager" Index="-1" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="MiddleName" PropertyName="MiddleName" Index="-1" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="NickName" PropertyName="NickName" Index="-1" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="Notes" PropertyName="Notes" Index="-1" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="Photo" PropertyName="Photo" Index="-1" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="WebPageAddress" PropertyName="WebPageAddress" Index="-1" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="TitleOfCourtesy" PropertyName="TitleOfCourtesy" Index="0" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="FirstName" PropertyName="FirstName" Index="1" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="LastName" PropertyName="LastName" Index="2" SortIndex="0" SortOrder="Ascending" Width="100" IsNewNode="True" />
-        <ColumnInfo Id="Position" PropertyName="Position" Index="3" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="Department" PropertyName="Department" Index="4" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="Email" PropertyName="Email" Index="5" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="Birthday" PropertyName="Birthday" Index="6" Width="70" IsNewNode="True" />
-        <ColumnInfo Id="Address1" PropertyName="Address1" Index="7" Width="70" IsNewNode="True" />
-      </Columns>
-    </ListView>
-    <ListView Id="Employee_ListView_Varied" ClassName="MainDemo.Module.BusinessObjects.Employee" IsNewNode="True">
+    <ListView Id="Employee_ListView_Varied" ClassName="MainDemo.Module.BusinessObjects.Employee">
       <Variants IsNewNode="True">
         <Variant Id="Default" Caption="Few columns" ViewID="Employee_ListView" Index="1" IsNewNode="True" />
         <Variant Id="All columns" Caption="All columns" ViewID="Employee_ListView_AllColumns" Index="2" IsNewNode="True" />
       </Variants>
-    </ListView>
-    <ListView Id="Employee_LookupListView">
-      <Columns>
-        <ColumnInfo Id="FullName" PropertyName="FullName" Index="-1" SortOrder="None" />
-        <ColumnInfo Id="LastName" PropertyName="LastName" Index="0" SortOrder="Ascending" IsNewNode="True" />
-      </Columns>
     </ListView>
     <ListView Id="Employee_Tasks_ListView" AllowEdit="True" NewItemRowPosition="Top">
       <Columns>

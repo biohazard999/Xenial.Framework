@@ -81,7 +81,8 @@ namespace MainDemo.Module
             employeeBuilder
                 .HasObjectCaptionFormat(m => m.FullName)
                 .HasImage("BO_Employee")
-                .HasDefaultListViewId("Employee_ListView_Varied");
+            //.HasDefaultListViewId(ViewIds.Employee_ListView_Varied)
+            ;
 
             employeeBuilder.For(m => m.Anniversary)
                 .HasCaption("Wedding Date");
@@ -114,6 +115,8 @@ namespace MainDemo.Module
             base.AddGeneratorUpdaters(updaters);
 
             updaters
+                .UseXenialImages()
+                .UseDeclareViewsGeneratorUpdater()
                 .UseDetailViewLayoutBuilders()
                 .UseListViewColumnBuilders();
         }
@@ -131,7 +134,7 @@ namespace MainDemo.Module
             Address.SetFullAddressFormat(ConfigurationManager.AppSettings["FullAddressFormat"], ConfigurationManager.AppSettings["FullAddressPersistentAlias"]);
             */
             Address.SetFullAddressFormat("{Street}, {City}, {StateProvince} {ZipPostal}, {Country.Name}", "concat(Street, ' ', City, ' ', StateProvince, ' ', ZipPostal, ' ', Country.Name)");
-            ResetViewSettingsController.DefaultAllowRecreateView = false;
+            ResetViewSettingsController.DefaultAllowRecreateView = true;
         }
         private static Boolean? isSiteMode;
         public static Boolean IsSiteMode
