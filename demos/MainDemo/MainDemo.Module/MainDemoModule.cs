@@ -5,6 +5,7 @@ using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.ReportsV2;
+using DevExpress.ExpressApp.Security;
 using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Updating;
 using DevExpress.ExpressApp.Validation;
@@ -18,7 +19,10 @@ using MainDemo.Module.BusinessObjects;
 using MainDemo.Module.CodeRules;
 using MainDemo.Module.Reports;
 
+using Xenial.Framework.Base;
 using Xenial.Framework.Layouts;
+using Xenial.Framework.Layouts.Items.LeafNodes;
+using Xenial.Framework.Model.GeneratorUpdaters;
 using Xenial.Framework.ModelBuilders;
 
 namespace MainDemo.Module
@@ -155,12 +159,82 @@ namespace MainDemo.Module
                 .HasImage("BO_Position")
                 .Build();
 
+            ModelBuilder.Create<Event>(typesInfo)
+                .WithListViewColumns(() => Columns.Automatic(new()
+                {
+                    Caption = "Calendar"
+                }));
+
+            ModelBuilder.Create<Note>(typesInfo)
+                .WithListViewColumns(() => Columns.Automatic(new()
+                {
+                    Caption = "Notes"
+                }));
+
+            ModelBuilder.Create<PermissionPolicyRole>(typesInfo)
+                .WithListViewColumns(() => Columns.Automatic(new()
+                {
+                    Caption = "Role"
+                }));
+
+            ModelBuilder.Create<Position>(typesInfo)
+                .WithListViewColumns(() => Columns.Automatic(new()
+                {
+                    Caption = "Positions"
+                }));
+
+            ModelBuilder.Create<Resume>(typesInfo)
+                .WithListViewColumns(() => Columns.Automatic(new()
+                {
+                    Caption = "Resumes"
+                }));
+
             ModelBuilder.Create<ApplicationUser>(typesInfo)
                 .WithListViewColumns(() => Columns.Automatic(new()
                 {
                     Caption = "Users"
                 }))
+                .WithDetailViewLayout(b => new()
+                {
+                    b.HorizontalGroup(
+                        b.VerticalGroup(
+                            b.PropertyEditor(m => m.UserName),
+                            b.PropertyEditor(m => m.IsActive) with { ShowCaption = true },
+                            b.PropertyEditor(m => m.ChangePasswordOnFirstLogon) with { ShowCaption = true }
+                        ),
+                        b.PropertyEditor(m => m.Photo) with { ShowCaption = false, RelativeSize = 15 }
+                    ),
+                    b.VerticalGroup("Roles", b.PropertyEditor(m => m.Roles))
+                })
                 .Build();
+
+            //TODO: Why is this not working as expected?
+            //Maybe we need to move that to platform specific module
+            //because security or other module kicks in
+            //ModelBuilder.Create<AuthenticationStandardLogonParameters>(typesInfo)
+            //    .WithDetailViewLayout(b => new(new()
+            //    {
+            //        Caption = "Log In"
+            //    })
+            //    {
+            //        b.HorizontalGroup(
+            //            new LayoutStaticImageItem("Security_Image") with
+            //            {
+            //                //TODO: SizeMode
+            //                //SizeConstraintsType
+            //                VerticalAlign = DevExpress.ExpressApp.Editors.StaticVerticalAlign.Middle,
+            //                ShowCaption = false
+            //            },
+            //            b.VerticalGroup(
+            //                new LayoutStaticTextItem("Welcome to the eXpressApp Framework Main Demo"),
+            //                new LayoutStaticTextItem("Enter your user name and password to proceed."),
+            //                b.PropertyEditor(m => m.UserName),
+            //                b.PropertyEditor(m => m.Password),
+            //                new LayoutStaticTextItem("This demo app does not require a password for login")
+            //            )
+            //        )
+            //    })
+            //    .Build();
         }
 
         public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB)
@@ -176,6 +250,19 @@ namespace MainDemo.Module
             base.AddGeneratorUpdaters(updaters);
 
             updaters
+                .UseAppOptions(new AppOptions()
+                {
+                    Title = "Main Demo",
+                    Description = "eXpressApp Framework demo application",
+                    Company = "Developer Express Inc.",
+                    PreferredLanguage = "(Default language)"
+                    //TODO: where is this model node defined?
+                    //WebSite = "http://www.devexpress.com",
+                })
+                .UseApplicationOptions(new ApplicationOptions
+                {
+                    LookupSmallCollectionItemCount = 75
+                })
                 .UseXenialImages()
                 .UseDeclareViewsGeneratorUpdater()
                 .UseDetailViewLayoutBuilders()

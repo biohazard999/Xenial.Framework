@@ -57,10 +57,7 @@
   <ItemGroup Condition="$(XenialDebug)">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Images/Xenial.Framework.Images.csproj" />
-    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Generators/Xenial.Framework.Generators.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false"
-                      PrivateAssets="all" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Generators/Xenial.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>
@@ -73,6 +70,15 @@
     <Compile Update="**\*.ColumnsBuilder.cs">
       <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ColumnsBuilder', '.cs'))</DependentUpon>
     </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="UnusableNodes_de.xml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+    </None>
+    <None Update="UnusableNodes_ru.xml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+    </None>
   </ItemGroup>
   
 </Project>

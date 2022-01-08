@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application Title="Main Demo" Subtitle="eXpressApp Framework demo application" Company="Developer Express Inc." WebSite="http://www.devexpress.com" PreferredLanguage="(Default language)">
+<Application WebSite="http://www.devexpress.com">
   <ActionDesign>
     <Actions>
       <Action Id="ClearTasksAction" SelectionDependencyType="RequireSingleObject" ConfirmationMessage="Are you sure you want to clear the Tasks list?" ToolTip="Clear the current employee's Tasks list" Shortcut="Control+Shift+C" />
       <Action Id="SaveAndClose" ValidationContexts="SaveAndClose" />
-      <Action Id="Task.MarkCompleted" ValidationContexts="MarkCompleted" Caption="Mark Completed" />
       <Action Id="SetTaskAction">
         <ChoiceActionItems>
           <ChoiceActionItem Id="Status">
@@ -16,6 +15,7 @@
           </ChoiceActionItem>
         </ChoiceActionItems>
       </Action>
+      <Action Id="Task.MarkCompleted" ValidationContexts="MarkCompleted" Caption="Mark Completed" />
     </Actions>
     <ActionToContainerMapping>
       <ActionContainer Id="RecordEdit">
@@ -26,32 +26,6 @@
       </ActionContainer>
     </ActionToContainerMapping>
   </ActionDesign>
-  <BOModel>
-    <!--<Class Name="DevExpress.Persistent.BaseImpl.Person" IsCloneable="true" />
-    <Class Name="DevExpress.Persistent.BaseImpl.Task" IsCloneable="true" />-->
-    <!--<Class Name="MainDemo.Module.BusinessObjects.Employee">
-      <OwnMembers>
-        <Member Name="Position" DataSourceProperty="Department.Positions" DataSourcePropertyIsNullMode="SelectAll" />
-      </OwnMembers>
-    </Class>-->
-    <!--<Class Name="MainDemo.Module.BusinessObjects.Department" ImageName="BO_Department">
-      <OwnMembers>
-        --><!--<Member Name="NumberOfEmployees" IsCustom="True" IsCalculated="True" Type="System.Int32" Expression="[Employees][].Count()" Caption="Number Of Employees" IsNewNode="True" />--><!--
-        --><!--<Member Name="Title" Caption="Name" />--><!--
-      </OwnMembers>
-    </Class>-->
-    <!--<Class Name="MainDemo.Module.BusinessObjects.Paycheck" IsCloneable="true">
-      --><!--<OwnMembers>
-        <Member Name="GrossPay" DisplayFormat="${0:0.00}" EditMask="\$#,###,##0.00" />
-        <Member Name="NetPay" DisplayFormat="${0:0.00}" EditMask="\$#,###,##0.00" />
-        <Member Name="TaxRate" DisplayFormat="{0:P}" />
-        <Member Name="PayRate" DisplayFormat="${0:0.00}" EditMask="\$#,###,##0.00" />
-        <Member Name="TotalTax" DisplayFormat="${0:0.00}" EditMask="\$#,###,##0.00" />
-        <Member Name="OvertimePayRate" DisplayFormat="${0:0.00}" EditMask="\$#,###,##0.00" />
-      </OwnMembers>--><!--
-    </Class>-->
-    <!--<Class Name="MainDemo.Module.BusinessObjects.Position" ImageName="BO_Position" />-->
-  </BOModel>
   <CreatableItems>
     <CreatableItem ClassName="DevExpress.Persistent.BaseImpl.Event" Caption="Event" IsNewNode="True" />
     <CreatableItem ClassName="DevExpress.Persistent.BaseImpl.Note" IsNewNode="True" />
@@ -61,12 +35,12 @@
       <Item Id="Default" ChildItemsDisplayStyle="List" Index="0">
         <Items>
           <Item Id="Employee_ListView" Caption="Employees" Index="0" ViewId="Employee_ListView_Varied" />
+          <Item Id="ApplicationUser_ListView" Caption="Users" IsNewNode="True" />
           <Item Id="DemoTask_ListView" Caption="Tasks" />
           <Item Id="Department_ListView" Caption="Departments" />
           <Item Id="Note" ViewId="Note_ListView" Caption="Notes" IsNewNode="True" />
           <Item Id="Paycheck_ListView" Caption="Payroll" />
           <Item Id="PermissionPolicyRole_ListView" Caption="Roles" IsNewNode="True" />
-          <Item Id="ApplicationUser_ListView" Caption="Users" IsNewNode="True" />
           <Item Id="Position_ListView" Caption="Positions" Removed="True" />
           <Item Id="Resume_ListView" Caption="Resumes" />
         </Items>
@@ -78,144 +52,67 @@
       </Item>
     </Items>
   </NavigationItems>
-  <Options LookupSmallCollectionItemCount="75">
+  <Options>
     <LayoutManagerOptions RequiredFieldMark="*" />
   </Options>
   <SchemaModules IsNewNode="True">
-    <SchemaModule Name="SystemModule" Version="20.1.0.0" IsNewNode="True" />
-    <SchemaModule Name="ValidationModule" Version="20.1.0.0" IsNewNode="True" />
-    <SchemaModule Name="ViewVariantsModule" Version="20.1.0.0" IsNewNode="True" />
+    <SchemaModule Name="CloneObjectModule" Version="21.2.4.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="21.2.4.0" IsNewNode="True" />
+    <SchemaModule Name="ValidationModule" Version="21.2.4.0" IsNewNode="True" />
+    <SchemaModule Name="ViewVariantsModule" Version="21.2.4.0" IsNewNode="True" />
   </SchemaModules>
   <Validation>
     <Rules>
-      <!--Employee-->
+      <RuleRequiredField Id="Calendar_SubjectIsNotEmpty" TargetType="DevExpress.Persistent.BaseImpl.Event" TargetPropertyName="Subject" TargetContextIDs="Save" IsNewNode="True" />
       <RuleRequiredField Id="Employee_EmailIsNotEmpty" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetPropertyName="Email" TargetContextIDs="Save" IsNewNode="True" />
       <RuleRequiredField Id="Employee_FirstNameIsNotEmpty" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetPropertyName="FirstName" TargetContextIDs="Save" IsNewNode="True" />
-      <RuleRequiredField Id="Employee_LastNameIsNotEmpty" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetPropertyName="LastName" TargetContextIDs="Save" IsNewNode="True" />
       <RuleRange Id="Employee_InvalidBirthday" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetContextIDs="Save" TargetPropertyName="Birthday" MaximumValueExpression="Today()" MinimumValueExpression="#1900-01-01 00:00:00.00000#" CustomMessageTemplate="&quot;Birth Date&quot; must be between 1/1/1900 and today." IsNewNode="True" />
-      <RuleRange Id="Employee_InvalidWeddingDate" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetContextIDs="Save" TargetPropertyName="Anniversary" MaximumValueExpression="Today()" MinimumValueExpression="#1900-01-01 00:00:00.00000#" CustomMessageTemplate="&quot;Wedding Date&quot; must be between 1/1/1900 and today." IsNewNode="True" />
       <RuleRegularExpression Id="Employee_InvalidEmail" Pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" TargetContextIDs="Save" TargetPropertyName="Email" TargetType="MainDemo.Module.BusinessObjects.Employee" CustomMessageTemplate="Invalid &quot;Email&quot;." IsNewNode="True" />
+      <RuleRange Id="Employee_InvalidWeddingDate" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetContextIDs="Save" TargetPropertyName="Anniversary" MaximumValueExpression="Today()" MinimumValueExpression="#1900-01-01 00:00:00.00000#" CustomMessageTemplate="&quot;Wedding Date&quot; must be between 1/1/1900 and today." IsNewNode="True" />
+      <RuleRequiredField Id="Employee_LastNameIsNotEmpty" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetPropertyName="LastName" TargetContextIDs="Save" IsNewNode="True" />
       <RuleRegularExpression Id="Employee_PhoneNumber" Pattern="^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$" TargetContextIDs="Save" TargetPropertyName="Number" TargetType="DevExpress.Persistent.BaseImpl.PhoneNumber" CustomMessageTemplate="&quot;Number&quot; must be in the following format: &quot;(000) 000-0000&quot;." IsNewNode="True" />
       <RuleRequiredField Id="Employee_PhoneNumberIsNotEmpty" TargetType="DevExpress.Persistent.BaseImpl.PhoneNumber" TargetPropertyName="Number" TargetContextIDs="Save" IsNewNode="True" />
-      <!--Task-->
       <RuleRange Id="Task_PercentCompleted" TargetType="MainDemo.Module.BusinessObjects.DemoTask" TargetContextIDs="Save" TargetPropertyName="PercentCompleted" MinimumValue="0" MaximumValue="100" IsNewNode="True" />
-      <RuleRequiredField Id="TaskSubjectIsNotEmpty" TargetType="DevExpress.Persistent.BaseImpl.Task" TargetPropertyName="Subject" TargetContextIDs="Save" IsNewNode="True" />
       <RuleValueComparison Id="Task_StartDate_DueDate" TargetPropertyName="DueDate" RightOperandExpression="StartDate" OperatorType="GreaterThanOrEqual" TargetType="MainDemo.Module.BusinessObjects.DemoTask" TargetContextIDs="Save" IsNewNode="True" />
-      <!--Calendar-->
-      <RuleRequiredField Id="Calendar_SubjectIsNotEmpty" TargetType="DevExpress.Persistent.BaseImpl.Event" TargetPropertyName="Subject" TargetContextIDs="Save" IsNewNode="True" />
+      <RuleRequiredField Id="TaskSubjectIsNotEmpty" TargetType="DevExpress.Persistent.BaseImpl.Task" TargetPropertyName="Subject" TargetContextIDs="Save" IsNewNode="True" />
     </Rules>
   </Validation>
   <Views>
-    <DetailView Id="AuthenticationStandardLogonParameters_DetailView_Demo" ClassName="DevExpress.ExpressApp.Security.AuthenticationStandardLogonParameters" Caption="Log In" IsNewNode="True">
-      <Items IsNewNode="True">
-        <StaticImage Id="LogonImage" ImageName="Security_Image" SizeMode="AutoSize" VerticalAlign="Middle" IsNewNode="True" />
-        <StaticText Id="LogonText" Text="Enter your user name and password to proceed." IsNewNode="True" />
-        <PropertyEditor Id="Password" PropertyName="Password" View="" ToolTip="Leave this field empty and hit the Enter key to log in" IsNewNode="True" />
-        <StaticText Id="PasswordHint" Text="This demo app does not require a password for login" IsNewNode="True" />
-        <PropertyEditor Id="UserName" PropertyName="UserName" IsNewNode="True" />
-        <StaticText Id="WelcomeText" Text="Welcome to the eXpressApp Framework Main Demo" IsNewNode="True" />
-      </Items>
-      <Layout IsNewNode="True">
-        <LayoutGroup Id="Main" ShowCaption="False" Index="0" IsNewNode="True">
-          <LayoutGroup Id="RootGroup" Direction="Horizontal" ShowCaption="False" Index="0" IsNewNode="True">
-            <LayoutGroup Id="ImageGroup" Index="0" ShowCaption="False" RelativeSize="1" IsNewNode="True">
-              <LayoutItem Id="LogonImage" Index="0" ShowCaption="False" ViewItem="LogonImage" IsNewNode="True" />
-            </LayoutGroup>
-            <LayoutGroup Id="EditorsGroup" Index="1" ShowCaption="False" RelativeSize="99" IsNewNode="True">
-              <LayoutGroup Id="Text" Index="0" ShowCaption="False" IsNewNode="True">
-                <LayoutItem Id="WelcomeText" Index="0" ShowCaption="False" ViewItem="WelcomeText" IsNewNode="True" />
-                <LayoutItem Id="LogonText" Index="1" ShowCaption="False" ViewItem="LogonText" IsNewNode="True" />
-              </LayoutGroup>
-              <LayoutGroup Id="Editors" Index="1" ShowCaption="False" IsNewNode="True">
-                <LayoutItem Id="UserName" Index="1" ViewItem="UserName" IsNewNode="True" />
-                <LayoutItem Id="Password" Index="2" ViewItem="Password" IsNewNode="True" />
-              </LayoutGroup>
-              <LayoutGroup Id="PasswordHintGroup" Index="2" ShowCaption="False" IsNewNode="True">
-                <LayoutItem Id="PasswordHint" Index="0" ViewItem="PasswordHint" IsNewNode="True" />
-              </LayoutGroup>
-            </LayoutGroup>
-          </LayoutGroup>
-        </LayoutGroup>
-      </Layout>
-    </DetailView>
-    <!--<DetailView Id="Employee_DetailView">
-      <Items>
-        <PropertyEditor Id="Address1" Caption="Address" />
-        <PropertyEditor Id="Address2" Removed="True" />
-        <PropertyEditor Id="Department.Office" PropertyName="Department.Office" IsNewNode="True" />
-        <PropertyEditor Id="Manager" ToolTip="Select a manager for the current employee from available managers in the selected department" />
-        <PropertyEditor Id="Position" ToolTip="Select a job position for the current employee from available positions in the selected department" />
-        <PropertyEditor Id="Tasks" ToolTip="View, assign or remove tasks for the current employee" />
-      </Items>
-      <Layout>
-        <LayoutGroup Id="Main" RelativeSize="100">
-          <LayoutGroup Id="SimpleEditors" RelativeSize="57.862903225806448">
-            <LayoutGroup Id="Person" RelativeSize="50.871080139372822" Index="0" Caption="Details" ShowCaption="True">
-              <LayoutGroup Id="Person_col1" RelativeSize="85" Direction="Horizontal" Caption="Person_col1">
-                <LayoutGroup Id="Person_col1a" ShowCaption="False" Index="0" RelativeSize="45" IsNewNode="True">
-                  <LayoutItem Id="FirstName" ViewItem="FirstName" Index="0" RelativeSize="28.571428571428573" IsNewNode="True" />
-                  <LayoutItem Id="MiddleName" ViewItem="MiddleName" Index="1" RelativeSize="21.428571428571427" IsNewNode="True" />
-                  <LayoutItem Id="LastName" ViewItem="LastName" Index="2" RelativeSize="21.428571428571427" IsNewNode="True" />
-                  <LayoutItem Id="FullName" ViewItem="FullName" Index="3" RelativeSize="21.428571428571427" IsNewNode="True" />
-                </LayoutGroup>
-                <LayoutGroup Id="Person_col1b" ShowCaption="False" Index="1" RelativeSize="55" IsNewNode="True">
-                  <LayoutItem Id="TitleOfCourtesy" ViewItem="TitleOfCourtesy" Index="0" RelativeSize="28.571428571428573" IsNewNode="True" />
-                  <LayoutItem Id="Email" ViewItem="Email" Index="1" RelativeSize="21.428571428571427" IsNewNode="True" />
-                  <LayoutItem Id="Birthday" ViewItem="Birthday" Index="2" RelativeSize="21.428571428571427" IsNewNode="True" />
-                  <LayoutItem Id="Address1" ViewItem="Address1" Index="3" RelativeSize="28.571428571428573" IsNewNode="True" />
-                </LayoutGroup>
-                <LayoutItem Id="FirstName" Removed="True" />
-                <LayoutItem Id="LastName" Removed="True" />
-                <LayoutItem Id="MiddleName" Removed="True" />
-              </LayoutGroup>
-              <LayoutGroup Id="Person_col2" RelativeSize="15" Caption="Person_col2">
-                <LayoutItem Id="Photo" Index="0" RelativeSize="100" ViewItem="Photo" IsNewNode="True" />
-                <LayoutItem Id="Birthday" Removed="True" />
-                <LayoutItem Id="Email" Removed="True" />
-                <LayoutItem Id="FullName" Removed="True" />
-              </LayoutGroup>
-            </LayoutGroup>
-            <LayoutGroup Id="Employee" RelativeSize="49.128919860627178" Index="1" Caption="Additional Information" Direction="Vertical">
-              <LayoutGroup Id="Employee_col1" RelativeSize="100" Caption="Employee_col1" Direction="Horizontal">
-                <LayoutGroup Id="Employee_col1b" ShowCaption="False" Caption="" Index="0" RelativeSize="38.25" IsNewNode="True">
-                  <LayoutItem Id="NickName" ViewItem="NickName" Index="0" RelativeSize="28.571428571428573" IsNewNode="True" />
-                  <LayoutItem Id="SpouseName" ViewItem="SpouseName" Index="1" RelativeSize="21.428571428571427" IsNewNode="True" />
-                  <LayoutItem Id="Anniversary" ViewItem="Anniversary" Index="2" RelativeSize="21.428571428571427" IsNewNode="True" />
-                  <LayoutItem Id="WebPageAddress" ViewItem="WebPageAddress" Index="3" RelativeSize="28.571428571428573" IsNewNode="True" />
-                </LayoutGroup>
-                <LayoutGroup Id="Employee_col1a" ShowCaption="False" Caption="" Index="1" RelativeSize="61.75" IsNewNode="True">
-                  <LayoutItem Id="Department" ViewItem="Department" Index="0" RelativeSize="28.571428571428573" IsNewNode="True" />
-                  <LayoutItem Id="Department.Office" ViewItem="Department.Office" Index="1" RelativeSize="21.428571428571427" IsNewNode="True" />
-                  <LayoutItem Id="Position" ViewItem="Position" Index="2" RelativeSize="21.428571428571427" IsNewNode="True" />
-                  <LayoutItem Id="Manager" ViewItem="Manager" Index="3" RelativeSize="28.571428571428573" IsNewNode="True" />
-                </LayoutGroup>
-                <LayoutItem Id="Manager" Removed="True" />
-                <LayoutItem Id="NickName" Removed="True" />
-                <LayoutItem Id="SpouseName" Removed="True" />
-                <LayoutItem Id="TitleOfCourtesy" Removed="True" />
-                <LayoutItem Id="WebPageAddress" Removed="True" />
-              </LayoutGroup>
-              <LayoutGroup Id="Employee_col2" Removed="True" />
-            </LayoutGroup>
-            <LayoutGroup Id="Party" Removed="True" />
-          </LayoutGroup>
-          <LayoutGroup Id="SizeableEditors" RelativeSize="17.54032258064516" ShowCaption="True">
-            <LayoutItem Id="Notes" RelativeSize="100" ShowCaption="False" />
-          </LayoutGroup>
-          <TabbedGroup Id="Tabs" RelativeSize="24.596774193548388">
-            <LayoutGroup Id="Tasks" Direction="Vertical" RelativeSize="100" Index="0">
-              <LayoutItem Id="Tasks" RelativeSize="100" ViewItem="Tasks" />
-            </LayoutGroup>
-            <LayoutGroup Id="ChangeHistory" Direction="Vertical" RelativeSize="100" Index="1">
-              <LayoutItem Id="ChangeHistory" RelativeSize="100" ViewItem="ChangeHistory" />
-            </LayoutGroup>
-            <LayoutGroup Id="PhoneNumbers" Direction="Vertical" RelativeSize="100" Index="2">
-              <LayoutItem Id="PhoneNumbers" RelativeSize="100" ViewItem="PhoneNumbers" />
-            </LayoutGroup>
-          </TabbedGroup>
-        </LayoutGroup>
-      </Layout>
-    </DetailView>-->
+    <ListView Id="DemoTask_Employees_ListView">
+      <Columns>
+        <ColumnInfo Id="Anniversary" Index="-1" />
+        <ColumnInfo Id="Manager" Index="-1" />
+        <ColumnInfo Id="NickName" Index="-1" />
+        <ColumnInfo Id="SpouseName" Index="-1" />
+        <ColumnInfo Id="TitleOfCourtesy" Index="-1" />
+        <ColumnInfo Id="WebPageAddress" Index="-1" />
+        <ColumnInfo Id="Department" Index="1" />
+        <ColumnInfo Id="Birthday" Index="2" />
+        <ColumnInfo Id="Position" Index="3" />
+      </Columns>
+    </ListView>
+    <ListView Id="Department_Employees_ListView">
+      <Columns>
+        <ColumnInfo Id="Anniversary" Index="-1" />
+        <ColumnInfo Id="Manager" Index="-1" />
+        <ColumnInfo Id="NickName" Index="-1" />
+        <ColumnInfo Id="SpouseName" Index="-1" />
+        <ColumnInfo Id="TitleOfCourtesy" Index="-1" />
+        <ColumnInfo Id="WebPageAddress" Index="-1" />
+        <ColumnInfo Id="Birthday" Index="1" />
+        <ColumnInfo Id="Position" Index="2" />
+        <ColumnInfo Id="Email" Index="3" />
+      </Columns>
+    </ListView>
+    <ListView Id="Department_ListView" Caption="Departments" MasterDetailMode="ListViewAndDetailView">
+      <Columns>
+        <ColumnInfo Id="Location" Index="1" SortOrder="Ascending" />
+        <ColumnInfo Id="Office" Index="2" />
+        <ColumnInfo Id="NumberOfEmployees" PropertyName="NumberOfEmployees" Index="3" IsNewNode="True" />
+        <ColumnInfo Id="DepartmentHead" Width="155" Index="4" />
+        <ColumnInfo Id="Description" Index="5" />
+      </Columns>
+    </ListView>
     <ListView Id="Employee_ListView_Varied" ClassName="MainDemo.Module.BusinessObjects.Employee">
       <Variants IsNewNode="True">
         <Variant Id="Default" Caption="Few columns" ViewID="Employee_ListView" Index="1" IsNewNode="True" />
@@ -231,134 +128,11 @@
         <ColumnInfo Id="ActualWorkHours" Index="5" />
       </Columns>
     </ListView>
-    <ListView Id="DemoTask_Employees_ListView">
-      <Columns>
-        <ColumnInfo Id="Anniversary" Index="-1" />
-        <ColumnInfo Id="Manager" Index="-1" />
-        <ColumnInfo Id="NickName" Index="-1" />
-        <ColumnInfo Id="SpouseName" Index="-1" />
-        <ColumnInfo Id="TitleOfCourtesy" Index="-1" />
-        <ColumnInfo Id="WebPageAddress" Index="-1" />
-        <ColumnInfo Id="Department" Index="1" />
-        <ColumnInfo Id="Birthday" Index="2" />
-        <ColumnInfo Id="Position" Index="3" />
-      </Columns>
-    </ListView>
-    <!--<DetailView Id="DemoTask_DetailView">
-      <Layout>
-        <LayoutGroup Id="Main" RelativeSize="100">
-          <LayoutGroup Id="SimpleEditors" RelativeSize="25.281602002503128">
-            <LayoutGroup Id="DemoTask" RelativeSize="100" Direction="Vertical">
-              <LayoutGroup Id="Task" ShowCaption="True" Direction="Horizontal" Index="0" RelativeSize="50" Caption="Details" IsNewNode="True">
-                <LayoutGroup Id="Task_col1" ShowCaption="False" Index="0" RelativeSize="49.825581395348834" IsNewNode="True">
-                  <LayoutItem Id="Subject" ViewItem="Subject" Index="0" RelativeSize="36.363636363636367" IsNewNode="True" />
-                  <LayoutItem Id="StartDate" ViewItem="StartDate" Index="1" RelativeSize="27.272727272727273" IsNewNode="True" />
-                  <LayoutItem Id="DueDate" ViewItem="DueDate" Index="2" RelativeSize="36.363636363636367" IsNewNode="True" />
-                </LayoutGroup>
-                <LayoutGroup Id="Task_col2" ShowCaption="False" Index="1" RelativeSize="50.174418604651166" IsNewNode="True">
-                  <LayoutItem Id="AssignedTo" ViewItem="AssignedTo" Index="0" RelativeSize="36.363636363636367" IsNewNode="True" />
-                  <LayoutItem Id="Status" ViewItem="Status" Index="1" RelativeSize="27.272727272727273" IsNewNode="True" />
-                  <LayoutItem Id="Priority" ViewItem="Priority" Index="2" RelativeSize="36.363636363636367" IsNewNode="True" />
-                </LayoutGroup>
-              </LayoutGroup>
-              <LayoutGroup Id="AdditionalInformation" Caption="Additional Information" ShowCaption="True" Index="1" RelativeSize="50" Direction="Horizontal" IsNewNode="True">
-                <LayoutGroup Id="Col1" Index="0" ShowCaption="False" RelativeSize="50" IsNewNode="True">
-                  <LayoutItem Id="EstimatedWorkHours" Index="0" ViewItem="EstimatedWorkHours" RelativeSize="50" ShowCaption="" IsNewNode="True" />
-                  <LayoutItem Id="ActualWorkHours" Index="1" ViewItem="ActualWorkHours" ShowCaption="" RelativeSize="50" IsNewNode="True" />
-                </LayoutGroup>
-                <LayoutGroup Id="Col2" ShowCaption="False" Index="1" RelativeSize="50" IsNewNode="True">
-                  <LayoutItem Id="PercentCompleted" ViewItem="PercentCompleted" Index="0" RelativeSize="50" IsNewNode="True" />
-                  <LayoutItem Id="DateCompleted" ViewItem="DateCompleted" Index="1" RelativeSize="50" IsNewNode="True" />
-                </LayoutGroup>
-              </LayoutGroup>
-              <LayoutItem Id="ActualWorkHours" Removed="True" />
-              <LayoutItem Id="EstimatedWorkHours" Removed="True" />
-              <LayoutItem Id="Priority" Removed="True" />
-            </LayoutGroup>
-            <LayoutGroup Id="Task" Removed="True" />
-          </LayoutGroup>
-          <LayoutGroup Id="SizeableEditors" RelativeSize="13.978494623655914" ShowCaption="True">
-            <LayoutItem Id="Description" RelativeSize="100" ShowCaption="False" />
-          </LayoutGroup>
-          <LayoutGroup Id="Employees_Group" Caption="Employees" Direction="Vertical" RelativeSize="29.032258064516128">
-            <LayoutItem Id="Employees" RelativeSize="100" />
-          </LayoutGroup>
-        </LayoutGroup>
-      </Layout>
-    </DetailView>-->
-    <!--<ListView Id="DemoTask_ListView" Caption="Tasks" AllowEdit="True" NewItemRowPosition="Top" IsFooterVisible="False" ShowAutoFilterRow="True">
-      <Columns>
-        <ColumnInfo Id="ActualWorkHours" Index="-1">
-          <Summary>
-            <ColumnSummaryItem Id="Summary0" Index="0" SummaryType="Sum" IsNewNode="True" />
-          </Summary>
-        </ColumnInfo>
-        <ColumnInfo Id="DateCompleted" Index="-1" />
-        <ColumnInfo Id="EstimatedWorkHours" Index="-1" />
-        <ColumnInfo Id="Status" Index="1" />
-        <ColumnInfo Id="AssignedTo" Index="2" />
-        <ColumnInfo Id="StartDate" Index="3" />
-        <ColumnInfo Id="DueDate" Index="4" />
-        <ColumnInfo Id="Priority" Index="5" />
-      </Columns>
-    </ListView>-->
-    <ListView Id="Department_Employees_ListView">
-      <Columns>
-        <ColumnInfo Id="Anniversary" Index="-1" />
-        <ColumnInfo Id="Manager" Index="-1" />
-        <ColumnInfo Id="NickName" Index="-1" />
-        <ColumnInfo Id="SpouseName" Index="-1" />
-        <ColumnInfo Id="TitleOfCourtesy" Index="-1" />
-        <ColumnInfo Id="WebPageAddress" Index="-1" />
-        <ColumnInfo Id="Birthday" Index="1" />
-        <ColumnInfo Id="Position" Index="2" />
-        <ColumnInfo Id="Email" Index="3" />
-      </Columns>
-    </ListView>
-    <!--<DetailView Id="Department_DetailView">
-      <Items>
-        <PropertyEditor Id="Employees" Caption="Employees" />
-        <PropertyEditor Id="NumberOfEmployees" PropertyName="NumberOfEmployees" IsNewNode="True" />
-      </Items>
-      <Layout>
-        <LayoutGroup Id="Main">
-          <LayoutGroup Id="SimpleEditors">
-            <LayoutGroup Id="Department" ShowCaption="False" Direction="Vertical">
-              <LayoutItem Id="Title" ViewItem="Title" Index="0" IsNewNode="True" />
-              <LayoutItem Id="Location" Index="1" IsNewNode="True" />
-              <LayoutItem Id="Office" ViewItem="Office" Index="2" IsNewNode="True" />
-              <LayoutItem Id="NumberOfEmployees" ViewItem="NumberOfEmployees" Index="3" IsNewNode="True" />
-              <LayoutItem Id="DepartmentHead" ViewItem="DepartmentHead" Index="4" IsNewNode="True" />
-            </LayoutGroup>
-          </LayoutGroup>
-          <LayoutGroup Id="SizeableEditors" Caption="Description" ShowCaption="False">
-            <LayoutItem Id="Description" Index="0" RelativeSize="100" />
-          </LayoutGroup>
-          <TabbedGroup Id="Tabs" RelativeSize="42.888165038002171">
-            <LayoutGroup Id="Employees" RelativeSize="100">
-              <LayoutItem Id="Employees" RelativeSize="100" />
-            </LayoutGroup>
-            <LayoutGroup Id="Positions" RelativeSize="100">
-              <LayoutItem Id="Positions" RelativeSize="100" />
-            </LayoutGroup>
-          </TabbedGroup>
-        </LayoutGroup>
-      </Layout>
-    </DetailView>-->
-    <ListView Id="Department_ListView" Caption="Departments" MasterDetailMode="ListViewAndDetailView">
-      <Columns>
-        <ColumnInfo Id="Location" Index="1" SortOrder="Ascending" />
-        <ColumnInfo Id="Office" Index="2" />
-        <ColumnInfo Id="NumberOfEmployees" PropertyName="NumberOfEmployees" Index="3" IsNewNode="True" />
-        <ColumnInfo Id="DepartmentHead" Width="155" Index="4" />
-        <ColumnInfo Id="Description" Index="5" />
-      </Columns>
-    </ListView>
     <DetailView Id="Event_DetailView" Caption="Appointment">
       <Layout>
         <LayoutGroup Id="Main">
           <LayoutGroup Id="SimpleEditors">
-            <LayoutGroup Id="Event">
+            <LayoutGroup Id="Event" Caption="Appointment">
               <LayoutGroup Id="Event_col2">
                 <LayoutItem Id="ReminderTime" ViewItem="ReminderTime" SizeConstraintsType="Default" Index="2" IsNewNode="True" />
               </LayoutGroup>
@@ -367,77 +141,6 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
-    <ListView Id="Event_ListView" Caption="Calendar" />
-    <ListView Id="Note_ListView" Caption="Notes" />
-    <!--<DetailView Id="Paycheck_DetailView" Caption="Paycheck">
-      <Items>
-        <PropertyEditor Id="Employee.Email" PropertyName="Employee.Email" IsNewNode="True" />
-        <PropertyEditor Id="Oid" Removed="True" />
-      </Items>
-      <Layout>
-        <LayoutGroup Id="Main" ShowCaption="False" Index="0" RelativeSize="100" Caption="Main" Direction="Vertical" IsNewNode="True" Removed="True">
-          <LayoutGroup Id="Autoc7781f53-9294-4695-b3a5-f47400c12e7a" ShowCaption="False" Direction="Vertical" Index="0" RelativeSize="50" IsNewNode="True">
-            <LayoutGroup Id="Employee_Group" ShowCaption="True" Caption="Employee Details" Index="0" RelativeSize="50" IsNewNode="True">
-              <LayoutItem Id="Employee" ViewItem="Employee" Index="0" RelativeSize="26.027397260273972" IsNewNode="True" />
-              <LayoutItem Id="Employee.Email" ViewItem="Employee.Email" Index="2" RelativeSize="53.424657534246577" IsNewNode="True" />
-            </LayoutGroup>
-            <LayoutGroup Id="Period_Group" ShowCaption="True" Caption="Period" Index="1" RelativeSize="50" Direction="Horizontal" IsNewNode="True">
-              <LayoutGroup Id="Item5" ShowCaption="False" CaptionLocation="Top" Index="0" RelativeSize="50" IsNewNode="True">
-                <LayoutItem Id="PayPeriod" ViewItem="PayPeriod" Index="0" RelativeSize="38.333333333333336" IsNewNode="True" />
-                <LayoutItem Id="PayPeriodStart" ViewItem="PayPeriodStart" Index="1" RelativeSize="61.666666666666664" IsNewNode="True" />
-              </LayoutGroup>
-              <LayoutGroup Id="Item6" ShowCaption="False" CaptionLocation="Top" Index="1" RelativeSize="50" IsNewNode="True">
-                <LayoutItem Id="PaymentDate" ViewItem="PaymentDate" Index="0" RelativeSize="36.666666666666664" IsNewNode="True" />
-                <LayoutItem Id="PayPeriodEnd" ViewItem="PayPeriodEnd" Index="1" RelativeSize="63.333333333333336" IsNewNode="True" />
-              </LayoutGroup>
-            </LayoutGroup>
-          </LayoutGroup>
-          <LayoutGroup Id="Autoc465db88-4795-44dc-a2a0-cbf0c4c1eaca" ShowCaption="False" Caption="Autoc465db88-4795-44dc-a2a0-cbf0c4c1eaca(15)" Direction="Horizontal" Index="1" RelativeSize="50" IsNewNode="True">
-            <LayoutGroup Id="Totals_Group" ShowCaption="True" Caption="Total Payroll" CaptionLocation="Top" RelativeSize="50" Index="0" IsNewNode="True">
-              <LayoutItem Id="GrossPay" ViewItem="GrossPay" Index="0" IsNewNode="True" />
-              <LayoutItem Id="TotalTax" ViewItem="TotalTax" Index="1" IsNewNode="True" />
-              <LayoutItem Id="NetPay" ViewItem="NetPay" Index="2" IsNewNode="True" />
-            </LayoutGroup>
-            <LayoutGroup Id="Payment_Group" ShowCaption="True" Caption="Payment Details" CaptionLocation="Top" Index="1" RelativeSize="50" IsNewNode="True">
-              <LayoutItem Id="TaxRate" ViewItem="TaxRate" Index="0" IsNewNode="True" />
-              <LayoutItem Id="PayRate" ViewItem="PayRate" Index="1" RelativeSize="100" IsNewNode="True" />
-              <LayoutItem Id="Hours" ViewItem="Hours" Index="2" RelativeSize="100" IsNewNode="True" />
-            </LayoutGroup>
-          </LayoutGroup>
-          <LayoutGroup Id="Overtime_Pay" RelativeSize="17.54032258064516" ShowCaption="True" Caption="Overtime Pay" Direction="Horizontal" IsNewNode="True">
-            <LayoutItem Id="OvertimePayRate" ViewItem="OvertimePayRate" Index="2" RelativeSize="50" IsNewNode="True" />
-            <LayoutItem Id="OvertimeHours" ViewItem="OvertimeHours" Index="4" RelativeSize="50" IsNewNode="True" />
-          </LayoutGroup>
-          <LayoutGroup Id="SizeableEditors" RelativeSize="17.54032258064516" ShowCaption="True" Caption="Notes" IsNewNode="True">
-            <LayoutItem Id="Notes" RelativeSize="100" ShowCaption="False" IsNewNode="True" />
-          </LayoutGroup>
-        </LayoutGroup>
-      </Layout>
-    </DetailView>-->
-    <!--<ListView Id="Paycheck_ListView" IsGroupPanelVisible="True" Caption="Payroll" ShowAutoFilterRow="true">
-      <Columns>
-        <ColumnInfo Id="Employee" SortOrder="Ascending" />
-        <ColumnInfo Id="PayPeriod" SortOrder="Ascending" GroupIndex="0" />
-      </Columns>
-    </ListView>-->
-    <ListView Id="PermissionPolicyRole_ListView" Caption="Roles" />
-    <DetailView Id="ApplicationUser_DetailView">
-      <Layout>
-        <LayoutGroup Id="Main">
-          <LayoutGroup Id="SimpleEditors">
-            <LayoutGroup Id="PermissionPolicyUser">
-              <LayoutItem Id="UserName" Index="0" />
-              <LayoutItem Id="IsActive" Index="1" />
-              <LayoutItem Id="ChangePasswordOnFirstLogon" Index="3" />
-            </LayoutGroup>
-          </LayoutGroup>
-        </LayoutGroup>
-      </Layout>
-    </DetailView>
-    <!--<ListView Id="ApplicationUser_ListView" Caption="Users" />-->
-    <ListView Id="Position_ListView" Caption="Positions" />
-    <ListView Id="Resume_ListView" Caption="Resumes">
-    </ListView>
     <DetailView Id="UseSQLAlternativeInfo_DetailView" Caption="Warning!">
       <Items>
         <PropertyEditor Id="Alternative" Removed="True" />
@@ -448,15 +151,6 @@
         <PropertyEditor Id="SQLIssue" Removed="True" />
         <StaticText Id="SQLIssueText" VerticalAlign="Middle" HorizontalAlign="Left" Text="Could not find a SQL database server on your computer." IsNewNode="True" />
       </Items>
-    </DetailView>
-    <DetailView Id="Event_DetailView">
-      <Layout>
-        <LayoutGroup Id="Main">
-          <LayoutGroup Id="SimpleEditors">
-            <LayoutGroup Id="Event" Caption="Appointment" />
-          </LayoutGroup>
-        </LayoutGroup>
-      </Layout>
     </DetailView>
   </Views>
 </Application>

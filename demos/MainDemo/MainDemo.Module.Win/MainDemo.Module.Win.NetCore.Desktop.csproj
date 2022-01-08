@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
-    <TargetFrameworks>$(WindowsFrameworkVersion6);$(FullFrameworkVersion)</TargetFrameworks>
+    <TargetFrameworks>$(WindowsFrameworkVersion6);$(FullFrameworkVersion)</TargetFrameworks>    
     <UseWindowsForms>true</UseWindowsForms>
     <CheckXenialLicense>false</CheckXenialLicense>
     <GenerateXenialLicense>false</GenerateXenialLicense>
@@ -39,6 +39,10 @@
   </ItemGroup>
   
   <ItemGroup>
+    <None Remove="Model.DesignedDiffs.Localization.ru.xafml" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp.Win.All" Version="$(DxPackageVersion)" />
     <PackageReference Include="DevExpress.Win.Demos" Version="$(DxPackageVersion)" />
   </ItemGroup>
@@ -57,6 +61,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MainDemo.Module\MainDemo.Module.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Model.DesignedDiffs.Localization.ru.xafml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
