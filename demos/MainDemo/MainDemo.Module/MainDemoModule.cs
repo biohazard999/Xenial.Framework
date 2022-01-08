@@ -9,6 +9,7 @@ using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Updating;
 using DevExpress.ExpressApp.Validation;
 using DevExpress.ExpressApp.Xpo;
+using DevExpress.Persistent.Base;
 using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.BaseImpl.PermissionPolicy;
 using DevExpress.Persistent.Validation;
@@ -36,6 +37,12 @@ namespace MainDemo.Module
             base.CustomizeTypesInfo(typesInfo);
             CalculatedPersistentAliasHelper.CustomizeTypesInfo(typesInfo);
 
+            ModelBuilder.Create<Person>(typesInfo)
+                //You can define the cloneable via ModelDefault
+                //https://supportcenter.devexpress.com/ticket/details/t852289/suggestion-add-an-attribute-to-the-clone-module
+                .WithModelDefault("IsCloneable", true)
+                .Build();
+
             ModelBuilder.Create<PermissionPolicyUser>(typesInfo)
                 .HasCaption("Base User")
                 .Build();
@@ -46,6 +53,7 @@ namespace MainDemo.Module
 
             ModelBuilder.Create<Task>(typesInfo)
                 .HasCaption("Base Task")
+                .WithModelDefault("IsCloneable", true)
                 .Build();
 
             ModelBuilder.Create<Note>(typesInfo)
@@ -60,14 +68,12 @@ namespace MainDemo.Module
 
             phoneNumberBuilder.Build();
 
-
             var partyBuilder = ModelBuilder.Create<Party>(typesInfo);
 
             partyBuilder.For(m => m.Address1)
                 .HasCaption("Address");
 
             partyBuilder.Build();
-
 
             var personBuilder = ModelBuilder.Create<Person>(typesInfo);
 
@@ -81,6 +87,7 @@ namespace MainDemo.Module
             employeeBuilder
                 .HasObjectCaptionFormat(m => m.FullName)
                 .HasImage("BO_Employee")
+            //TODO: Check why Navigation is weird when using default list view
             //.HasDefaultListViewId(ViewIds.Employee_ListView_Varied)
             ;
 
@@ -93,7 +100,13 @@ namespace MainDemo.Module
             employeeBuilder.For(m => m.TitleOfCourtesy)
                 .HasCaption("Title");
 
-            employeeBuilder.For(m => m.Position);
+            employeeBuilder.For(m => m.Position)
+                .WithAttribute(
+                    new DataSourcePropertyAttribute(
+                        employeeBuilder.ExpressionHelper.Property(m => m.Position.Departments),
+                        DataSourcePropertyIsNullMode.SelectAll
+                    )
+                );
 
             employeeBuilder.Build();
 
@@ -114,6 +127,31 @@ namespace MainDemo.Module
 
             typesInfo
                 .CreateModelBuilder<DemoTaskModelBuilder>()
+                .Build();
+
+            var paycheckBuilder = ModelBuilder.Create<Paycheck>(typesInfo);
+
+            paycheckBuilder
+                .WithModelDefault("IsCloneable", true)
+                .HasImage("BO_SaleItem");
+
+            paycheckBuilder.ForProperties(
+                m => m.GrossPay,
+                m => m.NetPay,
+                m => m.PayRate,
+                m => m.TotalTax,
+                m => m.OvertimePayRate
+            ).HasDisplayFormat("${0:0.00}")
+             .HasEditMask("\\$#,###,##0.00");
+
+            paycheckBuilder
+                .For(m => m.TaxRate)
+                .HasDisplayFormat("{0:P}");
+
+            paycheckBuilder.Build();
+
+            ModelBuilder.Create<Position>(typesInfo)
+                .HasImage("BO_Position")
                 .Build();
         }
 

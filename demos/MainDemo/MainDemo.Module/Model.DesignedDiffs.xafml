@@ -27,30 +27,30 @@
     </ActionToContainerMapping>
   </ActionDesign>
   <BOModel>
-    <Class Name="DevExpress.Persistent.BaseImpl.Person" IsCloneable="true" />
-    <Class Name="DevExpress.Persistent.BaseImpl.Task" IsCloneable="true" />
-    <Class Name="MainDemo.Module.BusinessObjects.Employee">
+    <!--<Class Name="DevExpress.Persistent.BaseImpl.Person" IsCloneable="true" />
+    <Class Name="DevExpress.Persistent.BaseImpl.Task" IsCloneable="true" />-->
+    <!--<Class Name="MainDemo.Module.BusinessObjects.Employee">
       <OwnMembers>
         <Member Name="Position" DataSourceProperty="Department.Positions" DataSourcePropertyIsNullMode="SelectAll" />
       </OwnMembers>
-    </Class>
+    </Class>-->
     <!--<Class Name="MainDemo.Module.BusinessObjects.Department" ImageName="BO_Department">
       <OwnMembers>
         --><!--<Member Name="NumberOfEmployees" IsCustom="True" IsCalculated="True" Type="System.Int32" Expression="[Employees][].Count()" Caption="Number Of Employees" IsNewNode="True" />--><!--
         --><!--<Member Name="Title" Caption="Name" />--><!--
       </OwnMembers>
     </Class>-->
-    <Class Name="MainDemo.Module.BusinessObjects.Paycheck" ImageName="BO_SaleItem" IsCloneable="true">
-      <OwnMembers>
+    <!--<Class Name="MainDemo.Module.BusinessObjects.Paycheck" IsCloneable="true">
+      --><!--<OwnMembers>
         <Member Name="GrossPay" DisplayFormat="${0:0.00}" EditMask="\$#,###,##0.00" />
         <Member Name="NetPay" DisplayFormat="${0:0.00}" EditMask="\$#,###,##0.00" />
         <Member Name="TaxRate" DisplayFormat="{0:P}" />
         <Member Name="PayRate" DisplayFormat="${0:0.00}" EditMask="\$#,###,##0.00" />
         <Member Name="TotalTax" DisplayFormat="${0:0.00}" EditMask="\$#,###,##0.00" />
         <Member Name="OvertimePayRate" DisplayFormat="${0:0.00}" EditMask="\$#,###,##0.00" />
-      </OwnMembers>
-    </Class>
-    <Class Name="MainDemo.Module.BusinessObjects.Position" ImageName="BO_Position" />
+      </OwnMembers>--><!--
+    </Class>-->
+    <!--<Class Name="MainDemo.Module.BusinessObjects.Position" ImageName="BO_Position" />-->
   </BOModel>
   <CreatableItems>
     <CreatableItem ClassName="DevExpress.Persistent.BaseImpl.Event" Caption="Event" IsNewNode="True" />

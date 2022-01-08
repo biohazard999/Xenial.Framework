@@ -89,7 +89,7 @@ public static partial class PropertyBuilderExtensions
     ///
     /// <returns>   IPropertyBuilder&lt;System.Nullable&lt;TProperty&gt;, TClassType&gt;. </returns>
 
-    public static IPropertyBuilder<TProperty?, TClassType> HasEditMask<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder, string editMask, EditMaskType? editMaskType)
+    public static IPropertyBuilder<TProperty?, TClassType> HasEditMask<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder, string editMask, EditMaskType? editMaskType = null)
     {
         builder.WithModelDefault("EditMask", editMask);
         if (editMaskType.HasValue)
