@@ -97,6 +97,21 @@ namespace MainDemo.Module
 
             employeeBuilder.Build();
 
+            var departmentBuilder = ModelBuilder.Create<Department>(typesInfo);
+
+            departmentBuilder.HasImage("BO_Department");
+
+            ((TypeInfo)departmentBuilder.TypeInfo)
+                .CreateMember("NumberOfEmployees", typeof(int), "[Employees][].Count()");
+
+            departmentBuilder.For("NumberOfEmployees")
+                .HasCaption("Number Of Employees");
+
+            departmentBuilder.For(m => m.Title)
+                .HasCaption("Name");
+
+            departmentBuilder.Build();
+
             typesInfo
                 .CreateModelBuilder<DemoTaskModelBuilder>()
                 .Build();

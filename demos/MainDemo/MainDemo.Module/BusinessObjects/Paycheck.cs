@@ -5,11 +5,14 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
 
+using Xenial.Framework.Layouts;
+
 namespace MainDemo.Module.BusinessObjects
 {
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Employee))]
     [RuleCriteria("Payroll_Hours_PayPeriod_Range", DefaultContexts.Save, "DateDiffHour(PayPeriodStart, PayPeriodEnd) >= [Hours] + [OvertimeHours]", CustomMessageTemplate = @"Sum of ""Hours"" and ""Overtime hours"" must be less than or equal to the difference between ""Pay Period End"" and ""Pay Period Start"" in hours.")]
+    [DetailViewLayoutBuilder(typeof(PaycheckLayoutBuilder))]
     public class Paycheck : BaseObject
     {
         private Employee employee;

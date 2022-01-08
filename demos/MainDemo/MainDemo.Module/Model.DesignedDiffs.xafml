@@ -34,12 +34,12 @@
         <Member Name="Position" DataSourceProperty="Department.Positions" DataSourcePropertyIsNullMode="SelectAll" />
       </OwnMembers>
     </Class>
-    <Class Name="MainDemo.Module.BusinessObjects.Department" ImageName="BO_Department">
+    <!--<Class Name="MainDemo.Module.BusinessObjects.Department" ImageName="BO_Department">
       <OwnMembers>
-        <Member Name="NumberOfEmployees" IsCustom="True" IsCalculated="True" Type="System.Int32" Expression="[Employees][].Count()" Caption="Number Of Employees" IsNewNode="True" />
-        <Member Name="Title" Caption="Name" />
+        --><!--<Member Name="NumberOfEmployees" IsCustom="True" IsCalculated="True" Type="System.Int32" Expression="[Employees][].Count()" Caption="Number Of Employees" IsNewNode="True" />--><!--
+        --><!--<Member Name="Title" Caption="Name" />--><!--
       </OwnMembers>
-    </Class>
+    </Class>-->
     <Class Name="MainDemo.Module.BusinessObjects.Paycheck" ImageName="BO_SaleItem" IsCloneable="true">
       <OwnMembers>
         <Member Name="GrossPay" DisplayFormat="${0:0.00}" EditMask="\$#,###,##0.00" />
@@ -244,7 +244,7 @@
         <ColumnInfo Id="Position" Index="3" />
       </Columns>
     </ListView>
-    <DetailView Id="DemoTask_DetailView">
+    <!--<DetailView Id="DemoTask_DetailView">
       <Layout>
         <LayoutGroup Id="Main" RelativeSize="100">
           <LayoutGroup Id="SimpleEditors" RelativeSize="25.281602002503128">
@@ -285,8 +285,8 @@
           </LayoutGroup>
         </LayoutGroup>
       </Layout>
-    </DetailView>
-    <ListView Id="DemoTask_ListView" Caption="Tasks" AllowEdit="True" NewItemRowPosition="Top" IsFooterVisible="False" ShowAutoFilterRow="True">
+    </DetailView>-->
+    <!--<ListView Id="DemoTask_ListView" Caption="Tasks" AllowEdit="True" NewItemRowPosition="Top" IsFooterVisible="False" ShowAutoFilterRow="True">
       <Columns>
         <ColumnInfo Id="ActualWorkHours" Index="-1">
           <Summary>
@@ -301,7 +301,7 @@
         <ColumnInfo Id="DueDate" Index="4" />
         <ColumnInfo Id="Priority" Index="5" />
       </Columns>
-    </ListView>
+    </ListView>-->
     <ListView Id="Department_Employees_ListView">
       <Columns>
         <ColumnInfo Id="Anniversary" Index="-1" />
@@ -315,7 +315,7 @@
         <ColumnInfo Id="Email" Index="3" />
       </Columns>
     </ListView>
-    <DetailView Id="Department_DetailView">
+    <!--<DetailView Id="Department_DetailView">
       <Items>
         <PropertyEditor Id="Employees" Caption="Employees" />
         <PropertyEditor Id="NumberOfEmployees" PropertyName="NumberOfEmployees" IsNewNode="True" />
@@ -344,7 +344,7 @@
           </TabbedGroup>
         </LayoutGroup>
       </Layout>
-    </DetailView>
+    </DetailView>-->
     <ListView Id="Department_ListView" Caption="Departments" MasterDetailMode="ListViewAndDetailView">
       <Columns>
         <ColumnInfo Id="Location" Index="1" SortOrder="Ascending" />
@@ -369,7 +369,7 @@
     </DetailView>
     <ListView Id="Event_ListView" Caption="Calendar" />
     <ListView Id="Note_ListView" Caption="Notes" />
-    <DetailView Id="Paycheck_DetailView" Caption="Paycheck">
+    <!--<DetailView Id="Paycheck_DetailView" Caption="Paycheck">
       <Items>
         <PropertyEditor Id="Employee.Email" PropertyName="Employee.Email" IsNewNode="True" />
         <PropertyEditor Id="Oid" Removed="True" />
@@ -413,7 +413,7 @@
           </LayoutGroup>
         </LayoutGroup>
       </Layout>
-    </DetailView>
+    </DetailView>-->
     <ListView Id="Paycheck_ListView" IsGroupPanelVisible="True" Caption="Payroll" ShowAutoFilterRow="true">
       <Columns>
         <ColumnInfo Id="Employee" SortOrder="Ascending" />

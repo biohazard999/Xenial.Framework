@@ -8,6 +8,7 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
 
+using Xenial.Framework.Layouts;
 using Xenial.Framework.ModelBuilders;
 
 namespace MainDemo.Module.BusinessObjects
@@ -15,6 +16,8 @@ namespace MainDemo.Module.BusinessObjects
     [Appearance("FontColorRed", AppearanceItemType = "ViewItem", TargetItems = "*", Context = "ListView", Criteria = "Status=='Completed'", FontStyle = System.Drawing.FontStyle.Strikeout)]
     [RuleCriteria("Task_Status", DefaultContexts.Save, "IIF(Status != 'NotStarted' and Status != 'Deferred', AssignedTo is not null, True)", CustomMessageTemplate = @"The task must have an assignee when its Status is ""In progress"", ""Waiting for someone else"", or ""Completed"".", SkipNullOrEmptyValues = false)]
     [RuleCriteria("TaskIsNotStarted", DefaultContexts.Save, "Status != 'NotStarted'", CustomMessageTemplate = "Cannot set the task completed because it's not started.", TargetContextIDs = "MarkCompleted")]
+    [DetailViewLayoutBuilder(typeof(DemoTaskLayoutBuilder))]
+    [ListViewColumnsBuilder(typeof(DemoTaskColumnsBuilder))]
     public class DemoTask : Task, IComparable
     {
         private Priority priority;

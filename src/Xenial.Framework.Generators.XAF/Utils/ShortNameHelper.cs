@@ -21,7 +21,7 @@ namespace Xenial.Framework.Generators.XAF.Utils;
 /// </summary>
 public static class ShortNameHelper
 {
-    private const string alphabet = "23456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ-_";
+    private const string alphabet = "123456789abcdefghijklmnopqrstuvwxyz-_";
     private static readonly int @base = alphabet.Length;
 
     /// <summary>

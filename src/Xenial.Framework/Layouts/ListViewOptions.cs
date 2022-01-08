@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using DevExpress.ExpressApp.Model;
+using DevExpress.ExpressApp.SystemModule;
 
 using Xenial;
 
@@ -23,6 +24,9 @@ namespace Xenial.Framework.Layouts;
         nameof(IModelListView.Index)
     }
 )]
+[XenialModelOptions(typeof(IModelListViewNewItemRow))]
+[XenialModelOptions(typeof(IModelListViewShowAutoFilterRow))]
+[XenialModelOptions(typeof(IModelListViewShowFindPanel))]
 public partial record ListViewOptions
 {
 }

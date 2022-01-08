@@ -3,12 +3,15 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
 using DevExpress.Xpo;
 
+using Xenial.Framework.Layouts;
+
 namespace MainDemo.Module.BusinessObjects
 {
     [DefaultClassOptions]
     [RuleCriteria("Department_PositionsIsNotEmpty", DefaultContexts.Save, "Positions.Count > 0", CustomMessageTemplate = "The Department must contain at least one position.")]
     [RuleCriteria("Department_EmployeesIsNotEmpty", DefaultContexts.Save, "Employees.Count > 0", CustomMessageTemplate = "The Department must contain at least one employee.")]
     [System.ComponentModel.DefaultProperty(nameof(Department.Title))]
+    [DetailViewLayoutBuilder(typeof(DepartmentLayoutBuilder))]
     public class Department : BaseObject
     {
         private string title;
