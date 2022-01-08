@@ -29,4 +29,18 @@ namespace Xenial.Framework.Layouts;
 [XenialModelOptions(typeof(IModelListViewShowFindPanel))]
 public partial record ListViewOptions
 {
+    private bool automaticColumns;
+    internal bool WasAutomaticColumnsSet { get; set; }
+    /// <summary>
+    /// TODO: Describe Automatic Columns
+    /// </summary>
+    public bool AutomaticColumns
+    {
+        get => automaticColumns;
+        set
+        {
+            WasAutomaticColumnsSet = true;
+            automaticColumns = value;
+        }
+    }
 }

@@ -16,8 +16,26 @@ namespace Xenial.Framework.Layouts;
 ///
 /// <seealso cref="IEnumerable{Column}"/>
 
-public class Columns : IEnumerable<Column>
+public record Columns : IEnumerable<Column>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly Columns Default = new();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static Columns Automatic(ListViewOptions options)
+    {
+        _ = options ?? throw new ArgumentNullException(nameof(options));
+        options = options with
+        {
+            AutomaticColumns = true
+        };
+        return new(options);
+    }
+
     /// <summary>
     /// 
     /// </summary>

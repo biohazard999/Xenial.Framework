@@ -18,6 +18,7 @@ using MainDemo.Module.BusinessObjects;
 using MainDemo.Module.CodeRules;
 using MainDemo.Module.Reports;
 
+using Xenial.Framework.Layouts;
 using Xenial.Framework.ModelBuilders;
 
 namespace MainDemo.Module
@@ -152,6 +153,13 @@ namespace MainDemo.Module
 
             ModelBuilder.Create<Position>(typesInfo)
                 .HasImage("BO_Position")
+                .Build();
+
+            ModelBuilder.Create<ApplicationUser>(typesInfo)
+                .WithListViewColumns(() => Columns.Automatic(new()
+                {
+                    Caption = "Users"
+                }))
                 .Build();
         }
 

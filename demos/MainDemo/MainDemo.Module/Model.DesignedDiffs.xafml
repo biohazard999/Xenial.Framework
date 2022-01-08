@@ -434,7 +434,7 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
-    <ListView Id="ApplicationUser_ListView" Caption="Users" />
+    <!--<ListView Id="ApplicationUser_ListView" Caption="Users" />-->
     <ListView Id="Position_ListView" Caption="Positions" />
     <ListView Id="Resume_ListView" Caption="Resumes">
     </ListView>

@@ -116,7 +116,10 @@ public sealed partial class ModelColumnsBuilderNodesGeneratorUpdater : ModelNode
                                 new ViewOptionsMapper().Map(columns.Options, modelListView);
                             }
 
-                            modelColumns.ClearNodes();
+                            if (columns.Options is null || !columns.Options.AutomaticColumns)
+                            {
+                                modelColumns.ClearNodes();
+                            }
 
                             var index = 0;
                             foreach (var column in columns)
