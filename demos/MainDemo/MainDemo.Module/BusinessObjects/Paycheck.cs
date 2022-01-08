@@ -13,6 +13,7 @@ namespace MainDemo.Module.BusinessObjects
     [System.ComponentModel.DefaultProperty(nameof(Employee))]
     [RuleCriteria("Payroll_Hours_PayPeriod_Range", DefaultContexts.Save, "DateDiffHour(PayPeriodStart, PayPeriodEnd) >= [Hours] + [OvertimeHours]", CustomMessageTemplate = @"Sum of ""Hours"" and ""Overtime hours"" must be less than or equal to the difference between ""Pay Period End"" and ""Pay Period Start"" in hours.")]
     [DetailViewLayoutBuilder(typeof(PaycheckLayoutBuilder))]
+    [ListViewColumnsBuilder(typeof(PaycheckColumnsBuilder))]
     public class Paycheck : BaseObject
     {
         private Employee employee;

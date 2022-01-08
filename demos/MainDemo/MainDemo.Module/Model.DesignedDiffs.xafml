@@ -414,12 +414,12 @@
         </LayoutGroup>
       </Layout>
     </DetailView>-->
-    <ListView Id="Paycheck_ListView" IsGroupPanelVisible="True" Caption="Payroll" ShowAutoFilterRow="true">
+    <!--<ListView Id="Paycheck_ListView" IsGroupPanelVisible="True" Caption="Payroll" ShowAutoFilterRow="true">
       <Columns>
         <ColumnInfo Id="Employee" SortOrder="Ascending" />
         <ColumnInfo Id="PayPeriod" SortOrder="Ascending" GroupIndex="0" />
       </Columns>
-    </ListView>
+    </ListView>-->
     <ListView Id="PermissionPolicyRole_ListView" Caption="Roles" />
     <DetailView Id="ApplicationUser_DetailView">
       <Layout>
