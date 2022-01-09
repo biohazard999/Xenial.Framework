@@ -70,27 +70,6 @@ namespace Acme.Module.BusinessObjects
     [CompilerGenerated]
     partial class PersonLayout
     {
-        private struct PropertyIdentifier
-        {
-            private string propertyName;
-            public string PropertyName { get { return this.propertyName; } }
-            
-            private PropertyIdentifier(string propertyName)
-            {
-                this.propertyName = propertyName;
-            }
-            
-            public static implicit operator string(PropertyIdentifier identifier)
-            {
-                return identifier.PropertyName;
-            }
-            
-            public static PropertyIdentifier Create(string propertyName)
-            {
-                return new PropertyIdentifier(propertyName);
-            }
-        }
-        
         private partial struct Constants
         {
             public const string FirstName = "FirstName";
@@ -99,38 +78,18 @@ namespace Acme.Module.BusinessObjects
             public const string DateOfBirth = "DateOfBirth";
             public const string Address1 = "Address1";
             public const string Address2 = "Address2";
-        }
-        
-        private partial struct Property
-        {
-            public static PropertyIdentifier FirstName { get { return PropertyIdentifier.Create("FirstName"); } }
-            
-            public static PropertyIdentifier LastName { get { return PropertyIdentifier.Create("LastName"); } }
-            
-            public static PropertyIdentifier FullName { get { return PropertyIdentifier.Create("FullName"); } }
-            
-            public static PropertyIdentifier DateOfBirth { get { return PropertyIdentifier.Create("DateOfBirth"); } }
-            
-            public static PropertyIdentifier Address1 { get { return PropertyIdentifier.Create("Address1"); } }
-            
-            public static PropertyIdentifier Address2 { get { return PropertyIdentifier.Create("Address2"); } }
-            
+            public const string Oid = "Oid";
         }
         
         private partial struct Editor
         {
-            public static LayoutPropertyEditorItem FirstName { get { return LayoutPropertyEditorItem.Create("FirstName"); } }
-            
-            public static LayoutPropertyEditorItem LastName { get { return LayoutPropertyEditorItem.Create("LastName"); } }
-            
-            public static LayoutPropertyEditorItem FullName { get { return LayoutPropertyEditorItem.Create("FullName"); } }
-            
+            public static StringLayoutPropertyEditorItem FirstName { get { return StringLayoutPropertyEditorItem.Create("FirstName"); } }
+            public static StringLayoutPropertyEditorItem LastName { get { return StringLayoutPropertyEditorItem.Create("LastName"); } }
+            public static StringLayoutPropertyEditorItem FullName { get { return StringLayoutPropertyEditorItem.Create("FullName"); } }
             public static LayoutPropertyEditorItem DateOfBirth { get { return LayoutPropertyEditorItem.Create("DateOfBirth"); } }
-            
             public static LayoutPropertyEditorItem Address1 { get { return LayoutPropertyEditorItem.Create("Address1"); } }
-            
             public static LayoutPropertyEditorItem Address2 { get { return LayoutPropertyEditorItem.Create("Address2"); } }
-            
+            public static LayoutPropertyEditorItem Oid { get { return LayoutPropertyEditorItem.Create("Oid"); } }
         }
     }
 }
@@ -146,14 +105,13 @@ namespace Acme.Module.BusinessObjects
 
 ## Drawbacks/Issues
 
-* No target type annotation, yet
 * Only works with [Inherit from `LayoutBuilder<T>` style](/guide/layout-builders-advanced-syntax.md#inherit-from-layoutbuilder-t), yet
 
 ## API-surface
 
 A partial class inherited from `Xenial.Framework.Layouts.LayoutBuilder<T>` will follow the rules:
 
-* It will generate metadata for all public properties of the `TTargetType`
+* It will generate metadata for all public properties of the `TTargetType` including parent classes
 * It will recursively generate additional metadata for nested object types when a `[Xenial.XenialExpandMember("MemberName")]` is defined with a valid [property train](#property-trains).
 
 ### Property Trains
@@ -166,6 +124,9 @@ In order to access those in a type safe fashion you can use the `[Xenial.XenialE
 [XenialExpandMember(Constants.Address2)]
 [XenialExpandMember(Constants._Address1.Country)]
 [XenialExpandMember(Constants._Address2.Country)]
+//Which translates to:
+//[XenialExpandMember("Address1")]
+//[XenialExpandMember("Address1.Country")]
 public partial class PersonLayout : LayoutBuilder<Person> { }
 ```
 

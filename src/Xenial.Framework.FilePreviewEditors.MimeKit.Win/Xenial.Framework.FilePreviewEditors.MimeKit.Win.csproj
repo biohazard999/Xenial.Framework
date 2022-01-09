@@ -4,21 +4,19 @@
     <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <ProjectReference Include="..\Xenial.Framework.WebView\Xenial.Framework.WebView.csproj" />
     <ProjectReference Include="..\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.FilePreviewEditors\Xenial.Framework.FilePreviewEditors.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.FilePreviewEditors.Win\Xenial.Framework.FilePreviewEditors.Win.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1054.31">
-      <PrivateAssets>None</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="MimeKit" Version="3.0.0" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
     <Reference Include="System.Windows.Forms" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
-  
+
 </Project>
