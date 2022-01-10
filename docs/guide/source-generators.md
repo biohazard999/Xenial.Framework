@@ -58,6 +58,7 @@ There are a bunch of generators designed to tackle particular *problems* when de
 1. [ImageNamesGenerator](/guide/source-generators-image-names-generator.md) - Emit image name constants and access resources statically
 1. [XpoBuilderGenerator](/guide/source-generators-xpo-builder-generator.md) - Emit a builder pattern for creating XPO and non persistent objects
 1. [LayoutBuilderGenerator](/guide/source-generators-layout-builder-generator.md) - Emit strongly typed code to help use [DetailViewLayoutBuilders](layout-builders.md) without reflection
+1. [ColumnsBuilderGenerator](/guide/source-generators-columns-builder-generator.md) - Emit strongly typed code to help use [ListViewColumnsLayoutBuilders](column-builders.md) without reflection
 1. [ModelBuilderGenerator (CTP)]() - Emit strongly typed code to help use [ModelBuilders](model-builders.md) without reflection
 1. [ActionGenerator (CTP)]() - Emit controllers and actions in a command pattern style
 

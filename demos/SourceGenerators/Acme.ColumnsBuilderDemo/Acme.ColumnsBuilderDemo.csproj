@@ -26,10 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\Xml\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="..\Acme.LayoutBuilderDemo\Helpers\ApplicationModelCreator.cs" Link="Helpers\ApplicationModelCreator.cs" />
     <Compile Include="..\Acme.LayoutBuilderDemo\Helpers\VisualizeNodeHelper.cs" Link="Helpers\VisualizeNodeHelper.cs" />
     <Compile Include="..\Acme.LayoutBuilderDemo\Helpers\Xml\StringWriterWithEncoding.cs" Link="Helpers\Xml\StringWriterWithEncoding.cs" />
