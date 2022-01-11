@@ -100,6 +100,91 @@ public partial class ColumnsBuilder<TModelClass> : ColumnsBuilder
     public Column Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression)
         => ColumnItems.Column.Create(ExpressionHelper.Property(expression));
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TProperty"></typeparam>
+    /// <param name="expression"></param>
+    /// <param name="caption"></param>
+    /// <returns></returns>
+    public Column Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression, string caption)
+        => ColumnItems.Column.Create(ExpressionHelper.Property(expression)) with
+        {
+            Caption = caption
+        };
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TProperty"></typeparam>
+    /// <param name="expression"></param>
+    /// <param name="width"></param>
+    /// <returns></returns>
+    public Column Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression, int width)
+        => ColumnItems.Column.Create(ExpressionHelper.Property(expression)) with
+        {
+            Width = width
+        };
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TProperty"></typeparam>
+    /// <param name="expression"></param>
+    /// <param name="caption"></param>
+    /// <returns></returns>
+    public Column Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression, string caption, int width)
+        => ColumnItems.Column.Create(ExpressionHelper.Property(expression)) with
+        {
+            Caption = caption,
+            Width = width
+        };
+
+    /// <summary>   Columns the specified expression. </summary>
+    ///
+    /// <typeparam name="TProperty">    The type of the t property. </typeparam>
+    /// <param name="expression">   The expression. </param>
+    /// <param name="configureAction"> An action to configure the column </param>
+    ///
+    /// <returns>   Column&lt;TModelClass&gt;. </returns>
+    public Column Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression, string caption, Action<Column> configureAction)
+    {
+        _ = configureAction ?? throw new ArgumentNullException(nameof(configureAction));
+        var column = Column(expression, caption);
+        configureAction.Invoke(column);
+        return column;
+    }
+
+    /// <summary>   Columns the specified expression. </summary>
+    ///
+    /// <typeparam name="TProperty">    The type of the t property. </typeparam>
+    /// <param name="expression">   The expression. </param>
+    /// <param name="configureAction"> An action to configure the column </param>
+    ///
+    /// <returns>   Column&lt;TModelClass&gt;. </returns>
+    public Column Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression, int width, Action<Column> configureAction)
+    {
+        _ = configureAction ?? throw new ArgumentNullException(nameof(configureAction));
+        var column = Column(expression, width);
+        configureAction.Invoke(column);
+        return column;
+    }
+
+    /// <summary>   Columns the specified expression. </summary>
+    ///
+    /// <typeparam name="TProperty">    The type of the t property. </typeparam>
+    /// <param name="expression">   The expression. </param>
+    /// <param name="configureAction"> An action to configure the column </param>
+    ///
+    /// <returns>   Column&lt;TModelClass&gt;. </returns>
+    public Column Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression, string caption, int width, Action<Column> configureAction)
+    {
+        _ = configureAction ?? throw new ArgumentNullException(nameof(configureAction));
+        var column = Column(expression, caption, width);
+        configureAction.Invoke(column);
+        return column;
+    }
+
     /// <summary>   Columns the specified expression. </summary>
     ///
     /// <typeparam name="TProperty">    The type of the t property. </typeparam>
@@ -134,13 +219,93 @@ public partial class ColumnsBuilder
     public Column Column(string propertyName)
        => ColumnItems.Column.Create(propertyName);
 
+    /// <summary>   Columns the specified property name. </summary>
+    ///
+    /// <param name="propertyName"> Name of the property. </param>
+    ///
+    /// <returns>   Column. </returns>
+
+    public Column Column(string propertyName, string caption)
+       => ColumnItems.Column.Create(propertyName) with
+       {
+           Caption = caption
+       };
+
+    /// <summary>   Columns the specified property name. </summary>
+    ///
+    /// <param name="propertyName"> Name of the property. </param>
+    ///
+    /// <returns>   Column. </returns>
+
+    public Column Column(string propertyName, int width)
+       => ColumnItems.Column.Create(propertyName) with
+       {
+           Width = width
+       };
+
+    /// <summary>   Columns the specified property name. </summary>
+    ///
+    /// <param name="propertyName"> Name of the property. </param>
+    ///
+    /// <returns>   Column. </returns>
+
+    public Column Column(string propertyName, string caption, int width)
+       => ColumnItems.Column.Create(propertyName) with
+       {
+           Caption = caption,
+           Width = width
+       };
+
     /// <summary>   Columns the specified expression. </summary>
     ///
     /// <param name="propertyName">   The roperty name. </param>
     /// <param name="configureAction"> An action to configure the column </param>
     ///
     /// <returns>   Column&lt;TModelClass&gt;. </returns>
-    public Column Column<TProperty>(string propertyName, Action<Column> configureAction)
+    public Column Column(string propertyName, string caption, Action<Column> configureAction)
+    {
+        _ = configureAction ?? throw new ArgumentNullException(nameof(configureAction));
+        var column = Column(propertyName, caption);
+        configureAction.Invoke(column);
+        return column;
+    }
+
+    /// <summary>   Columns the specified expression. </summary>
+    ///
+    /// <param name="propertyName">   The roperty name. </param>
+    /// <param name="configureAction"> An action to configure the column </param>
+    ///
+    /// <returns>   Column&lt;TModelClass&gt;. </returns>
+    public Column Column(string propertyName, int width, Action<Column> configureAction)
+    {
+        _ = configureAction ?? throw new ArgumentNullException(nameof(configureAction));
+        var column = Column(propertyName, width);
+        configureAction.Invoke(column);
+        return column;
+    }
+
+    /// <summary>   Columns the specified expression. </summary>
+    ///
+    /// <param name="propertyName">   The roperty name. </param>
+    /// <param name="configureAction"> An action to configure the column </param>
+    ///
+    /// <returns>   Column&lt;TModelClass&gt;. </returns>
+    public Column Column(string propertyName, string caption, int width, Action<Column> configureAction)
+    {
+        _ = configureAction ?? throw new ArgumentNullException(nameof(configureAction));
+        var column = Column(propertyName, caption, width);
+        configureAction.Invoke(column);
+        return column;
+    }
+
+
+    /// <summary>   Columns the specified expression. </summary>
+    ///
+    /// <param name="propertyName">   The roperty name. </param>
+    /// <param name="configureAction"> An action to configure the column </param>
+    ///
+    /// <returns>   Column&lt;TModelClass&gt;. </returns>
+    public Column Column(string propertyName, Action<Column> configureAction)
     {
         _ = configureAction ?? throw new ArgumentNullException(nameof(configureAction));
         var column = Column(propertyName);

@@ -44,7 +44,7 @@ This may appear to be a very verbose and long syntax pattern (Xenial.Framework d
 
 Before that examination look at the result:
 
-![Person Target Layout](/images/guide/column-builders/person-target-columns.png)
+![Person Target Columns](/images/guide/column-builders/person-target-columns.png)
 
 ## Columns-Code-Review
 
@@ -66,6 +66,7 @@ From C#6 it has been possible to use [Expression-bodied members](https://docs.mi
 ```cs
 public static Columns BuildColumns() => new Columns {};
 ```
+
 :::
 
 The basic building blocks for defining layouts are currently only the `ListViewOptions` and `Column` classes.

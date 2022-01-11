@@ -6,7 +6,7 @@ title: 'DetailViewLayoutBuilders - LayoutBuilder<T> Syntax'
 
 The last section demonstrated that layouts are essentially domain specific language which can, through the power of C#, produce in code, pixel perfect results which are both refactor safe and have a consistent look and feel.
 
-Whilst the basic layout building blocks can be verbose `Xenial.Framework` does provide a more robust and IntelliSence driven way to craft layouts in code.
+Whilst the basic layout building blocks can be verbose `Xenial.Framework` does provide a more robust and IntelliSense driven way to craft layouts in code.
 
 By way of a quick reminder the illustration below shows what the final layout should look like;
 
@@ -46,12 +46,12 @@ This convention is regarded as best practice but in reality any naming conventio
 The benefit of this approach is that IntelliSense is available to guide the layout building process obviating the need to remember all the type names, however it is a much denser syntax which may not be to all tastes.
 
 ::: tip
-It is perfectly acceptable to mix both initializer and functional style to suit personal preference or team guildines.  
+It is perfectly acceptable to mix both initializer and functional style to suit personal preference or team guidelines.  
 :::
 
-## Inherit from `LayoutBuilder<T>` 
+## Inherit from `LayoutBuilder<T>`
 
-Thus far the `LayoutBuilder<T>` has been used as an instance utilizing the *convention based* registration pattern for the builder. 
+Thus far the `LayoutBuilder<T>` has been used as an instance utilizing the *convention based* registration pattern for the builder.
 
 By inheriting from `LayoutBuilder<T>` and using the `typed` overload of the `DetailViewLayoutBuilderAttribute` it is possible to reduce additional noise from the syntax.  This is achieved by inheriting from the `LayoutBuilder<T>` class and changing the registration as shown below.
 
