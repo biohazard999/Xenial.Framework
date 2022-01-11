@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
+using Xenial.Data;
 using Xenial.Framework.Layouts.ColumnItems;
 
 #pragma warning disable CA1033 //Seal Type -> By Design
@@ -83,6 +84,12 @@ public record Columns : IEnumerable<Column>
 public partial class ColumnsBuilder<TModelClass> : ColumnsBuilder
     where TModelClass : class
 {
+    /// <summary>   Gets the expression helper. </summary>
+    ///
+    /// <value> The expression helper. </value>
+
+    protected static ExpressionHelper<TModelClass> ExpressionHelper { get; } = Xenial.Utils.ExpressionHelper.Create<TModelClass>();
+
     /// <summary>   Columns the specified expression. </summary>
     ///
     /// <typeparam name="TProperty">    The type of the t property. </typeparam>
@@ -90,8 +97,23 @@ public partial class ColumnsBuilder<TModelClass> : ColumnsBuilder
     ///
     /// <returns>   Column&lt;TModelClass&gt;. </returns>
 
-    public Column<TModelClass> Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression)
-        => Xenial.Framework.Layouts.ColumnItems.Column<TModelClass>.Create(expression);
+    public Column Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression)
+        => ColumnItems.Column.Create(ExpressionHelper.Property(expression));
+
+    /// <summary>   Columns the specified expression. </summary>
+    ///
+    /// <typeparam name="TProperty">    The type of the t property. </typeparam>
+    /// <param name="expression">   The expression. </param>
+    /// <param name="configureAction"> An action to configure the column </param>
+    ///
+    /// <returns>   Column&lt;TModelClass&gt;. </returns>
+    public Column Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression, Action<Column> configureAction)
+    {
+        _ = configureAction ?? throw new ArgumentNullException(nameof(configureAction));
+        var column = Column(expression);
+        configureAction.Invoke(column);
+        return column;
+    }
 }
 
 /// <summary>
@@ -110,5 +132,19 @@ public partial class ColumnsBuilder
     /// <returns>   Column. </returns>
 
     public Column Column(string propertyName)
-       => new Xenial.Framework.Layouts.ColumnItems.Column(propertyName);
+       => ColumnItems.Column.Create(propertyName);
+
+    /// <summary>   Columns the specified expression. </summary>
+    ///
+    /// <param name="propertyName">   The roperty name. </param>
+    /// <param name="configureAction"> An action to configure the column </param>
+    ///
+    /// <returns>   Column&lt;TModelClass&gt;. </returns>
+    public Column Column<TProperty>(string propertyName, Action<Column> configureAction)
+    {
+        _ = configureAction ?? throw new ArgumentNullException(nameof(configureAction));
+        var column = Column(propertyName);
+        configureAction.Invoke(column);
+        return column;
+    }
 }

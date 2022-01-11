@@ -17,34 +17,17 @@ using Xenial.Utils;
 
 namespace Xenial.Framework.Layouts.ColumnItems;
 
-/// <summary>
-/// 
-/// </summary>
-[XenialCheckLicense]
-public partial record Column<TModelClass>(string PropertyName) : Column(PropertyName)
-    where TModelClass : class
-{
-    /// <summary>   Gets the expression helper. </summary>
-    ///
-    /// <value> The expression helper. </value>
-
-    protected static ExpressionHelper<TModelClass> ExpressionHelper { get; } = Xenial.Utils.ExpressionHelper.Create<TModelClass>();
-
-    /// <summary>   Creates a new Column&lt;TModelClass&gt; </summary>
-    ///
-    /// <typeparam name="TProperty">    Type of the property. </typeparam>
-    /// <param name="expression">   The expression. </param>
-    ///
-    /// <returns>   A Column&lt;TModelClass&gt; </returns>
-
-    public static Column<TModelClass> Create<TProperty>(Expression<Func<TModelClass, TProperty>> expression)
-        => new(ExpressionHelper.Property(expression));
-}
-
 /// <summary>   (Immutable) a column. </summary>
 [XenialCheckLicense]
 public partial record Column
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <returns></returns>
+    public static Column Create(string propertyName) => new(propertyName);
+
     private static SlugifierConfig CreateDefaultSlugifierConfig() => new()
     {
         CollapseWhiteSpace = true,
