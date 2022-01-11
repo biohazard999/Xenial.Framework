@@ -69,6 +69,7 @@ module.exports = {
                       ['source-generators-image-names-generator', 'ImageNamesGenerator'],
                       ['source-generators-xpo-builder-generator', 'XpoBuilderGenerator'],
                       ['source-generators-layout-builder-generator', 'LayoutBuilderGenerator'],
+                      ['source-generators-columns-builder-generator', 'ColumnsBuilderGenerator'],
                   ]
                 },
                 {
@@ -103,7 +104,7 @@ module.exports = {
                       ['column-builders-simple-registration', 'Simple Columns'],
                       ['column-builders-advanced-syntax', 'ColumnsBuilder<T> Syntax'],
                       ['column-builders-record-syntax', 'Record Syntax'],
-                      // ['column-builders-model-builder-syntax', 'ModelBuilder Syntax'],
+                      ['column-builders-model-builder-syntax', 'ModelBuilder Syntax'],
                   ]
                 },
                 {

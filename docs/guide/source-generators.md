@@ -13,7 +13,7 @@ SourceGenerators are one of the many `NonVisual Components` of Xenial.Framework 
 
 ## Installation
 
-In your [platform agnostic module](https://docs.devexpress.com/eXpressAppFramework/118045/concepts/application-solution-components/application-solution-structure#projects) install the [Xenial.Framework](https://www.nuget.org/packages/Xenial.Framework/) package.
+In your [platform agnostic module](https://docs.devexpress.com/eXpressAppFramework/118045/concepts/application-solution-components/application-solution-structure#projects) install the [Xenial.Framework.SourceGenerators](https://www.nuget.org/packages/Xenial.Framework.SourceGenerators/) package.
 
 <code-group>
 <code-block title=".NET CLI">
