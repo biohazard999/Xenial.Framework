@@ -1,14 +1,12 @@
 ---
-title: DetailViewLayoutBuilders - Introduction
+title: ListViewColumnBuilders - Introduction
 ---
 
-# DetailViewLayoutBuilders - Introduction
+# ListViewColumnBuilders - Introduction
 
-`DetailViewLayoutBuilders` are a way of defining `DetailViews` in code. They are a domain specific language (DSL) to build Views in code rather than using the `ModelEditor`. As always in `Xenial.Framework` there are several ways to define them and to tell XAF when to consume them. They are an **addition** to the `ModelEditor based approach`, because they operate [below the differences layer](https://docs.devexpress.com/eXpressAppFramework/112580/ui-construction/application-model/application-model-basics#application-models-layered-structure).
+`ListViewColumnBuilders` are a way of defining `ListViews` in code. They are a domain specific language (DSL) to build Views in code rather than using the `ModelEditor`. As always in `Xenial.Framework` there are several ways to define them and to tell XAF when to consume them. They are an **addition** to the `ModelEditor based approach`, because they operate [below the differences layer](https://docs.devexpress.com/eXpressAppFramework/112580/ui-construction/application-model/application-model-basics#application-models-layered-structure).
 
-
-`DetailViewLayoutBuilders` are one of the many `NonVisual Components` of Xenial.Framework designed around best practices and working efficiently in a team, however there are several benefits for smaller teams and projects as well.
-
+`ListViewColumnBuilders` are one of the many `NonVisual Components` of Xenial.Framework designed around best practices and working efficiently in a team, however there are several benefits for smaller teams and projects as well.
 
 ## Installation
 
@@ -51,16 +49,16 @@ Whilst the Xenial.Framework can of course be used in platform specific modules, 
 
 ## Usage
 
-Xenial.Framework provides both a simple and advanced registration pattern for `DetailViewLayoutBuilders` as well as one specially optimized for use within `ModelBuilders`.
+Xenial.Framework provides both a simple and advanced registration pattern for `ListViewColumnBuilders` as well as one specially optimized for use within `ModelBuilders`.
 
-All the `DetailViewLayoutBuilder` examples in this documentation will be based upon the simple 'Person' business object in the code below.
+All the `ListViewColumnBuilder` examples in this documentation will be based upon the simple 'Person' business object in the code below.
 
 <<< @/guide/samples/layout-builders-simple/Person.cs
 
-The standard  **default** layout that would be produced by XAF is illustrated below;
+The standard  **default** columns  that would be produced by XAF is illustrated below;
 
-![Person Default Layout](/images/guide/layout-builders/person-default-layout.png)
+![Person Default Columns](/images/guide/column-builders/person-default-columns.png)
 
-The **target** layout that the code examples of LayoutBuilders in ensuing sections will aim to create is illustrated below;
+The **target** columns that the code examples of ColumnBuilders in ensuing sections will aim to create is illustrated below;
 
-![Person Target Layout](/images/guide/layout-builders/person-target-layout.png)
+![Person Target Layout](/images/guide/column-builders/person-target-columns.png)

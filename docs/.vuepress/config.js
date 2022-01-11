@@ -96,6 +96,17 @@ module.exports = {
                     ]
                 },
                 {
+                  title: 'ListViewColumnBuilders',
+                  collapsable: false,
+                  children: [
+                      ['column-builders', 'Introduction'],
+                      ['column-builders-simple-registration', 'Simple Columns'],
+                      // ['column-builders-advanced-syntax', 'ColumnBuilder<T> Syntax'],
+                      // ['column-builders-record-syntax', 'Record Syntax'],
+                      // ['column-builders-model-builder-syntax', 'ModelBuilder Syntax'],
+                  ]
+                },
+                {
                     title: 'Contribute',
                     collapsable: false,
                     children: [
