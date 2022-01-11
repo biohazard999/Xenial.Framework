@@ -6,70 +6,36 @@ namespace MainDemo.Module.BusinessObjects
 {
     [Persistent]
     [DefaultClassOptions]
-    [DetailViewLayoutBuilder(typeof(PersonLayoutBuilder))]
+    [ListViewColumnsBuilder(typeof(PersonColumnsBuilder))]
     public class Person : XPObject {}
 
-    public sealed class PersonLayoutBuilder : LayoutBuilder<Person>
+    public sealed class PersonColumnsBuilder : ColumnsBuilder<Person>
     {
-        public Layout BuildLayout()
+        public Columns BuildLayout()
         {
-            return new Layout
+            return new Columns(new ListViewOptions
             {
-                HorizontalGroup(g =>
+                Caption = "All Persons",
+                IsGroupPanelVisible = true,
+                IsFooterVisible = true,
+                ShowAutoFilterRow = true,
+                ShowFindPanel = true,
+                AutoExpandAllGroups = true
+            })
+            {
+                Column(m => m.Address1.City, "Address", c =>
                 {
-                    g.Caption = "Person";
-                    g.ShowCaption = true;
-                    g.RelativeSize = 25;
-                },
-                    PropertyEditor(m => m.Image, editor =>
-                    {
-                        editor.ShowCaption = false;
-                        editor.RelativeSize = 10;
-                    }),
-                    VerticalGroup(
-                        PropertyEditor(m => m.FullName),
-                        HorizontalGroup(
-                            PropertyEditor(m => m.FirstName),
-                            PropertyEditor(m => m.LastName)
-                        ),
-                        HorizontalGroup(
-                            PropertyEditor(m => m.Email),
-                            PropertyEditor(m => m.Phone)
-                        ),
-                        EmptySpaceItem()
-                    )
-                ),
-                TabbedGroup(
-                    Tab("Primary Address", FlowDirection.Horizontal,
-                        VerticalGroup(
-                            PropertyEditor(m => m.Address1.Street, e => e.CaptionLocation = Locations.Top),
-                            HorizontalGroup(
-                                PropertyEditor(m => m.Address1.City, e => e.CaptionLocation = Locations.Top),
-                                PropertyEditor(m => m.Address1.ZipPostal, e => e.CaptionLocation = Locations.Top)
-                            ),
-                            PropertyEditor(m => m.Address1.StateProvince, e => e.CaptionLocation = Locations.Top),
-                            PropertyEditor(m => m.Address1.Country, e => e.CaptionLocation = Locations.Top),
-                            EmptySpaceItem()
-                        ),
-                        EmptySpaceItem()
-                    ),
-                    Tab("Secondary Address", FlowDirection.Horizontal,
-                        VerticalGroup(
-                            PropertyEditor(m => m.Address2.Street, e => e.CaptionLocation = Locations.Top),
-                            HorizontalGroup(
-                                PropertyEditor(m => m.Address2.City, e => e.CaptionLocation = Locations.Top),
-                                PropertyEditor(m => m.Address2.ZipPostal, e => e.CaptionLocation = Locations.Top)
-                            ),
-                            PropertyEditor(m => m.Address2.StateProvince, e => e.CaptionLocation = Locations.Top),
-                            PropertyEditor(m => m.Address2.Country, e => e.CaptionLocation = Locations.Top),
-                            EmptySpaceItem()
-                        ),
-                        EmptySpaceItem()
-                    ),
-                    Tab("Additional Addresses",
-                        PropertyEditor(m => m.Addresses)
-                    )
-                )
+                    c.Index = -1;
+                    c.GroupIndex = 0;
+                    c.SortOrder = ColumnSortOrder.Ascending;
+                }),
+                Column(m => m.FirstName, 70, c =>
+                {
+                    c.SortOrder = ColumnSortOrder.Ascending;
+                }),
+                Column(m => m.LastName, 70),
+                Column(m => m.Phone, 30),
+                Column(m => m.Email, 30)
             };
         }
     }

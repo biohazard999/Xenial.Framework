@@ -1,10 +1,10 @@
 ---
-title: 'DetailViewLayoutBuilders - Record Syntax'
+title: 'ListViewColumnBuilders - Record Syntax'
 ---
 
-# DetailViewLayoutBuilders - `Record` Syntax
+# ListViewColumnBuilders - `Record` Syntax
 
-C#9 [introduced a new record syntax](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/records#:~:text=C%23%209%20introduces%20records%2C%20a,types%20use%20value%2Dbased%20equality.) which has been implemented within Xenial.Framework LayoutBuilders ensuring that layouts can be built using `with` expressions. Although not very different from initializers they make it possible to create a copy of a given record, which is particularly beneficial to a clean fluent syntax in combination with a **functional style** API.
+C#9 [introduced a new record syntax](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/records#:~:text=C%23%209%20introduces%20records%2C%20a,types%20use%20value%2Dbased%20equality.) which has been implemented within Xenial.Framework ColumnBuilders ensuring that columns can be built using `with` expressions. Although not very different from initializers they make it possible to create a copy of a given record, which is particularly beneficial to a clean fluent syntax in combination with a **functional style** API.
 
 ## Setting the compiler options
 
@@ -54,29 +54,29 @@ namespace System.Runtime.CompilerServices
 ::: danger
 All code should be thoroughly tested after changing the compiler version.  
 
-Microsoft has done a great job trying not to break any existing client project, but because it is not supported on the old full framework (.NET4xx) officially, use this technique at your own risk. 
+Microsoft has done a great job trying not to break any existing client project, but because it is not supported on the old full framework (.NET4xx) officially, use this technique at your own risk.
 :::
 
 ## Registration
 
-Registration is exactly the same as in the previous examples, override the `AddGeneratorUpdaters` in the platform agnostic module and call the `updaters.UseDetailViewLayoutBuilders()` extension method.
+Registration is exactly the same as in the previous examples, override the `AddGeneratorUpdaters` in the platform agnostic module and call the `updaters.UseListViewColumnBuilders()` extension method.
 
-<<< @/guide/samples/layout-builders-simple/RegisterInModule.cs{8,12}
+<<< @/guide/samples/column-builders-simple/RegisterInModule.cs{8,12}
 
-## Build the Layout
+## Build the Columns
 
 As this uses C#9 it is now possible to use the [`Target-typed new expressions feature`](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-9#fit-and-finish-features) which removes a little bit of redundancy in the code as shown below:
 
-<<< @/guide/samples/layout-builders-records/RecordLayout.cs
+<<< @/guide/samples/column-builders-records/RecordLayout.cs
 
-Although the syntax is a lot longer than the fluent builder syntax, it is a little more structured. It's combining both the power of `expression trees` to specify type safe layouts, as well as a familiar syntax comparable to initializers. However it is more verbose (language limitations require the need to specify the `Children` directly, which is not needed with normal initializer syntax) so it's use is only recommended when there is a need to specify properties and children at the same time, or when using leaf node types (for example property editors).
+The syntax is more concise than the initializer syntax and it is a little more structured. It's combining both the power of `expression trees` to specify type safe layouts, as well as a familiar syntax comparable to initializers.  
 
 ## A mixed sample
 
-<<< @/guide/samples/layout-builders-records/RecordLayoutMixed.cs
+<<< @/guide/samples/column-builders-records/RecordLayoutMixed.cs
 
 ::: warning
-Whilst this sample works without issue mixing syntax styles is not recommended. It may work from a technical standpoint but it adds complexity and harms readability. 
- 
-Wherever possible coding styles and conventions should be clearly defined and adhered to. 
+Whilst this sample works without issue mixing syntax styles is not recommended. It may work from a technical standpoint but it adds complexity and harms readability.  
+
+Wherever possible coding styles and conventions should be clearly defined and adhered to.
 :::

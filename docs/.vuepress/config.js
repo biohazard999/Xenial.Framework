@@ -102,7 +102,7 @@ module.exports = {
                       ['column-builders', 'Introduction'],
                       ['column-builders-simple-registration', 'Simple Columns'],
                       ['column-builders-advanced-syntax', 'ColumnsBuilder<T> Syntax'],
-                      // ['column-builders-record-syntax', 'Record Syntax'],
+                      ['column-builders-record-syntax', 'Record Syntax'],
                       // ['column-builders-model-builder-syntax', 'ModelBuilder Syntax'],
                   ]
                 },

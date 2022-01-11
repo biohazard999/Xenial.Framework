@@ -23,21 +23,19 @@ namespace MainDemo.Module.BusinessObjects
                 AutoExpandAllGroups = true
             })
             {
-                b.Column(m => m.Address1.City, column =>
+                b.Column(m => m.Address1.City, "Address", c =>
                 {
-                    column.Caption = "Address";
-                    column.Index = -1;
-                    column.GroupIndex = 0;
-                    column.SortOrder = ColumnSortOrder.Ascending;
+                    c.Index = -1;
+                    c.GroupIndex = 0;
+                    c.SortOrder = ColumnSortOrder.Ascending;
                 }),
-                b.Column(m => m.FirstName, column =>
+                b.Column(m => m.FirstName, 70, c =>
                 {
-                    column.SortOrder = ColumnSortOrder.Ascending;
-                    column.Width = 70;
+                    c.SortOrder = ColumnSortOrder.Ascending;
                 }),
-                b.Column(m => m.LastName, column => column.Width = 70),
-                b.Column(m => m.Phone, column => column.Width = 30),
-                b.Column(m => m.Email, column => column.Width = 30)
+                b.Column(m => m.LastName, 70),
+                b.Column(m => m.Phone, 30),
+                b.Column(m => m.Email, 30)
             };
         }
     }

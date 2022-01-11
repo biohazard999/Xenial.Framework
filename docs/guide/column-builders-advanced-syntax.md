@@ -69,4 +69,4 @@ Thus far the `ColumnsBuilder<T>` has been used as an instance utilizing the *con
 
 By inheriting from `ColumnsBuilder<T>` and using the `typed` overload of the `ListViewColumnsBuilderAttribute` it is possible to reduce additional noise from the syntax.  This is achieved by inheriting from the `ColumnsBuilder<T>` class and changing the registration as shown below.
 
-<<< @/guide/samples/layout-builders-advanced/BuilderInherit.cs
+<<< @/guide/samples/column-builders-advanced/BuilderInherit.cs
