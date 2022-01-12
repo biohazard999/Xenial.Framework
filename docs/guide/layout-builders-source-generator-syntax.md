@@ -103,9 +103,9 @@ Afterwards we use the nested static `Editor._XXXX` classes generated to access a
 You can nest calls of `[Xenial.ExpandMember]` recursively if you have a deep object graph you need to display.
 
 ```cs
-    [XenialExpandMember(Constants.Address1)]
-    [XenialExpandMember(Constants._Address1.Country)]
-    [XenialExpandMember(Constants._Address1._Country.Currency)]
+[XenialExpandMember(Constants.Address1)]
+[XenialExpandMember(Constants._Address1.Country)]
+[XenialExpandMember(Constants._Address1._Country.Currency)]
 ```
 
 :::
