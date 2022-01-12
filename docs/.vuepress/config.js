@@ -94,6 +94,7 @@ module.exports = {
                         ['layout-builders-advanced-syntax', 'LayoutBuilder<T> Syntax'],
                         ['layout-builders-record-syntax', 'Record Syntax'],
                         ['layout-builders-model-builder-syntax', 'ModelBuilder Syntax'],
+                        ['layout-builders-source-generator-syntax', 'SourceGenerators Syntax'],
                     ]
                 },
                 {

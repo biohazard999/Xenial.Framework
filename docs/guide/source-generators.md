@@ -22,10 +22,12 @@ In your [platform agnostic module](https://docs.devexpress.com/eXpressAppFramewo
 
 </code-block>
 
-
 <code-block title="PackageReference">
 
-<div class="language-xml"><pre class="language-xml"><code>&ltPackageReference Include="Xenial.Framework.Generators" Version="{{ $var['xenialVersion'] }}" /&gt</code></pre></div>
+<div class="language-xml"><pre class="language-xml"><code>&ltPackageReference Include="Xenial.Framework.Generators" Version="{{ $var['xenialVersion'] }}"&gt
+      &ltPrivateAssets&gtall&lt/PrivateAssets&gt
+      &ltIncludeAssets&gtruntime; build; native; contentfiles; analyzers; buildtransitive&lt/IncludeAssets&gt
+&lt/PackageReference&gt</code></pre></div>
 
 </code-block>
 
@@ -48,6 +50,10 @@ By convention the platform agnostic module is usually named `<Your Application>.
 If you're unfamiliar with the Command Line Interface (cli) you can always use the Nuget package manager.
 
 Whilst the Xenial.Framework can of course be used in platform specific modules, for the purposes of this documentation emphasis will be given to its use in the platform agnostic module of your project.
+:::
+
+::: tip
+If you use [VisualStudio make sure you at least are using 2019 v16.9 or higher](https://docs.microsoft.com/en-us/visualstudio/releases/2019/release-notes-v16.9). According to our tests VisualStudio 2022 or higher is recommended. You also need to install the [.NET5 SDK (or greater)](https://dotnet.microsoft.com/en-us/download) even if you want to use generators with `net462` (Full Framework)
 :::
 
 ## Overview
