@@ -1,0 +1,13 @@
+﻿
+////Import usings from user code
+
+// This is normally not needed, especially if we use the semantic model to generate the code
+//builder.WriteLine("//Begin-User defined using statements");
+//var root = @class.SyntaxTree.GetCompilationUnitRoot(context.CancellationToken);
+//foreach (var @using in root.Usings)
+//{
+//    builder.WriteLine(@using.ToString());
+//}
+//builder.WriteLine("//End-User defined using statements");
+//builder.WriteLine();
+

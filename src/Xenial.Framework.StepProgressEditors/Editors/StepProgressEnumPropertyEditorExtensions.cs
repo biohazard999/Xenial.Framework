@@ -1,54 +1,53 @@
 ﻿
 using System;
 
-namespace DevExpress.ExpressApp.Editors
+namespace DevExpress.ExpressApp.Editors;
+
+/// <summary>   Class StepProgressEnumPropertyEditorExtensions. </summary>
+public static class StepProgressEnumPropertyEditorExtensions
 {
-    /// <summary>   Class StepProgressEnumPropertyEditorExtensions. </summary>
-    public static class StepProgressEnumPropertyEditorExtensions
+    /// <summary>   Uses the token objects property editor. </summary>
+    ///
+    /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
+    ///                                             null. </exception>
+    ///
+    /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
+    ///
+    /// <returns>   EditorDescriptorsFactory. </returns>
+
+    public static EditorDescriptorsFactory UseStepProgressEnumPropertyEditors(this EditorDescriptorsFactory editorDescriptorsFactory)
     {
-        /// <summary>   Uses the token objects property editor. </summary>
-        ///
-        /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
-        ///                                             null. </exception>
-        ///
-        /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
-        ///
-        /// <returns>   EditorDescriptorsFactory. </returns>
+        _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
 
-        public static EditorDescriptorsFactory UseStepProgressEnumPropertyEditors(this EditorDescriptorsFactory editorDescriptorsFactory)
-        {
-            _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
+        editorDescriptorsFactory.RegisterPropertyEditorAlias(
+            Xenial.Framework.StepProgressEditors.PubTernal.StepProgressEditorAliases.StepProgressEnumPropertyEditor,
+            typeof(Enum),
+            true
+        );
 
-            editorDescriptorsFactory.RegisterPropertyEditorAlias(
-                Xenial.Framework.StepProgressEditors.PubTernal.StepProgressEditorAliases.StepProgressEnumPropertyEditor,
-                typeof(Enum),
-                true
-            );
+        return editorDescriptorsFactory;
+    }
 
-            return editorDescriptorsFactory;
-        }
+    /// <summary>   Uses the token objects property editor. </summary>
+    ///
+    /// <exception cref="ArgumentNullException">    editorDescriptorsFactory. </exception>
+    ///
+    /// <typeparam name="TPropertyType">    The type of the t property type. </typeparam>
+    /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
+    ///
+    /// <returns>   EditorDescriptorsFactory. </returns>
 
-        /// <summary>   Uses the token objects property editor. </summary>
-        ///
-        /// <exception cref="ArgumentNullException">    editorDescriptorsFactory. </exception>
-        ///
-        /// <typeparam name="TPropertyType">    The type of the t property type. </typeparam>
-        /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
-        ///
-        /// <returns>   EditorDescriptorsFactory. </returns>
+    public static EditorDescriptorsFactory UseStepProgressEnumPropertyEditor<TPropertyType>(this EditorDescriptorsFactory editorDescriptorsFactory)
+        where TPropertyType : Enum
+    {
+        _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
 
-        public static EditorDescriptorsFactory UseStepProgressEnumPropertyEditor<TPropertyType>(this EditorDescriptorsFactory editorDescriptorsFactory)
-            where TPropertyType : Enum
-        {
-            _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
+        editorDescriptorsFactory.RegisterPropertyEditorAlias(
+            Xenial.Framework.StepProgressEditors.PubTernal.StepProgressEditorAliases.StepProgressEnumPropertyEditor,
+            typeof(TPropertyType),
+            true
+        );
 
-            editorDescriptorsFactory.RegisterPropertyEditorAlias(
-                Xenial.Framework.StepProgressEditors.PubTernal.StepProgressEditorAliases.StepProgressEnumPropertyEditor,
-                typeof(TPropertyType),
-                true
-            );
-
-            return editorDescriptorsFactory;
-        }
+        return editorDescriptorsFactory;
     }
 }

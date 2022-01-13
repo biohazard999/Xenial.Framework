@@ -1,30 +1,29 @@
 ﻿using System;
 
-namespace DevExpress.ExpressApp.Editors
+namespace DevExpress.ExpressApp.Editors;
+
+/// <summary>   Class TokenStringPropertyEditorExtensions. </summary>
+public static class TokenStringPropertyEditorExtensions
 {
-    /// <summary>   Class TokenStringPropertyEditorExtensions. </summary>
-    public static class TokenStringPropertyEditorExtensions
+    /// <summary>   Uses the token objects property editor. </summary>
+    ///
+    /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
+    ///                                             null. </exception>
+    ///
+    /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
+    ///
+    /// <returns>   EditorDescriptorsFactory. </returns>
+
+    public static EditorDescriptorsFactory UseTokenStringPropertyEditors(this EditorDescriptorsFactory editorDescriptorsFactory)
     {
-        /// <summary>   Uses the token objects property editor. </summary>
-        ///
-        /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
-        ///                                             null. </exception>
-        ///
-        /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
-        ///
-        /// <returns>   EditorDescriptorsFactory. </returns>
+        _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
 
-        public static EditorDescriptorsFactory UseTokenStringPropertyEditors(this EditorDescriptorsFactory editorDescriptorsFactory)
-        {
-            _ = editorDescriptorsFactory ?? throw new ArgumentNullException(nameof(editorDescriptorsFactory));
+        editorDescriptorsFactory.RegisterPropertyEditorAlias(
+            Xenial.Framework.TokenEditors.PubTernal.TokenEditorAliases.TokenStringPropertyEditor,
+            typeof(string),
+            true
+        );
 
-            editorDescriptorsFactory.RegisterPropertyEditorAlias(
-                Xenial.Framework.TokenEditors.PubTernal.TokenEditorAliases.TokenStringPropertyEditor,
-                typeof(string),
-                true
-            );
-
-            return editorDescriptorsFactory;
-        }
+        return editorDescriptorsFactory;
     }
 }

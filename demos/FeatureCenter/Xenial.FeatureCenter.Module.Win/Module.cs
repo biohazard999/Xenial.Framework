@@ -39,7 +39,7 @@ namespace Xenial.FeatureCenter.Module.Win
                 typeof(StatusBarVersionWindowController),
                 typeof(BadgesWindowsFormsFeatureController)
             })
-                .UseXenialAdvancedModelEditorActionsControllers();
+                .UseXenialWindowsFormsControllers();
 
         public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
         {

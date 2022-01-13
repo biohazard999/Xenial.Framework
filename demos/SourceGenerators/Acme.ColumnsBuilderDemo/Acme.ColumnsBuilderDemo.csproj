@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(XenialDebug)' == ''">
+    <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
+  </ItemGroup>
+
+  <!-- BEGIN: This is internal debug code, you don't need this in your project -->
+
+  <PropertyGroup>
+    <!-- Only use Executable Targets to support F5 experiance -->
+    <TargetFrameworks>$(XenialTFMsExecutable)</TargetFrameworks>
+    <Nullable>disable</Nullable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="..\..\..\src\Xenial.Framework\Xenial.Framework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="obj/$(Configuration)/$(TargetFramework)/generated/Xenial.Framework.Generators/Xenial.Framework.Generators.XenialGenerator/Person.Columns.PersonColumnsBuilder.g.cs" Link="BusinessObjects\\Person.Columns.PersonColumnsBuilder.g.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Acme.LayoutBuilderDemo\Helpers\ApplicationModelCreator.cs" Link="Helpers\ApplicationModelCreator.cs" />
+    <Compile Include="..\Acme.LayoutBuilderDemo\Helpers\VisualizeNodeHelper.cs" Link="Helpers\VisualizeNodeHelper.cs" />
+    <Compile Include="..\Acme.LayoutBuilderDemo\Helpers\Xml\StringWriterWithEncoding.cs" Link="Helpers\Xml\StringWriterWithEncoding.cs" />
+    <Compile Include="..\Acme.LayoutBuilderDemo\Helpers\Xml\XmlFormatter.cs" Link="Helpers\Xml\XmlFormatter.cs" />
+    <Compile Include="..\Acme.LayoutBuilderDemo\Helpers\Xml\XmlFormatterConstants.cs" Link="Helpers\Xml\XmlFormatterConstants.cs" />
+    <Compile Include="..\Acme.LayoutBuilderDemo\Helpers\Xml\XmlFormatterOptions.cs" Link="Helpers\Xml\XmlFormatterOptions.cs" />
+  </ItemGroup>
+  
+  <!-- END: This is internal debug code, you don't need this in your project -->
+
+</Project>

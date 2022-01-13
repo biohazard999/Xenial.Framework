@@ -59,7 +59,7 @@ namespace __NAMESPACE__
         internal static bool IsTrial => license?.Type != LicenseType.Standard;
 
         private static string ProductName => "%ProductName%";
-        private static string PulicKeyToken => "%PulicKeyToken%";
+        private static string PulicKeyToken => "%PublicKeyToken%";
 
         internal static bool IsSignatureValid =>
             !Validations.OfType<InvalidSignatureValidationFailure>().Any();

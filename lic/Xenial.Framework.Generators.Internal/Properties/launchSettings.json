@@ -1,0 +1,8 @@
+﻿{
+  "profiles": {
+    "Xenial.Framework.Generators.Internal": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Xenial.Framework.Generators\\Xenial.Framework.Generators.csproj"
+    }
+  }
+}

@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application>
+  <ActionDesign>
+    <Actions>
+      <Action Id="Cancel" Caption="Abbrechen" ToolTip="Abbrechen" />
+      <Action Id="ClearTasksAction" ToolTip="Aufgaben löschen" Caption="Aufgaben löschen" />
+      <Action Id="Delete" Caption="Löschen" ConfirmationMessage="Sind Sie sicher, dass Sie {0} Datensätze löschen wollen?" ToolTip="Löschen" />
+      <Action Id="DemoTask.Postpone" Caption="Zurückstellen" ToolTip="Zurückstellen" />
+      <Action Id="FullTextSearch" Caption="Volltextsuche" />
+      <Action Id="Link" Caption="Verknüpfen" ToolTip="Verknüpfen" />
+      <Action Id="NavigateBack" Caption="Zurück" ToolTip="Zurück" />
+      <Action Id="NavigateForward" Caption="Weiter" ToolTip="Weiter" />
+      <Action Id="New" Caption="Neu" ToolTip="Neu" />
+      <Action Id="NextObject" Caption="Nächstes" ToolTip="Nächstes" />
+      <Action Id="PreviousObject" Caption="Vorheriges" ToolTip="Vorheriges" />
+      <Action Id="Refresh" Caption="Aktualisieren" />
+      <Action Id="Save" Caption="Speichern" ToolTip="Speichern" />
+      <Action Id="SaveAndClose" Caption="Speichern und schliessen" ToolTip="Speichern und schliessen" />
+      <Action Id="SetTaskAction" Caption="Setze für Aufgabe..." ToolTip="Setze für Aufgabe..." />
+      <Action Id="ShowAllContexts" Caption="Validieren" ToolTip="Validiert ausgewählte Objekte in allen Kontexten" />
+      <Action Id="ShowNavigationItem" Caption="Modul öffnen" />
+      <Action Id="ShowNotesAction" Caption="Notizen zeigen" />
+      <Action Id="Unlink" Caption="Verknüpfung entfernen" ToolTip="Verknüpfung entfernen" ConfirmationMessage="Die Verknüpfungen von {0} Datensätzen werden entfernt. Möchten Sie fortfahren?" />
+    </Actions>
+    <DisableReasons>
+      <Reason Id="ByContext_RequireMultipleObjects" Caption="Mindestens ein Objekt muss ausgewählt sein" />
+      <Reason Id="ByContext_RequireSingleObject" Caption="Ein Objekt muss ausgewählt sein" />
+      <Reason Id="Security" Caption="Zugriff nicht erlaubt" />
+    </DisableReasons>
+  </ActionDesign>
+  <BOModel>
+    <Class Name="DevExpress.ExpressApp.Validation.AllContextsView.ContextValidationResult" Caption="Resultat der Validierung">
+      <OwnMembers>
+        <Member Name="BrokenRules" Caption="Gebrochene Regeln" />
+        <Member Name="Context" Caption="Kontext" />
+        <Member Name="ContextValidationOutcome" Caption="Zustand" />
+      </OwnMembers>
+    </Class>
+    <Class Name="DevExpress.ExpressApp.Validation.AllContextsView.ValidationResults" Caption="Resultate der Validierung">
+      <OwnMembers>
+        <Member Name="HighlightErrors" Caption="Fehler anzeigen" />
+        <Member Name="Results" Caption="Resultate" />
+      </OwnMembers>
+    </Class>
+    <Class Name="DevExpress.Persistent.BaseImpl.Address" Caption="Adresse">
+      <OwnMembers>
+        <Member Name="City" Caption="Stadt" />
+        <Member Name="Country" Caption="Land" />
+        <Member Name="FullAddress" Caption="Gesamte Adresse" />
+        <Member Name="StateProvince" Caption="Bundesland" />
+        <Member Name="Street" Caption="Straße" />
+        <Member Name="ZipPostal" Caption="Postleitzahl" />
+      </OwnMembers>
+    </Class>
+    <Class Name="DevExpress.Persistent.BaseImpl.Analysis" Caption="Analyse" />
+    <Class Name="DevExpress.Persistent.BaseImpl.Country" Caption="Land">
+      <OwnMembers>
+        <Member Name="PhoneCode" Caption="Ländervorwahl" />
+      </OwnMembers>
+    </Class>
+    <Class Name="DevExpress.Persistent.BaseImpl.Event" Caption="Kalender">
+      <OwnMembers>
+        <Member Name="AllDay" Caption="Ganztägig" />
+        <Member Name="Description" Caption="Beschreibung" />
+        <Member Name="EndOn" Caption="Endet am" />
+        <Member Name="Location" Caption="Ort" />
+        <Member Name="StartOn" Caption="Beginnt am" />
+        <Member Name="Subject" Caption="Betreff" />
+      </OwnMembers>
+    </Class>
+    <Class Name="DevExpress.Persistent.BaseImpl.FileData" Caption="Dateidaten">
+      <OwnMembers>
+        <Member Name="FileName" Caption="Dateiname" />
+        <Member Name="Size" Caption="Grösse" />
+      </OwnMembers>
+    </Class>
+    <Class Name="DevExpress.Persistent.BaseImpl.Note" Caption="Notizen">
+      <OwnMembers>
+        <Member Name="DateTime" Caption="Zeitpunkt" />
+        <Member Name="Text" Caption="Inhalt" />
+      </OwnMembers>
+    </Class>
+    <Class Name="DevExpress.Persistent.BaseImpl.Party" Caption="Partei">
+      <OwnMembers>
+        <Member Name="Address1" Caption="Privatadresse" />
+        <Member Name="Address2" Caption="Geschäftsadresse" />
+        <Member Name="DisplayName" Caption="Anzeigename" />
+        <Member Name="PhoneNumbers" Caption="Telefonnummern" />
+        <Member Name="Photo" Caption="Foto" />
+      </OwnMembers>
+    </Class>
+    <Class Name="DevExpress.Persistent.BaseImpl.Person">
+      <OwnMembers>
+        <Member Name="FirstName" Caption="Vorname" />
+        <Member Name="FullName" Caption="Gesamter Name" />
+        <Member Name="LastName" Caption="Nachname" />
+        <Member Name="MiddleName" Caption="Mittlerer Name" />
+      </OwnMembers>
+    </Class>
+    <Class Name="DevExpress.Persistent.BaseImpl.PhoneNumber" Caption="Telefonnummer">
+      <OwnMembers>
+        <Member Name="Number" Caption="Nummer" />
+        <Member Name="Party" Caption="Partei" />
+        <Member Name="PhoneType" Caption="Art der Rufnummer" />
+      </OwnMembers>
+    </Class>
+    <Class Name="DevExpress.Persistent.BaseImpl.PhoneType" Caption="Art der Rufnummer">
+      <OwnMembers>
+        <Member Name="TypeName" Caption="Typname" />
+      </OwnMembers>
+    </Class>
+    <Class Name="DevExpress.Persistent.BaseImpl.Task" Caption="Aufgabe">
+      <OwnMembers>
+        <Member Name="AssignedTo" Caption="Zugewiesen an" />
+        <Member Name="DateCompleted" Caption="Fertigstellungsdatum" />
+        <Member Name="Description" Caption="Beschreibung" />
+        <Member Name="DueDate" Caption="Fälligkeitsdatum" />
+        <Member Name="PercentCompleted" Caption="Prozent komplett" />
+        <Member Name="StartDate" Caption="Startdatum" />
+        <Member Name="Subject" Caption="Betreff" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.DemoTask" Caption="Aufgabe">
+      <OwnMembers>
+        <Member Name="ActualWorkHours" Caption="Tatsächliche Arbeitsstunden" />
+        <Member Name="Employees" Caption="Mitarbeiter" />
+        <Member Name="EstimatedWorkHours" Caption="Geschätzte Arbeitsstunden" />
+        <Member Name="Priority" Caption="Priorität" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.Department" Caption="Abteilung">
+      <OwnMembers>
+        <Member Name="DepartmentHead" Caption="Abteilungsleiter" />
+        <Member Name="Description" Caption="Beschreibung" />
+        <Member Name="Employees" Caption="Mitarbeiter" />
+        <Member Name="Location" Caption="Ort" />
+        <Member Name="NumberOfEmployees" Caption="Anzahl der Mitarbeiter" />
+        <Member Name="Office" Caption="Büro" />
+        <Member Name="Positions" Caption="Positionen" />
+        <Member Name="Title" Caption="Titel" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.Employee" Caption="Mitarbeiter">
+      <OwnMembers>
+        <Member Name="Anniversary" Caption="Jahrestag" />
+        <Member Name="ChangeHistory" Caption="Änderungshistorie" />
+        <Member Name="Department" Caption="Abteilung" />
+        <Member Name="Location" Caption="Ort" />
+        <Member Name="Manager" Caption="Abteilungsleiter" />
+        <Member Name="NickName" Caption="Spitzname" />
+        <Member Name="Notes" Caption="Notizen" />
+        <Member Name="Position" Caption="Position" />
+        <Member Name="SpouseName" Caption="Name des Partners" />
+        <Member Name="Tasks" Caption="Aufgaben" />
+        <Member Name="TitleOfCourtesy" Caption="Anrede" />
+        <Member Name="WebPageAddress" Caption="Webseite" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.Location" Caption="Ort">
+      <OwnMembers>
+        <Member Name="Latitude" Caption="Breitengrad" />
+        <Member Name="Longitude" Caption="Längengrad" />
+        <Member Name="Title" Caption="Titel" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.Paycheck" Caption="Lohnzahlung">
+      <OwnMembers>
+        <Member Name="Employee" Caption="Mitarbeiter" />
+        <Member Name="GrossPay" Caption="Bruttolohn" />
+        <Member Name="Hours" Caption="Arbeitsstunden" />
+        <Member Name="NetPay" Caption="Nettolohn" />
+        <Member Name="Notes" Caption="Anmerkungen" />
+        <Member Name="OvertimeHours" Caption="Überstunden" />
+        <Member Name="OvertimePayRate" Caption="Überstundensatz" />
+        <Member Name="PaymentDate" Caption="Zahlungsdatum" />
+        <Member Name="PayPeriod" Caption="Lohnperiode" />
+        <Member Name="PayPeriodEnd" Caption="Enddatum der Lohnperiode" />
+        <Member Name="PayPeriodStart" Caption="Startdatum der Lohnperiode" />
+        <Member Name="PayRate" Caption="Lohnsatz" />
+        <Member Name="TaxRate" Caption="Steuersatz" />
+        <Member Name="TotalTax" Caption="Gesamter Steuerbetrag" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.PortfolioFileData" Caption="Portfolio">
+      <OwnMembers>
+        <Member Name="DocumentType" Caption="Art des Dokuments" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.Position" Caption="Position">
+      <OwnMembers>
+        <Member Name="Departments" Caption="Abteilungen" />
+        <Member Name="Title" Caption="Titel" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.Resume" Caption="Lebenslauf">
+      <OwnMembers>
+        <Member Name="Employee" Caption="Mitarbeiter" />
+        <Member Name="File" Caption="Datei" />
+        <Member Name="Portfolio" Caption="Portfolio" />
+      </OwnMembers>
+    </Class>
+  </BOModel>
+  <Localization>
+    <LocalizationGroup Name="Enums">
+      <LocalizationGroup Name="MainDemo.Module.BusinessObjects.DocumentType">
+        <LocalizationItem Name="Diagrams" Value="Diagramme" />
+        <LocalizationItem Name="Documentation" Value="Dokumentation" />
+        <LocalizationItem Name="Screenshots" Value="Screenshots" />
+        <LocalizationItem Name="SourceCode" Value="Quelltext" />
+        <LocalizationItem Name="Tests" Value="Tests" />
+        <LocalizationItem Name="Unknown" Value="Unbekannt" />
+      </LocalizationGroup>
+      <LocalizationGroup Name="MainDemo.Module.BusinessObjects.Priority">
+        <LocalizationItem Name="High" Value="Hoch" />
+        <LocalizationItem Name="Low" Value="Niedrig" />
+        <LocalizationItem Name="Normal" Value="Normal" />
+      </LocalizationGroup>
+    </LocalizationGroup>
+  </Localization>
+  <NavigationItems>
+    <Items>
+      <Item Id="Default">
+        <Items>
+          <Item Id="Employee_ListView" Caption="Mitarbeiter" />
+          <Item Id="ApplicationUser_ListView" Caption="Benutzer" />
+          <Item Id="DemoTask_ListView" Caption="Aufgaben" />
+          <Item Id="Department_ListView" Caption="Abteilungen" />
+          <Item Id="Event_ListView" Caption="Kalender" />
+          <Item Id="Note" Caption="Notiz" />
+          <Item Id="Paycheck_ListView" Caption="Lohnbuchhaltung" />
+          <Item Id="PermissionPolicyRole_ListView" Caption="Rollen" />
+          <Item Id="Position_ListView" Caption="Positionen" />
+          <Item Id="Resume_ListView" Caption="Lebensläufe" />
+        </Items>
+      </Item>
+      <Item Id="Reports" Caption="Reporte">
+        <Items>
+          <Item Id="Analysis_ListView" Caption="Analyse" />
+          <Item Id="ReportsV2" Caption="Berichte" />
+        </Items>
+      </Item>
+    </Items>
+  </NavigationItems>
+  <Views>
+    <ListView Id="Analysis_ListView" Caption="Analyse" />
+    <ListView Id="ApplicationUser_ListView" Caption="Benutzer" />
+    <DetailView Id="AuthenticationStandardLogonParameters_DetailView_Demo" Caption="Anmeldung">
+      <Items>
+        <StaticText Id="LogonText" Text="Bitte geben Sie Ihren Benutzernamen und Ihr Passwort ein" />
+        <StaticText Id="PasswordHint" Text="Diese Demoanwendung benötigt kein Passwort zur Anmeldung" />
+      </Items>
+    </DetailView>
+    <ListView Id="DemoTask_ListView" Caption="Aufgaben" />
+    <DetailView Id="Department_DetailView">
+      <Items>
+        <PropertyEditor Id="Employees" Caption="Mitarbeiter" />
+      </Items>
+    </DetailView>
+    <ListView Id="Department_ListView" Caption="Abteilungen" />
+    <DetailView Id="Employee_DetailView">
+      <Items>
+        <PropertyEditor Id="Address1" Caption="Adresse" />
+      </Items>
+    </DetailView>
+    <ListView Id="Employee_ListView" Caption="Mitarbeiter" />
+    <ListView Id="Employee_ListView_AllColumns" Caption="Mitarbeiter" />
+    <ListView Id="Employee_ListView_Varied">
+      <Variants>
+        <Variant Id="Default" Caption="Wenige Spalten" />
+        <Variant Id="All columns" Caption="Alle Spalten" />
+      </Variants>
+    </ListView>
+    <DetailView Id="Event_DetailView" Caption="Termin">
+      <Layout>
+        <LayoutGroup Id="Main">
+          <LayoutGroup Id="SimpleEditors">
+            <LayoutGroup Id="Event" Caption="Termin" />
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="Event_ListView" Caption="Kalender" />
+    <ListView Id="Note_ListView" Caption="Notiz" />
+    <DetailView Id="Paycheck_DetailView" Caption="Lohnzahlung" />
+    <ListView Id="Paycheck_ListView" Caption="Lohnbuchhaltung" />
+    <ListView Id="Paycheck_LookupListView" Caption="Lohnbuchhaltung" />
+    <ListView Id="PermissionPolicyRole_ListView" Caption="Rollen" />
+    <ListView Id="ReportDataV2_ListView" Caption="Berichte" />
+    <ListView Id="Resume_ListView" Caption="Lebensläufe" />
+  </Views>
+</Application>

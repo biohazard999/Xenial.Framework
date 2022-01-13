@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Xpo" Version="$(DxPackageVersion)" />
+    <!-- You don't need to include XAF, but it will generate the overloads for dealing with objectspaces when in scope -->
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+  <!-- BEGIN: This is internal debug code, you don't need this in your project -->
+
+  <PropertyGroup>
+     <!-- Only use Executable Targets to support F5 experiance -->
+    <TargetFrameworks>$(XenialTFMsExecutable)</TargetFrameworks>
+    <Nullable>disable</Nullable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="$(DxPackageVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <None Include="obj/$(Configuration)/$(TargetFramework)/generated/Xenial.Framework.Generators/Xenial.Framework.Generators.XenialGenerator/Person.Person.Builder.g.cs" Link="BusinessObjects/Person.Person.Builder.g.cs" />
+    <None Include="obj/$(Configuration)/$(TargetFramework)/generated/Xenial.Framework.Generators/Xenial.Framework.Generators.XenialGenerator/Task.Task.Builder.g.cs" Link="BusinessObjects/Task.Task.Builder.g.cs" />
+  </ItemGroup>
+
+  <!-- END: This is internal debug code, you don't need this in your project -->
+
+</Project>

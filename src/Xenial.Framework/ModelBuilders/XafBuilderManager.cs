@@ -4,104 +4,103 @@ using System.ComponentModel;
 
 using DevExpress.ExpressApp.DC;
 
-namespace Xenial.Framework.ModelBuilders
+namespace Xenial.Framework.ModelBuilders;
+
+/// <summary>   Manager for xaf builders. </summary>
+///
+/// <seealso cref="BuilderManager"/>
+/// <seealso cref="ITypesInfoProvider"/>
+
+public class XafBuilderManager : BuilderManager, ITypesInfoProvider
 {
-    /// <summary>   Manager for xaf builders. </summary>
+    /// <summary>   Gets the empty builders. </summary>
     ///
-    /// <seealso cref="BuilderManager"/>
-    /// <seealso cref="ITypesInfoProvider"/>
+    /// <value> The empty builders. </value>
 
-    public class XafBuilderManager : BuilderManager, ITypesInfoProvider
+    public static IEnumerable<IBuilder> EmptyBuilders { get; } = Array.Empty<IBuilder>();
+
+    /// <summary>   Gets the types information. </summary>
+    ///
+    /// <value> The types information. </value>
+
+    public ITypesInfo TypesInfo { get; }
+
+    /// <summary>   Initializes a new instance of the <see cref="XafBuilderManager"/> class. </summary>
+    ///
+    /// <param name="typesInfo">    The types information. </param>
+
+    public XafBuilderManager(ITypesInfo typesInfo) : this(typesInfo, EmptyBuilders) { }
+
+    /// <summary>   Initializes a new instance of the <see cref="XafBuilderManager"/> class. </summary>
+    ///
+    /// <param name="typesInfo">    The types information. </param>
+    /// <param name="builders">     The builders. </param>
+
+    public XafBuilderManager(ITypesInfo typesInfo, IEnumerable<IBuilder> builders) : base()
     {
-        /// <summary>   Gets the empty builders. </summary>
-        ///
-        /// <value> The empty builders. </value>
+        TypesInfo = typesInfo;
+        Add(builders);
+    }
 
-        public static IEnumerable<IBuilder> EmptyBuilders { get; } = Array.Empty<IBuilder>();
+    /// <summary>   Creates the specified types information. </summary>
+    ///
+    /// <param name="typesInfo">    The types information. </param>
+    /// <param name="builders">     The builders. </param>
+    ///
+    /// <returns>   An XafBuilderManager. </returns>
 
-        /// <summary>   Gets the types information. </summary>
-        ///
-        /// <value> The types information. </value>
+    public static XafBuilderManager Create(ITypesInfo typesInfo, IEnumerable<IBuilder> builders)
+        => new(typesInfo, builders);
 
-        public ITypesInfo TypesInfo { get; }
+    /// <summary>
+    /// Creates the specified xaf builder manager with the the given TypesInfo.<br/>
+    /// Make sure you have an public ctor that accepts a typesInfo.
+    /// </summary>
+    ///
+    /// <exception cref="ArgumentNullException">        Thrown when one or more required arguments
+    ///                                                 are null. </exception>
+    /// <exception cref="InvalidOperationException">    Thrown when the requested operation is
+    ///                                                 invalid. </exception>
+    ///
+    /// <typeparam name="TBuilderManager">  The type of the t builder manager. </typeparam>
+    /// <param name="typesInfo">    The types information. </param>
+    ///
+    /// <returns>   TBuilderManager. </returns>
 
-        /// <summary>   Initializes a new instance of the <see cref="XafBuilderManager"/> class. </summary>
-        ///
-        /// <param name="typesInfo">    The types information. </param>
+    public static TBuilderManager Create<TBuilderManager>(ITypesInfo typesInfo)
+        where TBuilderManager : XafBuilderManager
 
-        public XafBuilderManager(ITypesInfo typesInfo) : this(typesInfo, EmptyBuilders) { }
-
-        /// <summary>   Initializes a new instance of the <see cref="XafBuilderManager"/> class. </summary>
-        ///
-        /// <param name="typesInfo">    The types information. </param>
-        /// <param name="builders">     The builders. </param>
-
-        public XafBuilderManager(ITypesInfo typesInfo, IEnumerable<IBuilder> builders) : base()
+    {
+        _ = typesInfo ?? throw new ArgumentNullException(nameof(typesInfo));
+        var instance = Activator.CreateInstance(typeof(TBuilderManager), typesInfo);
+        if (instance is TBuilderManager tInstance)
         {
-            TypesInfo = typesInfo;
-            Add(builders);
+            return tInstance;
         }
+        throw new InvalidOperationException(nameof(instance));
+    }
 
-        /// <summary>   Creates the specified types information. </summary>
-        ///
-        /// <param name="typesInfo">    The types information. </param>
-        /// <param name="builders">     The builders. </param>
-        ///
-        /// <returns>   An XafBuilderManager. </returns>
+    /// <summary>   Gets a value indicating whether [force refresh members]. </summary>
+    ///
+    /// <value> <c>true</c> if [force refresh members]; otherwise, <c>false</c>. </value>
 
-        public static XafBuilderManager Create(ITypesInfo typesInfo, IEnumerable<IBuilder> builders)
-            => new(typesInfo, builders);
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual bool ForceRefreshMembers => false;
 
-        /// <summary>
-        /// Creates the specified xaf builder manager with the the given TypesInfo.<br/>
-        /// Make sure you have an public ctor that accepts a typesInfo.
-        /// </summary>
-        ///
-        /// <exception cref="ArgumentNullException">        Thrown when one or more required arguments
-        ///                                                 are null. </exception>
-        /// <exception cref="InvalidOperationException">    Thrown when the requested operation is
-        ///                                                 invalid. </exception>
-        ///
-        /// <typeparam name="TBuilderManager">  The type of the t builder manager. </typeparam>
-        /// <param name="typesInfo">    The types information. </param>
-        ///
-        /// <returns>   TBuilderManager. </returns>
+    /// <summary>   Builds the builder. </summary>
+    ///
+    /// <param name="builder">  The builder. </param>
 
-        public static TBuilderManager Create<TBuilderManager>(ITypesInfo typesInfo)
-            where TBuilderManager : XafBuilderManager
-
+    protected override void BuildBuilder(IBuilder builder)
+    {
+        base.BuildBuilder(builder);
+        if (builder is ITypeInfoProvider typeInfoProvider)
         {
-            _ = typesInfo ?? throw new ArgumentNullException(nameof(typesInfo));
-            var instance = Activator.CreateInstance(typeof(TBuilderManager), typesInfo);
-            if (instance is TBuilderManager tInstance)
+            if (ForceRefreshMembers && typeInfoProvider.TypeInfo is TypeInfo typeInfo)
             {
-                return tInstance;
+                typeInfo.Refresh(true);
             }
-            throw new InvalidOperationException(nameof(instance));
-        }
-
-        /// <summary>   Gets a value indicating whether [force refresh members]. </summary>
-        ///
-        /// <value> <c>true</c> if [force refresh members]; otherwise, <c>false</c>. </value>
-
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        protected virtual bool ForceRefreshMembers => false;
-
-        /// <summary>   Builds the builder. </summary>
-        ///
-        /// <param name="builder">  The builder. </param>
-
-        protected override void BuildBuilder(IBuilder builder)
-        {
-            base.BuildBuilder(builder);
-            if (builder is ITypeInfoProvider typeInfoProvider)
-            {
-                if (ForceRefreshMembers && typeInfoProvider.TypeInfo is TypeInfo typeInfo)
-                {
-                    typeInfo.Refresh(true);
-                }
-                TypesInfo.RefreshInfo(typeInfoProvider.TypeInfo);
-            }
+            TypesInfo.RefreshInfo(typeInfoProvider.TypeInfo);
         }
     }
 }

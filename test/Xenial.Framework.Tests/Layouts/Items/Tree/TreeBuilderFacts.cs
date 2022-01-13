@@ -55,7 +55,7 @@ namespace Xenial.Framework.Tests.Layouts.Items
 
                 var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
 
-                detailView.VisualizeModelNode();
+                //detailView.VisualizeModelNode();
             });
         });
     }

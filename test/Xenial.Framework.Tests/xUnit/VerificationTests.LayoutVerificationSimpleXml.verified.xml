@@ -1,0 +1,39 @@
+﻿<DetailView Id="SimpleBusinessObject_DetailView"
+            ClassName="Xenial.Framework.Tests.Layouts.Items.SimpleBusinessObject">
+  <Items>
+    <PropertyEditor Id="BoolProperty"
+                    PropertyName="BoolProperty" />
+    <PropertyEditor Id="IntegerProperty"
+                    PropertyName="IntegerProperty" />
+    <PropertyEditor Id="NullableBoolProperty"
+                    PropertyName="NullableBoolProperty" />
+    <PropertyEditor Id="NullableIntegerProperty"
+                    PropertyName="NullableIntegerProperty" />
+    <PropertyEditor Id="ObjectProperty"
+                    PropertyName="ObjectProperty" />
+    <PropertyEditor Id="StringProperty"
+                    PropertyName="StringProperty" />
+  </Items>
+  <Layout>
+    <LayoutGroup Id="Main">
+      <LayoutItem Id="BoolProperty"
+                  ViewItem="BoolProperty"
+                  Index="0" />
+      <LayoutItem Id="IntegerProperty"
+                  ViewItem="IntegerProperty"
+                  Index="1" />
+      <LayoutItem Id="NullableBoolProperty"
+                  ViewItem="NullableBoolProperty"
+                  Index="2" />
+      <LayoutItem Id="NullableIntegerProperty"
+                  ViewItem="NullableIntegerProperty"
+                  Index="3" />
+      <LayoutItem Id="ObjectProperty"
+                  ViewItem="ObjectProperty"
+                  Index="4" />
+      <LayoutItem Id="StringProperty"
+                  ViewItem="StringProperty"
+                  Index="5" />
+    </LayoutGroup>
+  </Layout>
+</DetailView>

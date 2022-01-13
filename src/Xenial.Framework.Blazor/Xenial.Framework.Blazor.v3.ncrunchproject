@@ -1,0 +1,7 @@
+﻿<ProjectConfiguration>
+  <Settings>
+    <CustomBuildProperties>
+      <Value>TargetFramework = net5.0</Value>
+    </CustomBuildProperties>
+  </Settings>
+</ProjectConfiguration>

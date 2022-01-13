@@ -1,0 +1,50 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <CompilerVisibleProperty Include="XenialImageNames" />
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XenialImageNames" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="@(XenialImageNames)" XenialImageNames="true" />
+    <EmbeddedResource Include="@(XenialImageNames)" />
+  </ItemGroup>
+
+  <Target Name="InjectXenialGeneratorAttributes" BeforeTargets="PrepareForBuild;CoreCompile;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
+
+    <PropertyGroup>
+      <GenerateXenialDuckTypes Condition="'$(GenerateXenialDuckTypes)' == ''">true</GenerateXenialDuckTypes>
+      <GenerateXenialXpoBuilderAttribute Condition="'$(GenerateXenialXpoBuilderAttribute)' == ''">true</GenerateXenialXpoBuilderAttribute>
+      <GenerateXenialImageNamesAttribute Condition="'$(GenerateXenialImageNamesAttribute)' == ''">true</GenerateXenialImageNamesAttribute>
+      <GenerateXenialActionAttribute Condition="'$(GenerateXenialActionAttribute)' == ''">true</GenerateXenialActionAttribute>
+      <GenerateXenialViewIdsAttribute Condition="'$(GenerateXenialViewIdsAttribute)' == ''">true</GenerateXenialViewIdsAttribute>
+      <GenerateXenialLayoutBuilderAttribute Condition="'$(GenerateXenialLayoutBuilderAttribute)' == ''">true</GenerateXenialLayoutBuilderAttribute>
+      <GenerateXenialTypeForwardedTypes Condition="'$(GenerateXenialTypeForwardedTypes)' == ''">true</GenerateXenialTypeForwardedTypes>
+      
+
+      <XenialAttributesVisibility Condition="'$(XenialAttributesVisibility)' == ''">internal</XenialAttributesVisibility>
+      <XenialDebugSourceGenerators Condition="'$(XenialDebugSourceGenerators)' == ''">false</XenialDebugSourceGenerators>
+    
+  </PropertyGroup>
+
+    <ItemGroup>
+      <CompilerVisibleProperty Include="GenerateXenialImageNamesAttribute" />
+      <CompilerVisibleProperty Include="GenerateXenialXpoBuilderAttribute" />
+      <CompilerVisibleProperty Include="GenerateXenialActionAttribute" />
+      <CompilerVisibleProperty Include="GenerateXenialViewIdsAttribute" />
+      <CompilerVisibleProperty Include="GenerateXenialLayoutBuilderAttribute" />
+      <CompilerVisibleProperty Include="GenerateXenialTypeForwardedTypes" />
+      <CompilerVisibleProperty Include="XenialAttributesVisibility" />
+      <CompilerVisibleProperty Include="XenialDebugSourceGenerators" />
+      <CompilerVisibleProperty Include="LangVersion" />
+      <CompilerVisibleProperty Include="AssemblyName" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Update="@(XenialImageNames)" XenialImageNames="true" />
+      <EmbeddedResource Update="@(XenialImageNames)" />
+    </ItemGroup>
+    
+  </Target>
+
+</Project>

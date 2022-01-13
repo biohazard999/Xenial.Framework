@@ -1,32 +1,31 @@
 ﻿using Xenial.Framework.Layouts.Items.Base;
 
-namespace Xenial.Framework.Layouts.Items.LeafNodes
+namespace Xenial.Framework.Layouts.Items.LeafNodes;
+
+/// <summary>   (Immutable) a layout label item. </summary>
+[XenialCheckLicense]
+public partial record LayoutLabelItem : LayoutViewItemNode
 {
-    /// <summary>   (Immutable) a layout label item. </summary>
-    [XenialCheckLicence]
-    public partial record LayoutLabelItem : LayoutViewItemNode
-    {
-        /// <summary>   Gets the text. </summary>
-        ///
-        /// <value> The name of the image. </value>
+    /// <summary>   Gets the text. </summary>
+    ///
+    /// <value> The name of the image. </value>
 
-        public string Text { get; init; }
+    public string Text { get; init; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LayoutStaticImageItem"/> class.
-        /// </summary>
-        ///
-        /// <param name="text"> The text. </param>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LayoutStaticImageItem"/> class.
+    /// </summary>
+    ///
+    /// <param name="text"> The text. </param>
 
-        public LayoutLabelItem(string text)
-            => (Text, Id) = (text, Slugifier.GenerateSlug(text));
+    public LayoutLabelItem(string text)
+        => (Text, Id) = (text, Slugifier.GenerateSlug(text));
 
-        /// <summary>   Initializes a new instance of the <see cref="LayoutLabelItem"/> class. </summary>
-        ///
-        /// <param name="id">   The identifier. </param>
-        /// <param name="text"> The text. </param>
+    /// <summary>   Initializes a new instance of the <see cref="LayoutLabelItem"/> class. </summary>
+    ///
+    /// <param name="id">   The identifier. </param>
+    /// <param name="text"> The text. </param>
 
-        public LayoutLabelItem(string id, string text)
-            => (Text, Id) = (text, Slugifier.GenerateSlug(id));
-    }
+    public LayoutLabelItem(string id, string text)
+        => (Text, Id) = (text, Slugifier.GenerateSlug(id));
 }

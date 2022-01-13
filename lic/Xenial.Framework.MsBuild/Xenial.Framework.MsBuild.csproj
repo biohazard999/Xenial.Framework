@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- For the sake of demoing, put the package output into a parent folder -->
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <_TFM>netstandard2.0</_TFM>
+    <TargetFrameworks>$(_TFM)</TargetFrameworks>
+    <TargetFramework>$(_TFM)</TargetFramework>
     <!-- forces SDK to copy dependencies into build output to make packing easier -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <IncludeBuildOutput>false</IncludeBuildOutput>
@@ -22,8 +22,8 @@
   <ItemGroup>
     <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" PrivateAssets="All" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
     <PackageReference Include="Standard.Licensing" Version="1.1.5" PrivateAssets="All" />
   </ItemGroup>

@@ -6,67 +6,67 @@ using System.Text;
 
 using DevExpress.Persistent.Base;
 
-namespace Xenial.Framework.ModelBuilders
+namespace Xenial.Framework.ModelBuilders;
+
+/// <summary>   Class TokenEditorsPropertyBuilderExtensions. </summary>
+[XenialCheckLicense]
+public static partial class TokenEditorsPropertyBuilderExtensions
 {
-    /// <summary>   Class TokenEditorsPropertyBuilderExtensions. </summary>
-    public static class TokenEditorsPropertyBuilderExtensions
+    /// <summary>
+    /// Use the Token String Property Editor <see cref="TokenStringEditorAttribute"/>
+    /// </summary>
+    ///
+    /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
+    ///                                             null. </exception>
+    ///
+    /// <typeparam name="TClassType">   The type of the type. </typeparam>
+    /// <param name="builder">  The builder. </param>
+    ///
+    /// <returns>   An IPropertyBuilder&lt;string?,TClassType&gt; </returns>
+
+    public static IPropertyBuilder<string?, TClassType> UseTokenStringPropertyEditor<TClassType>(this IPropertyBuilder<string?, TClassType> builder)
     {
-        /// <summary>
-        /// Use the Token String Property Editor <see cref="TokenStringEditorAttribute"/>
-        /// </summary>
-        ///
-        /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
-        ///                                             null. </exception>
-        ///
-        /// <typeparam name="TClassType">   The type of the type. </typeparam>
-        /// <param name="builder">  The builder. </param>
-        ///
-        /// <returns>   An IPropertyBuilder&lt;string?,TClassType&gt; </returns>
+        _ = builder ?? throw new ArgumentNullException(nameof(builder));
+        return builder.WithAttribute(new TokenStringEditorAttribute());
+    }
 
-        public static IPropertyBuilder<string?, TClassType> UseTokenStringPropertyEditor<TClassType>(this IPropertyBuilder<string?, TClassType> builder)
+    /// <summary>   Uses the token string property editor. </summary>
+    ///
+    /// <exception cref="ArgumentNullException">    builder. </exception>
+    ///
+    /// <typeparam name="TClassType">   The type of the t class type. </typeparam>
+    /// <param name="builder">      The builder. </param>
+    /// <param name="configure">    (Optional) The configure. </param>
+    ///
+    /// <returns>   IPropertyBuilder&lt;System.Nullable&lt;System.String&gt;, TClassType&gt;. </returns>
+
+    public static IPropertyBuilder<string?, TClassType> UseTokenStringPropertyEditor<TClassType>(this IPropertyBuilder<string?, TClassType> builder, Action<TokenStringEditorAttribute>? configure = null)
+    {
+        _ = builder ?? throw new ArgumentNullException(nameof(builder));
+        var attribute = new TokenStringEditorAttribute();
+        if (configure is not null)
         {
-            _ = builder ?? throw new ArgumentNullException(nameof(builder));
-            return builder.WithAttribute(new TokenStringEditorAttribute());
+            configure(attribute);
         }
+        return builder.WithAttribute(attribute);
+    }
 
-        /// <summary>   Uses the token string property editor. </summary>
-        ///
-        /// <exception cref="ArgumentNullException">    builder. </exception>
-        ///
-        /// <typeparam name="TClassType">   The type of the t class type. </typeparam>
-        /// <param name="builder">      The builder. </param>
-        /// <param name="configure">    (Optional) The configure. </param>
-        ///
-        /// <returns>   IPropertyBuilder&lt;System.Nullable&lt;System.String&gt;, TClassType&gt;. </returns>
+    /// <summary>
+    /// Use the Token Objects Property Editor <see cref="TokenObjectsEditorAttribute" />
+    /// </summary>
+    ///
+    /// <exception cref="ArgumentNullException">    builder. </exception>
+    ///
+    /// <typeparam name="TProperty">    The type of the t property. </typeparam>
+    /// <typeparam name="TClassType">   The type of the type. </typeparam>
+    /// <param name="builder">  The builder. </param>
+    ///
+    /// <returns>   IPropertyBuilder&lt;TProperty, TClassType&gt;. </returns>
 
-        public static IPropertyBuilder<string?, TClassType> UseTokenStringPropertyEditor<TClassType>(this IPropertyBuilder<string?, TClassType> builder, Action<TokenStringEditorAttribute>? configure = null)
-        {
-            _ = builder ?? throw new ArgumentNullException(nameof(builder));
-            var attribute = new TokenStringEditorAttribute();
-            if (configure is not null)
-            {
-                configure(attribute);
-            }
-            return builder.WithAttribute(attribute);
-        }
-
-        /// <summary>
-        /// Use the Token Objects Property Editor <see cref="TokenObjectsEditorAttribute" />
-        /// </summary>
-        ///
-        /// <exception cref="ArgumentNullException">    builder. </exception>
-        ///
-        /// <typeparam name="TProperty">    The type of the t property. </typeparam>
-        /// <typeparam name="TClassType">   The type of the type. </typeparam>
-        /// <param name="builder">  The builder. </param>
-        ///
-        /// <returns>   IPropertyBuilder&lt;TProperty, TClassType&gt;. </returns>
-
-        public static IPropertyBuilder<TProperty?, TClassType> UseTokenObjectsPropertyEditor<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder)
-            where TProperty : IList
-        {
-            _ = builder ?? throw new ArgumentNullException(nameof(builder));
-            return builder.WithAttribute(new TokenObjectsEditorAttribute());
-        }
+    public static IPropertyBuilder<TProperty?, TClassType> UseTokenObjectsPropertyEditor<TProperty, TClassType>(this IPropertyBuilder<TProperty?, TClassType> builder)
+        where TProperty : IList
+    {
+        _ = builder ?? throw new ArgumentNullException(nameof(builder));
+        return builder.WithAttribute(new TokenObjectsEditorAttribute());
     }
 }

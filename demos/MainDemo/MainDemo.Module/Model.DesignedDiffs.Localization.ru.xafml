@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application>
+  <ActionDesign>
+    <Actions>
+      <Action Id="ClearTasksAction" ToolTip="Очистить список задач" Caption="Очистить список задач" />
+      <Action Id="DemoTask.Postpone" Caption="Отложить" ToolTip="Отложить задачу на следующий день" />
+      <Action Id="MyDetails" Caption="Мой профиль" />
+      <Action Id="SetTaskAction" Caption="Установить задачу" ToolTip="Установить задачу" />
+    </Actions>
+  </ActionDesign>
+  <BOModel>
+    <Class Name="MainDemo.Module.BusinessObjects.DemoTask" Caption="Задача">
+      <OwnMembers>
+        <Member Name="ActualWorkHours" Caption="Фактические часы работы" />
+        <Member Name="EstimatedWorkHours" Caption="Расчетные часы работы" />
+        <Member Name="Priority" Caption="Приоритет" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.Department" Caption="Отдел">
+      <OwnMembers>
+        <Member Name="DepartmentHead" Caption="Глава отдела" />
+        <Member Name="Description" Caption="Описание" />
+        <Member Name="Employees" Caption="Сотрудники" />
+        <Member Name="Location" Caption="Место расположения" />
+        <Member Name="NumberOfEmployees" Caption="Количество сотрудников" />
+        <Member Name="Office" Caption="Офис" />
+        <Member Name="Positions" Caption="Должности" />
+        <Member Name="Title" Caption="Название" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.Employee" Caption="Сотрудник">
+      <OwnMembers>
+        <Member Name="Anniversary" Caption="Дата свадьбы" />
+        <Member Name="ChangeHistory" Caption="История изменений" />
+        <Member Name="Department" Caption="Отдел" />
+        <Member Name="Manager" Caption="Менеджер" />
+        <Member Name="NickName" Caption="Псевдоним" />
+        <Member Name="Position" Caption="Должность" />
+        <Member Name="SpouseName" Caption="Супруг(а)" />
+        <Member Name="Tasks" Caption="Задачи" />
+        <Member Name="TitleOfCourtesy" Caption="Обращение" />
+        <Member Name="WebPageAddress" Caption="Адрес веб-страницы" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.Location" Caption="Место расположения" />
+    <Class Name="MainDemo.Module.BusinessObjects.Paycheck" Caption="Платежная ведомость">
+      <OwnMembers>
+        <Member Name="Employee" Caption="Сотрудник" />
+        <Member Name="GrossPay" Caption="Валовая оплата" />
+        <Member Name="Hours" Caption="Часы" />
+        <Member Name="NetPay" Caption="Чистая заработная плата" />
+        <Member Name="Notes" Caption="Причения" />
+        <Member Name="OvertimeHours" Caption="Сверхурочная часы" />
+        <Member Name="OvertimePayRate" Caption="Ставка оплаты сверхурочных" />
+        <Member Name="PaymentDate" Caption="Дата платежа" />
+        <Member Name="PayPeriod" Caption="Период оплаты" />
+        <Member Name="PayPeriodEnd" Caption="Дата окончания платежного периода" />
+        <Member Name="PayPeriodStart" Caption="Дата начала платежного периода" />
+        <Member Name="PayRate" Caption="Ставка оплаты" />
+        <Member Name="TaxRate" Caption="Ставка налога" />
+        <Member Name="TotalTax" Caption="Общий налог" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.PortfolioFileData" Caption="Портфолио">
+      <OwnMembers>
+        <Member Name="DocumentType" Caption="Тип документа" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.Position" Caption="Должность">
+      <OwnMembers>
+        <Member Name="Departments" Caption="Отделы" />
+        <Member Name="Title" Caption="Название" />
+      </OwnMembers>
+    </Class>
+    <Class Name="MainDemo.Module.BusinessObjects.Resume" Caption="Анкета">
+      <OwnMembers>
+        <Member Name="Employee" Caption="Сотрудник" />
+        <Member Name="File" Caption="Файл" />
+        <Member Name="Portfolio" Caption="Портфолио" />
+      </OwnMembers>
+    </Class>
+  </BOModel>
+  <Localization>
+    <LocalizationGroup Name="Enums">
+      <LocalizationGroup Name="MainDemo.Module.BusinessObjects.DocumentType">
+        <LocalizationItem Name="Diagrams" Value="Диаграммы" />
+        <LocalizationItem Name="Documentation" Value="Документация" />
+        <LocalizationItem Name="Screenshots" Value="Скриншоты" />
+        <LocalizationItem Name="SourceCode" Value="Исходный код" />
+        <LocalizationItem Name="Tests" Value="Тесты" />
+        <LocalizationItem Name="Unknown" Value="Неизвестный" />
+      </LocalizationGroup>
+      <LocalizationGroup Name="MainDemo.Module.BusinessObjects.Priority">
+        <LocalizationItem Name="High" Value="Высокий" />
+        <LocalizationItem Name="Low" Value="Низкий" />
+        <LocalizationItem Name="Normal" Value="Обычный" />
+      </LocalizationGroup>
+    </LocalizationGroup>
+  </Localization>
+  <NavigationItems>
+    <Items>
+      <Item Id="Default" Caption="Основное">
+        <Items>
+          <Item Id="Employee_ListView" Caption="Сотрудники" />
+          <Item Id="ApplicationUser_ListView" Caption="Пользователи" />
+          <Item Id="DemoTask_ListView" Caption="Задачи" />
+          <Item Id="Department_ListView" Caption="Отделы" />
+          <Item Id="Event_ListView" Caption="Календарь" />
+          <Item Id="Note" Caption="Заметки" />
+          <Item Id="Paycheck_ListView" Caption="Платежные ведомости" />
+          <Item Id="PermissionPolicyRole_ListView" Caption="Роли" />
+          <Item Id="Position_ListView" Caption="Должности" />
+          <Item Id="Resume_ListView" Caption="Анкеты" />
+        </Items>
+      </Item>
+      <Item Id="Reports">
+        <Items>
+          <Item Id="Analysis_ListView" Caption="Анализ" />
+          <Item Id="ReportsV2" Caption="Отчеты" />
+        </Items>
+      </Item>
+    </Items>
+  </NavigationItems>
+  <Views>
+    <ListView Id="Analysis_ListView" Caption="Анализ" />
+    <ListView Id="ApplicationUser_ListView" Caption="Пользователи" />
+    <DetailView Id="AuthenticationStandardLogonParameters_DetailView_Demo" Caption="Войти в систему">
+      <Items>
+        <StaticText Id="LogonText" Text="Введите имя пользователя и пароль, чтобы продолжить." />
+        <PropertyEditor Id="Password" ToolTip="Оставьте это поле пустым и нажмите клавишу Enter, чтобы войти в систему." />
+        <StaticText Id="PasswordHint" Text="Это демонстрационное приложение не требует пароля для входа" />
+        <StaticText Id="WelcomeText" Text="Добро пожаловать в eXpressApp Framework Main Demo" />
+      </Items>
+    </DetailView>
+    <ListView Id="DemoTask_ListView" Caption="Задачи" />
+    <DetailView Id="Department_DetailView">
+      <Items>
+        <PropertyEditor Id="Employees" Caption="Сотрудники" />
+      </Items>
+    </DetailView>
+    <ListView Id="Department_ListView" Caption="Отделы" />
+    <DetailView Id="Employee_DetailView">
+      <Items>
+        <PropertyEditor Id="Address1" Caption="Адрес" />
+      </Items>
+    </DetailView>
+    <ListView Id="Employee_ListView" Caption="Сотрудники" />
+    <ListView Id="Employee_ListView_AllColumns" Caption="Сотрудники" />
+    <ListView Id="Employee_ListView_Varied">
+      <Variants>
+        <Variant Id="Default" Caption="Несколько колонок" />
+        <Variant Id="All columns" Caption="Все колонки" />
+      </Variants>
+    </ListView>
+    <DetailView Id="Event_DetailView" Caption="Встреча">
+      <Layout>
+        <LayoutGroup Id="Main">
+          <LayoutGroup Id="SimpleEditors">
+            <LayoutGroup Id="Event" Caption="Встреча" />
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="Event_ListView" Caption="Календарь" />
+    <ListView Id="Note_ListView" Caption="Заметки" />
+    <DetailView Id="Paycheck_DetailView" Caption="Платежная ведомость" />
+    <ListView Id="Paycheck_ListView" Caption="Платежные ведомости" />
+    <ListView Id="Paycheck_LookupListView" Caption="Платежные ведомости" />
+    <ListView Id="PermissionPolicyRole_ListView" Caption="Роли" />
+    <ListView Id="ReportDataV2_ListView" Caption="Отчеты" />
+    <ListView Id="Resume_ListView" Caption="Анкеты" />
+  </Views>
+</Application>

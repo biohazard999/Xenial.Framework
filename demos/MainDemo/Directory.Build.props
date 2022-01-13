@@ -2,7 +2,9 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
   <PropertyGroup>
-    <XenialDebug>false</XenialDebug>
+    <XenialDebug Condition="'$(XENIAL_DEBUG)' != ''">true</XenialDebug>
+    <Nullable>disable</Nullable>
+    <NoWarn>$(NoWarn);CA1304;CA1305;CA1307;CA1310;CA1010;CA1062;CA2211;CA1031;CA1822;CA1033;CA1819;CA5394;CA5366;CA2351;CA2100;CA1810;CA1051;CA3075;CA1812;IDE1006;IDE0022</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

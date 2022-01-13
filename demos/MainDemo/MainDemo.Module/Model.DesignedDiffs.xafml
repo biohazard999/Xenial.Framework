@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application WebSite="http://www.devexpress.com">
+  <ActionDesign>
+    <Actions>
+      <Action Id="ClearTasksAction" SelectionDependencyType="RequireSingleObject" ConfirmationMessage="Are you sure you want to clear the Tasks list?" ToolTip="Clear the current employee's Tasks list" Shortcut="Control+Shift+C" />
+      <Action Id="SaveAndClose" ValidationContexts="SaveAndClose" />
+      <Action Id="SetTaskAction">
+        <ChoiceActionItems>
+          <ChoiceActionItem Id="Status">
+            <ChoiceActionItems>
+              <ChoiceActionItem Id="InProgress" Caption="In Progress" />
+              <ChoiceActionItem Id="NotStarted" Caption="Not Started" />
+              <ChoiceActionItem Id="WaitingForSomeoneElse" Caption="Waiting For Someone Else" />
+            </ChoiceActionItems>
+          </ChoiceActionItem>
+        </ChoiceActionItems>
+      </Action>
+      <Action Id="Task.MarkCompleted" ValidationContexts="MarkCompleted" Caption="Mark Completed" />
+    </Actions>
+    <ActionToContainerMapping>
+      <ActionContainer Id="RecordEdit">
+        <ActionLink ActionId="ClearTasksAction" IsNewNode="True" />
+      </ActionContainer>
+      <ActionContainer Id="Unspecified">
+        <ActionLink ActionId="ClearTasksAction" Removed="True" />
+      </ActionContainer>
+    </ActionToContainerMapping>
+  </ActionDesign>
+  <CreatableItems>
+    <CreatableItem ClassName="DevExpress.Persistent.BaseImpl.Event" Caption="Event" IsNewNode="True" />
+    <CreatableItem ClassName="DevExpress.Persistent.BaseImpl.Note" IsNewNode="True" />
+  </CreatableItems>
+  <NavigationItems GenerateRelatedViewVariantsGroup="True" RelatedViewVariantsGroupCaption="Views" GenerateRelatedReportsGroup="True" StartupNavigationItem="Employee_ListView">
+    <Items>
+      <Item Id="Default" ChildItemsDisplayStyle="List" Index="0">
+        <Items>
+          <Item Id="Employee_ListView" Caption="Employees" Index="0" ViewId="Employee_ListView_Varied" />
+          <Item Id="ApplicationUser_ListView" Caption="Users" IsNewNode="True" />
+          <Item Id="DemoTask_ListView" Caption="Tasks" />
+          <Item Id="Department_ListView" Caption="Departments" />
+          <Item Id="Note" ViewId="Note_ListView" Caption="Notes" IsNewNode="True" />
+          <Item Id="Paycheck_ListView" Caption="Payroll" />
+          <Item Id="PermissionPolicyRole_ListView" Caption="Roles" IsNewNode="True" />
+          <Item Id="Position_ListView" Caption="Positions" Removed="True" />
+          <Item Id="Resume_ListView" Caption="Resumes" />
+        </Items>
+      </Item>
+      <Item Id="Reports">
+        <Items>
+          <Item Id="Analysis_ListView" Caption="Analytics" />
+        </Items>
+      </Item>
+    </Items>
+  </NavigationItems>
+  <Options>
+    <LayoutManagerOptions RequiredFieldMark="*" />
+  </Options>
+  <SchemaModules IsNewNode="True">
+    <SchemaModule Name="CloneObjectModule" Version="21.2.4.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="21.2.4.0" IsNewNode="True" />
+    <SchemaModule Name="ValidationModule" Version="21.2.4.0" IsNewNode="True" />
+    <SchemaModule Name="ViewVariantsModule" Version="21.2.4.0" IsNewNode="True" />
+  </SchemaModules>
+  <Validation>
+    <Rules>
+      <RuleRequiredField Id="Calendar_SubjectIsNotEmpty" TargetType="DevExpress.Persistent.BaseImpl.Event" TargetPropertyName="Subject" TargetContextIDs="Save" IsNewNode="True" />
+      <RuleRequiredField Id="Employee_EmailIsNotEmpty" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetPropertyName="Email" TargetContextIDs="Save" IsNewNode="True" />
+      <RuleRequiredField Id="Employee_FirstNameIsNotEmpty" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetPropertyName="FirstName" TargetContextIDs="Save" IsNewNode="True" />
+      <RuleRange Id="Employee_InvalidBirthday" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetContextIDs="Save" TargetPropertyName="Birthday" MaximumValueExpression="Today()" MinimumValueExpression="#1900-01-01 00:00:00.00000#" CustomMessageTemplate="&quot;Birth Date&quot; must be between 1/1/1900 and today." IsNewNode="True" />
+      <RuleRegularExpression Id="Employee_InvalidEmail" Pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" TargetContextIDs="Save" TargetPropertyName="Email" TargetType="MainDemo.Module.BusinessObjects.Employee" CustomMessageTemplate="Invalid &quot;Email&quot;." IsNewNode="True" />
+      <RuleRange Id="Employee_InvalidWeddingDate" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetContextIDs="Save" TargetPropertyName="Anniversary" MaximumValueExpression="Today()" MinimumValueExpression="#1900-01-01 00:00:00.00000#" CustomMessageTemplate="&quot;Wedding Date&quot; must be between 1/1/1900 and today." IsNewNode="True" />
+      <RuleRequiredField Id="Employee_LastNameIsNotEmpty" TargetType="MainDemo.Module.BusinessObjects.Employee" TargetPropertyName="LastName" TargetContextIDs="Save" IsNewNode="True" />
+      <RuleRegularExpression Id="Employee_PhoneNumber" Pattern="^\([0-9]{3}\)\s?[0-9]{3}-[0-9]{4}$" TargetContextIDs="Save" TargetPropertyName="Number" TargetType="DevExpress.Persistent.BaseImpl.PhoneNumber" CustomMessageTemplate="&quot;Number&quot; must be in the following format: &quot;(000) 000-0000&quot;." IsNewNode="True" />
+      <RuleRequiredField Id="Employee_PhoneNumberIsNotEmpty" TargetType="DevExpress.Persistent.BaseImpl.PhoneNumber" TargetPropertyName="Number" TargetContextIDs="Save" IsNewNode="True" />
+      <RuleRange Id="Task_PercentCompleted" TargetType="MainDemo.Module.BusinessObjects.DemoTask" TargetContextIDs="Save" TargetPropertyName="PercentCompleted" MinimumValue="0" MaximumValue="100" IsNewNode="True" />
+      <RuleValueComparison Id="Task_StartDate_DueDate" TargetPropertyName="DueDate" RightOperandExpression="StartDate" OperatorType="GreaterThanOrEqual" TargetType="MainDemo.Module.BusinessObjects.DemoTask" TargetContextIDs="Save" IsNewNode="True" />
+      <RuleRequiredField Id="TaskSubjectIsNotEmpty" TargetType="DevExpress.Persistent.BaseImpl.Task" TargetPropertyName="Subject" TargetContextIDs="Save" IsNewNode="True" />
+    </Rules>
+  </Validation>
+  <Views>
+    <ListView Id="DemoTask_Employees_ListView">
+      <Columns>
+        <ColumnInfo Id="Anniversary" Index="-1" />
+        <ColumnInfo Id="Manager" Index="-1" />
+        <ColumnInfo Id="NickName" Index="-1" />
+        <ColumnInfo Id="SpouseName" Index="-1" />
+        <ColumnInfo Id="TitleOfCourtesy" Index="-1" />
+        <ColumnInfo Id="WebPageAddress" Index="-1" />
+        <ColumnInfo Id="Department" Index="1" />
+        <ColumnInfo Id="Birthday" Index="2" />
+        <ColumnInfo Id="Position" Index="3" />
+      </Columns>
+    </ListView>
+    <ListView Id="Department_Employees_ListView">
+      <Columns>
+        <ColumnInfo Id="Anniversary" Index="-1" />
+        <ColumnInfo Id="Manager" Index="-1" />
+        <ColumnInfo Id="NickName" Index="-1" />
+        <ColumnInfo Id="SpouseName" Index="-1" />
+        <ColumnInfo Id="TitleOfCourtesy" Index="-1" />
+        <ColumnInfo Id="WebPageAddress" Index="-1" />
+        <ColumnInfo Id="Birthday" Index="1" />
+        <ColumnInfo Id="Position" Index="2" />
+        <ColumnInfo Id="Email" Index="3" />
+      </Columns>
+    </ListView>
+    <ListView Id="Department_ListView" Caption="Departments" MasterDetailMode="ListViewAndDetailView">
+      <Columns>
+        <ColumnInfo Id="Location" Index="1" SortOrder="Ascending" />
+        <ColumnInfo Id="Office" Index="2" />
+        <ColumnInfo Id="NumberOfEmployees" PropertyName="NumberOfEmployees" Index="3" IsNewNode="True" />
+        <ColumnInfo Id="DepartmentHead" Width="155" Index="4" />
+        <ColumnInfo Id="Description" Index="5" />
+      </Columns>
+    </ListView>
+    <ListView Id="Employee_ListView_Varied" ClassName="MainDemo.Module.BusinessObjects.Employee">
+      <Variants IsNewNode="True">
+        <Variant Id="Default" Caption="Few columns" ViewID="Employee_ListView" Index="1" IsNewNode="True" />
+        <Variant Id="All columns" Caption="All columns" ViewID="Employee_ListView_AllColumns" Index="2" IsNewNode="True" />
+      </Variants>
+    </ListView>
+    <ListView Id="Employee_Tasks_ListView" AllowEdit="True" NewItemRowPosition="Top">
+      <Columns>
+        <ColumnInfo Id="Status" Index="1" />
+        <ColumnInfo Id="AssignedTo" Index="2" />
+        <ColumnInfo Id="Priority" Index="3" />
+        <ColumnInfo Id="EstimatedWorkHours" Index="4" />
+        <ColumnInfo Id="ActualWorkHours" Index="5" />
+      </Columns>
+    </ListView>
+    <DetailView Id="Event_DetailView" Caption="Appointment">
+      <Layout>
+        <LayoutGroup Id="Main">
+          <LayoutGroup Id="SimpleEditors">
+            <LayoutGroup Id="Event" Caption="Appointment">
+              <LayoutGroup Id="Event_col2">
+                <LayoutItem Id="ReminderTime" ViewItem="ReminderTime" SizeConstraintsType="Default" Index="2" IsNewNode="True" />
+              </LayoutGroup>
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="UseSQLAlternativeInfo_DetailView" Caption="Warning!">
+      <Items>
+        <PropertyEditor Id="Alternative" Removed="True" />
+        <StaticText Id="AlternativeStaticText" HorizontalAlign="Left" VerticalAlign="Middle" Text="XPO InMemoryDataStore" IsNewNode="True" />
+        <StaticImage Id="InfoStaticImage" ImageName="State_Validation_Information" SvgImageHeight="64" SvgImageWidth="64" IsNewNode="True" />
+        <StaticText Id="NoteStaticText" HorizontalAlign="Left" VerticalAlign="Middle" Text="This may cause performance issues. All data modifications will be lost when you close the application." IsNewNode="True" />
+        <PropertyEditor Id="Restrictions" Removed="True" />
+        <PropertyEditor Id="SQLIssue" Removed="True" />
+        <StaticText Id="SQLIssueText" VerticalAlign="Middle" HorizontalAlign="Left" Text="Could not find a SQL database server on your computer." IsNewNode="True" />
+      </Items>
+    </DetailView>
+  </Views>
+</Application>

@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.FilePreviewEditors\Xenial.Framework.FilePreviewEditors.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.FilePreviewEditors.Win\Xenial.Framework.FilePreviewEditors.Win.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MimeKit" Version="3.0.0" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+</Project>

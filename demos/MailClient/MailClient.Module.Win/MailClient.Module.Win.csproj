@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(FullFrameworkVersion)</TargetFrameworks>
+    <TargetFrameworks>$(WindowsFrameworkVersion6);$(FullFrameworkVersion)</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
@@ -24,11 +24,13 @@
   <ItemGroup Condition="'$(XenialDebug)' == 'false'">
     <PackageReference Include="Xenial.Framework.Win" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.TokenEditors.Win" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.LabelEditors.Win" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Win/Xenial.Framework.Win.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors.Win/Xenial.Framework.TokenEditors.Win.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.LabelEditors.Win/Xenial.Framework.LabelEditors.Win.csproj" />
   </ItemGroup>
   
 </Project>

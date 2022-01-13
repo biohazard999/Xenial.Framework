@@ -10,6 +10,7 @@ using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
 
 using Xenial.Framework.ModelBuilders;
+using Xenial.Framework.Layouts;
 
 namespace MailClient.Module.BusinessObjects
 {
@@ -26,6 +27,7 @@ namespace MailClient.Module.BusinessObjects
                 .HasCaption("Mail")
                 .WithDefaultListViewOptions(MasterDetailMode.ListViewAndDetailView)
                 .GenerateNoLookupListView()
+                .WithAttribute(new DetailViewLayoutBuilderAttribute(typeof(MailLayoutBuilder)))
             ;
 
             ForAllProperties()

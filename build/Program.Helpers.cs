@@ -17,7 +17,7 @@ namespace Xenial.Build
             var netcore = props.Descendants("NetCoreVersion").First().Value;
             var net5 = props.Descendants("Net5Version").First().Value;
             var netstandardVersion = props.Descendants("NetStandardVersion").First().Value;
-            var winVersion = props.Descendants("WindowsFrameworkVersion").First().Value;
+            var winVersion = props.Descendants("WindowsFrameworkVersion6").First().Value;
             return (fullFramework, netcore, net5, winVersion, netstandardVersion);
         }
 

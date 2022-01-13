@@ -19,8 +19,7 @@ using MailKit.Security;
 using MimeKit;
 using System.IO;
 using Xenial.Framework;
-using DevExpress.Utils.Filtering.Internal;
-using System.Resources;
+using System.Globalization;
 
 namespace MailClient.Module.Domain
 {
@@ -35,11 +34,11 @@ namespace MailClient.Module.Domain
         {
             using var os = objectSpaceFactory(typeof(Mail));
 
-            static async Task CommitChangesAsync(IObjectSpace objectSpace)
+            static async Task CommitChangesAsync(IObjectSpace objectSpace, CancellationToken cancellationToken = default)
             {
                 if (objectSpace is IObjectSpaceAsync osAsync)
                 {
-                    await osAsync.CommitChangesAsync();
+                    await osAsync.CommitChangesAsync(cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -47,11 +46,11 @@ namespace MailClient.Module.Domain
                 }
             }
 
-            static async Task<MailAccount?> FindMailAccountAsync(IObjectSpace objectSpace, int mailConfigId)
+            static async Task<MailAccount?> FindMailAccountAsync(IObjectSpace objectSpace, int mailConfigId, CancellationToken cancellationToken = default)
             {
                 if (objectSpace is IObjectSpaceAsync osAsync)
                 {
-                    return (MailAccount?)await osAsync.GetObjectByKeyAsync(typeof(MailAccount), mailConfigId);
+                    return (MailAccount?)await osAsync.GetObjectByKeyAsync(typeof(MailAccount), mailConfigId, cancellationToken).ConfigureAwait(false);
                 }
 
                 return (MailAccount?)objectSpace.GetObjectByKey(typeof(MailAccount), mailConfigId);
@@ -73,7 +72,7 @@ namespace MailClient.Module.Domain
             {
                 using var os = objectSpaceFactory(typeof(MailSettings));
                 var settings = os.GetSingleton<MailSettings>();
-                return Path.Combine(settings.StoragePath, mailAccountId.ToString());
+                return Path.Combine(settings.StoragePath, mailAccountId.ToString(CultureInfo.InvariantCulture));
             }
 
             (Guid uniqueId, string fileName) CreateFileName(int mailAccountId, MailDirection direction, DateTime dateTime)
@@ -99,7 +98,7 @@ namespace MailClient.Module.Domain
             {
                 var baseFolder = GetBaseFolder(mailAccountId);
                 var (uniqueId, fileName) = CreateFileName(mailAccountId, direction, dateTime);
-                var fullFileName = Path.Combine(baseFolder, dateTime.Year.ToString(), dateTime.Month.ToString(), fileName);
+                var fullFileName = Path.Combine(baseFolder, dateTime.Year.ToString(CultureInfo.InvariantCulture), dateTime.Month.ToString(CultureInfo.InvariantCulture), fileName);
                 return (uniqueId, fullFileName);
             }
 
@@ -206,9 +205,9 @@ namespace MailClient.Module.Domain
 
             async IAsyncEnumerable<Mail> ReceiveAsync(int mailAccountId, IMailFolder folder, [EnumeratorCancellation] CancellationToken cancellationToken = default)
             {
-                await folder.OpenAsync(FolderAccess.ReadOnly, cancellationToken: cancellationToken);
+                await folder.OpenAsync(FolderAccess.ReadOnly, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                var uniqueIds = await folder.FetchAsync(0, -1, MessageSummaryItems.UniqueId, cancellationToken: cancellationToken);
+                var uniqueIds = await folder.FetchAsync(0, -1, MessageSummaryItems.UniqueId, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 var query = new MailQuery(objectSpaceFactory);
 
@@ -217,9 +216,9 @@ namespace MailClient.Module.Domain
                 var inboxCount = uniqueIds.Count;
                 for (var current = inboxCount - 1; current > -1; current--)
                 {
-                    using var headerStream = await folder.GetStreamAsync(uniqueIds[current].UniqueId, "HEADER", cancellationToken: cancellationToken);
+                    using var headerStream = await folder.GetStreamAsync(uniqueIds[current].UniqueId, "HEADER", cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                    var headerList = HeaderList.Load(headerStream, cancellationToken: cancellationToken);
+                    var headerList = await HeaderList.LoadAsync(headerStream, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                     if (current % 15 == 0)
                     {
@@ -241,7 +240,7 @@ namespace MailClient.Module.Domain
 
                             async Task<(Guid uuid, string fileName)> StoreMessage()
                             {
-                                using (var rawMessageStream = await folder.GetStreamAsync(uniqueId, string.Empty, cancellationToken: cancellationToken))
+                                using (var rawMessageStream = await folder.GetStreamAsync(uniqueId, string.Empty, cancellationToken: cancellationToken).ConfigureAwait(false))
                                 {
                                     var (uuid, fullFileName) = CreateFullFileName(mailAccountId, MailDirection.Inbound, currentDateTime);
 
@@ -250,7 +249,7 @@ namespace MailClient.Module.Domain
                                     using (var fileStream = File.Create(fullFileName))
                                     {
                                         rawMessageStream.Seek(0, SeekOrigin.Begin);
-                                        await rawMessageStream.CopyToAsync(fileStream);
+                                        await rawMessageStream.CopyToAsync(fileStream).ConfigureAwait(false);
                                     }
                                     return (uuid, fullFileName);
                                 }
@@ -260,13 +259,13 @@ namespace MailClient.Module.Domain
                             {
                                 using var fileStream = File.OpenRead(fullFileName);
 
-                                var message = MimeMessage.Load(fileStream, cancellationToken: cancellationToken);
+                                var message = await MimeMessage.LoadAsync(fileStream, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                                 using var os = objectSpaceFactory(typeof(Mail));
                                 try
                                 {
                                     var mail = CreateMail(os, new(mailAccountId, currentDateTime, uuid, fullFileName, messageId, messageIdHash, message, fileStream.Length), folder.FullName);
-                                    await CommitChangesAsync(os);
+                                    await CommitChangesAsync(os, cancellationToken).ConfigureAwait(false);
                                     return mail;
                                 }
                                 catch
@@ -276,9 +275,9 @@ namespace MailClient.Module.Domain
                                 return null;
                             }
 
-                            var (uuid, fileName) = await StoreMessage();
+                            var (uuid, fileName) = await StoreMessage().ConfigureAwait(false);
 
-                            var mail = await LoadMesage(uuid, fileName);
+                            var mail = await LoadMesage(uuid, fileName).ConfigureAwait(false);
 
                             if (mail is not null)
                             {
@@ -290,7 +289,7 @@ namespace MailClient.Module.Domain
                 }
             }
 
-            var mailAccount = await FindMailAccountAsync(os, mailConfigId);
+            var mailAccount = await FindMailAccountAsync(os, mailConfigId, cancellationToken: cancellationToken).ConfigureAwait(false);
             if (mailAccount is null)
             {
                 yield break;
@@ -309,7 +308,7 @@ namespace MailClient.Module.Domain
                 mailAccount.ReceivePort ?? 993,
                 options: GetSecuritySocketOptions(mailAccount.SecuritySocketOptions),
                 cancellationToken: cancellationToken
-            );
+            ).ConfigureAwait(false);
 
             imapClient.AuthenticationMechanisms.Remove("XOAUTH2");
 
@@ -317,7 +316,7 @@ namespace MailClient.Module.Domain
                 mailAccount.ReceiveUserName,
                 mailAccount.ReceivePassword,
                 cancellationToken: cancellationToken
-            );
+            ).ConfigureAwait(false);
 
             var inbox = imapClient.Inbox;
 
@@ -330,7 +329,7 @@ namespace MailClient.Module.Domain
             }
             finally
             {
-                await imapClient.DisconnectAsync(true, cancellationToken);
+                await imapClient.DisconnectAsync(true, cancellationToken).ConfigureAwait(false);
             }
 
             yield break;
@@ -460,7 +459,7 @@ namespace MailClient.Module.Domain
 
             for (int i = 0, byteCounter = 0; i < outputBytes.Length; i++, byteCounter++)
             {
-                sb.AppendFormat("{0:X2}", outputBytes[i]);
+                sb.AppendFormat(CultureInfo.InvariantCulture, "{0:X2}", outputBytes[i]);
                 if ((i % separatorByteCount) == separatorByteCount - 1 && i != outputBytes.Length - 1)
                 {
                     sb.Append(separator);

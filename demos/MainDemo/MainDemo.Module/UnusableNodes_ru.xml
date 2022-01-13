@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application>
+  <Views Id="Views">
+    <DetailView Id="DemoTask_DetailView">
+      <Layout Id="Layout">
+        <LayoutGroup Id="Main">
+          <LayoutGroup Id="SimpleEditors">
+            <LayoutGroup Id="DemoTask">
+              <LayoutGroup Id="Task" Caption="Сведения" />
+              <LayoutGroup Id="AdditionalInformation" Caption="Дополнительная информация" />
+            </LayoutGroup>
+          </LayoutGroup>
+          <LayoutGroup Id="Employees_Group" Caption="Сотрудники" />
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="Employee_DetailView">
+      <Layout Id="Layout">
+        <LayoutGroup Id="Main">
+          <LayoutGroup Id="SimpleEditors">
+            <LayoutGroup Id="Person" Caption="Сведения" />
+            <LayoutGroup Id="Employee" Caption="Дополнительная информация" />
+          </LayoutGroup>
+          <LayoutGroup Id="SizeableEditors" Caption="Заметки" />
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="Employee_ListView">
+      <Filters Id="Filters">
+        <Filter Id="AllEmployees" Caption="Все сотрудники" />
+        <Filter Id="Developers" Caption="Разработчики" />
+        <Filter Id="Managers" Caption="Менеджеры" />
+        <Filter Id="TopExecutives" Caption="Топ-менеджеры" />
+      </Filters>
+    </ListView>
+    <DetailView Id="Paycheck_DetailView">
+      <Layout Id="Layout">
+        <LayoutGroup Id="Main">
+          <LayoutGroup Id="Autoc7781f53-9294-4695-b3a5-f47400c12e7a">
+            <LayoutGroup Id="Employee_Group" Caption="Данные о сотруднике" />
+            <LayoutGroup Id="Period_Group" Caption="Период" />
+          </LayoutGroup>
+          <LayoutGroup Id="Autoc465db88-4795-44dc-a2a0-cbf0c4c1eaca">
+            <LayoutGroup Id="Totals_Group" Caption="Общая зарплата" />
+            <LayoutGroup Id="Payment_Group" Caption="Детали оплаты" />
+          </LayoutGroup>
+          <LayoutGroup Id="Overtime_Pay" Caption="Сверхурочная оплата" />
+          <LayoutGroup Id="SizeableEditors" Caption="Заметки" />
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+  </Views>
+</Application>

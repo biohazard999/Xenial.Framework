@@ -9,101 +9,133 @@ using DevExpress.Utils;
 using Xenial.Framework.Layouts.Items;
 using Xenial.Framework.Layouts.Items.Base;
 
-namespace Xenial.Framework.Model.GeneratorUpdaters
+namespace Xenial.Framework.Model.GeneratorUpdaters;
+
+public partial class ModelDetailViewLayoutNodesGeneratorUpdater
 {
-    public partial class ModelDetailViewLayoutNodesGeneratorUpdater
+    internal class NodeBuilderFactory : IModelViewLayoutElementFactory
     {
-        internal class NodeBuilderFactory : IModelViewLayoutElementFactory
-        {
-            private readonly Dictionary<Type, Lazy<IModelViewLayoutElementFactory>> modelViewLayoutElementFactories
-                = new Dictionary<Type, Lazy<IModelViewLayoutElementFactory>>();
+        private readonly Dictionary<Type, Lazy<IModelViewLayoutElementFactory>> modelViewLayoutElementFactories
+            = new Dictionary<Type, Lazy<IModelViewLayoutElementFactory>>();
 
-            internal NodeBuilderFactory Register<TLayoutItemNode, TModelViewLayoutElementFactory>(Func<TModelViewLayoutElementFactory> functor)
-                where TLayoutItemNode : LayoutItemNode
-                where TModelViewLayoutElementFactory : IModelViewLayoutElementFactory
-            {
-                modelViewLayoutElementFactories[typeof(TLayoutItemNode)] = new Lazy<IModelViewLayoutElementFactory>(() => functor());
-
-                return this;
-            }
-
-            bool IModelViewLayoutElementFactory.Handles(LayoutItemNode layoutItemNode) => true;
-            public IModelViewLayoutElement? CreateViewLayoutElement(IModelNode parentNode, LayoutItemNode layoutItemNode)
-            {
-                IModelViewLayoutElementFactory? FindFactory(Type? type)
-                {
-                    if (type is null)
-                    {
-                        return null;
-                    }
-                    if (modelViewLayoutElementFactories.TryGetValue(type, out var modelViewLayoutElementFactory))
-                    {
-                        return modelViewLayoutElementFactory.Value;
-                    }
-                    return FindFactory(type.GetBaseType());
-                }
-
-                var builder = FindFactory(layoutItemNode.GetType());
-                if (builder is not null)
-                {
-                    if (builder.Handles(layoutItemNode))
-                    {
-                        return builder.CreateViewLayoutElement(parentNode, layoutItemNode);
-                    }
-                }
-
-                return null;
-            }
-
-        }
-
-        internal interface IViewItemFactory
-        {
-            IModelViewItem? CreateViewItem(IModelViewItems modelViewItems, LayoutItemLeaf layoutItemLeaf);
-        }
-
-        internal interface IViewItemFactory<TModelViewItem, TLayoutItemLeaf>
-            where TModelViewItem : IModelViewItem
-            where TLayoutItemLeaf : LayoutItemLeaf
-        {
-            TModelViewItem? CreateViewItem(IModelViewItems modelViewItems, TLayoutItemLeaf layoutItemLeaf);
-        }
-
-        internal interface IModelViewLayoutElementFactory
-        {
-            bool Handles(LayoutItemNode layoutItemNode);
-            IModelViewLayoutElement? CreateViewLayoutElement(IModelNode parentNode, LayoutItemNode layoutItemNode);
-        }
-
-        internal abstract class ModelViewLayoutElementFactory<TModelViewLayoutElement, TLayoutItemNode> : IModelViewLayoutElementFactory
-            where TModelViewLayoutElement : IModelViewLayoutElement
+        internal NodeBuilderFactory Register<TLayoutItemNode, TModelViewLayoutElementFactory>(Func<TModelViewLayoutElementFactory> functor)
             where TLayoutItemNode : LayoutItemNode
+            where TModelViewLayoutElementFactory : IModelViewLayoutElementFactory
         {
-            bool IModelViewLayoutElementFactory.Handles(LayoutItemNode layoutItemNode) => layoutItemNode is TLayoutItemNode;
+            modelViewLayoutElementFactories[typeof(TLayoutItemNode)] = new Lazy<IModelViewLayoutElementFactory>(() => functor());
 
-            IModelViewLayoutElement? IModelViewLayoutElementFactory.CreateViewLayoutElement(IModelNode parentNode, LayoutItemNode layoutItemNode)
-            {
-                if (layoutItemNode is TLayoutItemNode tLayoutItemNode)
-                {
-                    return CreateViewLayoutElement(parentNode, tLayoutItemNode);
-                }
-                return null;
-            }
-
-            /// <summary>   Creates view layout element. </summary>
-            ///
-            /// <param name="parentNode">       The parent node. </param>
-            /// <param name="layoutItemNode">   The layout item node. </param>
-            ///
-            /// <returns>   The new view layout element. </returns>
-
-            protected abstract TModelViewLayoutElement? CreateViewLayoutElement(IModelNode parentNode, TLayoutItemNode layoutItemNode);
+            return this;
         }
 
-        internal interface IModelLayoutViewItemFactory
+        bool IModelViewLayoutElementFactory.Handles(LayoutItemNode layoutItemNode) => true;
+
+        private IModelViewLayoutElementFactory? FindFactory(Type? type)
         {
-            IModelLayoutViewItem CreateModelLayoutViewItem(IModelViewItem modelViewItem, IModelLayoutViewItem modelLayoutViewItem, LayoutViewItem layoutViewItem);
+            if (type is null)
+            {
+                return null;
+            }
+            if (modelViewLayoutElementFactories.TryGetValue(type, out var modelViewLayoutElementFactory))
+            {
+                return modelViewLayoutElementFactory.Value;
+            }
+            return FindFactory(type.GetBaseType());
+        }
+
+        public IModelViewLayoutElement? CreateViewLayoutElement(IModelNode parentNode, LayoutItemNode layoutItemNode)
+        {
+            var builder = FindFactory(layoutItemNode.GetType());
+            if (builder is not null)
+            {
+                if (builder.Handles(layoutItemNode))
+                {
+                    return builder.CreateViewLayoutElement(parentNode, layoutItemNode);
+                }
+            }
+
+            return null;
+        }
+
+        public string? CreateAutoGeneratedId(LayoutItemNode layoutItemNode, int index)
+        {
+            var builder = FindFactory(layoutItemNode.GetType());
+            if (builder is not null)
+            {
+                if (builder.Handles(layoutItemNode))
+                {
+                    return builder.CreateAutoGeneratedId(layoutItemNode, index);
+                }
+            }
+
+            return null;
         }
 
     }
+
+    internal interface IViewItemFactory
+    {
+        IModelViewItem? CreateViewItem(IModelViewItems modelViewItems, LayoutItemLeaf layoutItemLeaf);
+    }
+
+    internal interface IViewItemFactory<TModelViewItem, TLayoutItemLeaf>
+        where TModelViewItem : IModelViewItem
+        where TLayoutItemLeaf : LayoutItemLeaf
+    {
+        TModelViewItem? CreateViewItem(IModelViewItems modelViewItems, TLayoutItemLeaf layoutItemLeaf);
+    }
+
+    internal interface IModelViewLayoutElementFactory
+    {
+        bool Handles(LayoutItemNode layoutItemNode);
+        IModelViewLayoutElement? CreateViewLayoutElement(IModelNode parentNode, LayoutItemNode layoutItemNode);
+        string? CreateAutoGeneratedId(LayoutItemNode layoutItemNode, int index);
+    }
+
+    internal abstract class ModelViewLayoutElementFactory<TModelViewLayoutElement, TLayoutItemNode> : IModelViewLayoutElementFactory
+        where TModelViewLayoutElement : IModelViewLayoutElement
+        where TLayoutItemNode : LayoutItemNode
+    {
+        bool IModelViewLayoutElementFactory.Handles(LayoutItemNode layoutItemNode) => layoutItemNode is TLayoutItemNode;
+
+        IModelViewLayoutElement? IModelViewLayoutElementFactory.CreateViewLayoutElement(IModelNode parentNode, LayoutItemNode layoutItemNode)
+        {
+            if (layoutItemNode is TLayoutItemNode tLayoutItemNode)
+            {
+                return CreateViewLayoutElement(parentNode, tLayoutItemNode);
+            }
+            return null;
+        }
+
+        string? IModelViewLayoutElementFactory.CreateAutoGeneratedId(LayoutItemNode layoutItemNode, int index)
+        {
+            if (layoutItemNode is TLayoutItemNode tLayoutItemNode)
+            {
+                return CreateAutoGeneratedId(tLayoutItemNode, index);
+            }
+            return null;
+        }
+
+        /// <summary>   Creates view layout element. </summary>
+        ///
+        /// <param name="parentNode">       The parent node. </param>
+        /// <param name="layoutItemNode">   The layout item node. </param>
+        ///
+        /// <returns>   The new view layout element. </returns>
+
+        protected abstract TModelViewLayoutElement? CreateViewLayoutElement(IModelNode parentNode, TLayoutItemNode layoutItemNode);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="layoutItemNode"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        protected abstract string? CreateAutoGeneratedId(TLayoutItemNode layoutItemNode, int index);
+    }
+
+    internal interface IModelLayoutViewItemFactory
+    {
+        IModelLayoutViewItem CreateModelLayoutViewItem(IModelViewItem modelViewItem, IModelLayoutViewItem modelLayoutViewItem, LayoutViewItem layoutViewItem);
+    }
+
 }

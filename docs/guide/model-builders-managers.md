@@ -8,7 +8,7 @@ In the previous examples `ModelBuilders` were registered directly in the `Custom
 
 ## XafBuilderManager
 
-To utilze `BuilderManagers` create a new class (by convention name it <ModuleName>BuilderManager) and derive it from the `XafBuilderManager` class. Within the class override the `GetBuilders` method to create an instance of the `DemoTaskModelBuilder`. 
+To utilze `BuilderManagers` create a new class (by convention name it {ModuleName}BuilderManager) and derive it from the `XafBuilderManager` class. Within the class override the `GetBuilders` method to create an instance of the `DemoTaskModelBuilder`. 
 
 <<< @/guide/samples/model-builder-manager/DemoTaskModelBuilderManager.cs{19-22}
 

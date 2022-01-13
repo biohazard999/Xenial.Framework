@@ -3,9 +3,16 @@ const fs = require('fs');
 const parser = require('xml2json');
 
 let gitTag = git.tag();
+let gitBranch = git.branch();
+let gitRemote = git.remoteUrl();
+let gitHubUrl = git.remoteUrl();
 
 if (gitTag) {
     gitTag = gitTag.substring(1);
+}
+
+if(gitHubUrl){
+  gitHubUrl = gitHubUrl.substring(0, gitHubUrl.length - 4);
 }
 
 const directoryBuildPropsPath = `${process.cwd()}/../Directory.Build.props`;
@@ -54,6 +61,18 @@ module.exports = {
                     ]
                 },
                 {
+                  title: 'SourceGenerators',
+                  collapsable: false,
+                  children: [
+                      ['source-generators', 'Introduction'],
+                      ['source-generators-view-ids-generator', 'ViewIdsGenerator'],
+                      ['source-generators-image-names-generator', 'ImageNamesGenerator'],
+                      ['source-generators-xpo-builder-generator', 'XpoBuilderGenerator'],
+                      ['source-generators-layout-builder-generator', 'LayoutBuilderGenerator'],
+                      ['source-generators-columns-builder-generator', 'ColumnsBuilderGenerator'],
+                  ]
+                },
+                {
                     title: 'ModelBuilders',
                     collapsable: false,
                     children: [
@@ -75,11 +94,24 @@ module.exports = {
                         ['layout-builders-advanced-syntax', 'LayoutBuilder<T> Syntax'],
                         ['layout-builders-record-syntax', 'Record Syntax'],
                         ['layout-builders-model-builder-syntax', 'ModelBuilder Syntax'],
+                        ['layout-builders-source-generator-syntax', 'SourceGenerators Syntax'],
                     ]
                 },
                 {
+                  title: 'ListViewColumnBuilders',
+                  collapsable: false,
+                  children: [
+                      ['column-builders', 'Introduction'],
+                      ['column-builders-simple-registration', 'Simple Columns'],
+                      ['column-builders-advanced-syntax', 'ColumnsBuilder<T> Syntax'],
+                      ['column-builders-record-syntax', 'Record Syntax'],
+                      ['column-builders-model-builder-syntax', 'ModelBuilder Syntax'],
+                      ['column-builders-source-generator-syntax', 'SourceGenerators Syntax'],
+                  ]
+                },
+                {
                     title: 'Contribute',
-                    collapsable: false,
+                    collapsable: true,
                     children: [
                         ['contribute-docs', 'Contribute Documentation (online)'],
                         ['contribute-docs-local', 'Contribute Documentation (locally)']
@@ -113,7 +145,8 @@ module.exports = {
         lineNumbers: true
     },
     plugins: [
-        ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag, dxVersion } }],
+        ['check-md'],
+        ['vuepress-plugin-global-variables', { variables: { xenialVersion: gitTag, dxVersion, gitBranch, gitRemote, gitHubUrl } }],
         ['@vuepress/back-to-top'],
         ['@vuepress/nprogress'],
         ['@vuepress/medium-zoom']

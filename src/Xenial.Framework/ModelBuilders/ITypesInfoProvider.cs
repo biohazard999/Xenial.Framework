@@ -1,14 +1,13 @@
 ﻿using DevExpress.ExpressApp.DC;
 
-namespace Xenial.Framework.ModelBuilders
-{
-    /// <summary>   Interface for types information provider. </summary>
-    public interface ITypesInfoProvider
-    {
-        /// <summary>   Gets the types information. </summary>
-        ///
-        /// <value> The types information. </value>
+namespace Xenial.Framework.ModelBuilders;
 
-        ITypesInfo TypesInfo { get; }
-    }
+/// <summary>   Interface for types information provider. </summary>
+public interface ITypesInfoProvider
+{
+    /// <summary>   Gets the types information. </summary>
+    ///
+    /// <value> The types information. </value>
+
+    ITypesInfo TypesInfo { get; }
 }

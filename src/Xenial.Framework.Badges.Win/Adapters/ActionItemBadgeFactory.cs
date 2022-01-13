@@ -10,29 +10,28 @@ using DevExpress.Utils.VisualEffects;
 using Xenial.Framework.Badges.Model;
 using Xenial.Framework.Badges.Win.Helpers;
 
-namespace Xenial.Framework.Badges.Win.Adapters
+namespace Xenial.Framework.Badges.Win.Adapters;
+
+internal static class ActionItemBadgeFactory
 {
-    internal static class ActionItemBadgeFactory
+    internal static Badge? CreateBadge(ChoiceActionItem choiceActionItem)
     {
-        internal static Badge? CreateBadge(ChoiceActionItem choiceActionItem)
+        if (
+            choiceActionItem.Model is IXenialModelBadgeStaticTextItem modelBadgeStaticTextItem
+            && modelBadgeStaticTextItem.XenialBadgeStaticText is not null
+        )
         {
-            if (
-                choiceActionItem.Model is IXenialModelBadgeStaticTextItem modelBadgeStaticTextItem
-                && modelBadgeStaticTextItem.XenialBadgeStaticText is not null
-            )
+            var badge = new Badge()
             {
-                var badge = new Badge()
-                {
-                    Visible = true,
-                    Properties =
+                Visible = true,
+                Properties =
                     {
                         Text = modelBadgeStaticTextItem.XenialBadgeStaticText,
                         PaintStyle = modelBadgeStaticTextItem.XenialBadgeStaticPaintStyle.ConvertPaintStyle()
                     }
-                };
-                return badge;
-            }
-            return null;
+            };
+            return badge;
         }
+        return null;
     }
 }

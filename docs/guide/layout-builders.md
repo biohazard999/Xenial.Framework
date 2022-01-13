@@ -4,7 +4,7 @@ title: DetailViewLayoutBuilders - Introduction
 
 # DetailViewLayoutBuilders - Introduction
 
-`DetailViewLayoutBuilders` are a way of defining `DetailViews` in code. They are a domain specific language (DSL) to build Views in code rather than using the `ModelEditor`. As always in `Xenial.Framework` there are several ways to define them and to tell XAF when to consume them. They are an **addition** to the `ModelEditor based approach`, because they operate below the differences layer. <!-- differences layer could probably benefit from some additional description or a link to the XAF documentation -->
+`DetailViewLayoutBuilders` are a way of defining `DetailViews` in code. They are a domain specific language (DSL) to build Views in code rather than using the `ModelEditor`. As always in `Xenial.Framework` there are several ways to define them and to tell XAF when to consume them. They are an **addition** to the `ModelEditor based approach`, because they operate [below the differences layer](https://docs.devexpress.com/eXpressAppFramework/112580/ui-construction/application-model/application-model-basics#application-models-layered-structure).
 
 
 `DetailViewLayoutBuilders` are one of the many `NonVisual Components` of Xenial.Framework designed around best practices and working efficiently in a team, however there are several benefits for smaller teams and projects as well.
@@ -53,7 +53,7 @@ Whilst the Xenial.Framework can of course be used in platform specific modules, 
 
 Xenial.Framework provides both a simple and advanced registration pattern for `DetailViewLayoutBuilders` as well as one specially optimized for use within `ModelBuilders`.
 
-All the `DetailViewLayoutBuilder` examples in this documention will be based upon the simple 'Person' business object in the code below.
+All the `DetailViewLayoutBuilder` examples in this documentation will be based upon the simple 'Person' business object in the code below.
 
 <<< @/guide/samples/layout-builders-simple/Person.cs
 

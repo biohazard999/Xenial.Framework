@@ -59,11 +59,14 @@ namespace Xenial.FeatureCenter.Module
 
         public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
         {
+            _ = updaters ?? throw new ArgumentNullException(nameof(updaters));
+
             base.AddGeneratorUpdaters(updaters);
 
             updaters.Add(new FeatureCenterNavigationItemNodesUpdater());
 
             updaters
+                .UseXenialImages()
                 .UseSingletonNavigationItems()
                 .UseNoViewsGeneratorUpdater()
                 .UseDetailViewLayoutBuilders()
@@ -152,7 +155,6 @@ namespace Xenial.FeatureCenter.Module
 
             #endregion
 
-
             #region Badges
 
             typesInfo
@@ -166,7 +168,7 @@ namespace Xenial.FeatureCenter.Module
             #endregion
         }
 
-        public static string[] VersionInformation = new[]
+        public static IEnumerable<string> VersionInformation { get; } = new[]
         {
             $"Xenial: {XenialVersion.Version}/{XenialVersion.Branch}",
             $"Demo: {XenialVersion.Version}/{XenialVersion.Branch}",
