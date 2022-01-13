@@ -61,4 +61,4 @@ The standard  **default** columns  that would be produced by XAF is illustrated 
 
 The **target** columns that the code examples of ColumnBuilders in ensuing sections will aim to create is illustrated below;
 
-![Person Target Layout](/images/guide/column-builders/person-target-columns.png)
+![Person Target Columns](/images/guide/column-builders/person-target-columns.png)

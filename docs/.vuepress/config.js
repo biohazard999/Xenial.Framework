@@ -106,6 +106,7 @@ module.exports = {
                       ['column-builders-advanced-syntax', 'ColumnsBuilder<T> Syntax'],
                       ['column-builders-record-syntax', 'Record Syntax'],
                       ['column-builders-model-builder-syntax', 'ModelBuilder Syntax'],
+                      ['column-builders-source-generator-syntax', 'SourceGenerators Syntax'],
                   ]
                 },
                 {
