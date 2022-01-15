@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.WebView\Xenial.Framework.WebView.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -9,6 +9,9 @@ using Xenial;
 
 namespace Xenial.Framework.Layouts;
 
+/// <summary>
+/// Defines options to create list views
+/// </summary>
 [XenialModelOptions(
     typeof(IModelListView), IgnoredMembers = new[]
     {

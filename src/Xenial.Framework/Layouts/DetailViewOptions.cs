@@ -4,6 +4,9 @@ using DevExpress.ExpressApp.Model;
 
 namespace Xenial.Framework.Layouts;
 
+/// <summary>
+/// Defines options to create detail views
+/// </summary>
 [XenialModelOptions(
     typeof(IModelDetailView), IgnoredMembers = new[]
     {
