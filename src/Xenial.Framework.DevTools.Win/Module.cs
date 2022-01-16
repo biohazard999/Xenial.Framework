@@ -1,4 +1,8 @@
-﻿using DevExpress.ExpressApp;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Win.SystemModule;
 
 using Xenial.Framework.WebView;
@@ -24,8 +28,21 @@ public sealed partial class XenialDevToolsWindowsFormsModule : XenialModuleBase
         => base.GetRequiredModuleTypesCore()
             .AndModuleTypes(new[]
             {
-                    typeof(XenialDevToolsModule),
-                    typeof(SystemWindowsFormsModule),
-                    typeof(XenialWebViewModule)
+                typeof(XenialDevToolsModule),
+                typeof(SystemWindowsFormsModule),
+                typeof(XenialWebViewModule)
+            });
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    protected override IEnumerable<Type> GetDeclaredControllerTypes()
+        => base.GetDeclaredControllerTypes()
+            .Concat(new[]
+            {
+                typeof(XenialDevToolsWindowController),
+                typeof(XenialDevToolsViewController),
+                typeof(XenialDevToolsController)
             });
 }

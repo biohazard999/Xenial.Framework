@@ -8,6 +8,8 @@ using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Updating;
 
+using Xenial.Framework.DevTools.Win;
+
 namespace MainDemo.Module.Win
 {
     [ToolboxItemFilter("Xaf.Platform.Win")]
@@ -24,6 +26,10 @@ namespace MainDemo.Module.Win
             DevExpress.ExpressApp.ReportsV2.Win.WinReportServiceController.UseNewWizard = true;
 #endif
         }
+
+        protected override ModuleTypeList GetRequiredModuleTypesCore() => base.GetRequiredModuleTypesCore()
+            .AndModuleTypes(typeof(XenialDevToolsWindowsFormsModule));
+
         public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB)
         {
             ModuleUpdater updater = new DatabaseUpdate.Updater(objectSpace, versionFromDB);

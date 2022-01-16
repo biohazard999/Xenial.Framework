@@ -9,8 +9,10 @@ using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.SystemModule;
+using DevExpress.ExpressApp.Templates;
 using DevExpress.ExpressApp.Win;
 
+using Xenial.Framework.Images;
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Model.GeneratorUpdaters;
 using Xenial.Framework.SystemModule;
@@ -35,7 +37,8 @@ public sealed class XenialHotReloadDetailViewController : ViewController
         ReloadCurrentViewSimpleAction = new SimpleAction(this, $"{GetType().FullName}.{nameof(ReloadCurrentViewSimpleAction)}", DevExpress.Persistent.Base.PredefinedCategory.Tools)
         {
             Caption = "Reload View",
-            ImageName = "Action_HotReload",
+            ImageName = XenialImages.Action_Xenial_HotReload,
+            PaintStyle = ActionItemPaintStyle.Image,
             Shortcut = "CtrlShiftF3"
         };
         ReloadCurrentViewSimpleAction.Execute += ReloadCurrentViewSimpleAction_Execute;

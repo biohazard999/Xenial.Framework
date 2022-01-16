@@ -60,6 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Xenial.Framework.DevTools.Win\Xenial.Framework.DevTools.Win.csproj" />
     <ProjectReference Include="..\MainDemo.Module\MainDemo.Module.csproj" />
   </ItemGroup>
 
