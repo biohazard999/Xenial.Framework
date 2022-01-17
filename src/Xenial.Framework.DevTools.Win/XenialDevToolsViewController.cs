@@ -37,7 +37,7 @@ public class XenialDevToolsViewController : ViewController
 
     private void OpenDevToolsSimpleAction_Execute(object sender, SimpleActionExecuteEventArgs e)
     {
-        var controller = Frame.GetController<XenialDevToolsWindowController>();
+        var controller = Application.MainWindow.GetController<XenialDevToolsWindowController>();
         if (controller is not null)
         {
             controller.OpenDevTools(View);

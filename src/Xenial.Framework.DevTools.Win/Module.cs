@@ -6,6 +6,7 @@ using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Win.SystemModule;
 
 using Xenial.Framework.WebView;
+using Xenial.Framework.WebView.Win;
 
 namespace Xenial.Framework.DevTools.Win;
 
@@ -30,7 +31,7 @@ public sealed partial class XenialDevToolsWindowsFormsModule : XenialModuleBase
             {
                 typeof(XenialDevToolsModule),
                 typeof(SystemWindowsFormsModule),
-                typeof(XenialWebViewModule)
+                typeof(XenialWebViewWindowsFormsModule)
             });
 
     /// <summary>

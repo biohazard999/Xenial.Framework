@@ -1,4 +1,14 @@
-﻿namespace Xenial.Framework.DevTools;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.DC;
+using DevExpress.ExpressApp.Model.Core;
+
+using Xenial.Framework.WebView;
+
+namespace Xenial.Framework.DevTools;
 
 /// <summary>
 /// Class XenialDevToolsModule.
@@ -9,4 +19,51 @@
 [XenialCheckLicense]
 public sealed partial class XenialDevToolsModule : XenialModuleBase
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    protected override IEnumerable<Type> GetDeclaredExportedTypes()
+        => base.GetDeclaredExportedTypes()
+            .Concat(new[]
+            {
+                typeof(DevToolsViewModel)
+            });
+
+    /// <summary>
+    /// Adds the DevExpress.ExpressApp.SystemModule.SystemModule to the collection.
+    /// </summary>
+    ///
+    /// <returns>   ModuleTypeList. </returns>
+    protected override ModuleTypeList GetRequiredModuleTypesCore()
+        => base.GetRequiredModuleTypesCore()
+            .AndModuleTypes(new[]
+            {
+                typeof(XenialWebViewModule)
+            });
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="updaters"></param>
+    public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
+    {
+        base.AddGeneratorUpdaters(updaters);
+
+        updaters
+            .UseDetailViewLayoutBuilders();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="typesInfo"></param>
+    public override void CustomizeTypesInfo(ITypesInfo typesInfo)
+    {
+        base.CustomizeTypesInfo(typesInfo);
+
+        typesInfo
+            .CreateModelBuilder<DevToolsViewModelBuilder>()
+            .Build();
+    }
 }

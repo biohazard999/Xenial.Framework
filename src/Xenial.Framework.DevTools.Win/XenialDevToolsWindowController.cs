@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Acme.Module.Helpers;
+
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
+using DevExpress.ExpressApp.Model;
+using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.SystemModule;
 using DevExpress.ExpressApp.Templates;
 using DevExpress.ExpressApp.Win;
@@ -13,17 +18,26 @@ using DevExpress.ExpressApp.Win.Controls;
 using DevExpress.ExpressApp.Win.Templates.Bars;
 using DevExpress.XtraBars;
 
+using Xenial.Framework.DevTools.Helpers;
 using Xenial.Framework.Images;
 
 namespace Xenial.Framework.DevTools.Win;
 
+/// <summary>
+/// 
+/// </summary>
 public class XenialDevToolsController : DialogController
 {
     /// <summary>
     /// 
     /// </summary>
     public SimpleAction AlwaysOnTopSimpleAction { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public SimpleAction OpacitySimpleAction { get; }
+
     /// <summary>
     /// 
     /// </summary>
@@ -35,12 +49,14 @@ public class XenialDevToolsController : DialogController
             PaintStyle = ActionItemPaintStyle.Image,
             ToolTip = "Controls if the Xenial-DevTools window is displayed over the current application"
         };
+
         OpacitySimpleAction = new SimpleAction(this, nameof(OpacitySimpleAction), DevExpress.Persistent.Base.PredefinedCategory.ObjectsCreation)
         {
             ImageName = XenialImages.Action_Xenial_Opacity,
             PaintStyle = ActionItemPaintStyle.Image,
             ToolTip = "Controls if the Xenial-DevTools window is displayed opaque"
         };
+
         AlwaysOnTopSimpleAction.Execute += AlwaysOnTopSimpleAction_Execute;
         OpacitySimpleAction.Execute += OpacitySimpleAction_Execute;
 
@@ -158,6 +174,7 @@ public class XenialDevToolsController : DialogController
             }
         }
     }
+
     private void Detach()
     {
         if (template is not null)
@@ -182,6 +199,10 @@ public class XenialDevToolsController : DialogController
         Detach();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="disposing"></param>
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
@@ -192,6 +213,9 @@ public class XenialDevToolsController : DialogController
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     protected override void OnActivated()
     {
         base.OnActivated();
@@ -206,6 +230,9 @@ public class XenialDevToolsController : DialogController
         Attach();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     protected override void OnDeactivated()
     {
         base.OnDeactivated();
@@ -218,62 +245,129 @@ public class XenialDevToolsController : DialogController
 /// </summary>
 public class XenialDevToolsWindowController : WindowController
 {
-    public WinWindow? DevToolsWindow { get; private set; }
+    private WinWindow? DevToolsWindow { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public XenialDevToolsWindowController()
-    {
-        TargetWindowType = WindowType.Main;
-    }
+        => TargetWindowType = WindowType.Main;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="view"></param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "XAF is handling the template")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "It's just the caption for the dev tool")]
     public void OpenDevTools(View view)
     {
         if (DevToolsWindow is null)
         {
             DevToolsWindow = new WinWindow(Application, TemplateContext.View, new Controller[]
             {
+                //TODO: make it possible to add custom controllers
                 Application.CreateController<FillActionContainersController>(),
                 Application.CreateController<ActionControlsSiteController>(),
                 Application.CreateController<XenialDevToolsController>()
             }, false, false);
+
+            DevToolsWindow.Disposed += DevToolsWindow_Disposed;
+
+            void DevToolsWindow_Disposed(object sender, EventArgs e)
+            {
+                DevToolsWindow.Disposed -= DevToolsWindow_Disposed;
+                DevToolsWindow = null;
+            }
+
+            var template = new DetailFormV2();
+
+            var barManagerHolder = (IBarManagerHolder)template;
+
+            barManagerHolder.BarManager.MainMenu.Visible = false;
+            barManagerHolder.BarManager.StatusBar.Visible = false;
+            barManagerHolder.BarManager.AllowCustomization = false;
+            barManagerHolder.BarManager.AllowQuickCustomization = false;
+            barManagerHolder.BarManager.AllowCustomization = false;
+
+            foreach (Bar bar in barManagerHolder.BarManager.Bars)
+            {
+                bar.OptionsBar.DrawDragBorder = false;
+            }
+
+            DevToolsWindow.SetTemplate(template);
+
+            template.ShowMdiChildCaptionInParentTitle = false;
+            template.Text = "Xenial-DevTools";
         }
 
-        var template = new DetailFormV2();
+        var objectSpace = Application.CreateObjectSpace(typeof(DevToolsViewModel));
+        var devToolsViewModel = objectSpace.CreateObject<DevToolsViewModel>();
+        var detailView = Application.CreateDetailView(objectSpace, devToolsViewModel);
 
-        var barManagerHolder = (IBarManagerHolder)template;
-
-        barManagerHolder.BarManager.MainMenu.Visible = false;
-        barManagerHolder.BarManager.StatusBar.Visible = false;
-        barManagerHolder.BarManager.AllowCustomization = false;
-        barManagerHolder.BarManager.AllowQuickCustomization = false;
-        barManagerHolder.BarManager.AllowCustomization = false;
-
-        foreach (Bar bar in barManagerHolder.BarManager.Bars)
+        if (view is not null)
         {
-            bar.OptionsBar.DrawDragBorder = false;
+            view.SaveModel();
+            devToolsViewModel.ViewId = view.Id;
+
+            var id = $"{view.Model.Id}_{Guid.NewGuid()}";
+            var modelViews = view.Model.Application.Views;
+            var copy = ((ModelNode)modelViews).AddClonedNode((ModelNode)view.Model, id);
+            var node = VisualizeNodeHelper.PrintModelNode(copy);
+
+
+            //TODO: use xml to replace id
+            node = node.Replace(id, view.Model.Id); //Patch ViewId
+
+            var doc = new System.Xml.XmlDocument();
+            doc.LoadXml(node);
+            var root = doc.FirstChild;
+
+            CleanNodes(root);
+
+            static void CleanNodes(System.Xml.XmlNode node)
+            {
+                if (node.Attributes["IsNewNode"] != null)
+                {
+                    node.Attributes.Remove(node.Attributes["IsNewNode"]);
+                }
+
+                foreach (System.Xml.XmlNode child in node.ChildNodes)
+                {
+                    CleanNodes(child);
+                }
+            }
+
+            node = VisualizeNodeHelper.PrettyPrint(doc.OuterXml);
+
+            var code = new HtmlBuilder.CodeBlock("xml", node);
+            devToolsViewModel.Xafml = HtmlBuilder.BuildHtml("Xafml", $"{code}");
+
+            ((IModelView)copy).Remove();
+
+            devToolsViewModel.Code = $"Hello World '{view.Id}'";
         }
 
-        DevToolsWindow.SetTemplate(template);
-
-        DevToolsWindow.SetView(view, true, null, false);
-        template.ShowMdiChildCaptionInParentTitle = false;
-        template.Text = "Xenial-DevTools";
+        DevToolsWindow.SetView(detailView, true, null, true);
 
         DevToolsWindow.Show();
 
-        var method = typeof(Controller).GetMethod("SetFrame", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-
         //protected internal void SetFrame(Frame frame)
+        var method = typeof(Controller).GetMethod("SetFrame", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 
         if (method is not null)
         {
             foreach (var controller in DevToolsWindow.Controllers)
             {
                 method.Invoke(controller, new object[] { DevToolsWindow });
-                if (controller is WindowController dialogController)
+                if (controller is WindowController windowController)
                 {
-                    dialogController.SetWindow(DevToolsWindow);
+                    if (windowController.Window is null)
+                    {
+                        windowController.SetWindow(DevToolsWindow);
+                    }
                 }
             }
         }
     }
+
 }
