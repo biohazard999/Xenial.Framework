@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 using Acme.Module.Helpers;
 
@@ -20,6 +21,9 @@ using DevExpress.XtraBars;
 
 using Xenial.Framework.DevTools.Helpers;
 using Xenial.Framework.Images;
+using Xenial.Framework.Layouts;
+using Xenial.Framework.Layouts.ColumnItems;
+using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.DevTools.Win;
 
@@ -342,9 +346,190 @@ public class XenialDevToolsWindowController : WindowController
             var code = new HtmlBuilder.CodeBlock("xml", node);
             devToolsViewModel.Xafml = HtmlBuilder.BuildHtml("Xafml", $"{code}");
 
+            static string ListViewBuilderCode(string xml, IModelListView modelListView)
+            {
+                var doc = new System.Xml.XmlDocument();
+                doc.LoadXml(xml);
+                var root = doc.FirstChild;
+
+                static string ListViewOptionsCode(XmlNode node)
+                {
+                    var sb = CurlyIndenter.Create();
+
+                    var ignoredAttributes = new[] { "Id", "ClassName" };
+                    var attributes = node.Attributes
+                        .OfType<XmlAttribute>()
+                        .Where(n => !ignoredAttributes.Contains(n.Name?.ToString()))
+                        .ToList();
+
+                    var members = typeof(ListViewOptions).GetProperties();
+
+                    using (sb.OpenBrace($"new {nameof(ListViewOptions)}"))
+                    {
+                        foreach (var attribute in attributes)
+                        {
+                            var member = members.FirstOrDefault(m => m.Name == attribute.Name);
+                            if (member is not null)
+                            {
+                                var value = attribute.Value;
+                                var valueToWrite = value?.ToString();
+                                if (member.PropertyType == typeof(string))
+                                {
+                                    valueToWrite = $"\"{valueToWrite}\"";
+                                }
+                                if (member.PropertyType == typeof(bool))
+                                {
+                                    valueToWrite = $"{bool.Parse(valueToWrite)}".ToLowerInvariant();
+                                }
+                                sb.WriteLine($"{member.Name} = {valueToWrite},");
+                            }
+                        }
+                    }
+
+                    return sb.ToString();
+                }
+
+                static string ListViewBuildersCode(XmlNode node)
+                {
+                    var sb = CurlyIndenter.Create();
+                    var options = ListViewOptionsCode(node).TrimEnd();
+
+                    using (sb.OpenBrace($"public Columns BuildColumns() => new Columns({options})", ";"))
+                    {
+                        foreach (var columns in node.ChildNodes.OfType<XmlNode>().Where(m => m.Name == nameof(IModelListView.Columns)))
+                        {
+                            var indexOffset = 0;
+
+                            var columnNodes = columns
+                                .ChildNodes
+                                .OfType<XmlNode>()
+                                .Where(m => m.Name == "ColumnInfo")
+                                .ToList();
+
+
+                            foreach (var column in columnNodes)
+                            {
+                                var propertiesToWrite = new Dictionary<string, string>();
+
+                                static string? GetAttribute(XmlNode node, string name)
+                                {
+                                    var attribute = node.Attributes.OfType<XmlAttribute>()
+                                        .FirstOrDefault(m => m.Name == name);
+                                    if (attribute is not null)
+                                    {
+                                        return attribute.Value;
+                                    }
+                                    return null;
+                                }
+
+                                sb.Write($"Column.{GetAttribute(column, nameof(IModelColumn.Id))}");
+
+                                var ignoredAttributes = new[]
+                                {
+                                    nameof(IModelColumn.Id),
+                                    nameof(IModelColumn.PropertyName),
+                                    nameof(IModelColumn.Index),
+                                };
+
+                                var attributes = column.Attributes.OfType<XmlAttribute>()
+                                    .Where(m => !ignoredAttributes.Contains(m.Name))
+                                    .ToList();
+
+                                var shouldWriteIndex = false;
+                                var indexToWrite = 0;
+
+                                var index = GetAttribute(column, nameof(IModelColumn.Index));
+
+                                if (!string.IsNullOrEmpty(index))
+                                {
+                                    if (int.TryParse(index, out var indexInt))
+                                    {
+                                        var indexInList = columnNodes.IndexOf(column);
+                                        var indexWithOffset = indexInList - indexOffset;
+                                        if (indexInt < 0)
+                                        {
+                                            shouldWriteIndex = true;
+                                            indexToWrite = indexInt;
+                                            indexOffset++;
+                                        }
+                                        if (indexInt > 0 && indexInt != indexWithOffset)
+                                        {
+                                            indexToWrite = indexInt;
+                                            shouldWriteIndex = true;
+                                        }
+                                    }
+                                }
+
+                                if (shouldWriteIndex)
+                                {
+                                    propertiesToWrite[nameof(Column.Index)] = indexToWrite.ToString();
+                                }
+
+                                var members = typeof(Column).GetProperties();
+
+                                foreach (var attribute in attributes)
+                                {
+                                    var member = members.FirstOrDefault(m => m.Name == attribute.Name);
+                                    if (member is not null)
+                                    {
+                                        var value = attribute.Value;
+                                        var valueToWrite = value?.ToString();
+                                        if (member.PropertyType == typeof(string))
+                                        {
+                                            valueToWrite = $"\"{valueToWrite}\"";
+                                        }
+                                        if (member.PropertyType == typeof(bool))
+                                        {
+                                            valueToWrite = $"{bool.Parse(valueToWrite)}".ToLowerInvariant();
+                                        }
+
+                                        if (member.PropertyType.IsGenericType || member.PropertyType.IsEnum)
+                                        {
+                                            var type = member.PropertyType.IsGenericType
+                                                ? Nullable.GetUnderlyingType(member.PropertyType)
+                                                : member.PropertyType;
+
+                                            if (type.IsEnum)
+                                            {
+                                                valueToWrite = $"{type.Name}.{valueToWrite}";
+                                            }
+                                        }
+                                        propertiesToWrite[member.Name] = valueToWrite;
+                                    }
+                                }
+
+                                if (propertiesToWrite.Count > 0)
+                                {
+                                    using (sb.OpenBrace(" with ", ","))
+                                    {
+                                        foreach (var property in propertiesToWrite)
+                                        {
+                                            sb.WriteLine($"{property.Key} = {property.Value},");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Write(",");
+                                    sb.WriteLine();
+                                }
+                            }
+                        }
+                    }
+
+                    return sb.ToString();
+                }
+
+                return ListViewBuildersCode(root);
+            }
+
+
             ((IModelView)copy).Remove();
 
-            devToolsViewModel.Code = $"Hello World '{view.Id}'";
+            if (view.Model is IModelListView listView)
+            {
+                devToolsViewModel.Code = HtmlBuilder.BuildHtml("Code", $"{new HtmlBuilder.CodeBlock("csharp", ListViewBuilderCode(node, listView))}");
+            }
         }
 
         DevToolsWindow.SetView(detailView, true, null, true);

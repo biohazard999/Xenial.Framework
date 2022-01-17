@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Xenial.Framework.Generators\CurlyIndenter.cs" Link="Helpers\CurlyIndenter.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Markdig" Version="0.26.0" />
   </ItemGroup>
 

@@ -275,6 +275,21 @@ pre code .tag:not(body) {{
     white-space: unset;
 }}
 
+pre code .number:not(body) {{
+    align-items: unset;
+    background-color: unset;
+    border-radius: unset;
+    display: unset;
+    font-size: unset;
+    height: unset;
+    justify-content: unset;
+    margin-right: unset;
+    min-width: unset;
+    padding: unset;
+    text-align: unset;
+    vertical-align: unset;
+}}
+
 /* fix for hover on button */
 div.code-toolbar > .toolbar a, div.code-toolbar > .toolbar button, div.code-toolbar > .toolbar span {{
     color: #f8f8f2!important;

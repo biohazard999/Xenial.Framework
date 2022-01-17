@@ -28,18 +28,18 @@ public class CurlyIndenter
     public void Indent() => indentedTextWriter.Indent++;
     public void UnIndent() => indentedTextWriter.Indent--;
 
-    internal record DisposableContext(CurlyIndenter Indenter) : IDisposable
+    internal record DisposableContext(CurlyIndenter Indenter, string? EndValue = null) : IDisposable
     {
         void IDisposable.Dispose()
-            => Indenter.CloseBrace();
+            => Indenter.CloseBrace(EndValue);
     }
 
-    public IDisposable OpenBrace(string val)
+    public IDisposable OpenBrace(string val, string? endValue = null)
     {
         WriteLine(val);
         WriteLine("{");
         Indent();
-        return new DisposableContext(this);
+        return new DisposableContext(this, endValue);
     }
 
     public IDisposable OpenBrace()
@@ -49,10 +49,19 @@ public class CurlyIndenter
         return new DisposableContext(this);
     }
 
-    public void CloseBrace()
+    public void CloseBrace(string? endValue = null)
     {
         UnIndent();
-        WriteLine("}");
+        if (string.IsNullOrEmpty(endValue))
+        {
+            WriteLine("}");
+        }
+        else
+        {
+            Write("}");
+            Write(endValue);
+            WriteLine();
+        }
     }
 
     public override string ToString() => indentedTextWriter.InnerWriter.ToString();
