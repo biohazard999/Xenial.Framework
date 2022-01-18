@@ -321,7 +321,6 @@ public class XenialDevToolsWindowController : WindowController
             var copy = ((ModelNode)modelViews).AddClonedNode((ModelNode)view.Model, id);
             var node = VisualizeNodeHelper.PrintModelNode(copy);
 
-
             //TODO: use xml to replace id
             node = node.Replace(id, view.Model.Id); //Patch ViewId
 
@@ -354,7 +353,6 @@ public class XenialDevToolsWindowController : WindowController
                 var doc = new System.Xml.XmlDocument();
                 doc.LoadXml(xml);
                 var root = doc.FirstChild;
-
                 static string ListViewOptionsCode(XmlNode node)
                 {
                     var sb = CurlyIndenter.Create();
@@ -412,94 +410,9 @@ public class XenialDevToolsWindowController : WindowController
 
                             foreach (var column in columnNodes)
                             {
-                                var propertiesToWrite = new Dictionary<string, string>();
-
-                                static string? GetAttribute(XmlNode node, string name)
-                                {
-                                    var attribute = node.Attributes.OfType<XmlAttribute>()
-                                        .FirstOrDefault(m => m.Name == name);
-                                    if (attribute is not null)
-                                    {
-                                        return attribute.Value;
-                                    }
-                                    return null;
-                                }
-
                                 sb.Write($"Column.{GetAttribute(column, nameof(IModelColumn.Id))}");
 
-                                var ignoredAttributes = new[]
-                                {
-                                    nameof(IModelColumn.Id),
-                                    nameof(IModelColumn.PropertyName),
-                                    nameof(IModelColumn.Index),
-                                };
-
-                                var attributes = column.Attributes.OfType<XmlAttribute>()
-                                    .Where(m => !ignoredAttributes.Contains(m.Name))
-                                    .ToList();
-
-                                var shouldWriteIndex = false;
-                                var indexToWrite = 0;
-
-                                var index = GetAttribute(column, nameof(IModelColumn.Index));
-
-                                if (!string.IsNullOrEmpty(index))
-                                {
-                                    if (int.TryParse(index, out var indexInt))
-                                    {
-                                        var indexInList = columnNodes.IndexOf(column);
-                                        var indexWithOffset = indexInList - indexOffset;
-                                        if (indexInt < 0)
-                                        {
-                                            shouldWriteIndex = true;
-                                            indexToWrite = indexInt;
-                                            indexOffset++;
-                                        }
-                                        if (indexInt > 0 && indexInt != indexWithOffset)
-                                        {
-                                            indexToWrite = indexInt;
-                                            shouldWriteIndex = true;
-                                        }
-                                    }
-                                }
-
-                                if (shouldWriteIndex)
-                                {
-                                    propertiesToWrite[nameof(Column.Index)] = indexToWrite.ToString();
-                                }
-
-                                var members = typeof(Column).GetProperties();
-
-                                foreach (var attribute in attributes)
-                                {
-                                    var member = members.FirstOrDefault(m => m.Name == attribute.Name);
-                                    if (member is not null)
-                                    {
-                                        var value = attribute.Value;
-                                        var valueToWrite = value?.ToString();
-                                        if (member.PropertyType == typeof(string))
-                                        {
-                                            valueToWrite = $"\"{valueToWrite}\"";
-                                        }
-                                        if (member.PropertyType == typeof(bool))
-                                        {
-                                            valueToWrite = $"{bool.Parse(valueToWrite)}".ToLowerInvariant();
-                                        }
-
-                                        if (member.PropertyType.IsGenericType || member.PropertyType.IsEnum)
-                                        {
-                                            var type = member.PropertyType.IsGenericType
-                                                ? Nullable.GetUnderlyingType(member.PropertyType)
-                                                : member.PropertyType;
-
-                                            if (type.IsEnum)
-                                            {
-                                                valueToWrite = $"{type.Name}.{valueToWrite}";
-                                            }
-                                        }
-                                        propertiesToWrite[member.Name] = valueToWrite;
-                                    }
-                                }
+                                (indexOffset, var propertiesToWrite) = MapAttributes<Column>(indexOffset, column, columnNodes);
 
                                 if (propertiesToWrite.Count > 0)
                                 {
@@ -618,6 +531,8 @@ public class XenialDevToolsWindowController : WindowController
                                     (true, _, _) => typeof(LayoutViewItem),
                                     _ => typeof(LayoutEmptySpaceItem)
                                 },
+                            { Name: "SplitterItem" } => typeof(LayoutSplitterItem),
+                            { Name: "SeparatorItem" } => typeof(LayoutSeparatorItem),
                             _ => throw new ArgumentOutOfRangeException(nameof(node), node, "Could not find node type")
                         };
 
@@ -643,7 +558,7 @@ public class XenialDevToolsWindowController : WindowController
                     {
                         foreach (var item in items)
                         {
-                            PrintNode(sb, item);
+                            PrintNode(sb, item, itemsNode);
 
                             if (items.LastOrDefault() != item)
                             {
@@ -653,39 +568,96 @@ public class XenialDevToolsWindowController : WindowController
                             {
                                 sb.WriteLine();
                             }
+                        }
+                    }
 
-                            static void PrintNode(CurlyIndenter sb, LayoutGeneratorInfo item)
+                    static void PrintNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode)
+                    {
+                        if (!item.IsLeaf)
+                        {
+                            var methodName = item.TargetNodeType switch
                             {
-                                if (!item.IsLeaf)
-                                {
-                                    var methodName = item.TargetNodeType switch
-                                    {
-                                        Type t when t == typeof(HorizontalLayoutGroupItem) => "HorizontalGroup",
-                                        Type t when t == typeof(VerticalLayoutGroupItem) => "VerticalGroup",
-                                        Type t when t == typeof(LayoutTabbedGroupItem) => "TabbedGroup",
-                                        Type t when typeof(LayoutTabGroupItem).IsAssignableFrom(t) => "Tab",
-                                        _ => throw new ArgumentOutOfRangeException(nameof(item), item, "Could not find method for type")
-                                    };
+                                Type t when t == typeof(HorizontalLayoutGroupItem) => "HorizontalGroup",
+                                Type t when t == typeof(VerticalLayoutGroupItem) => "VerticalGroup",
+                                Type t when t == typeof(LayoutTabbedGroupItem) => "TabbedGroup",
+                                Type t when typeof(LayoutTabGroupItem).IsAssignableFrom(t) => "Tab",
+                                _ => throw new ArgumentOutOfRangeException(nameof(item), item, "Could not find method for type")
+                            };
 
-                                    using (sb.OpenBrace($"{methodName}(", openBrace: "", closeBrace: ")", writeLine: false))
+                            using (sb.OpenBrace($"{methodName}(", openBrace: "", closeBrace: ")", writeLine: false))
+                            {
+                                foreach (var child in item.Children)
+                                {
+                                    PrintNode(sb, child, itemsNode);
+                                    if (item.Children.LastOrDefault() != child)
                                     {
-                                        foreach (var child in item.Children)
+                                        sb.WriteLine(",");
+                                    }
+                                    else
+                                    {
+                                        sb.WriteLine();
+                                    }
+                                }
+                            }
+
+                            (var indexOffset, var propertiesToWrite) = MapAttributes(item.TargetNodeType, 0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList());
+
+                            if (propertiesToWrite.Count > 0)
+                            {
+                                using (sb.OpenBrace(" with "))
+                                {
+                                    foreach (var property in propertiesToWrite)
+                                    {
+                                        sb.WriteLine($"{property.Key} = {property.Value},");
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            PrintLeafNode(sb, item, itemsNode);
+                        }
+                    }
+
+                    static void PrintLeafNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode)
+                    {
+                        if (item.TargetNodeType == typeof(LayoutEmptySpaceItem))
+                        {
+                            sb.Write("EmptySpace()");
+                            return;
+                        }
+                        if (typeof(LayoutViewItem).IsAssignableFrom(item.TargetNodeType))
+                        {
+                            var (hasViewItem, _, viewItemId) = GetAttributeInfo(item.Node, "ViewItem");
+                            if (hasViewItem && viewItemId is not null)
+                            {
+                                var xmlViewItemNode = itemsNode.ChildNodes
+                                    .OfType<XmlNode>()
+                                    .FirstOrDefault(m =>
+                                        m.Attributes
+                                        .OfType<XmlAttribute>()
+                                        .Any(m => m.Name == "Id" && m.Value == viewItemId)
+                                    );
+
+                                if (xmlViewItemNode is not null)
+                                {
+                                    //TODO: ExpandMemberAttribute
+                                    //We replace dots with underscore because how
+                                    //SourceGenerators define property trains
+                                    sb.Write($"Editor.{viewItemId.Replace(".", "._")}");
+
+                                    (var indexOffset, var propertiesToWrite) = MapAttributes<LayoutPropertyEditorItem>(0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList());
+
+                                    if (propertiesToWrite.Count > 0)
+                                    {
+                                        using (sb.OpenBrace(" with "))
                                         {
-                                            PrintNode(sb, child);
-                                            if (item.Children.LastOrDefault() != child)
+                                            foreach (var property in propertiesToWrite)
                                             {
-                                                sb.WriteLine(",");
-                                            }
-                                            else
-                                            {
-                                                sb.WriteLine();
+                                                sb.WriteLine($"{property.Key} = {property.Value},");
                                             }
                                         }
                                     }
-                                }
-                                else
-                                {
-                                    sb.Write($"//{item.TargetNodeType}");
                                 }
                             }
                         }
@@ -731,6 +703,110 @@ public class XenialDevToolsWindowController : WindowController
             }
         }
     }
+
+    private static (int indexOffset, Dictionary<string, string> propertiesToWrite) MapAttributes<TTargetObject>(int indexOffset, XmlNode node, IList<XmlNode> neighborNodes)
+        => MapAttributes(typeof(TTargetObject), indexOffset, node, neighborNodes);
+
+    private static (int indexOffset, Dictionary<string, string> propertiesToWrite) MapAttributes(Type targetObjectType, int indexOffset, XmlNode column, IList<XmlNode> neighborNodes)
+    {
+        var propertiesToWrite = new Dictionary<string, string>();
+        var ignoredAttributes = new[]
+        {
+                    nameof(IModelColumn.Id),
+                    nameof(IModelColumn.PropertyName),
+                    nameof(IModelColumn.Index),
+                };
+
+        var attributes = column.Attributes.OfType<XmlAttribute>()
+            .Where(m => !ignoredAttributes.Contains(m.Name))
+            .ToList();
+
+        var shouldWriteIndex = false;
+        var indexToWrite = 0;
+
+        var index = GetAttribute(column, nameof(IModelColumn.Index));
+
+        if (!string.IsNullOrEmpty(index))
+        {
+            if (int.TryParse(index, out var indexInt))
+            {
+                var indexInList = neighborNodes.IndexOf(column);
+                var indexWithOffset = indexInList - indexOffset;
+                if (indexInt < 0)
+                {
+                    shouldWriteIndex = true;
+                    indexToWrite = indexInt;
+                    indexOffset++;
+                }
+                if (indexInt > 0 && indexInt != indexWithOffset)
+                {
+                    indexToWrite = indexInt;
+                    shouldWriteIndex = true;
+                }
+            }
+        }
+
+        if (shouldWriteIndex)
+        {
+            propertiesToWrite[nameof(IModelNode.Index)] = indexToWrite.ToString();
+        }
+
+        var members = targetObjectType.GetProperties();
+
+        foreach (var attribute in attributes)
+        {
+            var member = members.FirstOrDefault(m => m.Name == attribute.Name);
+            if (member is not null)
+            {
+                var value = attribute.Value;
+                var valueToWrite = value?.ToString();
+                if (member.PropertyType == typeof(string))
+                {
+                    valueToWrite = $"\"{valueToWrite}\"";
+                }
+                if (member.PropertyType == typeof(bool))
+                {
+                    valueToWrite = ParseBoolValue(valueToWrite);
+                }
+
+                static string ParseBoolValue(string? valueToWrite)
+                    => bool.TryParse(valueToWrite, out var boolValue)
+                        ? $"{boolValue}".ToLowerInvariant()
+                        : "false";
+
+                if (member.PropertyType.IsGenericType || member.PropertyType.IsEnum)
+                {
+                    var type = member.PropertyType.IsGenericType
+                        ? Nullable.GetUnderlyingType(member.PropertyType)
+                        : member.PropertyType;
+
+                    if (type.IsEnum)
+                    {
+                        valueToWrite = $"{type.Name}.{valueToWrite}";
+                    }
+                    if (type == typeof(bool))
+                    {
+                        valueToWrite = ParseBoolValue(valueToWrite);
+                    }
+                }
+                propertiesToWrite[member.Name] = valueToWrite;
+            }
+        }
+
+        return (indexOffset, propertiesToWrite);
+    }
+
+    private static string? GetAttribute(XmlNode node, string name)
+    {
+        var attribute = node.Attributes.OfType<XmlAttribute>()
+            .FirstOrDefault(m => m.Name == name);
+        if (attribute is not null)
+        {
+            return attribute.Value;
+        }
+        return null;
+    }
+
 
     internal record LayoutGeneratorInfo(Type TargetNodeType, XmlNode Node)
     {
