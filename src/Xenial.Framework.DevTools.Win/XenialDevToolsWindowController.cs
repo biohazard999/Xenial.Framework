@@ -23,6 +23,9 @@ using Xenial.Framework.DevTools.Helpers;
 using Xenial.Framework.Images;
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.ColumnItems;
+using Xenial.Framework.Layouts.Items;
+using Xenial.Framework.Layouts.Items.Base;
+using Xenial.Framework.Layouts.Items.LeafNodes;
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.DevTools.Win;
@@ -529,7 +532,6 @@ public class XenialDevToolsWindowController : WindowController
                 doc.LoadXml(xml);
                 var root = doc.FirstChild;
 
-
                 static string DetailViewOptionsCode(XmlNode node)
                 {
                     var sb = CurlyIndenter.Create();
@@ -567,9 +569,132 @@ public class XenialDevToolsWindowController : WindowController
                     return sb.ToString();
                 }
 
-                var sb = CurlyIndenter.Create();
-                sb.WriteLine(DetailViewOptionsCode(root));
-                return sb.ToString();
+                static string LayoutBuildersCode(XmlNode node)
+                {
+                    var sb = CurlyIndenter.Create();
+                    var options = DetailViewOptionsCode(node).TrimEnd();
+
+                    var itemsNode = node.ChildNodes.OfType<XmlNode>().First(m => m.Name == "Items");
+                    var layoutNode = node.ChildNodes.OfType<XmlNode>().First(m => m.Name == "Layout");
+
+                    //We ignore the Main Node
+                    var rootLayoutNode = layoutNode.ChildNodes.Count == 1
+                        ? layoutNode.ChildNodes[0]
+                        : layoutNode;
+
+                    static (bool hasAttribute, string attributeName, string? attributeValue) GetAttributeInfo(XmlNode node, string attributeName)
+                    {
+                        if (node == null)
+                        {
+                            return (false, attributeName, null);
+                        }
+
+                        var attribute = node.Attributes.GetNamedItem(attributeName);
+
+                        return (attribute != null, attributeName, attribute?.Value);
+                    }
+
+                    static Type GetTargetType(XmlNode node)
+                        => node switch
+                        {
+                            { Name: "LayoutGroup", ParentNode: { Name: "TabbedGroup" } } =>
+                                GetAttributeInfo(node, "Direction") switch
+                                {
+                                    (true, _, "Horizontal") => typeof(HorizontalLayoutTabGroupItem),
+                                    //Default is Vertical
+                                    _ => typeof(VerticalLayoutTabGroupItem),
+                                },
+                            { Name: "LayoutGroup" } =>
+                                GetAttributeInfo(node, "Direction") switch
+                                {
+                                    (true, _, "Horizontal") => typeof(HorizontalLayoutGroupItem),
+                                    //Default is Vertical
+                                    _ => typeof(VerticalLayoutGroupItem),
+                                },
+                            { Name: "TabbedGroup" } => typeof(LayoutTabbedGroupItem),
+                            { Name: "LayoutItem" } =>
+                                GetAttributeInfo(node, "ViewItem") switch
+                                {
+                                    (true, _, _) => typeof(LayoutViewItem),
+                                    _ => typeof(LayoutEmptySpaceItem)
+                                },
+                            _ => throw new ArgumentOutOfRangeException(nameof(node), node, "Could not find node type")
+                        };
+
+                    var items = new List<LayoutGeneratorInfo>();
+
+                    static void CollectNodeTree(XmlNode node, IList<LayoutGeneratorInfo> children)
+                    {
+                        var targetType = GetTargetType(node);
+                        var item = new LayoutGeneratorInfo(targetType, node);
+                        children.Add(item);
+                        foreach (var childNode in node.ChildNodes.OfType<XmlNode>())
+                        {
+                            CollectNodeTree(childNode, item.Children);
+                        }
+                    }
+
+                    foreach (var childNode in rootLayoutNode.ChildNodes.OfType<XmlNode>())
+                    {
+                        CollectNodeTree(childNode, items);
+                    }
+
+                    using (sb.OpenBrace($"public Layout BuildLayout() => new Layout({options})", ";"))
+                    {
+                        foreach (var item in items)
+                        {
+                            PrintNode(sb, item);
+
+                            if (items.LastOrDefault() != item)
+                            {
+                                sb.WriteLine(",");
+                            }
+                            else
+                            {
+                                sb.WriteLine();
+                            }
+
+                            static void PrintNode(CurlyIndenter sb, LayoutGeneratorInfo item)
+                            {
+                                if (!item.IsLeaf)
+                                {
+                                    var methodName = item.TargetNodeType switch
+                                    {
+                                        Type t when t == typeof(HorizontalLayoutGroupItem) => "HorizontalGroup",
+                                        Type t when t == typeof(VerticalLayoutGroupItem) => "VerticalGroup",
+                                        Type t when t == typeof(LayoutTabbedGroupItem) => "TabbedGroup",
+                                        Type t when typeof(LayoutTabGroupItem).IsAssignableFrom(t) => "Tab",
+                                        _ => throw new ArgumentOutOfRangeException(nameof(item), item, "Could not find method for type")
+                                    };
+
+                                    using (sb.OpenBrace($"{methodName}(", openBrace: "", closeBrace: ")", writeLine: false))
+                                    {
+                                        foreach (var child in item.Children)
+                                        {
+                                            PrintNode(sb, child);
+                                            if (item.Children.LastOrDefault() != child)
+                                            {
+                                                sb.WriteLine(",");
+                                            }
+                                            else
+                                            {
+                                                sb.WriteLine();
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Write($"//{item.TargetNodeType}");
+                                }
+                            }
+                        }
+                    }
+
+                    return sb.ToString();
+                }
+
+                return LayoutBuildersCode(root);
             }
 
             ((IModelView)copy).Remove();
@@ -605,6 +730,13 @@ public class XenialDevToolsWindowController : WindowController
                 }
             }
         }
+    }
+
+    internal record LayoutGeneratorInfo(Type TargetNodeType, XmlNode Node)
+    {
+        public IList<LayoutGeneratorInfo> Children { get; } = new List<LayoutGeneratorInfo>();
+
+        public bool IsLeaf => typeof(LayoutItemLeaf).IsAssignableFrom(TargetNodeType);
     }
 
 }

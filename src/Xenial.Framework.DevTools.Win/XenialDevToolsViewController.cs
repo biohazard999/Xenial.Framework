@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Templates;
+using DevExpress.XtraEditors;
 
 using Xenial.Framework.Images;
 
@@ -26,7 +27,7 @@ public class XenialDevToolsViewController : ViewController
     /// </summary>
     public XenialDevToolsViewController()
     {
-        OpenDevToolsSimpleAction = new SimpleAction(this, nameof(OpenDevToolsSimpleAction), DevExpress.Persistent.Base.PredefinedCategory.Tools)
+        OpenDevToolsSimpleAction = new SimpleAction(this, nameof(OpenDevToolsSimpleAction), "Diagnostic")
         {
             ImageName = XenialImages.Action_Xenial_DevTools,
             PaintStyle = ActionItemPaintStyle.Image,
@@ -34,7 +35,18 @@ public class XenialDevToolsViewController : ViewController
             Shortcut = "CtrlShiftF5"
         };
 
+        OpenDevToolsSimpleAction.CustomizeControl += OpenDevToolsSimpleAction_CustomizeControl;
         OpenDevToolsSimpleAction.Execute += OpenDevToolsSimpleAction_Execute;
+    }
+
+    private void OpenDevToolsSimpleAction_CustomizeControl(object sender, CustomizeControlEventArgs e)
+    {
+        if (e.Control is SimpleButton button)
+        {
+            button.AutoWidthInLayoutControl = false;
+            button.MinimumSize = new System.Drawing.Size(button.Height, 0);
+            button.Width = button.Height;
+        }
     }
 
     private void OpenDevToolsSimpleAction_Execute(object sender, SimpleActionExecuteEventArgs e)
@@ -45,4 +57,5 @@ public class XenialDevToolsViewController : ViewController
             controller.OpenDevTools(View);
         }
     }
+
 }
