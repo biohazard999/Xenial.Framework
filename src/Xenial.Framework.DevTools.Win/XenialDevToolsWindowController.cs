@@ -346,7 +346,7 @@ public class XenialDevToolsWindowController : WindowController
             var code = new HtmlBuilder.CodeBlock("xml", node);
             devToolsViewModel.Xafml = HtmlBuilder.BuildHtml("Xafml", $"{code}");
 
-            static string ListViewBuilderCode(string xml, IModelListView modelListView)
+            static string ListViewBuilderCode(string xml, IModelListView modelListViewModel)
             {
                 var doc = new System.Xml.XmlDocument();
                 doc.LoadXml(xml);
@@ -523,12 +523,64 @@ public class XenialDevToolsWindowController : WindowController
                 return ListViewBuildersCode(root);
             }
 
+            static string DetailViewBuilderCode(string xml, IModelDetailView detailViewModel)
+            {
+                var doc = new System.Xml.XmlDocument();
+                doc.LoadXml(xml);
+                var root = doc.FirstChild;
+
+
+                static string DetailViewOptionsCode(XmlNode node)
+                {
+                    var sb = CurlyIndenter.Create();
+
+                    var ignoredAttributes = new[] { "Id", "ClassName" };
+                    var attributes = node.Attributes
+                        .OfType<XmlAttribute>()
+                        .Where(n => !ignoredAttributes.Contains(n.Name?.ToString()))
+                        .ToList();
+
+                    var members = typeof(DetailViewOptions).GetProperties();
+
+                    using (sb.OpenBrace($"new {nameof(DetailViewOptions)}"))
+                    {
+                        foreach (var attribute in attributes)
+                        {
+                            var member = members.FirstOrDefault(m => m.Name == attribute.Name);
+                            if (member is not null)
+                            {
+                                var value = attribute.Value;
+                                var valueToWrite = value?.ToString();
+                                if (member.PropertyType == typeof(string))
+                                {
+                                    valueToWrite = $"\"{valueToWrite}\"";
+                                }
+                                if (member.PropertyType == typeof(bool))
+                                {
+                                    valueToWrite = $"{bool.Parse(valueToWrite)}".ToLowerInvariant();
+                                }
+                                sb.WriteLine($"{member.Name} = {valueToWrite},");
+                            }
+                        }
+                    }
+
+                    return sb.ToString();
+                }
+
+                var sb = CurlyIndenter.Create();
+                sb.WriteLine(DetailViewOptionsCode(root));
+                return sb.ToString();
+            }
 
             ((IModelView)copy).Remove();
 
-            if (view.Model is IModelListView listView)
+            if (view.Model is IModelListView listViewModel)
             {
-                devToolsViewModel.Code = HtmlBuilder.BuildHtml("Code", $"{new HtmlBuilder.CodeBlock("csharp", ListViewBuilderCode(node, listView))}");
+                devToolsViewModel.Code = HtmlBuilder.BuildHtml("Code", $"{new HtmlBuilder.CodeBlock("csharp", ListViewBuilderCode(node, listViewModel))}");
+            }
+            if (view.Model is IModelDetailView detailViewModel)
+            {
+                devToolsViewModel.Code = HtmlBuilder.BuildHtml("Code", $"{new HtmlBuilder.CodeBlock("csharp", DetailViewBuilderCode(node, detailViewModel))}");
             }
         }
 

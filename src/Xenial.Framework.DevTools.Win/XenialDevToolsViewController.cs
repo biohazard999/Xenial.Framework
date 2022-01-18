@@ -30,8 +30,10 @@ public class XenialDevToolsViewController : ViewController
         {
             ImageName = XenialImages.Action_Xenial_DevTools,
             PaintStyle = ActionItemPaintStyle.Image,
-            ToolTip = "Opens the Xenial-DevTools"
+            ToolTip = "Opens the Xenial-DevTools",
+            Shortcut = "CtrlShiftF5"
         };
+
         OpenDevToolsSimpleAction.Execute += OpenDevToolsSimpleAction_Execute;
     }
 
