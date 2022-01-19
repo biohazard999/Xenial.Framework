@@ -20,3 +20,8 @@ namespace Xenial.Framework.Win.Layouts;
 public partial record DetailViewOptionsWin : DetailViewOptions
 {
 }
+
+[XenialModelOptionsMapper(typeof(DetailViewOptionsWin))]
+internal partial class ViewOptionsMapper
+{
+}
