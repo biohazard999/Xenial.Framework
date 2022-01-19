@@ -194,7 +194,10 @@ namespace MainDemo.Module
                 {
                     Caption = "Users"
                 }))
-                .WithDetailViewLayout(b => new()
+                .WithDetailViewLayout(b => new(new()
+                {
+                    EnableLayoutGroupImages = true
+                })
                 {
                     b.HorizontalGroup(
                         b.VerticalGroup(
@@ -204,7 +207,7 @@ namespace MainDemo.Module
                         ),
                         b.PropertyEditor(m => m.Photo) with { ShowCaption = false, RelativeSize = 15 }
                     ),
-                    b.VerticalGroup("Roles", b.PropertyEditor(m => m.Roles))
+                    b.VerticalGroup("Roles", "BO_Role", b.PropertyEditor(m => m.Roles))
                 })
                 .Build();
 

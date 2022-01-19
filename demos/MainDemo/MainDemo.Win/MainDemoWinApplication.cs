@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using Demos.Data;
@@ -8,6 +9,8 @@ using DevExpress.ExpressApp.Security;
 using DevExpress.ExpressApp.Security.ClientServer;
 using DevExpress.ExpressApp.Win;
 using DevExpress.ExpressApp.Xpo;
+
+using Xenial.Framework.DevTools.Win;
 
 namespace MainDemo.Win
 {
@@ -43,6 +46,13 @@ namespace MainDemo.Win
                     logonParameters.UserName = "Sam";
                 }
             }
+        }
+        protected override List<Controller> CreateLogonWindowControllers()
+        {
+            var controllers = base.CreateLogonWindowControllers();
+            //controllers.Add(new XenialDevToolsController());
+            controllers.Add(new XenialDevToolsViewController());
+            return controllers;
         }
     }
 }

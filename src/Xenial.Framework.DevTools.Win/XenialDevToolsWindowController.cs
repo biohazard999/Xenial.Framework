@@ -48,6 +48,11 @@ public class XenialDevToolsController : DialogController
     /// <summary>
     /// 
     /// </summary>
+    public SimpleAction PrettyPrintXmlSimpleAction { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public XenialDevToolsController()
     {
         AlwaysOnTopSimpleAction = new SimpleAction(this, nameof(AlwaysOnTopSimpleAction), DevExpress.Persistent.Base.PredefinedCategory.ObjectsCreation)
@@ -64,12 +69,27 @@ public class XenialDevToolsController : DialogController
             ToolTip = "Controls if the Xenial-DevTools window is displayed opaque"
         };
 
+        PrettyPrintXmlSimpleAction = new SimpleAction(this, nameof(PrettyPrintXmlSimpleAction), DevExpress.Persistent.Base.PredefinedCategory.ObjectsCreation)
+        {
+            ImageName = XenialImages.Action_Xenial_Xml,
+            PaintStyle = ActionItemPaintStyle.Image,
+            ToolTip = "Pretty print Xafml XML output"
+        };
+
         AlwaysOnTopSimpleAction.Execute += AlwaysOnTopSimpleAction_Execute;
         OpacitySimpleAction.Execute += OpacitySimpleAction_Execute;
+        PrettyPrintXmlSimpleAction.Execute += PrettyPrintXmlSimpleAction_Execute;
 
         AlwaysOnTopSimpleAction.CustomizeControl += AlwaysOnTopSimpleAction_CustomizeControl;
         OpacitySimpleAction.CustomizeControl += AlwaysOnTopSimpleAction_CustomizeControl;
+        PrettyPrintXmlSimpleAction.CustomizeControl += AlwaysOnTopSimpleAction_CustomizeControl;
     }
+    /// <summary>
+    /// 
+    /// </summary>
+    public bool PrettyPrintXml { get; set; } = true;
+    private void PrettyPrintXmlSimpleAction_Execute(object sender, SimpleActionExecuteEventArgs e)
+        => PrettyPrintXml = !PrettyPrintXml;
 
     private void AlwaysOnTopSimpleAction_CustomizeControl(object sender, CustomizeControlEventArgs e)
     {
@@ -268,6 +288,7 @@ public class XenialDevToolsWindowController : WindowController
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "It's just the caption for the dev tool")]
     public void OpenDevTools(View view)
     {
+
         if (DevToolsWindow is null)
         {
             DevToolsWindow = new WinWindow(Application, TemplateContext.View, new Controller[]
@@ -395,10 +416,27 @@ public class XenialDevToolsWindowController : WindowController
                 }
             }
 
-            node = VisualizeNodeHelper.PrettyPrint(doc.OuterXml);
+            var xml = doc.OuterXml;
 
-            var code = new HtmlBuilder.CodeBlock("xml", node);
-            devToolsViewModel.Xafml = HtmlBuilder.BuildHtml("Xafml", $"{code}");
+            var controller = DevToolsWindow.GetController<XenialDevToolsController>();
+
+            static string BuildXafmlHtml(string xml, bool prettyPrint)
+            {
+
+                var node = VisualizeNodeHelper.PrettyPrint(xml, prettyPrint);
+
+                var code = new HtmlBuilder.CodeBlock("xml", node);
+
+                return HtmlBuilder.BuildHtml("Xafml", $"{code}");
+            }
+
+            devToolsViewModel.Xafml = BuildXafmlHtml(xml, controller.PrettyPrintXml);
+
+            void PrettyPrint(object? s, EventArgs e)
+                => devToolsViewModel.Xafml = BuildXafmlHtml(xml, controller.PrettyPrintXml);
+
+            controller.PrettyPrintXmlSimpleAction.Executed -= PrettyPrint;
+            controller.PrettyPrintXmlSimpleAction.Executed += PrettyPrint;
 
             static string ListViewBuilderCode(string xml, IModelListView modelListViewModel)
             {
