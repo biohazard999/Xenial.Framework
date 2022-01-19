@@ -319,6 +319,49 @@ public class XenialDevToolsWindowController : WindowController
             var id = $"{view.Model.Id}_{Guid.NewGuid()}";
             var modelViews = view.Model.Application.Views;
             var copy = ((ModelNode)modelViews).AddClonedNode((ModelNode)view.Model, id);
+
+            if (copy is not null)
+            {
+                foreach (var property in copy.GetType().GetProperties())
+                {
+                    var info = copy.GetValueInfo(property.Name);
+                    if (info is not null)
+                    {
+                        var attributes = property
+                            .GetCustomAttributes(typeof(System.ComponentModel.DefaultValueAttribute), false)
+                            .OfType<System.ComponentModel.DefaultValueAttribute>();
+
+                        foreach (var attribute in attributes)
+                        {
+                            var value = copy.GetValue(property.Name);
+                            if (attribute.Value.Equals(value))
+                            {
+                                copy.ClearValue(property.Name);
+                            }
+                            else
+                            {
+                                value = ((ModelNode)view.Model).GetValue(property.Name);
+                                if (attribute.Value.Equals(value))
+                                {
+                                    copy.ClearValue(property.Name);
+                                }
+                                else
+                                {
+                                    var viewValue = property.GetValue(view.Model);
+                                    var copyValue = property.GetValue(copy);
+                                    if (viewValue is not null)
+                                    {
+                                        if (viewValue.Equals(copyValue))
+                                        {
+                                            copy.ClearValue(property.Name);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             var node = VisualizeNodeHelper.PrintModelNode(copy);
 
             //TODO: use xml to replace id
@@ -335,6 +378,15 @@ public class XenialDevToolsWindowController : WindowController
                 if (node.Attributes["IsNewNode"] != null)
                 {
                     node.Attributes.Remove(node.Attributes["IsNewNode"]);
+                }
+
+                if (node.Attributes["ShowCaption"] != null)
+                {
+                    var value = node.Attributes["ShowCaption"].Value;
+                    if (string.IsNullOrEmpty(value)) //Empty boolean should be ignored
+                    {
+                        node.Attributes.Remove(node.Attributes["ShowCaption"]);
+                    }
                 }
 
                 foreach (System.Xml.XmlNode child in node.ChildNodes)
@@ -450,32 +502,14 @@ public class XenialDevToolsWindowController : WindowController
                     var sb = CurlyIndenter.Create();
 
                     var ignoredAttributes = new[] { "Id", "ClassName" };
-                    var attributes = node.Attributes
-                        .OfType<XmlAttribute>()
-                        .Where(n => !ignoredAttributes.Contains(n.Name?.ToString()))
-                        .ToList();
-
-                    var members = typeof(DetailViewOptions).GetProperties();
 
                     using (sb.OpenBrace($"new {nameof(DetailViewOptions)}"))
                     {
-                        foreach (var attribute in attributes)
+                        var mappedItems = MapAttributes(typeof(DetailViewOptions), node, ignoredAttributes);
+
+                        foreach (var attribute in mappedItems)
                         {
-                            var member = members.FirstOrDefault(m => m.Name == attribute.Name);
-                            if (member is not null)
-                            {
-                                var value = attribute.Value;
-                                var valueToWrite = value?.ToString();
-                                if (member.PropertyType == typeof(string))
-                                {
-                                    valueToWrite = $"\"{valueToWrite}\"";
-                                }
-                                if (member.PropertyType == typeof(bool))
-                                {
-                                    valueToWrite = $"{bool.Parse(valueToWrite)}".ToLowerInvariant();
-                                }
-                                sb.WriteLine($"{member.Name} = {valueToWrite},");
-                            }
+                            sb.WriteLine($"{attribute.Key} = {attribute.Value},");
                         }
                     }
 
@@ -604,13 +638,17 @@ public class XenialDevToolsWindowController : WindowController
 
                             if (propertiesToWrite.Count > 0)
                             {
-                                using (sb.OpenBrace(" with "))
+                                sb.WriteLine(" with ");
+                                sb.WriteLine("{");
+                                sb.Indent();
+
+                                foreach (var property in propertiesToWrite)
                                 {
-                                    foreach (var property in propertiesToWrite)
-                                    {
-                                        sb.WriteLine($"{property.Key} = {property.Value},");
-                                    }
+                                    sb.WriteLine($"{property.Key} = {property.Value},");
                                 }
+
+                                sb.UnIndent();
+                                sb.Write("}");
                             }
                         }
                         else
@@ -647,16 +685,26 @@ public class XenialDevToolsWindowController : WindowController
                                     sb.Write($"Editor.{viewItemId.Replace(".", "._")}");
 
                                     (var indexOffset, var propertiesToWrite) = MapAttributes<LayoutPropertyEditorItem>(0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList());
+                                    (_, var propertiesToWrite2) = MapAttributes<LayoutPropertyEditorItem>(0, xmlViewItemNode, xmlViewItemNode.ParentNode.ChildNodes.OfType<XmlNode>().ToList());
+
+                                    foreach (var pair in propertiesToWrite2)
+                                    {
+                                        propertiesToWrite.Add(pair.Key, pair.Value);
+                                    }
 
                                     if (propertiesToWrite.Count > 0)
                                     {
-                                        using (sb.OpenBrace(" with "))
+                                        sb.WriteLine(" with ");
+                                        sb.WriteLine("{");
+                                        sb.Indent();
+
+                                        foreach (var property in propertiesToWrite)
                                         {
-                                            foreach (var property in propertiesToWrite)
-                                            {
-                                                sb.WriteLine($"{property.Key} = {property.Value},");
-                                            }
+                                            sb.WriteLine($"{property.Key} = {property.Value},");
                                         }
+
+                                        sb.UnIndent();
+                                        sb.Write("}");
                                     }
                                 }
                             }
@@ -712,10 +760,10 @@ public class XenialDevToolsWindowController : WindowController
         var propertiesToWrite = new Dictionary<string, string>();
         var ignoredAttributes = new[]
         {
-                    nameof(IModelColumn.Id),
-                    nameof(IModelColumn.PropertyName),
-                    nameof(IModelColumn.Index),
-                };
+            nameof(IModelColumn.Id),
+            nameof(IModelColumn.PropertyName),
+            nameof(IModelColumn.Index),
+        };
 
         var attributes = column.Attributes.OfType<XmlAttribute>()
             .Where(m => !ignoredAttributes.Contains(m.Name))
@@ -750,6 +798,36 @@ public class XenialDevToolsWindowController : WindowController
         {
             propertiesToWrite[nameof(IModelNode.Index)] = indexToWrite.ToString();
         }
+
+        foreach (var item in MapAttributes(targetObjectType, column))
+        {
+            if (!propertiesToWrite.ContainsKey(item.Key))
+            {
+                propertiesToWrite.Add(item.Key, item.Value);
+            }
+        }
+
+        return (indexOffset, propertiesToWrite);
+    }
+
+    private static Dictionary<string, string> MapAttributes(Type targetObjectType, XmlNode node, IEnumerable<string>? ignored = null)
+    {
+        if (ignored is null)
+        {
+            ignored = Enumerable.Empty<string>();
+        }
+
+        var propertiesToWrite = new Dictionary<string, string>();
+        var ignoredAttributes = new[]
+        {
+            nameof(IModelColumn.Id),
+            nameof(IModelColumn.PropertyName),
+            nameof(IModelColumn.Index),
+        }.Concat(ignored);
+
+        var attributes = node.Attributes.OfType<XmlAttribute>()
+            .Where(m => !ignoredAttributes.Contains(m.Name))
+            .ToList();
 
         var members = targetObjectType.GetProperties();
 
@@ -793,7 +871,7 @@ public class XenialDevToolsWindowController : WindowController
             }
         }
 
-        return (indexOffset, propertiesToWrite);
+        return propertiesToWrite;
     }
 
     private static string? GetAttribute(XmlNode node, string name)
