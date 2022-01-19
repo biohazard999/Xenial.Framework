@@ -1,6 +1,7 @@
 ﻿using System;
 
 using DevExpress.ExpressApp.Model;
+using DevExpress.ExpressApp.SystemModule;
 
 namespace Xenial.Framework.Layouts;
 
@@ -22,6 +23,13 @@ namespace Xenial.Framework.Layouts;
         nameof(IModelListView.Index)
     }
 )]
+//TODO: Default Focused Item
+//[XenialModelOptions(
+//    typeof(IModelDetailViewDefaultFocusedItem), IgnoredMembers = new[]
+//    {
+//        nameof(IModelWinLayoutManagerOptions.Index)
+//    }
+//)]
 public partial record DetailViewOptions
 {
 }

@@ -6,13 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.ExpressApp.Win" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.Validation.Win" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xenial.Framework.Images\Xenial.Framework.Images.csproj" />
-    <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.Validation\Xenial.Framework.Validation.csproj" />
     <ProjectReference Include="..\Xenial.Framework.Generators.XAF\Xenial.Framework.Generators.XAF.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
-  
+
 </Project>
