@@ -21,7 +21,36 @@ internal partial class ViewOptionsMapper
         }
     }
 
+    partial void MapNodeCore(ListViewOptions from, IModelListView to)
+    {
+        foreach (var option in from.ExtensionsCollection)
+        {
+            MappingFactory.Factory.MapListViewOptions(option, to);
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="genericOptions"></param>
+    /// <param name="node"></param>
     public static void MapGenericOptions(GenericDetailViewOptions genericOptions, IModelNode node)
+    {
+        if (node is ModelNode modelNode)
+        {
+            foreach (var item in genericOptions)
+            {
+                modelNode.SetValue(item.Key, item.Value);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="genericOptions"></param>
+    /// <param name="node"></param>
+    public static void MapGenericOptions(GenericListViewOptions genericOptions, IModelNode node)
     {
         if (node is ModelNode modelNode)
         {

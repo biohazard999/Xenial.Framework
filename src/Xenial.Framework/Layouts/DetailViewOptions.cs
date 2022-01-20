@@ -92,3 +92,4 @@ public sealed class DetailViewOptionsExtensions : List<IDetailViewOptionsExtensi
 /// 
 /// </summary>
 public interface IDetailViewOptionsExtension { }
+
