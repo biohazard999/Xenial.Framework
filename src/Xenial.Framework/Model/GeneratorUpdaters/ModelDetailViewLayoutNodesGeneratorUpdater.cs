@@ -43,7 +43,8 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
 
                 if (layout.Options is not null)
                 {
-                    new ViewOptionsMapper().Map(layout.Options, modelDetailView);
+                    new ViewOptionsMapper()
+                        .Map(layout.Options, modelDetailView);
                 }
 
                 ModelDetailViewLayoutNodesGeneratorUpdater.MarkDuplicateNodes(layout);

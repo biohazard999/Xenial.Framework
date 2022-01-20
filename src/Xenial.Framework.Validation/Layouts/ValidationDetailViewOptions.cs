@@ -39,24 +39,4 @@ public static class ValidationDetailViewOptionsExtensions
 
         return list;
     }
-
-    public static void Foo()
-    {
-
-        DetailViewOptions x = new()
-        {
-            Caption = "Foo",
-            Extensions = x => x
-                .Validation(new()
-                {
-
-                })
-                .Validation(new()
-                {
-
-                }),
-            AllowDelete = true
-        };
-
-    }
 }
