@@ -1,30 +1,9 @@
 ﻿using System;
 
+using Xenial.Framework.Layouts;
 using Xenial.Framework.Model.GeneratorUpdaters;
 
-namespace Xenial.Framework.Layouts;
-
-/// <summary>
-/// 
-/// </summary>
-public static class WinDetailViewOptionsExtensions
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="list"></param>
-    /// <param name="options"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    public static DetailViewOptionsExtensions WindowsForms(this DetailViewOptionsExtensions list, DetailViewOptionsWin options)
-    {
-        _ = list ?? throw new ArgumentNullException(nameof(list));
-        _ = options ?? throw new ArgumentNullException(nameof(options));
-        list.Add(options);
-
-        return list;
-    }
-}
+namespace Xenial.Framework.Win;
 
 internal static class XenialWindowsFormsModuleInitializer
 {

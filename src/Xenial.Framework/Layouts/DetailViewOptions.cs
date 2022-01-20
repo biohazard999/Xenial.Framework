@@ -57,6 +57,35 @@ public partial record DetailViewOptions
 /// <summary>
 /// 
 /// </summary>
+public sealed class GenericDetailViewOptions : Dictionary<string, object>, IDetailViewOptionsExtension
+{
+}
+
+/// <summary>
+/// 
+/// </summary>
+public static class DetailViewOptionsExt
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="options"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static DetailViewOptionsExtensions Generic(this DetailViewOptionsExtensions list, GenericDetailViewOptions options)
+    {
+        _ = list ?? throw new ArgumentNullException(nameof(list));
+        _ = options ?? throw new ArgumentNullException(nameof(options));
+        list.Add(options);
+
+        return list;
+    }
+}
+
+/// <summary>
+/// 
+/// </summary>
 public sealed class DetailViewOptionsExtensions : List<IDetailViewOptionsExtension> { }
 
 /// <summary>
