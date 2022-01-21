@@ -16,7 +16,16 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
         Caption = "Hot Reload!!!",
         ImageName = XenialImages.Action_Xenial_HotReload,
         //ImageName = "BO_Employee",
-        EnableLayoutGroupImages = true
+        EnableLayoutGroupImages = true,
+        Extensions = x =>
+            x.Validation(new ValidationDetailViewOptions()
+            {
+                RequiredFieldMark = "🤣"
+            })
+            .Generic(new GenericDetailViewOptions()
+            {
+                ["YourCustomProperty"] = "Foo"
+            })
     })
     {
         HorizontalGroup("Details", "BO_Employee",

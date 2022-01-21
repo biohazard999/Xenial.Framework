@@ -13,20 +13,16 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
 /// <summary>   (Immutable) a layout action container item. </summary>
 [XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelActionContainerViewItem), IgnoredMembers = new[]
+    {
+        nameof(IModelActionContainerViewItem.Id),
+        nameof(IModelActionContainerViewItem.Index),
+        nameof(IModelActionContainerViewItem.ActionContainer)
+    }
+)]
 public partial record LayoutActionContainerItem(string ActionContainerId) : LayoutViewItem(ActionContainerId)
 {
-    /// <summary>   Gets or sets the paint style. </summary>
-    ///
-    /// <value> The paint style. </value>
-
-    public ActionItemPaintStyle? PaintStyle { get; set; }
-
-    /// <summary>   Gets or sets the orientation. </summary>
-    ///
-    /// <value> The orientation. </value>
-
-    public ActionContainerOrientation? Orientation { get; set; }
-
     /// <summary>   Gets or sets the action container options. </summary>
     ///
     /// <value> The action container options. </value>

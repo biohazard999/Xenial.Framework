@@ -10,6 +10,14 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
 /// <summary>   (Immutable) a layout static image item. </summary>
 [XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelStaticImage), IgnoredMembers = new[]
+    {
+        nameof(IModelStaticImage.Id),
+        nameof(IModelStaticImage.Index),
+        nameof(IModelStaticImage.ImageName)
+    }
+)]
 public partial record LayoutStaticImageItem : LayoutViewItem
 {
     /// <summary>   Gets the name of the image. </summary>

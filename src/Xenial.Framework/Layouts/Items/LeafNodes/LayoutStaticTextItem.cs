@@ -8,6 +8,14 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
 /// <summary>   (Immutable) a layout static text item. </summary>
 [XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelStaticText), IgnoredMembers = new[]
+    {
+        nameof(IModelStaticText.Id),
+        nameof(IModelStaticText.Index),
+        nameof(IModelStaticText.Text)
+    }
+)]
 public partial record LayoutStaticTextItem : LayoutViewItem
 {
     /// <summary>   Gets the text. </summary>
