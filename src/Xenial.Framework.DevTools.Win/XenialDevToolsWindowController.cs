@@ -422,7 +422,6 @@ public class XenialDevToolsWindowController : WindowController
 
             static string BuildXafmlHtml(string xml, bool prettyPrint)
             {
-
                 var node = VisualizeNodeHelper.PrettyPrint(xml, prettyPrint);
 
                 var code = new HtmlBuilder.CodeBlock("xml", node);

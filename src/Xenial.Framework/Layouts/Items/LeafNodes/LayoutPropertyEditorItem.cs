@@ -47,4 +47,20 @@ public partial record LayoutPropertyEditorItem(string PropertyEditorId)
     /// <value> The property editor options. </value>
 
     public Action<IModelPropertyEditor>? PropertyEditorOptions { get; set; }
+
+
+    private string? editorAlias;
+    internal bool WasEditorAliasSet { get; set; }
+    /// <summary>
+    /// Specifies an editor alias.
+    /// </summary>
+    public string? EditorAlias
+    {
+        get => editorAlias;
+        set
+        {
+            WasEditorAliasSet = true;
+            editorAlias = value;
+        }
+    }
 }

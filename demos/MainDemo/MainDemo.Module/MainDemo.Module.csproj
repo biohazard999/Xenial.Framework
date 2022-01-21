@@ -49,6 +49,7 @@
     <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Images" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Validation" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.LabelEditors" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Generators" Version="$(XenialDemoPackageVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -59,6 +60,7 @@
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Images/Xenial.Framework.Images.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Validation/Xenial.Framework.Validation.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.LabelEditors/Xenial.Framework.LabelEditors.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Generators/Xenial.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
   

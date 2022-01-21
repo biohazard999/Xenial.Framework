@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using Xenial.Framework.Images;
+using Xenial.Framework.LabelEditors.PubTernal;
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items.Base;
 
@@ -18,13 +19,10 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
         //ImageName = "BO_Employee",
         EnableLayoutGroupImages = true,
         Extensions = x =>
-            x.Validation(new ValidationDetailViewOptions()
+            x.Generic(new()
             {
-                RequiredFieldMark = "🤣"
-            })
-            .Generic(new GenericDetailViewOptions()
-            {
-                ["YourCustomProperty"] = "Foo"
+                ["YourCustomProperty"] = "Foo",
+                ["ImageName"] = "BO_Employee",
             })
     })
     {
@@ -45,7 +43,7 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
                 ) with
                 { RelativeSize = 55 },
                 HorizontalGroup(
-                    Editor.Photo with { ShowCaption = false }
+                    Editor.Photo with { ShowCaption = false, EditorAlias = DevExpress.ExpressApp.Editors.EditorAliases.ByteArrayPropertyEditor }
                 ) with
                 { RelativeSize = 15 }
             )
@@ -55,7 +53,7 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
                 Editor.NickName,
                 Editor.SpouseName,
                 Editor.Anniversary,
-                Editor.WebPageAddress
+                Editor.WebPageAddress with { EditorAlias = LabelEditorAliases.LabelHyperlinkStringPropertyEditor }
             ) with
             { RelativeSize = 39 },
             VerticalGroup(

@@ -56,6 +56,7 @@
             this.RequiredModuleTypes.Add(typeof(DevExpress.ExpressApp.ConditionalAppearance.ConditionalAppearanceModule));
             this.RequiredModuleTypes.Add(typeof(DevExpress.ExpressApp.ReportsV2.ReportsModuleV2));
             this.RequiredModuleTypes.Add(typeof(DevExpress.ExpressApp.CloneObject.CloneObjectModule));
+            this.RequiredModuleTypes.Add(typeof(Xenial.Framework.LabelEditors.XenialLabelEditorsModule));
 #if !NET5_0 || WINDOWS
             this.RequiredModuleTypes.Add(typeof(DevExpress.ExpressApp.PivotChart.PivotChartModuleBase));
             this.RequiredModuleTypes.Add(typeof(DevExpress.ExpressApp.Office.OfficeModule));

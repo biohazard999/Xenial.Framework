@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
@@ -21,6 +22,8 @@ namespace Xenial.Framework.Model.GeneratorUpdaters;
 [XenialCheckLicense]
 public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenerator : ModelNodesGeneratorUpdater<ModelDetailViewItemsNodesGenerator>
 {
+    private MemberEditorInfoCalculator MemberEditorInfoCalculator { get; } = new();
+
     private static readonly LayoutPropertyEditorItemMapper itemMapper = new();
 
     /// <summary>
@@ -69,6 +72,17 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                             newViewItem.ClearValue(nameof(newViewItem.PropertyEditorType));
                         }
                         viewItem = newViewItem;
+                    }
+
+                    if (
+                        viewItem is IModelPropertyEditor modelPropertyEditor
+                        && !string.IsNullOrEmpty(layoutViewItemNode.EditorAlias))
+                    {
+                        modelPropertyEditor.PropertyEditorType
+                            = MemberEditorInfoCalculator.GetEditorType(
+                                modelPropertyEditor.ModelMember,
+                                layoutViewItemNode.EditorAlias
+                        );
                     }
 
                     itemMapper.Map(layoutViewItemNode, viewItem);

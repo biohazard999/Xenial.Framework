@@ -44,6 +44,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Validation
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Validation.Win", "..\..\src\Xenial.Framework.Validation.Win\Xenial.Framework.Validation.Win.csproj", "{2C1CB56E-631C-4450-B93C-9DAA0F59C9C9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.LabelEditors", "..\..\src\Xenial.Framework.LabelEditors\Xenial.Framework.LabelEditors.csproj", "{B553564A-9608-4261-8BFC-90E62017577B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.LabelEditors.Win", "..\..\src\Xenial.Framework.LabelEditors.Win\Xenial.Framework.LabelEditors.Win.csproj", "{924C1B06-55DC-4D7B-B7EF-F6DA10EC4117}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +139,18 @@ Global
 		{2C1CB56E-631C-4450-B93C-9DAA0F59C9C9}.EasyTest|Any CPU.Build.0 = Debug|Any CPU
 		{2C1CB56E-631C-4450-B93C-9DAA0F59C9C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C1CB56E-631C-4450-B93C-9DAA0F59C9C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B553564A-9608-4261-8BFC-90E62017577B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B553564A-9608-4261-8BFC-90E62017577B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B553564A-9608-4261-8BFC-90E62017577B}.EasyTest|Any CPU.ActiveCfg = Debug|Any CPU
+		{B553564A-9608-4261-8BFC-90E62017577B}.EasyTest|Any CPU.Build.0 = Debug|Any CPU
+		{B553564A-9608-4261-8BFC-90E62017577B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B553564A-9608-4261-8BFC-90E62017577B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{924C1B06-55DC-4D7B-B7EF-F6DA10EC4117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{924C1B06-55DC-4D7B-B7EF-F6DA10EC4117}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{924C1B06-55DC-4D7B-B7EF-F6DA10EC4117}.EasyTest|Any CPU.ActiveCfg = Debug|Any CPU
+		{924C1B06-55DC-4D7B-B7EF-F6DA10EC4117}.EasyTest|Any CPU.Build.0 = Debug|Any CPU
+		{924C1B06-55DC-4D7B-B7EF-F6DA10EC4117}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{924C1B06-55DC-4D7B-B7EF-F6DA10EC4117}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -154,6 +170,8 @@ Global
 		{F6CB80AE-D2A4-41BF-825E-2A58A96E1310} = {AF4B7C32-FBE9-4609-BCC8-D14DE09CA829}
 		{CE9AAF47-64D1-4B7D-8FBF-C8B23EF2D158} = {AF4B7C32-FBE9-4609-BCC8-D14DE09CA829}
 		{2C1CB56E-631C-4450-B93C-9DAA0F59C9C9} = {AF4B7C32-FBE9-4609-BCC8-D14DE09CA829}
+		{B553564A-9608-4261-8BFC-90E62017577B} = {AF4B7C32-FBE9-4609-BCC8-D14DE09CA829}
+		{924C1B06-55DC-4D7B-B7EF-F6DA10EC4117} = {AF4B7C32-FBE9-4609-BCC8-D14DE09CA829}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27157A80-E084-469A-9410-B85FE2C0C323}

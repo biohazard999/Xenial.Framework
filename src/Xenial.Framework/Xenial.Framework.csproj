@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Xenial.Framework.Win" />
+    <InternalsVisibleTo Include="Xenial.Framework.Blazor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
