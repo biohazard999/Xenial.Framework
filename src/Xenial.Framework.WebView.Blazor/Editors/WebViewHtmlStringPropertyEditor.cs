@@ -51,6 +51,10 @@ namespace Xenial.Framework.WebView.Blazor.Editors
         {
             //DataSource = (Model.PredefinedValues ?? string.Empty).Split(";").ToList()
         });
+
+        /// <inheritdoc />
+        /// <remarks>We don't run base to avoid outputting the full html value to the log.</remarks>
+        protected override void LogValueStoring(object newValue) => DevExpress.Persistent.Base.Tracing.Tracer.LogText($"{nameof(WebViewHtmlStringPropertyEditor)} value changed.");
     }
 
     /// <summary>
