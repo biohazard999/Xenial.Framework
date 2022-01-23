@@ -89,10 +89,10 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                             MapCaption(modelLayoutElementWithCaption, layoutViewItemNode);
                         }
 
-                        if (layoutViewItemNode.ViewItemOptions is not null)
-                        {
-                            layoutViewItemNode.ViewItemOptions(viewItem);
-                        }
+                        //if (layoutViewItemNode.ViewItemOptions is not null)
+                        //{
+                        //    layoutViewItemNode.ViewItemOptions(viewItem);
+                        //}
                     }
                 }
 
