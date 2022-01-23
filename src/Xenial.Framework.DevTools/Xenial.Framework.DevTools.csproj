@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Xenial.Framework.DevTools.Win" />
+    <InternalsVisibleTo Include="Xenial.Framework.DevTools.Win, PublicKey=0024000004800000940000000602000000240000525341310004000001000100894b3cc31d0bf0dba805268f422fb15c24304d68324d0bcad708a5b779e0e95ba128e1c3fc35525af4843682e2996c303fd1c6a2d25cf3326335b1aa1e6c3ff6ec99a992405d6963db9cdf6908467aace5b4d839ff5e929217be06df86bd9f9ffbbc5bb4ab46340882904bd4b53688105bdc6d375acb0a1535867f66bf08b6af" />
   </ItemGroup>
   
   <ItemGroup>

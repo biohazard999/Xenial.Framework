@@ -21,6 +21,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{675CB539-165E-4B1A-93F7-0532523D4B87}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AF4B7C32-FBE9-4609-BCC8-D14DE09CA829}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\src\Directory.Build.props = ..\..\src\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework", "..\..\src\Xenial.Framework\Xenial.Framework.csproj", "{3B970E4E-FC1A-47E5-ACE3-EFD74508E8DC}"
 EndProject

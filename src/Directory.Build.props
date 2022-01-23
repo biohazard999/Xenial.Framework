@@ -15,8 +15,10 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+    <!-- https://docs.microsoft.com/en-us/dotnet/standard/assembly/create-signed-friend -->
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>../../Xenial.Framework.snk</AssemblyOriginatorKeyFile>
+    <XenialPublicSignKey></XenialPublicSignKey>
   </PropertyGroup>
 
   <ItemGroup>
