@@ -6,7 +6,6 @@ using System;
 
 using DevExpress.ExpressApp.Model;
 
-using Xenial;
 using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.Layouts.Items.LeafNodes;
@@ -22,7 +21,7 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
     }
 )]
 public partial record LayoutPropertyEditorItem(string PropertyEditorId)
-    : LayoutViewItem(PropertyEditorId)
+    : LayoutMemberViewItem(PropertyEditorId)
 {
     /// <summary>   Creates the specified property editor identifier. </summary>
     ///
