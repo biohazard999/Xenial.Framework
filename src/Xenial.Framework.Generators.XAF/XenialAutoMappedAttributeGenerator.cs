@@ -33,6 +33,12 @@ internal record XenialAutoMappedAttributeGenerator(bool AddSources = true) : IXe
 
     public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types, IList<string> addedSourceFiles)
     {
+        (compilation, var attribute) = FindXenialAutoMappedAttribute(compilation);
+        if (attribute is not null)
+        {
+            return compilation;
+        }
+
         (compilation, _) = GenerateXenialAutoMappedAttribute(context, compilation, addedSourceFiles);
         return compilation;
     }

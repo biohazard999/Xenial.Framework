@@ -22,6 +22,7 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
         nameof(IModelViewItem.Caption),
     }
 )]
-public partial record LayoutDashboardViewItem(string DashboardViewId) : LayoutViewItem(DashboardViewId)
+public partial record LayoutDashboardViewItem(string DashboardViewId)
+    : LayoutViewItem(DashboardViewId)
 {
 }

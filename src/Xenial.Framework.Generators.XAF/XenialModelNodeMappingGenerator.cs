@@ -8,16 +8,11 @@ using System.Text;
 
 using System.Threading;
 
-using DevExpress.ExpressApp;
-using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.Model.Core;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-using Xenial.Framework.Generators;
 using Xenial.Framework.Generators.Internal;
 using Xenial.Framework.Generators.XAF.Utils;
 using Xenial.Framework.MsBuild;
@@ -62,6 +57,24 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
                 var ignoredMembers = attribute.GetAttributeValues<string>("IgnoredMembers");
 
                 var properties = GetPropertySymbols(interfaceTypeSymbol, ignoredMembers);
+
+                static IEnumerable<string> GetExistingPropertyNames(INamedTypeSymbol classSymbol)
+                {
+                    var properties = classSymbol.GetMembers()
+                        .OfType<IPropertySymbol>()
+                        .Select(m => m.Name);
+
+                    if (classSymbol.BaseType is not null)
+                    {
+                        properties = properties.Concat(GetExistingPropertyNames(classSymbol.BaseType));
+                    }
+                    return properties;
+                }
+
+                var existingPropertyNames = GetExistingPropertyNames(classSymbol).ToArray();
+                properties = properties
+                    .Where(p => !existingPropertyNames.Contains(p.Name))
+                    .ToArray();
 
                 var builder = CurlyIndenter.Create();
 

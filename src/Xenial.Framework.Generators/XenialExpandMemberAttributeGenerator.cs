@@ -13,7 +13,7 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXenialSourceGenerator
+internal record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXenialSourceGenerator
 {
     private const string xenialExpandMemberAttributeName = "XenialExpandMemberAttribute";
     private const string xenialNamespace = "Xenial";
