@@ -14,6 +14,11 @@
     <_XenialLicGenVersion Condition="$(XenialLicGenVersion) == '*-*'">*-*</_XenialLicGenVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>../../Xenial.Framework.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <CompilerVisibleProperty Include="XenialPublicKey" />
     <CompilerVisibleProperty Include="PackageId" />
