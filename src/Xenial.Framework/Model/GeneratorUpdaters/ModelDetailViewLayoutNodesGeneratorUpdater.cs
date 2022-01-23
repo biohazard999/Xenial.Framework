@@ -16,12 +16,15 @@ using static Xenial.Framework.Model.GeneratorUpdaters.NodeVisitors;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters;
 
+using static ModelDetailViewLayoutNodesGeneratorUpdaterMappers;
+
 /// <summary>
 /// 
 /// </summary>
 [XenialCheckLicense]
 public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenerator : ModelNodesGeneratorUpdater<ModelDetailViewItemsNodesGenerator>
 {
+
     private MemberEditorInfoCalculator MemberEditorInfoCalculator { get; } = new();
 
     private static readonly LayoutPropertyEditorItemMapper itemMapper = new();
@@ -52,6 +55,47 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
 
                 ModelDetailViewLayoutNodesGeneratorUpdater.MarkDuplicateNodes(layout);
 
+                foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
+                {
+                    var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m =>
+                        m.Id == (layoutViewItemNode.IsDuplicate
+                        ? layoutViewItemNode.Id
+                        : layoutViewItemNode.ViewItemId)
+                    );
+                    if (viewItem is not null)
+                    {
+                        if (viewItem is ISupportControlAlignment modelSupportControlAlignment)
+                        {
+                            MapSupportControlAlignment(modelSupportControlAlignment, layoutViewItemNode);
+                        }
+
+                        if (viewItem is IModelToolTip modelToolTip)
+                        {
+                            MapModelToolTip(modelToolTip, layoutViewItemNode);
+                        }
+
+                        if (viewItem is IModelToolTipOptions modelToolTipOptions)
+                        {
+                            MapModelToolTipOptions(modelToolTipOptions, layoutViewItemNode);
+                        }
+
+                        if (viewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
+                        {
+                            MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, layoutViewItemNode);
+                        }
+
+                        if (viewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
+                        {
+                            MapCaption(modelLayoutElementWithCaption, layoutViewItemNode);
+                        }
+
+                        if (layoutViewItemNode.ViewItemOptions is not null)
+                        {
+                            layoutViewItemNode.ViewItemOptions(viewItem);
+                        }
+                    }
+                }
+
                 foreach (var layoutViewItemNode in VisitNodes<LayoutPropertyEditorItem>(layout))
                 {
                     var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m =>
@@ -59,7 +103,6 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                         ? layoutViewItemNode.Id
                         : layoutViewItemNode.ViewItemId)
                     );
-
 
                     if (viewItem is null)
                     {
@@ -72,6 +115,35 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                             newViewItem.ClearValue(nameof(newViewItem.PropertyEditorType));
                         }
                         viewItem = newViewItem;
+                        if (viewItem is ISupportControlAlignment modelSupportControlAlignment)
+                        {
+                            MapSupportControlAlignment(modelSupportControlAlignment, layoutViewItemNode);
+                        }
+
+                        if (viewItem is IModelToolTip modelToolTip)
+                        {
+                            MapModelToolTip(modelToolTip, layoutViewItemNode);
+                        }
+
+                        if (viewItem is IModelToolTipOptions modelToolTipOptions)
+                        {
+                            MapModelToolTipOptions(modelToolTipOptions, layoutViewItemNode);
+                        }
+
+                        if (viewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
+                        {
+                            MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, layoutViewItemNode);
+                        }
+
+                        if (viewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
+                        {
+                            MapCaption(modelLayoutElementWithCaption, layoutViewItemNode);
+                        }
+
+                        if (layoutViewItemNode.ViewItemOptions is not null)
+                        {
+                            layoutViewItemNode.ViewItemOptions(viewItem);
+                        }
                     }
 
                     if (
