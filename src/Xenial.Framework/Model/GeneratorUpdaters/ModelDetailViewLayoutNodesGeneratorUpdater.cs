@@ -93,6 +93,8 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                         //{
                         //    layoutViewItemNode.ViewItemOptions(viewItem);
                         //}
+
+                        viewItem.Caption = "FUCK FUCK FUCK";
                     }
                 }
 
