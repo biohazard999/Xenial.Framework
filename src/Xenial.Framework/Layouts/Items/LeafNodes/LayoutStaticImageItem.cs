@@ -15,7 +15,8 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
     {
         nameof(IModelStaticImage.Id),
         nameof(IModelStaticImage.Index),
-        nameof(IModelStaticImage.ImageName)
+        nameof(IModelStaticImage.ImageName),
+        nameof(IModelViewItem.Caption)
     }
 )]
 public partial record LayoutStaticImageItem : LayoutViewItem

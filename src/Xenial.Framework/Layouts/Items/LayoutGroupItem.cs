@@ -14,13 +14,7 @@ namespace Xenial.Framework.Layouts.Items;
 
 /// <summary>   (Immutable) a layout group item. </summary>
 [XenialCheckLicense]
-public partial record LayoutGroupItem
-    : LayoutItem,
-    ILayoutElementWithCaptionOptions,
-    ILayoutElementWithCaption,
-    ILayoutToolTip,
-    ILayoutToolTipOptions,
-    ILayoutGroupItem
+public partial record LayoutGroupItem : LayoutItem
 {
     private const FlowDirection defaultFlowDirection = FlowDirection.Vertical;
 

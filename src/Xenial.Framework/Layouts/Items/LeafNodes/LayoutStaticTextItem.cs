@@ -13,7 +13,8 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
     {
         nameof(IModelStaticText.Id),
         nameof(IModelStaticText.Index),
-        nameof(IModelStaticText.Text)
+        nameof(IModelStaticText.Text),
+        nameof(IModelViewItem.Caption)
     }
 )]
 public partial record LayoutStaticTextItem : LayoutViewItem

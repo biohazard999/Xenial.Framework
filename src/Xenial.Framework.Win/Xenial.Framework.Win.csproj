@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Layouts\LayoutLabelItem.cs" />
+    <Compile Remove="Layouts\LayoutSeparatorItem.cs" />
+    <Compile Remove="Layouts\LayoutSplitterItem.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp.Win" Version="$(DxPackageVersion)" />
   </ItemGroup>
 

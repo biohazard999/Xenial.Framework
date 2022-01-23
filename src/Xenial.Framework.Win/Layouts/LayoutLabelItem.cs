@@ -1,9 +1,12 @@
-﻿using Xenial.Framework.Layouts.Items.Base;
+﻿using DevExpress.ExpressApp.Win.SystemModule;
+
+using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
 /// <summary>   (Immutable) a layout label item. </summary>
 [XenialCheckLicense]
+[XenialModelOptions(typeof(IModelLabel))]
 public partial record LayoutLabelItem : LayoutViewItemNode
 {
     /// <summary>   Gets the text. </summary>

@@ -16,8 +16,6 @@ using static Xenial.Framework.Model.GeneratorUpdaters.NodeVisitors;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters;
 
-using static ModelDetailViewLayoutNodesGeneratorUpdaterMappers;
-
 /// <summary>
 /// 
 /// </summary>
@@ -62,40 +60,6 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                         ? layoutViewItemNode.Id
                         : layoutViewItemNode.ViewItemId)
                     );
-                    if (viewItem is not null)
-                    {
-                        if (viewItem is ISupportControlAlignment modelSupportControlAlignment)
-                        {
-                            MapSupportControlAlignment(modelSupportControlAlignment, layoutViewItemNode);
-                        }
-
-                        if (viewItem is IModelToolTip modelToolTip)
-                        {
-                            MapModelToolTip(modelToolTip, layoutViewItemNode);
-                        }
-
-                        if (viewItem is IModelToolTipOptions modelToolTipOptions)
-                        {
-                            MapModelToolTipOptions(modelToolTipOptions, layoutViewItemNode);
-                        }
-
-                        if (viewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
-                        {
-                            MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, layoutViewItemNode);
-                        }
-
-                        if (viewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
-                        {
-                            MapCaption(modelLayoutElementWithCaption, layoutViewItemNode);
-                        }
-
-                        //if (layoutViewItemNode.ViewItemOptions is not null)
-                        //{
-                        //    layoutViewItemNode.ViewItemOptions(viewItem);
-                        //}
-
-                        viewItem.Caption = "FUCK FUCK FUCK";
-                    }
                 }
 
                 foreach (var layoutViewItemNode in VisitNodes<LayoutPropertyEditorItem>(layout))
@@ -117,35 +81,6 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                             newViewItem.ClearValue(nameof(newViewItem.PropertyEditorType));
                         }
                         viewItem = newViewItem;
-                        if (viewItem is ISupportControlAlignment modelSupportControlAlignment)
-                        {
-                            MapSupportControlAlignment(modelSupportControlAlignment, layoutViewItemNode);
-                        }
-
-                        if (viewItem is IModelToolTip modelToolTip)
-                        {
-                            MapModelToolTip(modelToolTip, layoutViewItemNode);
-                        }
-
-                        if (viewItem is IModelToolTipOptions modelToolTipOptions)
-                        {
-                            MapModelToolTipOptions(modelToolTipOptions, layoutViewItemNode);
-                        }
-
-                        if (viewItem is IModelLayoutElementWithCaptionOptions modelLayoutElementWithCaptionOptions)
-                        {
-                            MapLayoutElementWithCaptionOptions(modelLayoutElementWithCaptionOptions, layoutViewItemNode);
-                        }
-
-                        if (viewItem is IModelLayoutElementWithCaption modelLayoutElementWithCaption)
-                        {
-                            MapCaption(modelLayoutElementWithCaption, layoutViewItemNode);
-                        }
-
-                        if (layoutViewItemNode.ViewItemOptions is not null)
-                        {
-                            layoutViewItemNode.ViewItemOptions(viewItem);
-                        }
                     }
 
                     if (

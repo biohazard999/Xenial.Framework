@@ -290,6 +290,7 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
     {
         var specialTypes = new[]
         {
+            nameof(IModelViewItem.Caption),
             nameof(IModelPropertyEditor.ModelMember),
             nameof(IModelPropertyEditor.PropertyName),
             nameof(IModelPropertyEditor.View),

@@ -6,12 +6,21 @@ using System;
 
 using DevExpress.ExpressApp.Model;
 
+using Xenial;
 using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
 /// <summary>   (Immutable) a layout property editor item. </summary>
 [XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelPropertyEditor), IgnoredMembers = new[]
+    {
+        "Id",
+        nameof(IModelViewItem.Caption),
+        nameof(IModelPropertyEditor.Index),
+    }
+)]
 public partial record LayoutPropertyEditorItem(string PropertyEditorId)
     : LayoutViewItem(PropertyEditorId)
 {
