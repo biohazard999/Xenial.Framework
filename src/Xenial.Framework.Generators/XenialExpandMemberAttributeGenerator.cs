@@ -13,7 +13,7 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-internal record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXenialSourceGenerator
+public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXenialSourceGenerator
 {
     private const string xenialExpandMemberAttributeName = "XenialExpandMemberAttribute";
     private const string xenialNamespace = "Xenial";
@@ -71,7 +71,7 @@ internal record XenialExpandMemberAttributeGenerator(bool AddSources = true) : I
         string visibility = "internal",
         CancellationToken cancellationToken = default)
     {
-        parseOptions = parseOptions ?? CSharpParseOptions.Default;
+        parseOptions ??= CSharpParseOptions.Default;
 
         var syntaxWriter = CurlyIndenter.Create();
 

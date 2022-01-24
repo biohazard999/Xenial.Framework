@@ -166,7 +166,15 @@ internal record XenialLayoutPropertyEditorItemGenerator(bool AddSources = true) 
                         continue;
                     }
 
-                    var mappingProperties = WithAutoMappedAttributes(autoMappedAttribute, DistinctByName(GetPropertySymbols(editorNamedTypeSymbol)));
+                    var mappingProperties = WithAutoMappedAttributes(autoMappedAttribute, DistinctByName(GetPropertySymbols(editorNamedTypeSymbol)))
+                        .ToArray();
+
+                    var targetTypeProperties = GetPropertySymbols(targetNamedTypeSymbol)
+                            .Select(m => m.Name)
+                            .ToArray();
+
+                    mappingProperties = mappingProperties.Where(m => targetTypeProperties.Contains(m.Name))
+                        .ToArray();
 
                     var builder = CurlyIndenter.Create();
 

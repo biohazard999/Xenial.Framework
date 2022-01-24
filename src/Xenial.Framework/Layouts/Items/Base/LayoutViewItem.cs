@@ -21,6 +21,14 @@ namespace Xenial.Framework.Layouts.Items.Base;
         nameof(IModelViewItem.Caption)
     }
 )]
+[XenialModelOptions(
+    typeof(IModelLayoutViewItem), IgnoredMembers = new[]
+    {
+        nameof(IModelLayoutViewItem.Id),
+        nameof(IModelLayoutViewItem.Index),
+        nameof(IModelLayoutViewItem.ViewItem)
+    }
+)]
 public abstract partial record LayoutViewItem : LayoutItemLeaf
 {
     //   public Action<IModelViewItem>? ViewItemOptions { get; set; }

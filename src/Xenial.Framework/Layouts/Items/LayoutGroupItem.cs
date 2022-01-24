@@ -14,6 +14,13 @@ namespace Xenial.Framework.Layouts.Items;
 
 /// <summary>   (Immutable) a layout group item. </summary>
 [XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelLayoutGroup), IgnoredMembers = new[]
+    {
+        nameof(IModelLayoutGroup.Id),
+        nameof(IModelLayoutGroup.Index)
+    }
+)]
 public partial record LayoutGroupItem : LayoutItem
 {
     private const FlowDirection defaultFlowDirection = FlowDirection.Vertical;

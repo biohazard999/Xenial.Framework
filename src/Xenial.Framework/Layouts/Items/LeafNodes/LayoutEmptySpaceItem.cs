@@ -1,9 +1,18 @@
-﻿using Xenial.Framework.Layouts.Items.Base;
+﻿using DevExpress.ExpressApp.Model;
+
+using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
 /// <summary>   (Immutable) a layout empty space item. </summary>
 [XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelLayoutItem), IgnoredMembers = new[]
+    {
+        nameof(IModelLayoutItem.Id),
+        nameof(IModelLayoutItem.Index)
+    }
+)]
 public partial record LayoutEmptySpaceItem : LayoutItemLeaf
 {
     /// <summary>   Creates this instance. </summary>

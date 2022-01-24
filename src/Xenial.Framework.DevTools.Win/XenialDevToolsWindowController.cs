@@ -581,7 +581,7 @@ public class XenialDevToolsWindowController : WindowController
                     static Type GetTargetType(XmlNode node)
                         => node switch
                         {
-                            { Name: "LayoutGroup", ParentNode: { Name: "TabbedGroup" } } =>
+                            { Name: "LayoutGroup", ParentNode.Name: "TabbedGroup" } =>
                                 GetAttributeInfo(node, "Direction") switch
                                 {
                                     (true, _, "Horizontal") => typeof(HorizontalLayoutTabGroupItem),
@@ -602,8 +602,8 @@ public class XenialDevToolsWindowController : WindowController
                                     (true, _, _) => typeof(LayoutViewItem),
                                     _ => typeof(LayoutEmptySpaceItem)
                                 },
-                            { Name: "SplitterItem" } => typeof(LayoutSplitterItem),
-                            { Name: "SeparatorItem" } => typeof(LayoutSeparatorItem),
+                            //{ Name: "SplitterItem" } => typeof(LayoutSplitterItem),
+                            //{ Name: "SeparatorItem" } => typeof(LayoutSeparatorItem),
                             _ => throw new ArgumentOutOfRangeException(nameof(node), node, "Could not find node type")
                         };
 

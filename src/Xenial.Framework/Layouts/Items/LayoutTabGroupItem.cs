@@ -5,7 +5,6 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.Utils;
 
 using Xenial.Framework.Layouts.Items.Base;
-using Xenial.Framework.Layouts.Items.PubTernal;
 
 using Locations = DevExpress.Persistent.Base.Locations;
 using ToolTipIconType = DevExpress.Persistent.Base.ToolTipIconType;
@@ -17,6 +16,13 @@ namespace Xenial.Framework.Layouts.Items;
 
 /// <summary>   (Immutable) a layout tab group item. </summary>
 [XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelLayoutGroup), IgnoredMembers = new[]
+    {
+        nameof(IModelLayoutGroup.Id),
+        nameof(IModelLayoutGroup.Index)
+    }
+)]
 public partial record LayoutTabGroupItem : LayoutItem
 {
     private const FlowDirection defaultFlowDirection = FlowDirection.Vertical;

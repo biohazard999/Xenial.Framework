@@ -17,6 +17,14 @@ namespace Xenial.Framework.Layouts.Items;
 /// <summary>   (Immutable) a layout tabbed group item. This record cannot be inherited. </summary>
 
 [XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelTabbedGroup), IgnoredMembers = new[]
+    {
+        nameof(IModelTabbedGroup.Id),
+        nameof(IModelTabbedGroup.Index)
+    }
+)]
+[XenialModelOptions(typeof(ISupportControlAlignment))]
 public sealed partial record LayoutTabbedGroupItem : LayoutItem<LayoutTabGroupItem>
 {
     /// <summary>

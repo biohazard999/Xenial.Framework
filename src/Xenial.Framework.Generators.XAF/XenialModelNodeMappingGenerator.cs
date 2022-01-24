@@ -387,7 +387,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
 
     private static IPropertySymbol[] WithSetterAndGetter(IPropertySymbol[] propertySymbols)
         => propertySymbols
-            .Where(m => m.GetMethod is not null && m.SetMethod is not null)
+            .Where(m => m.GetMethod is not null && m.SetMethod is not null && !m.IsIndexer)
             .ToArray();
 
     private static IPropertySymbol[] DistinctByName(IPropertySymbol[] propertySymbols)
