@@ -18,7 +18,5 @@ namespace Xenial.Framework.Layouts.Items.Base;
 )]
 public abstract partial record LayoutMemberViewItem : LayoutViewItem
 {
-    public LayoutMemberViewItem(string viewItemId) : base(viewItemId)
-    {
-    }
+    protected LayoutMemberViewItem(string viewItemId) : base(viewItemId) { }
 }

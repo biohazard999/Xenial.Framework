@@ -29,7 +29,7 @@ public partial record LayoutPropertyEditorItem(string PropertyEditorId)
     ///
     /// <returns>   Xenial.Framework.Layouts.Items.LeafNodes.LayoutPropertyEditorItem. </returns>
 
-    public static new LayoutPropertyEditorItem Create(string propertyEditorId)
+    public static LayoutPropertyEditorItem Create(string propertyEditorId)
         => new(propertyEditorId);
 
     /// <summary>   Creates the specified property editor identifier. </summary>

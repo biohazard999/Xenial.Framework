@@ -73,6 +73,7 @@ public partial record ListViewOptions
 /// <summary>
 /// 
 /// </summary>
+[Serializable]
 public sealed class GenericListViewOptions : Dictionary<string, object>, IListViewOptionsExtension
 {
 }
