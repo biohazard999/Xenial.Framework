@@ -40,7 +40,7 @@
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeFormatting.ruleset</CodeAnalysisRuleSet>
 
-    <DxVersion>21.2.4</DxVersion>
+    <DxVersion>21.2.5</DxVersion>
     <DxVersionPostFix>v21.2</DxVersionPostFix>
     <DxPackageVersion>[$(DxVersion)]</DxPackageVersion>
     <!-- <DxPackageVersion>[21.1.3-beta]</DxPackageVersion> -->

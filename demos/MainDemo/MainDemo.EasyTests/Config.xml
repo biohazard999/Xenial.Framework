@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Options xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" TestRunTimeLimit="3" EnableUpperCase="MainDemoWeb">
   <Applications>
     <!-- Win -->
     <Application
 			Name="MainDemoWin"
 			FileName="[ConfigPath]\..\MainDemo.Win\Bin\Debug\MainDemo.Win.exe"
-			AdapterAssemblyName="DevExpress.ExpressApp.EasyTest.WinAdapter.v21.2, Version=21.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a"
+			AdapterAssemblyName="DevExpress.ExpressApp.EasyTest.WinAdapter.v21.2, Version=21.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a"
 			CommunicationPort="15923"/>
     <!-- Web -->
     <Application
