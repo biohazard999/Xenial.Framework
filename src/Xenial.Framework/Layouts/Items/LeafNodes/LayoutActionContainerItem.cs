@@ -5,7 +5,6 @@
 using System;
 
 using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.Templates;
 
 using Xenial.Framework.Layouts.Items.Base;
 

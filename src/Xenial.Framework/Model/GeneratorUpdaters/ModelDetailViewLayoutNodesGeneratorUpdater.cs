@@ -22,10 +22,9 @@ namespace Xenial.Framework.Model.GeneratorUpdaters;
 [XenialCheckLicense]
 public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenerator : ModelNodesGeneratorUpdater<ModelDetailViewItemsNodesGenerator>
 {
-
     private MemberEditorInfoCalculator MemberEditorInfoCalculator { get; } = new();
 
-    private static readonly LayoutPropertyEditorItemMapper itemMapper = new();
+    private static readonly ViewItemMapper itemMapper = new();
 
     /// <summary>
     /// 

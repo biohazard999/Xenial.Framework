@@ -19,8 +19,3 @@ public partial record NumberLayoutPropertyEditorItem(string ViewItemId)
     public static new NumberLayoutPropertyEditorItem Create(string propertyEditorId)
         => new(propertyEditorId);
 }
-
-[XenialLayoutPropertyEditorItemMapper(typeof(NumberLayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
-partial class LayoutPropertyEditorItemMapper
-{
-}

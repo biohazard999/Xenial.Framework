@@ -7,6 +7,6 @@ namespace Xenial.Framework.Layouts.Items.Base;
 
 /// <summary>   (Immutable) a layout item leaf. </summary>
 [XenialCheckLicense]
-public partial record LayoutItemLeaf : LayoutItemNode
+public abstract partial record LayoutItemLeaf : LayoutItemNode
 {
 }

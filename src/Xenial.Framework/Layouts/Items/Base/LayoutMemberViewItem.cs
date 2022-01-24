@@ -16,13 +16,9 @@ namespace Xenial.Framework.Layouts.Items.Base;
         nameof(IModelMemberViewItem.Caption)
     }
 )]
-public partial record LayoutMemberViewItem : LayoutViewItem
+public abstract partial record LayoutMemberViewItem : LayoutViewItem
 {
     public LayoutMemberViewItem(string viewItemId) : base(viewItemId)
-    {
-    }
-
-    protected LayoutMemberViewItem(LayoutViewItem original) : base(original)
     {
     }
 }

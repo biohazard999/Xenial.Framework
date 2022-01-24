@@ -18,8 +18,3 @@ public partial record LookupLayoutPropertyEditorItem(string ViewItemId)
     public static new LookupLayoutPropertyEditorItem Create(string propertyEditorId)
         => new(propertyEditorId);
 }
-
-[XenialLayoutPropertyEditorItemMapper(typeof(LookupLayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
-partial class LayoutPropertyEditorItemMapper
-{
-}

@@ -21,8 +21,3 @@ public partial record BooleanLayoutPropertyEditorItem(string ViewItemId)
     public static new BooleanLayoutPropertyEditorItem Create(string propertyEditorId)
         => new(propertyEditorId);
 }
-
-[XenialLayoutPropertyEditorItemMapper(typeof(BooleanLayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
-partial class LayoutPropertyEditorItemMapper
-{
-}

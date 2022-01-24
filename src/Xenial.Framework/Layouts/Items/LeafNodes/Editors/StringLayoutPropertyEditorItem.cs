@@ -18,8 +18,3 @@ public partial record StringLayoutPropertyEditorItem(string ViewItemId)
     public static new StringLayoutPropertyEditorItem Create(string propertyEditorId)
         => new(propertyEditorId);
 }
-
-[XenialLayoutPropertyEditorItemMapper(typeof(StringLayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
-partial class LayoutPropertyEditorItemMapper
-{
-}
