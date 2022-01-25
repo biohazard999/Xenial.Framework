@@ -18,6 +18,7 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
         "Id",
         nameof(IModelViewItem.Caption),
         nameof(IModelPropertyEditor.Index),
+        nameof(IModelPropertyEditor.ToolTip),
     }
 )]
 public partial record LayoutPropertyEditorItem(string PropertyEditorId)
@@ -49,13 +50,6 @@ public partial record LayoutPropertyEditorItem(string PropertyEditorId)
         configurePropertyEditor(editor);
         return editor;
     }
-
-    /// <summary>   Gets or sets the property editor options. </summary>
-    ///
-    /// <value> The property editor options. </value>
-
-    public Action<IModelPropertyEditor>? PropertyEditorOptions { get; set; }
-
 
     private string? editorAlias;
     internal bool WasEditorAliasSet { get; set; }

@@ -105,7 +105,7 @@ public partial record HorizontalLayoutGroupItem : LayoutGroupItem
     /// <returns>   Xenial.Framework.Layouts.Items.HorizontalLayoutGroupItem. </returns>
 
     public static new HorizontalLayoutGroupItem Create(string caption, string? imageName, string id)
-        => new HorizontalLayoutGroupItem(caption, imageName, id);
+        => new(caption, imageName, id);
 
     /// <summary>   Creates the specified caption. </summary>
     ///

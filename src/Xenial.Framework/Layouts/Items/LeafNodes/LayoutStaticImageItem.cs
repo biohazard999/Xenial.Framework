@@ -21,10 +21,11 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 )]
 public partial record LayoutStaticImageItem : LayoutViewItem
 {
+    internal bool WasImageNameSet => true;
     /// <summary>   Gets the name of the image. </summary>
     ///
     /// <value> The name of the image. </value>
-
+    [XenialAutoMapped]
     public string ImageName { get; init; }
 
     /// <summary>
@@ -36,10 +37,4 @@ public partial record LayoutStaticImageItem : LayoutViewItem
     public LayoutStaticImageItem(string imageName)
         : base(imageName)
             => ImageName = imageName;
-
-    /// <summary>   Gets or sets the image options. </summary>
-    ///
-    /// <value> The image options. </value>
-
-    public Action<IModelStaticImage>? ImageOptions { get; set; }
 }

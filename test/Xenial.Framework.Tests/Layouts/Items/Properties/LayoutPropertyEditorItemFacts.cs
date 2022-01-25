@@ -200,39 +200,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         [e.Property(p => p.Id)] = id
                     });
                 });
-
-                It($"{nameof(LayoutPropertyEditorItem.PropertyEditorOptions)} get called", () =>
-                {
-                    var optionsCallback = A.Fake<Action<IModelPropertyEditor>>();
-                    var detailView = CreateDetailViewWithLayout(b => new Layout
-                    {
-                        b.PropertyEditor(m => m.StringProperty) with
-                        {
-                            PropertyEditorOptions = optionsCallback
-                        }
-                    });
-
-                    var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
-
-                    A.CallTo(optionsCallback).MustHaveHappenedOnceExactly();
-                });
-
-                //TODO: Options
-                //It($"{nameof(LayoutPropertyEditorItem.ViewItemOptions)} get called", () =>
-                //{
-                //    var optionsCallback = A.Fake<Action<IModelViewItem>>();
-                //    var detailView = CreateDetailViewWithLayout(b => new Layout
-                //    {
-                //        b.PropertyEditor(m => m.StringProperty) with
-                //        {
-                //            ViewItemOptions = optionsCallback
-                //        }
-                //    });
-
-                //    var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
-
-                //    A.CallTo(optionsCallback).MustHaveHappenedOnceExactly();
-                //});
             });
         });
     }

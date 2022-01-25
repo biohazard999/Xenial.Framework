@@ -23,10 +23,4 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 public partial record LayoutActionContainerItem(string ActionContainerId)
     : LayoutViewItem(ActionContainerId)
 {
-    /// <summary>   Gets or sets the action container options. </summary>
-    ///
-    /// <value> The action container options. </value>
-
-    public Action<IModelActionContainerViewItem>? ActionContainerOptions { get; set; }
-
 }
