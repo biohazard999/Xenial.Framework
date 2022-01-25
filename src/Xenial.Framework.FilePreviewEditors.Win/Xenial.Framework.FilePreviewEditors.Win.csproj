@@ -16,7 +16,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
     <PackageReference Include="DevExpress.Win.Design">
-      <Version>21.2.4</Version>
+      <Version>$(DxVersion)</Version>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -24,7 +24,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
     <PackageReference Include="DevExpress.Win.Design">
-      <Version>21.2.4</Version>
+      <Version>$(DxVersion)</Version>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
