@@ -5,8 +5,7 @@ using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Xenial.Framework.Layouts;
-
-using static Xenial.Framework.Model.GeneratorUpdaters.ModelColumnsBuilderNodesGeneratorUpdaterMappers;
+using Xenial.Framework.Layouts.ColumnItems;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters;
 
@@ -126,13 +125,11 @@ public sealed partial class ModelColumnsBuilderNodesGeneratorUpdater : ModelNode
                             {
                                 var columnNode = modelColumns.AddNode<IModelColumn>(column.Id);
                                 columnNode.Index = index;
-                                MapColumn(columnNode, column);
-                                MapModelMemberViewItem(columnNode, column);
-                                MapModelLayoutElement(columnNode, column);
-                                MapModelToolTip(columnNode, column);
-                                MapModelCommonMemberViewItem(columnNode, column);
 
-                                if (column.Index.HasValue)
+                                new ColumnMapper()
+                                    .Map(column, columnNode);
+
+                                if (column.WasIndexSet && column.Index.HasValue)
                                 {
                                     index = column.Index.Value + 1;
                                 }
@@ -148,3 +145,6 @@ public sealed partial class ModelColumnsBuilderNodesGeneratorUpdater : ModelNode
         }
     }
 }
+
+[XenialModelOptionsMapper(typeof(Column))]
+internal partial class ColumnMapper { }
