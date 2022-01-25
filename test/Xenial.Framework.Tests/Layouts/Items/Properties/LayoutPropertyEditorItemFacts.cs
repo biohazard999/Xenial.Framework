@@ -4,17 +4,17 @@ using System.Linq;
 
 using Bogus;
 
-using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Layout;
 using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 
-using FakeItEasy;
+using Shouldly;
 
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Layouts.Items.LeafNodes;
 using Xenial.Framework.Tests.Assertions;
+using Xenial.Framework.Tests.Layouts;
 
 using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
 using static Xenial.Tasty;
@@ -163,6 +163,22 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         [e.Property(p => p.ToolTipTitle)] = toolTipTitle,
                         [e.Property(p => p.ToolTipIconType)] = toolTipIconType
                     });
+                });
+
+                It(nameof(IModelCommonMemberViewItem), () =>
+                {
+                    var rowCount = faker.Random.Int();
+
+                    var detailView = CreateDetailViewWithLayout(b => new Layout
+                    {
+                        b.PropertyEditor(m => m.StringProperty) with
+                        {
+                            RowCount = rowCount,
+                        }
+                    });
+
+                    var item = (IModelCommonMemberViewItem)detailView!.Items[nameof(LayoutPropertyEditorItemBusinessObject.StringProperty)];
+                    item.RowCount.ShouldBe(rowCount);
                 });
 
                 It(nameof(IModelNode), () =>

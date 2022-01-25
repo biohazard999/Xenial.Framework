@@ -8,7 +8,7 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 /// 
 /// </summary>
 [XenialCheckLicense]
-[XenialLayoutPropertyEditorItem(typeof(bool), typeof(IModelPropertyEditor))]
+//[XenialLayoutPropertyEditorItem(typeof(bool), typeof(IModelPropertyEditor))]
 public partial record BooleanLayoutPropertyEditorItem(string ViewItemId)
     : LayoutPropertyEditorItem(ViewItemId)
 {

@@ -8,17 +8,18 @@ using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
-[XenialLayoutPropertyEditorItemMapper(typeof(LayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
-[XenialLayoutPropertyEditorItemMapper(typeof(StringLayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
-[XenialLayoutPropertyEditorItemMapper(typeof(LookupLayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
-[XenialLayoutPropertyEditorItemMapper(typeof(NumberLayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
-[XenialLayoutPropertyEditorItemMapper(typeof(BooleanLayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
-[XenialLayoutPropertyEditorItemMapper(typeof(LayoutActionContainerItem), typeof(IModelActionContainerViewItem))]
-[XenialLayoutPropertyEditorItemMapper(typeof(LayoutStaticTextItem), typeof(IModelStaticText))]
-[XenialLayoutPropertyEditorItemMapper(typeof(LayoutStaticImageItem), typeof(IModelStaticImage))]
-[XenialLayoutPropertyEditorItemMapper(typeof(LayoutDashboardViewItem), typeof(IModelDashboardViewItem))]
-[XenialLayoutPropertyEditorItemMapper(typeof(LayoutViewItem), typeof(IModelViewItem))]
-[XenialLayoutPropertyEditorItemMapper(typeof(LayoutMemberViewItem), typeof(IModelMemberViewItem))]
+[XenialModelOptionsRootMapper(typeof(LayoutItemNode))]
+[XenialModelOptionsMapper(typeof(LayoutPropertyEditorItem))]
+[XenialModelOptionsMapper(typeof(StringLayoutPropertyEditorItem))]
+[XenialModelOptionsMapper(typeof(LookupLayoutPropertyEditorItem))]
+[XenialModelOptionsMapper(typeof(NumberLayoutPropertyEditorItem))]
+[XenialModelOptionsMapper(typeof(BooleanLayoutPropertyEditorItem))]
+[XenialModelOptionsMapper(typeof(LayoutActionContainerItem))]
+[XenialModelOptionsMapper(typeof(LayoutStaticTextItem))]
+[XenialModelOptionsMapper(typeof(LayoutStaticImageItem))]
+[XenialModelOptionsMapper(typeof(LayoutDashboardViewItem))]
+[XenialModelOptionsMapper(typeof(LayoutViewItem))]
+[XenialModelOptionsMapper(typeof(LayoutMemberViewItem))]
 internal partial class ViewItemMapper
 {
     partial void MapNodeCore(LayoutViewItem from, IModelViewItem to)

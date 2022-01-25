@@ -16,8 +16,7 @@ public class XenialGenerator : ISourceGenerator
     public IList<IXenialSourceGenerator> Generators { get; } = new List<IXenialSourceGenerator>
     {
         new XenialAutoMappedAttributeGenerator(),
-        new XenialModelNodeMappingGenerator(),
-        new XenialLayoutPropertyEditorItemGenerator()
+        new XenialModelNodeMappingGenerator()
     };
 
     public void Initialize(GeneratorInitializationContext context)

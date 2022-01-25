@@ -6,7 +6,7 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 /// 
 /// </summary>
 [XenialCheckLicense]
-[XenialLayoutPropertyEditorItem(typeof(object), typeof(IModelPropertyEditor))]
+//[XenialLayoutPropertyEditorItem(typeof(object), typeof(IModelPropertyEditor))]
 public partial record LookupLayoutPropertyEditorItem(string ViewItemId)
     : LayoutPropertyEditorItem(ViewItemId)
 {
