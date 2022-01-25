@@ -49,10 +49,12 @@
 
   <ItemGroup Condition="'$(XenialDebug)' == 'false'">
     <PackageReference Include="Xenial.Framework.Win" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.LabelEditors.Win" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Win/Xenial.Framework.Win.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.LabelEditors.Win/Xenial.Framework.LabelEditors.Win.csproj" />
   </ItemGroup>
   
   <ItemGroup>
@@ -60,6 +62,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Xenial.Framework.DevTools.Win\Xenial.Framework.DevTools.Win.csproj" />
     <ProjectReference Include="..\MainDemo.Module\MainDemo.Module.csproj" />
   </ItemGroup>
 

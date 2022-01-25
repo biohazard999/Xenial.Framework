@@ -12,8 +12,17 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
 /// <summary>   (Immutable) a layout property editor item. </summary>
 [XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelPropertyEditor), IgnoredMembers = new[]
+    {
+        "Id",
+        nameof(IModelViewItem.Caption),
+        nameof(IModelPropertyEditor.Index),
+        nameof(IModelPropertyEditor.ToolTip),
+    }
+)]
 public partial record LayoutPropertyEditorItem(string PropertyEditorId)
-    : LayoutViewItem(PropertyEditorId)
+    : LayoutMemberViewItem(PropertyEditorId)
 {
     /// <summary>   Creates the specified property editor identifier. </summary>
     ///
@@ -21,7 +30,7 @@ public partial record LayoutPropertyEditorItem(string PropertyEditorId)
     ///
     /// <returns>   Xenial.Framework.Layouts.Items.LeafNodes.LayoutPropertyEditorItem. </returns>
 
-    public static new LayoutPropertyEditorItem Create(string propertyEditorId)
+    public static LayoutPropertyEditorItem Create(string propertyEditorId)
         => new(propertyEditorId);
 
     /// <summary>   Creates the specified property editor identifier. </summary>
@@ -42,9 +51,18 @@ public partial record LayoutPropertyEditorItem(string PropertyEditorId)
         return editor;
     }
 
-    /// <summary>   Gets or sets the property editor options. </summary>
-    ///
-    /// <value> The property editor options. </value>
-
-    public Action<IModelPropertyEditor>? PropertyEditorOptions { get; set; }
+    private string? editorAlias;
+    internal bool WasEditorAliasSet { get; set; }
+    /// <summary>
+    /// Specifies an editor alias.
+    /// </summary>
+    public string? EditorAlias
+    {
+        get => editorAlias;
+        set
+        {
+            WasEditorAliasSet = true;
+            editorAlias = value;
+        }
+    }
 }

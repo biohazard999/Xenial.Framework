@@ -146,17 +146,17 @@ public abstract partial record LayoutItem<T>
 
 /// <summary>   (Immutable) a layout item. </summary>
 [XenialCheckLicense]
-public partial record LayoutItem : LayoutItem<LayoutItemNode>, ILayoutItemNodeWithAlign
+public partial record LayoutItem : LayoutItem<LayoutItemNode>
 {
-    /// <summary>   Gets or sets the horizontal align. </summary>
-    ///
-    /// <value> The horizontal align. </value>
+    ///// <summary>   Gets or sets the horizontal align. </summary>
+    /////
+    ///// <value> The horizontal align. </value>
 
-    public StaticHorizontalAlign? HorizontalAlign { get; set; }
+    //public StaticHorizontalAlign? HorizontalAlign { get; set; }
 
-    /// <summary>   Gets or sets the vertical align. </summary>
-    ///
-    /// <value> The vertical align. </value>
+    ///// <summary>   Gets or sets the vertical align. </summary>
+    /////
+    ///// <value> The vertical align. </value>
 
-    public StaticVerticalAlign? VerticalAlign { get; set; }
+    //public StaticVerticalAlign? VerticalAlign { get; set; }
 }

@@ -6,7 +6,7 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 /// 
 /// </summary>
 [XenialCheckLicense]
-[XenialLayoutPropertyEditorItem(typeof(object), typeof(IModelPropertyEditor))]
+//[XenialLayoutPropertyEditorItem(typeof(object), typeof(IModelPropertyEditor))]
 public partial record LookupLayoutPropertyEditorItem(string ViewItemId)
     : LayoutPropertyEditorItem(ViewItemId)
 {
@@ -17,9 +17,4 @@ public partial record LookupLayoutPropertyEditorItem(string ViewItemId)
     /// <returns>   Xenial.Framework.Layouts.Items.LeafNodes.StringLayoutPropertyEditorItem. </returns>
     public static new LookupLayoutPropertyEditorItem Create(string propertyEditorId)
         => new(propertyEditorId);
-}
-
-[XenialLayoutPropertyEditorItemMapper(typeof(LookupLayoutPropertyEditorItem), typeof(IModelPropertyEditor))]
-partial class LayoutPropertyEditorItemMapper
-{
 }

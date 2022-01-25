@@ -9,6 +9,9 @@ using Xenial;
 
 namespace Xenial.Framework.Layouts;
 
+/// <summary>
+/// Defines options to create list views
+/// </summary>
 [XenialModelOptions(
     typeof(IModelListView), IgnoredMembers = new[]
     {
@@ -43,4 +46,65 @@ public partial record ListViewOptions
             automaticColumns = value;
         }
     }
+
+    private Action<ListViewOptionsExtensions>? extensions;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ListViewOptionsExtensions ExtensionsCollection { get; private set; } = new();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public Action<ListViewOptionsExtensions>? Extensions
+    {
+        get => extensions;
+        set
+        {
+            extensions = value;
+            value?.Invoke(ExtensionsCollection);
+        }
+    }
 }
+
+
+
+/// <summary>
+/// 
+/// </summary>
+[Serializable]
+public sealed class GenericListViewOptions : Dictionary<string, object>, IListViewOptionsExtension
+{
+}
+
+/// <summary>
+/// 
+/// </summary>
+public static class ListViewOptionsExt
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="options"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static ListViewOptionsExtensions Generic(this ListViewOptionsExtensions list, GenericListViewOptions options)
+    {
+        _ = list ?? throw new ArgumentNullException(nameof(list));
+        _ = options ?? throw new ArgumentNullException(nameof(options));
+        list.Add(options);
+
+        return list;
+    }
+}
+
+/// <summary>
+/// 
+/// </summary>
+public sealed class ListViewOptionsExtensions : List<IListViewOptionsExtension> { }
+/// <summary>
+/// 
+/// </summary>
+public interface IListViewOptionsExtension { }

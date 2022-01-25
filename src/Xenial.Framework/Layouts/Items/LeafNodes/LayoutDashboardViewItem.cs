@@ -13,23 +13,16 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
 /// <summary>   (Immutable) a layout dashboard view item. </summary>
 [XenialCheckLicense]
-public partial record LayoutDashboardViewItem(string DashboardViewId) : LayoutViewItem(DashboardViewId)
+[XenialModelOptions(
+    typeof(IModelDashboardViewItem), IgnoredMembers = new[]
+    {
+        nameof(IModelDashboardViewItem.Id),
+        nameof(IModelDashboardViewItem.Index),
+        nameof(IModelDashboardViewItem.View),
+        nameof(IModelViewItem.Caption),
+    }
+)]
+public partial record LayoutDashboardViewItem(string DashboardViewId)
+    : LayoutViewItem(DashboardViewId)
 {
-    /// <summary>   Gets or sets the criteria operator. </summary>
-    ///
-    /// <value> The criteria operator. </value>
-
-    public string? Criteria { get; set; }
-
-    /// <summary>   Gets or sets the actions toolbar visibility. </summary>
-    ///
-    /// <value> The actions toolbar visibility. </value>
-
-    public ActionsToolbarVisibility? ActionsToolbarVisibility { get; set; }
-
-    /// <summary>   Gets or sets the dashboard options. </summary>
-    ///
-    /// <value> The dashboard options. </value>
-
-    public Action<IModelDashboardViewItem>? DashboardViewOptions { get; set; }
 }

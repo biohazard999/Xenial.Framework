@@ -8,16 +8,11 @@ using System.Text;
 
 using System.Threading;
 
-using DevExpress.ExpressApp;
-using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.Model.Core;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-using Xenial.Framework.Generators;
 using Xenial.Framework.Generators.Internal;
 using Xenial.Framework.Generators.XAF.Utils;
 using Xenial.Framework.MsBuild;
@@ -34,10 +29,12 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
 
         (compilation, var modelOptionsAttribute) = GenerateXenialModelOptionsAttribute(context, compilation, addedSourceFiles);
         (compilation, var modelOptionsMapperAttribute) = GenerateXenialModelOptionsMapperAttribute(context, compilation, addedSourceFiles);
+        (compilation, var modelOptionsRootMapperAttribute) = GenerateXenialModelOptionsRootMapperAttribute(context, compilation, addedSourceFiles);
 
         (compilation, var optionTypes) = GenerateXenialModelOptionsCode(context, compilation, types, modelOptionsAttribute, autoMappedAttribute, addedSourceFiles);
         (compilation, var mappedTypes) = GenerateXenialModelOptionsMapperCode(context, compilation, types, optionTypes, modelOptionsMapperAttribute, autoMappedAttribute, addedSourceFiles);
-        compilation = GenerateXenialModelOptionsMapCode(context, compilation, mappedTypes, addedSourceFiles);
+        (compilation, var mappedRootTypes) = GenerateXenialModelOptionsMapCode(context, compilation, mappedTypes, addedSourceFiles);
+        compilation = GenerateXenialModelOptionsMapRootCode(context, compilation, modelOptionsRootMapperAttribute, mappedRootTypes, addedSourceFiles);
 
         return compilation;
     }
@@ -62,6 +59,24 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
                 var ignoredMembers = attribute.GetAttributeValues<string>("IgnoredMembers");
 
                 var properties = GetPropertySymbols(interfaceTypeSymbol, ignoredMembers);
+
+                static IEnumerable<string> GetExistingPropertyNames(INamedTypeSymbol classSymbol)
+                {
+                    var properties = classSymbol.GetMembers()
+                        .OfType<IPropertySymbol>()
+                        .Select(m => m.Name);
+
+                    if (classSymbol.BaseType is not null)
+                    {
+                        properties = properties.Concat(GetExistingPropertyNames(classSymbol.BaseType));
+                    }
+                    return properties;
+                }
+
+                var existingPropertyNames = GetExistingPropertyNames(classSymbol).ToArray();
+                properties = properties
+                    .Where(p => !existingPropertyNames.Contains(p.Name))
+                    .ToArray();
 
                 var builder = CurlyIndenter.Create();
 
@@ -211,10 +226,14 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
         return (compilation, mappedItems);
     }
 
-    private Compilation GenerateXenialModelOptionsMapCode(GeneratorExecutionContext context, Compilation compilation, Dictionary<(TypeDeclarationSyntax, INamedTypeSymbol), List<(INamedTypeSymbol from, INamedTypeSymbol to)>> mappedClasses, IList<string> addedSourceFiles)
+    private (Compilation compilation, Dictionary<(TypeDeclarationSyntax, INamedTypeSymbol), List<INamedTypeSymbol>> mapped) GenerateXenialModelOptionsMapCode(GeneratorExecutionContext context, Compilation compilation, Dictionary<(TypeDeclarationSyntax, INamedTypeSymbol), List<(INamedTypeSymbol from, INamedTypeSymbol to)>> mappedClasses, IList<string> addedSourceFiles)
     {
+        var mappedTypes = new Dictionary<(TypeDeclarationSyntax, INamedTypeSymbol), List<INamedTypeSymbol>>();
+
         foreach (var (key, members) in mappedClasses)
         {
+            var mapped = new List<INamedTypeSymbol>();
+
             var (@class, @classSymbol) = key;
             var builder = CurlyIndenter.Create();
 
@@ -231,6 +250,9 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
                     foreach (var members2 in members.GroupBy(m => m.from.ToString()))
                     {
                         var methodSigniture = $"internal void Map({members2.Key} from, DevExpress.ExpressApp.Model.IModelNode to)";
+
+                        mapped.Add(compilation.GetTypeByMetadataName(members2.Key)!);
+
                         using (builder.OpenBrace(methodSigniture))
                         {
                             foreach (var (_, to) in members2)
@@ -255,11 +277,64 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
             var hintName = $"{@classSymbol.Name}.BaseMapper";
 
             compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSources);
+            mappedTypes[(@class, classSymbol)] = mapped;
+        }
+
+        return (compilation, mappedTypes);
+    }
+
+    private Compilation GenerateXenialModelOptionsMapRootCode(GeneratorExecutionContext context, Compilation compilation, INamedTypeSymbol modelOptionsRootMapperAttribute, Dictionary<(TypeDeclarationSyntax, INamedTypeSymbol), List<INamedTypeSymbol>> mappedTypes, IList<string> addedSourceFiles)
+    {
+        foreach (var ((@class, @classSymbol), types) in mappedTypes)
+        {
+            var attribute = classSymbol.FindAttribute(modelOptionsRootMapperAttribute);
+            if (attribute is null)
+            {
+                continue;
+            }
+
+            var fromTypeSymbol = (INamedTypeSymbol)attribute.ConstructorArguments[0].Value!;
+
+            var builder = CurlyIndenter.Create();
+
+            builder.WriteLine("// <auto-generated />");
+            builder.WriteLine();
+            builder.WriteLine("using System;");
+            builder.WriteLine("using System.Runtime.CompilerServices;");
+            builder.WriteLine();
+
+            using (builder.OpenBrace($"namespace {@classSymbol.ContainingNamespace}"))
+            {
+                using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
+                {
+                    var methodSigniture = $"internal void Map({fromTypeSymbol} from, DevExpress.ExpressApp.Model.IModelNode to)";
+                    using (builder.OpenBrace(methodSigniture))
+                    {
+                        foreach (var fromType in types)
+                        {
+                            using (builder.OpenBrace($"if(from is {fromType})"))
+                            {
+                                builder.WriteLine($"{fromType} fromCasted = ({fromType})from;");
+
+                                builder.WriteLine($"this.Map(fromCasted, to);");
+                            }
+                            builder.WriteLine();
+                        }
+                        builder.WriteLine("this.MapNodeCore(from, to);");
+                    }
+                    builder.WriteLine();
+                    builder.WriteLine("partial void MapNodeCore(Xenial.Framework.Layouts.Items.Base.LayoutItemNode from, DevExpress.ExpressApp.Model.IModelNode to);");
+
+                }
+            }
+
+            var hintName = $"{@classSymbol.Name}.RootMapper";
+
+            compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSources);
         }
 
         return compilation;
     }
-
 
     private static IPropertySymbol[] GetAutoMappedPropertySymbols(INamedTypeSymbol @classSymbol, INamedTypeSymbol autoMappedAttribute)
     {
@@ -374,7 +449,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
 
     private static IPropertySymbol[] WithSetterAndGetter(IPropertySymbol[] propertySymbols)
         => propertySymbols
-            .Where(m => m.GetMethod is not null && m.SetMethod is not null)
+            .Where(m => m.GetMethod is not null && m.SetMethod is not null && !m.IsIndexer)
             .ToArray();
 
     private static IPropertySymbol[] DistinctByName(IPropertySymbol[] propertySymbols)
@@ -510,7 +585,6 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
         return (source, syntaxTree);
     }
 
-
     private (Compilation, INamedTypeSymbol) GenerateXenialModelOptionsMapperAttribute(GeneratorExecutionContext context, Compilation compilation, IList<string> addedSourceFiles)
     {
         var (source, syntaxTree) = GenerateXenialModelOptionsMapperAttribute(
@@ -556,6 +630,61 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
                 using (syntaxWriter.OpenBrace($"{visibility} XenialModelOptionsMapperAttribute(Type optionsType)"))
                 {
                     syntaxWriter.WriteLine($"this.OptionsType = optionsType;");
+                }
+            }
+        }
+
+        var syntax = syntaxWriter.ToString();
+        var source = SourceText.From(syntax, Encoding.UTF8);
+        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
+        return (source, syntaxTree);
+    }
+
+    private (Compilation, INamedTypeSymbol) GenerateXenialModelOptionsRootMapperAttribute(GeneratorExecutionContext context, Compilation compilation, IList<string> addedSourceFiles)
+    {
+        var (source, syntaxTree) = GenerateXenialModelOptionsRootMapperAttribute(
+            (CSharpParseOptions)context.ParseOptions,
+            cancellationToken: context.CancellationToken
+        );
+
+        if (AddSources)
+        {
+            var fileName = $"XenialModelOptionsToorMapperAttribute.g.cs";
+            addedSourceFiles.Add(fileName);
+            context.AddSource(fileName, source);
+        }
+
+        compilation = compilation.AddSyntaxTrees(syntaxTree);
+
+        var attribute = compilation.GetTypeByMetadataName("Xenial.XenialModelOptionsRootMapperAttribute");
+
+        return (compilation, attribute!);
+    }
+
+    public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialModelOptionsRootMapperAttribute(
+        CSharpParseOptions? parseOptions = null,
+        string visibility = "internal",
+        CancellationToken cancellationToken = default)
+    {
+        parseOptions = parseOptions ?? CSharpParseOptions.Default;
+
+        var syntaxWriter = CurlyIndenter.Create();
+
+        syntaxWriter.WriteLine($"using System;");
+        syntaxWriter.WriteLine($"using System.ComponentModel;");
+        syntaxWriter.WriteLine();
+
+        using (syntaxWriter.OpenBrace($"namespace Xenial"))
+        {
+            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]");
+
+            using (syntaxWriter.OpenBrace($"{visibility} sealed class XenialModelOptionsRootMapperAttribute : Attribute"))
+            {
+                syntaxWriter.WriteLine($"public Type OptionsBaseType {{ get; private set; }}");
+                syntaxWriter.WriteLine();
+                using (syntaxWriter.OpenBrace($"{visibility} XenialModelOptionsRootMapperAttribute(Type optionsBaseType)"))
+                {
+                    syntaxWriter.WriteLine($"this.OptionsBaseType = optionsBaseType;");
                 }
             }
         }

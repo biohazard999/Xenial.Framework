@@ -6,7 +6,12 @@ using Demos.Data;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
+using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Updating;
+
+using Xenial.Framework.DevTools.Win;
+using Xenial.Framework.LabelEditors.Win;
+using Xenial.Framework.Win.Model.GeneratorUpdaters;
 
 namespace MainDemo.Module.Win
 {
@@ -24,6 +29,13 @@ namespace MainDemo.Module.Win
             DevExpress.ExpressApp.ReportsV2.Win.WinReportServiceController.UseNewWizard = true;
 #endif
         }
+
+        protected override ModuleTypeList GetRequiredModuleTypesCore() => base.GetRequiredModuleTypesCore()
+            .AndModuleTypes(
+                typeof(XenialLabelEditorsWindowsFormsModule),
+                typeof(XenialDevToolsWindowsFormsModule)
+            );
+
         public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB)
         {
             ModuleUpdater updater = new DatabaseUpdate.Updater(objectSpace, versionFromDB);
@@ -62,5 +74,12 @@ namespace MainDemo.Module.Win
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
             => base.GetDeclaredControllerTypes()
                 .UseXenialWindowsFormsControllers();
+
+        public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
+        {
+            base.AddGeneratorUpdaters(updaters);
+
+            updaters.Add(new WinModelDetailViewLayoutModelDetailViewItemsNodesGenerator());
+        }
     }
 }

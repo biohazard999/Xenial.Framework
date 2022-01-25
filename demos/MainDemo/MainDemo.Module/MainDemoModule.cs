@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
+using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.ReportsV2;
 using DevExpress.ExpressApp.Security;
@@ -21,7 +22,6 @@ using MainDemo.Module.Reports;
 
 using Xenial.Framework.Base;
 using Xenial.Framework.Layouts;
-using Xenial.Framework.Layouts.Items.LeafNodes;
 using Xenial.Framework.Model.GeneratorUpdaters;
 using Xenial.Framework.ModelBuilders;
 
@@ -194,7 +194,10 @@ namespace MainDemo.Module
                 {
                     Caption = "Users"
                 }))
-                .WithDetailViewLayout(b => new()
+                .WithDetailViewLayout(b => new(new()
+                {
+                    EnableLayoutGroupImages = true
+                })
                 {
                     b.HorizontalGroup(
                         b.VerticalGroup(
@@ -204,7 +207,7 @@ namespace MainDemo.Module
                         ),
                         b.PropertyEditor(m => m.Photo) with { ShowCaption = false, RelativeSize = 15 }
                     ),
-                    b.VerticalGroup("Roles", b.PropertyEditor(m => m.Roles))
+                    b.VerticalGroup("Roles", "BO_Role", b.PropertyEditor(m => m.Roles))
                 })
                 .Build();
 

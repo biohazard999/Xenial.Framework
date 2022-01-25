@@ -78,15 +78,6 @@ public partial class LayoutBuilder
     public LayoutPropertyEditorItem PropertyEditor(string propertyEditorId, Action<LayoutPropertyEditorItem> configurePropertyEditor)
         => LayoutPropertyEditorItem.Create(propertyEditorId, configurePropertyEditor);
 
-    /// <summary>   Views the item. </summary>
-    ///
-    /// <param name="viewItemId">   The view item identifier. </param>
-    ///
-    /// <returns>   LayoutViewItem. </returns>
-
-    public LayoutViewItem ViewItem(string viewItemId)
-        => LayoutViewItem.Create(viewItemId);
-
     /// <summary>   Empties the space item. </summary>
     ///
     /// <returns>   Xenial.Framework.Layouts.Items.LayoutEmptySpaceItem. </returns>

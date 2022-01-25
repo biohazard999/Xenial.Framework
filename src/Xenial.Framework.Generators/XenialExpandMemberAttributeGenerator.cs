@@ -71,7 +71,7 @@ public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXe
         string visibility = "internal",
         CancellationToken cancellationToken = default)
     {
-        parseOptions = parseOptions ?? CSharpParseOptions.Default;
+        parseOptions ??= CSharpParseOptions.Default;
 
         var syntaxWriter = CurlyIndenter.Create();
 

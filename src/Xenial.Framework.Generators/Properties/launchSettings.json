@@ -4,6 +4,10 @@
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\..\\demos\\SourceGenerators\\Acme.Module\\Acme.Module.csproj"
     },
+    "Acme.LayoutBuilderDemo": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\..\\demos\\SourceGenerators\\Acme.LayoutBuilderDemo\\Acme.LayoutBuilderDemo.csproj"
+    },
     "MainDemo.Module": {
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\..\\demos\\MainDemo\\MainDemo.Module\\MainDemo.Module.csproj"

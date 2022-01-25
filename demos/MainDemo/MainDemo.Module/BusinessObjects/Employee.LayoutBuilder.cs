@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using Xenial.Framework.Images;
+using Xenial.Framework.LabelEditors.PubTernal;
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items.Base;
 
@@ -14,9 +15,15 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
     public Layout BuildLayout() => new(new()
     {
         Caption = "Hot Reload!!!",
-        ImageName = XenialImages.Action_HotReload,
+        ImageName = XenialImages.Action_Xenial_HotReload,
         //ImageName = "BO_Employee",
-        EnableLayoutGroupImages = true
+        EnableLayoutGroupImages = true,
+        Extensions = x =>
+            x.Generic(new()
+            {
+                ["YourCustomProperty"] = "Foo",
+                ["ImageName"] = "BO_Employee",
+            })
     })
     {
         HorizontalGroup("Details", "BO_Employee",
@@ -36,7 +43,7 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
                 ) with
                 { RelativeSize = 55 },
                 HorizontalGroup(
-                    Editor.Photo with { ShowCaption = false }
+                    Editor.Photo with { ShowCaption = false, EditorAlias = DevExpress.ExpressApp.Editors.EditorAliases.ByteArrayPropertyEditor }
                 ) with
                 { RelativeSize = 15 }
             )
@@ -46,7 +53,7 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
                 Editor.NickName,
                 Editor.SpouseName,
                 Editor.Anniversary,
-                Editor.WebPageAddress
+                Editor.WebPageAddress with { EditorAlias = LabelEditorAliases.LabelHyperlinkStringPropertyEditor }
             ) with
             { RelativeSize = 39 },
             VerticalGroup(

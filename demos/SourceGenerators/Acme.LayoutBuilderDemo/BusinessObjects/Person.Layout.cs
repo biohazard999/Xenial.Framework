@@ -13,7 +13,6 @@ namespace Acme.Module.BusinessObjects
     public partial class PersonLayout : LayoutBuilder<Person>
     {
         /* Build to look at Person.Layout.PersonLayout.g.cs */
-
         public Layout BuildLayout() => new()
         {
             Editor.FullName,

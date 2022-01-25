@@ -24,6 +24,10 @@ public partial class EmployeeColumnsBuilder : ColumnsBuilder<Employee>
         Caption = "Employees",
         IsGroupPanelVisible = true,
         AutoExpandAllGroups = true,
+        Extensions = x => x.Generic(new()
+        {
+            ["Caption"] = "Employees13213"
+        })
     })
     {
         Column.Department with { Index = -1, GroupIndex = 0 },

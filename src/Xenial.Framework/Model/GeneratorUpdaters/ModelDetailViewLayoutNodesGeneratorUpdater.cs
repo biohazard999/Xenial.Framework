@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
@@ -21,7 +22,9 @@ namespace Xenial.Framework.Model.GeneratorUpdaters;
 [XenialCheckLicense]
 public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenerator : ModelNodesGeneratorUpdater<ModelDetailViewItemsNodesGenerator>
 {
-    private static readonly LayoutPropertyEditorItemMapper itemMapper = new();
+    private MemberEditorInfoCalculator MemberEditorInfoCalculator { get; } = new();
+
+    private static readonly ViewItemMapper itemMapper = new();
 
     /// <summary>
     /// 
@@ -43,10 +46,20 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
 
                 if (layout.Options is not null)
                 {
-                    new ViewOptionsMapper().Map(layout.Options, modelDetailView);
+                    new ViewOptionsMapper()
+                        .Map(layout.Options, modelDetailView);
                 }
 
                 ModelDetailViewLayoutNodesGeneratorUpdater.MarkDuplicateNodes(layout);
+
+                foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
+                {
+                    var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m =>
+                        m.Id == (layoutViewItemNode.IsDuplicate
+                        ? layoutViewItemNode.Id
+                        : layoutViewItemNode.ViewItemId)
+                    );
+                }
 
                 foreach (var layoutViewItemNode in VisitNodes<LayoutPropertyEditorItem>(layout))
                 {
@@ -55,7 +68,6 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                         ? layoutViewItemNode.Id
                         : layoutViewItemNode.ViewItemId)
                     );
-
 
                     if (viewItem is null)
                     {
@@ -68,6 +80,17 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                             newViewItem.ClearValue(nameof(newViewItem.PropertyEditorType));
                         }
                         viewItem = newViewItem;
+                    }
+
+                    if (
+                        viewItem is IModelPropertyEditor modelPropertyEditor
+                        && !string.IsNullOrEmpty(layoutViewItemNode.EditorAlias))
+                    {
+                        modelPropertyEditor.PropertyEditorType
+                            = MemberEditorInfoCalculator.GetEditorType(
+                                modelPropertyEditor.ModelMember,
+                                layoutViewItemNode.EditorAlias
+                        );
                     }
 
                     itemMapper.Map(layoutViewItemNode, viewItem);
@@ -272,6 +295,7 @@ public sealed partial class ModelDetailViewLayoutNodesGeneratorUpdater : ModelNo
                                 xIndex = cI + 1;
                             }
                         }
+                        new LayoutItemMapper().Map(layoutItemNode, node);
                         return (node, node?.Index ?? 0, layoutItemNode);
                     }
                 }

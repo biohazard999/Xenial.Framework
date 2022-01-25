@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Xenial.Framework.Win, PublicKey=$(XenialPublicSignKey)" />
+    <InternalsVisibleTo Include="Xenial.Framework.Blazor, PublicKey=$(XenialPublicSignKey)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
@@ -14,4 +19,20 @@
     <ProjectReference Include="..\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Compile Update="**\*.Extension.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.Extension', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.Extensions.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.Extensions', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.Mappers.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.Mappers', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.ColumnsBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ColumnsBuilder', '.cs'))</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
 </Project>
