@@ -14,7 +14,7 @@ public partial class EmployeeLayoutBuilder : LayoutBuilder<Employee>
 {
     public Layout BuildLayout() => new(new()
     {
-        Caption = "Hot Reload!!!",
+        Caption = "Hot Reload213213213!!!",
         ImageName = XenialImages.Action_Xenial_HotReload,
         //ImageName = "BO_Employee",
         EnableLayoutGroupImages = true,
