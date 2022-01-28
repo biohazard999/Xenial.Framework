@@ -2,13 +2,13 @@
   Diagnostics: [
     {
       Id: XENGEN0010,
-      Title: Could not parse boolean MSBUILD variable (GenerateXenialLayoutBuilderAttribute),
+      Title: Could not parse boolean MSBUILD variable (GenerateXenialExpandMemberAttribute),
       Severity: Error,
       WarningLevel: 0,
       Location: : (0,0)-(0,0),
-      Description: Could not parse boolean MSBUILD variable (GenerateXenialLayoutBuilderAttribute), make sure it's in a boolean format. Actual value: ABC,
-      MessageFormat: Could not parse boolean MSBUILD variable (GenerateXenialLayoutBuilderAttribute), make sure it's in a boolean format. Actual value: ABC,
-      Message: Could not parse boolean MSBUILD variable (GenerateXenialLayoutBuilderAttribute), make sure it's in a boolean format. Actual value: ABC,
+      Description: Could not parse boolean MSBUILD variable (GenerateXenialExpandMemberAttribute), make sure it's in a boolean format. Actual value: ABC,
+      MessageFormat: Could not parse boolean MSBUILD variable (GenerateXenialExpandMemberAttribute), make sure it's in a boolean format. Actual value: ABC,
+      Message: Could not parse boolean MSBUILD variable (GenerateXenialExpandMemberAttribute), make sure it's in a boolean format. Actual value: ABC,
       Category: Usage
     }
   ]

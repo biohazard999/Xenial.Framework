@@ -14,26 +14,6 @@ namespace MyProject
     [CompilerGenerated]
     partial class DoesEmitSimpleProperties
     {
-        private struct PropertyIdentifier
-        {
-            private string propertyName;
-            public string PropertyName { get { return this.propertyName; } }
-            
-            private PropertyIdentifier(string propertyName)
-            {
-                this.propertyName = propertyName;
-            }
-            
-            public static implicit operator string(PropertyIdentifier identifier)
-            {
-                return identifier.PropertyName;
-            }
-            
-            public static PropertyIdentifier Create(string propertyName)
-            {
-                return new PropertyIdentifier(propertyName);
-            }
-        }
         
         private partial struct Constants
         {
@@ -44,32 +24,13 @@ namespace MyProject
             public const string DecimalProperty = "DecimalProperty";
         }
         
-        private partial struct Property
-        {
-            public static PropertyIdentifier StringProperty { get { return PropertyIdentifier.Create("StringProperty"); } }
-            
-            public static PropertyIdentifier IntProperty { get { return PropertyIdentifier.Create("IntProperty"); } }
-            
-            public static PropertyIdentifier BoolProperty { get { return PropertyIdentifier.Create("BoolProperty"); } }
-            
-            public static PropertyIdentifier ByteProperty { get { return PropertyIdentifier.Create("ByteProperty"); } }
-            
-            public static PropertyIdentifier DecimalProperty { get { return PropertyIdentifier.Create("DecimalProperty"); } }
-            
-        }
-        
         private partial struct Editor
         {
-            public static LayoutPropertyEditorItem StringProperty { get { return LayoutPropertyEditorItem.Create("StringProperty"); } }
-            
-            public static LayoutPropertyEditorItem IntProperty { get { return LayoutPropertyEditorItem.Create("IntProperty"); } }
-            
-            public static LayoutPropertyEditorItem BoolProperty { get { return LayoutPropertyEditorItem.Create("BoolProperty"); } }
-            
+            public static StringLayoutPropertyEditorItem StringProperty { get { return StringLayoutPropertyEditorItem.Create("StringProperty"); } }
+            public static NumberLayoutPropertyEditorItem IntProperty { get { return NumberLayoutPropertyEditorItem.Create("IntProperty"); } }
+            public static BooleanLayoutPropertyEditorItem BoolProperty { get { return BooleanLayoutPropertyEditorItem.Create("BoolProperty"); } }
             public static LayoutPropertyEditorItem ByteProperty { get { return LayoutPropertyEditorItem.Create("ByteProperty"); } }
-            
-            public static LayoutPropertyEditorItem DecimalProperty { get { return LayoutPropertyEditorItem.Create("DecimalProperty"); } }
-            
+            public static NumberLayoutPropertyEditorItem DecimalProperty { get { return NumberLayoutPropertyEditorItem.Create("DecimalProperty"); } }
         }
     }
 }
