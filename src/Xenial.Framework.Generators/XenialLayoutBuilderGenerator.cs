@@ -51,12 +51,6 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
         var xenialExpandMemberAttribute = compilation.GetTypeByMetadataName(XenialExpandMemberAttributeGenerator.XenialExpandMemberAttributeFullName);
 
-        if (xenialExpandMemberAttribute is null)
-        {
-            //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
-            return compilation;
-        }
-
         foreach (var @class in types)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
@@ -168,17 +162,23 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
             var exandedFields = new List<string>();
 
-            compilation = AddExpandedFields(
-                context,
-                compilation,
-                @class,
-                xenialExpandMemberAttribute,
-                classSymbol,
-                targetType,
-                builder,
-                exandedFields,
-                addedSourceFiles
-            );
+
+            if (xenialExpandMemberAttribute is not null)
+            {
+                //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
+
+                compilation = AddExpandedFields(
+                    context,
+                    compilation,
+                    @class,
+                    xenialExpandMemberAttribute,
+                    classSymbol,
+                    targetType,
+                    builder,
+                    exandedFields,
+                    addedSourceFiles
+                );
+            }
 
             compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles);
 

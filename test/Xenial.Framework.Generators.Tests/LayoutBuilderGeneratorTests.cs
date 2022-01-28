@@ -31,9 +31,9 @@ public class LayoutBuilderGeneratorTests : BaseGeneratorTests<XenialLayoutBuilde
         }
     }
 
-    protected Task RunSourceTest(string fileName, string source)
+    protected Task RunSourceTest(string fileName, string source, bool emitAttribute = false)
         => RunTest(
-            options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false")),
+            options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), emitAttribute.ToString().ToLowerInvariant())),
             syntaxTrees: () => new[]
             {
                 BuildSyntaxTree(fileName, source)
@@ -161,7 +161,7 @@ namespace MyProject
     [XenialExpandMember(Constants.Parent)]
     [XenialExpandMember(Constants._Parent.GrandParent)]
     public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
-}");
+}", true);
 
     [Fact]
     public Task DoesExpandComplexMemberTree2()
@@ -186,7 +186,7 @@ namespace MyProject
     [XenialExpandMember(Constants.Parent1)]
     [XenialExpandMember(Constants.Parent2)]
     public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
-}");
+}", true);
 
     [Fact]
     public Task DoesExpandComplexMemberTree3()
@@ -210,5 +210,5 @@ namespace MyProject
     [XenialExpandMember(Constants.Parent1)]
     [XenialExpandMember(Constants.Parent1)]
     public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
-}");
+}", true);
 }
