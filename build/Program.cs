@@ -131,7 +131,11 @@ namespace Xenial.Build
                 await Task.WhenAll(tests);
             });
 
-            Target("test", DependsOn("test:base", "test:win"));
+            Target("test:xunit", DependsOn("build"),
+                () => RunAsync("dotnet", $"test {sln} --no-restore --no-build -c {Configuration} {logOptions("build")} {GetProperties()}")
+            );
+
+            Target("test", DependsOn("test:base", "test:win", "test:xunit"));
 
             Target("lic", DependsOn("test"),
                 async () =>
