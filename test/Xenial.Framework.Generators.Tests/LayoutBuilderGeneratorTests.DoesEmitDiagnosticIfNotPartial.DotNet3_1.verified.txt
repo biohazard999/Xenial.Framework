@@ -1,7 +1,7 @@
 ﻿{
   Diagnostics: [
     {
-      Id: XENGEN0100,
+      Id: XENGEN0102,
       Title: The class deriving from [Xenial.Framework.Layouts.LayoutBuilder<TModelClass>] should be partial,
       Severity: Warning,
       WarningLevel: 1,

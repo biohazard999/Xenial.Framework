@@ -14,42 +14,15 @@ namespace MyProject
     [CompilerGenerated]
     partial class DoesEmitSimpleRelationForParent
     {
-        private struct PropertyIdentifier
-        {
-            private string propertyName;
-            public string PropertyName { get { return this.propertyName; } }
-            
-            private PropertyIdentifier(string propertyName)
-            {
-                this.propertyName = propertyName;
-            }
-            
-            public static implicit operator string(PropertyIdentifier identifier)
-            {
-                return identifier.PropertyName;
-            }
-            
-            public static PropertyIdentifier Create(string propertyName)
-            {
-                return new PropertyIdentifier(propertyName);
-            }
-        }
         
         private partial struct Constants
         {
             public const string Parents = "Parents";
         }
         
-        private partial struct Property
-        {
-            public static PropertyIdentifier Parents { get { return PropertyIdentifier.Create("Parents"); } }
-            
-        }
-        
         private partial struct Editor
         {
             public static LayoutPropertyEditorItem Parents { get { return LayoutPropertyEditorItem.Create("Parents"); } }
-            
         }
     }
 }

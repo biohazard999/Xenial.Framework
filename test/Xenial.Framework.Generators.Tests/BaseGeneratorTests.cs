@@ -36,6 +36,7 @@ public abstract class BaseGeneratorTests<TGenerator>
     {
         var generator = new XenialGenerator();
         generator.Generators.Clear();
+        generator.Generators.Add(new XenialExpandMemberAttributeGenerator(false));
         generator.Generators.Add(CreateTargetGenerator());
         return generator;
     }

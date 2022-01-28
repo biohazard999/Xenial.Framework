@@ -14,26 +14,6 @@ namespace MyProject
     [CompilerGenerated]
     partial class TargetClassBuilder
     {
-        private struct PropertyIdentifier
-        {
-            private string propertyName;
-            public string PropertyName { get { return this.propertyName; } }
-            
-            private PropertyIdentifier(string propertyName)
-            {
-                this.propertyName = propertyName;
-            }
-            
-            public static implicit operator string(PropertyIdentifier identifier)
-            {
-                return identifier.PropertyName;
-            }
-            
-            public static PropertyIdentifier Create(string propertyName)
-            {
-                return new PropertyIdentifier(propertyName);
-            }
-        }
         
         private partial struct Constants
         {
@@ -41,20 +21,10 @@ namespace MyProject
             public const string Parent2 = "Parent2";
         }
         
-        private partial struct Property
-        {
-            public static PropertyIdentifier Parent1 { get { return PropertyIdentifier.Create("Parent1"); } }
-            
-            public static PropertyIdentifier Parent2 { get { return PropertyIdentifier.Create("Parent2"); } }
-            
-        }
-        
         private partial struct Editor
         {
             public static LayoutPropertyEditorItem Parent1 { get { return LayoutPropertyEditorItem.Create("Parent1"); } }
-            
             public static LayoutPropertyEditorItem Parent2 { get { return LayoutPropertyEditorItem.Create("Parent2"); } }
-            
         }
     }
 }
@@ -70,19 +40,11 @@ namespace MyProject
             }
         }
         
-        private partial struct Property
-        {
-            public partial struct _Parent1
-            {
-                public static PropertyIdentifier ParentString { get { return PropertyIdentifier.Create("Parent1.ParentString"); } }
-            }
-        }
-        
         private partial struct Editor
         {
             public partial struct _Parent1
             {
-                public static LayoutPropertyEditorItem ParentString { get { return LayoutPropertyEditorItem.Create("Parent1.ParentString"); } }
+                public static StringLayoutPropertyEditorItem ParentString { get { return StringLayoutPropertyEditorItem.Create("Parent1.ParentString"); } }
             }
         }
     }
@@ -99,19 +61,11 @@ namespace MyProject
             }
         }
         
-        private partial struct Property
-        {
-            public partial struct _Parent2
-            {
-                public static PropertyIdentifier ParentString { get { return PropertyIdentifier.Create("Parent2.ParentString"); } }
-            }
-        }
-        
         private partial struct Editor
         {
             public partial struct _Parent2
             {
-                public static LayoutPropertyEditorItem ParentString { get { return LayoutPropertyEditorItem.Create("Parent2.ParentString"); } }
+                public static StringLayoutPropertyEditorItem ParentString { get { return StringLayoutPropertyEditorItem.Create("Parent2.ParentString"); } }
             }
         }
     }

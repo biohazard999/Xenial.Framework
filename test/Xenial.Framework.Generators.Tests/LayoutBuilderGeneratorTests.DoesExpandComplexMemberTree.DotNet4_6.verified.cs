@@ -14,42 +14,15 @@ namespace MyProject
     [CompilerGenerated]
     partial class TargetClassBuilder
     {
-        private struct PropertyIdentifier
-        {
-            private string propertyName;
-            public string PropertyName { get { return this.propertyName; } }
-            
-            private PropertyIdentifier(string propertyName)
-            {
-                this.propertyName = propertyName;
-            }
-            
-            public static implicit operator string(PropertyIdentifier identifier)
-            {
-                return identifier.PropertyName;
-            }
-            
-            public static PropertyIdentifier Create(string propertyName)
-            {
-                return new PropertyIdentifier(propertyName);
-            }
-        }
         
         private partial struct Constants
         {
             public const string Parent = "Parent";
         }
         
-        private partial struct Property
-        {
-            public static PropertyIdentifier Parent { get { return PropertyIdentifier.Create("Parent"); } }
-            
-        }
-        
         private partial struct Editor
         {
             public static LayoutPropertyEditorItem Parent { get { return LayoutPropertyEditorItem.Create("Parent"); } }
-            
         }
     }
 }
@@ -63,15 +36,6 @@ namespace MyProject
             {
                 public const string GrandParent = "Parent.GrandParent";
                 public const string Parents = "Parent.Parents";
-            }
-        }
-        
-        private partial struct Property
-        {
-            public partial struct _Parent
-            {
-                public static PropertyIdentifier GrandParent { get { return PropertyIdentifier.Create("Parent.GrandParent"); } }
-                public static PropertyIdentifier Parents { get { return PropertyIdentifier.Create("Parent.Parents"); } }
             }
         }
         
@@ -100,24 +64,13 @@ namespace MyProject
             }
         }
         
-        private partial struct Property
-        {
-            public partial struct _Parent
-            {
-                public partial struct _GrandParent
-                {
-                    public static PropertyIdentifier GrandParentStringMember { get { return PropertyIdentifier.Create("Parent.GrandParent.GrandParentStringMember"); } }
-                }
-            }
-        }
-        
         private partial struct Editor
         {
             public partial struct _Parent
             {
                 public partial struct _GrandParent
                 {
-                    public static LayoutPropertyEditorItem GrandParentStringMember { get { return LayoutPropertyEditorItem.Create("Parent.GrandParent.GrandParentStringMember"); } }
+                    public static StringLayoutPropertyEditorItem GrandParentStringMember { get { return StringLayoutPropertyEditorItem.Create("Parent.GrandParent.GrandParentStringMember"); } }
                 }
             }
         }

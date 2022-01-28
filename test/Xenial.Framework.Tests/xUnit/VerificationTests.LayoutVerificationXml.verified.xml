@@ -1,4 +1,4 @@
-<DetailView Id="SimpleBusinessObject_DetailView"
+﻿<DetailView Id="SimpleBusinessObject_DetailView"
             ClassName="Xenial.Framework.Tests.Layouts.Items.SimpleBusinessObject">
   <Items>
     <PropertyEditor Id="BoolProperty"
@@ -17,14 +17,14 @@
   <Layout>
     <LayoutGroup Id="Main">
       <TabbedGroup Id="Tabs-0"
-                   Direction="Vertical"
-                   Index="0">
+                   Index="0"
+                   Direction="Vertical">
         <LayoutGroup Id="FirstTab"
-                     ShowCaption="True"
-                     Caption="FirstTab"
+                     Index="0"
                      Direction="Vertical"
                      ImageName="SomeImage"
-                     Index="0" />
+                     Caption="FirstTab"
+                     ShowCaption="True" />
       </TabbedGroup>
     </LayoutGroup>
   </Layout>

@@ -52,15 +52,6 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
 
                 ModelDetailViewLayoutNodesGeneratorUpdater.MarkDuplicateNodes(layout);
 
-                foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
-                {
-                    var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m =>
-                        m.Id == (layoutViewItemNode.IsDuplicate
-                        ? layoutViewItemNode.Id
-                        : layoutViewItemNode.ViewItemId)
-                    );
-                }
-
                 foreach (var layoutViewItemNode in VisitNodes<LayoutPropertyEditorItem>(layout))
                 {
                     var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m =>
@@ -92,8 +83,17 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                                 layoutViewItemNode.EditorAlias
                         );
                     }
+                }
 
-                    itemMapper.Map(layoutViewItemNode, viewItem);
+                foreach (var layoutViewItemNode in VisitNodes<LayoutMemberViewItem>(layout))
+                {
+                    var viewItem = viewItems.OfType<IModelViewItem>().FirstOrDefault(m =>
+                        m.Id == (layoutViewItemNode.IsDuplicate
+                        ? layoutViewItemNode.Id
+                        : layoutViewItemNode.ViewItemId)
+                    );
+
+                    itemMapper.Map((LayoutItemNode)layoutViewItemNode, viewItem);
                 }
             }
         }

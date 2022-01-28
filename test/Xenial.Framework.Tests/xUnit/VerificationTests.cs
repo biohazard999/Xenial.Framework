@@ -32,16 +32,6 @@ public class VerificationTests
         await Verifier.Verify(xml).UseExtension("xml");
     }
 
-    [Fact]
-    public async Task LayoutVerificationHtml()
-    {
-        var detailView = CreateDetailView();
-
-        var (html, _) = detailView.VisualizeModelNode();
-
-        await Verifier.Verify(html).UseExtension("html");
-    }
-
     private static DevExpress.ExpressApp.Model.IModelDetailView? CreateDetailView() => CreateComplexDetailViewWithLayout(l => new()
     {
         l.TabbedGroup() with

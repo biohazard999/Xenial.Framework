@@ -14,71 +14,15 @@ namespace MyProject
     [CompilerGenerated]
     partial class TargetClassBuilder
     {
-        private struct PropertyIdentifier
-        {
-            private string propertyName;
-            public string PropertyName { get { return this.propertyName; } }
-            
-            private PropertyIdentifier(string propertyName)
-            {
-                this.propertyName = propertyName;
-            }
-            
-            public static implicit operator string(PropertyIdentifier identifier)
-            {
-                return identifier.PropertyName;
-            }
-            
-            public static PropertyIdentifier Create(string propertyName)
-            {
-                return new PropertyIdentifier(propertyName);
-            }
-        }
         
         private partial struct Constants
         {
             public const string Parent = "Parent";
         }
         
-        private partial struct Property
-        {
-            public static PropertyIdentifier Parent { get { return PropertyIdentifier.Create("Parent"); } }
-            
-        }
-        
         private partial struct Editor
         {
             public static LayoutPropertyEditorItem Parent { get { return LayoutPropertyEditorItem.Create("Parent"); } }
-            
-        }
-    }
-}
-namespace MyProject
-{
-    partial class TargetClassBuilder
-    {
-        private partial struct Constants
-        {
-            public partial struct _Parent
-            {
-                public const string Parents = "Parent.Parents";
-            }
-        }
-        
-        private partial struct Property
-        {
-            public partial struct _Parent
-            {
-                public static PropertyIdentifier Parents { get { return PropertyIdentifier.Create("Parent.Parents"); } }
-            }
-        }
-        
-        private partial struct Editor
-        {
-            public partial struct _Parent
-            {
-                public static LayoutPropertyEditorItem Parents { get { return LayoutPropertyEditorItem.Create("Parent.Parents"); } }
-            }
         }
     }
 }
