@@ -6,7 +6,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <IsPackable>true</IsPackable>
     <NoWarn>VSTHRD200;CA1014;CA5392;CA1200;CS1658;CS1584;CA1200;IDE0079;$(NoWarn)</NoWarn>
-    <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
+    <PackageTags>Xenial Framework eXpressApp DevExpress XAF</PackageTags>
     <XenialPublicKey Condition="$(XenialPublicKey) == ''"></XenialPublicKey>
     <CheckXenialLicense>false</CheckXenialLicense>
     <_XenialLicGenVersion Condition="$(XenialLicGenVersion) != ''">[$(XenialLicGenVersion)]</_XenialLicGenVersion>
