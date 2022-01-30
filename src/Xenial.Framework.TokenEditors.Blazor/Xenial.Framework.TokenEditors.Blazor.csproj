@@ -4,6 +4,7 @@
     <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
     <DxExtendStartupHost>false</DxExtendStartupHost>
     <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
+    <PackageTags>$(PackageTags) PropertyEditor TokenEditors Blazor</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

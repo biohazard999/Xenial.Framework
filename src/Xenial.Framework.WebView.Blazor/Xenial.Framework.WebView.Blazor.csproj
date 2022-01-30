@@ -5,6 +5,7 @@
     <DxExtendStartupHost>false</DxExtendStartupHost>
     <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
     <NoWarn>NU5118;$(NoWarn)</NoWarn>
+    <PackageTags>$(PackageTags) PropertyEditor WebView Browser Edge Chromium Blazor</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

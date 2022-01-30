@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
+    <PackageTags>$(PackageTags) PropertyEditor LabelEditors Win XtraEditors HyperlinkLabelControl LabelControl</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

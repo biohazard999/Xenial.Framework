@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
+    <PackageTags>$(PackageTags) PropertyEditor WebView Browser Edge Chromium Win WebView2</PackageTags>
   </PropertyGroup>
   
   <ItemGroup>

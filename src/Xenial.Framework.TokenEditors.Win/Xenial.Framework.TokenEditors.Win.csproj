@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
+    <PackageTags>$(PackageTags) PropertyEditor TokenEditors Win XtraEditors TokenEdit</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
