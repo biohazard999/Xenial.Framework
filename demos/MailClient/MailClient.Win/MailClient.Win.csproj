@@ -19,8 +19,8 @@
   <ItemGroup Condition="'$(TargetFramework)' == '$(WindowsFrameworkVersion6)'">
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)' And $(Configuration) == 'Release'">
+  
+  <ItemGroup Condition="'$(PublishReadyToRun)' != '' And $(PublishReadyToRun) And '$(TargetFramework)' == '$(FullFrameworkVersion)' And $(Configuration) == 'Release'">
     <PackageReference Include="Microsoft.DotNet.Framework.NativeImageCompiler" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
