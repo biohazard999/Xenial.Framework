@@ -4,6 +4,7 @@
     <TargetFrameworks>$(XenialBlazorTFMs)</TargetFrameworks>
     <DxExtendStartupHost>false</DxExtendStartupHost>
     <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
+    <PackageTags>$(PackageTags) Blazor</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

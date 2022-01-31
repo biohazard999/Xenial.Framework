@@ -5,6 +5,7 @@
     <DxExtendStartupHost>false</DxExtendStartupHost>
     <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
     <NoWarn>$(NoWarn);NU5118</NoWarn> <!-- Duplicate wwwroot files with netstandard2.1 and net5.0 -->
+    <PackageTags>$(PackageTags) Badges Blazor</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

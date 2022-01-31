@@ -3,6 +3,7 @@
   <PropertyGroup>
     <NoWarn>CA1716;$(NoWarn)</NoWarn>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <PackageTags>$(PackageTags) Agnostic</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

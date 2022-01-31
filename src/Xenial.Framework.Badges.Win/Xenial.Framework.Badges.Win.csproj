@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
+    <PackageTags>$(PackageTags) Badges Win Adorner</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
