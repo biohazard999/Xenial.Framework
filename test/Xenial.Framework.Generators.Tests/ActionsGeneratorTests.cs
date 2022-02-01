@@ -22,16 +22,6 @@ public class ActionsGeneratorTests : BaseGeneratorTests<XenialActionGenerator>
     protected override XenialActionGenerator CreateTargetGenerator() => new(new());
     protected override string GeneratorEmitProperty => XenialActionGenerator.GenerateXenialActionAttributeMSBuildProperty;
 
-    protected override XenialGenerator CreateGenerator()
-    {
-        var gen = base.CreateGenerator();
-        if (gen is XenialGenerator xenialGenerator)
-        {
-            xenialGenerator.Generators.Insert(0, new XenialTypeForwardTypesGenerator(AddSources: false));
-        }
-        return gen;
-    }
-
     protected Task RunSourceTest(string fileName, string source, Action<VerifySettings>? verifySettings = null, XenialActionGeneratorOutputOptions? outputOptions = null)
         => RunTest(
             options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false")),

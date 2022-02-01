@@ -22,8 +22,4 @@
     <ProjectReference Include="..\Xenial.Framework.WebView\Xenial.Framework.WebView.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
-  </ItemGroup>
-
 </Project>

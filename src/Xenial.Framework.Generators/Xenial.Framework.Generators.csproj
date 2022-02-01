@@ -38,11 +38,4 @@
     <!-- Package the Newtonsoft.Json dependency alongside the generator assembly -->
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Xenial.Framework.Generators.Internal" Version="$(_XenialLicGenVersion)">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
 </Project>

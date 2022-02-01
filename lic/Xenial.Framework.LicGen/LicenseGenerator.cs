@@ -80,7 +80,7 @@ namespace Xenial.Framework.LicGen
             syntaxWriter.OpenBrace();
             syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class)]");
             syntaxWriter.WriteLine("[CompilerGenerated]");
-            syntaxWriter.WriteLine("internal class XenialCheckLicenseAttribute : Attribute");
+            syntaxWriter.WriteLine("internal sealed class XenialCheckLicenseAttribute : Attribute");
             syntaxWriter.OpenBrace();
             syntaxWriter.WriteLine("public XenialCheckLicenseAttribute() { }");
 

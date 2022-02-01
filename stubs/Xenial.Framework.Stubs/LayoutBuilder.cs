@@ -3,7 +3,6 @@
 /// <summary>
 /// 
 /// </summary>
-[XenialCheckLicense]
 public partial class LayoutBuilder<TModelClass>
     where TModelClass : class
 {

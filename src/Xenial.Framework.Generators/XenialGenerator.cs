@@ -18,7 +18,6 @@ public class XenialGenerator : ISourceGenerator
     public IList<IXenialSourceGenerator> Generators { get; } = new List<IXenialSourceGenerator>
     {
         new XenialDuckTypesGenerator(),
-        new XenialTypeForwardTypesGenerator(),
         new XenialViewIdsGenerator(),
         new XenialImageNamesGenerator(),
         new XenialXpoBuilderGenerator(),

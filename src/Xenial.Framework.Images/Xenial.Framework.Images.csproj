@@ -13,17 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj"
-                  OutputItemType="Analyzer"
-                  ReferenceOutputAssembly="false"
-                  PrivateAssets="all" />
-  </ItemGroup>
-
-  <!-- We need to import the props and targets directly, because the project reference above does not do that automatically -->
-  <Import Project="..\Xenial.Framework.Generators\build\Xenial.Framework.Generators.props" />
-  <Import Project="..\Xenial.Framework.Generators\build\Xenial.Framework.Generators.targets" />
-
-  <ItemGroup>
     <AdditionalFiles Include="Images\**\*.svg" XenialImageNames="true" />
     <EmbeddedResource Include="Images\**\*.svg" />
   </ItemGroup>

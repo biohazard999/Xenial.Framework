@@ -7,18 +7,20 @@
     <IsRoslynComponent>true</IsRoslynComponent>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
+    <PackageOutputPath>../../artifacts/internal/nuget</PackageOutputPath>
     <DevelopmentDependency>true</DevelopmentDependency>
     <IncludeSource>false</IncludeSource>
-    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSymbols>false</IncludeSymbols>
     <SymbolPackageFormat></SymbolPackageFormat>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-    <PackageOutputPath>../../artifacts/internal/nuget</PackageOutputPath>
 
     <!-- Debug source generators -->
     <!-- http://stevetalkscode.co.uk/debug-source-generators-with-vs2019-1610 -->
     <IsRoslynComponent>true</IsRoslynComponent>
+
+    <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,21 +28,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" PrivateAssets="All" />
+    <Compile Include="..\..\src\Xenial.Framework.Generators\AttributeModifiers.cs" Link="AttributeModifiers.cs" />
+    <Compile Include="..\..\src\Xenial.Framework.Generators\CurlyIndenter.cs" Link="CurlyIndenter.cs" />
+    <Compile Include="..\..\src\Xenial.Framework.Generators\IXenialSourceGenerator.cs" Link="IXenialSourceGenerator.cs" />
+    <Compile Include="..\..\src\Xenial.Framework.Generators\StringExtensions.cs" Link="StringExtensions.cs" />
+    <Compile Include="..\..\src\Xenial.Framework.Generators\_DuckTyping.cs" Link="_DuckTyping.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)"
-                      ReferenceOutputAssembly="true"
-                      PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Package the generator in the analyzer directory of the nuget package -->
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="$(OutputPath)\$(AssemblyName).pdb" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="$(OutputPath)\DevExpress.ExpressApp.$(DxVersionPostFix).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <!-- Package the Newtonsoft.Json dependency alongside the generator assembly -->
   </ItemGroup>
 
