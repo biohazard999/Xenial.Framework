@@ -1,11 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    
+    <GenerateXenialLicense>false</GenerateXenialLicense>
+    <GenerateXenialModuleInitializer>false</GenerateXenialModuleInitializer>
+    <GenerateXenialModuleInitializerPolyfill>false</GenerateXenialModuleInitializerPolyfill>
+    <GenerateXenialImageNamesAttribute>false</GenerateXenialImageNamesAttribute>
+    <GenerateXenialXpoBuilderAttribute>false</GenerateXenialXpoBuilderAttribute>
+    <GenerateXenialActionAttribute>false</GenerateXenialActionAttribute>
+    <GenerateXenialTypeForwardedTypes>false</GenerateXenialTypeForwardedTypes>
+    <GenerateXenialViewIdsAttribute>false</GenerateXenialViewIdsAttribute>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Xenial.Framework.Generators\CurlyIndenter.cs" Link="Helpers\CurlyIndenter.cs" />
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\..\lic\Xenial.Framework.Generators\CurlyIndenter.cs" Link="Helpers\CurlyIndenter.cs" />
   </ItemGroup>
 
   <ItemGroup>
