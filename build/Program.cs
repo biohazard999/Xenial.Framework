@@ -52,9 +52,17 @@ namespace Xenial.Build
                 ? "Xenial.Framework.sln"
                 : "Xenial.Framework.CrossPlatform.sln";
 
+            var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
+            var isTagged = !string.IsNullOrWhiteSpace(tagName);
+
             Console.WriteLine($"Is platform windows? {RuntimeInformation.IsOSPlatform(OSPlatform.Windows)}");
             Console.WriteLine($"Platform: {System.Environment.OSVersion.Platform}");
             Console.WriteLine($"SLN: {sln}");
+            Console.WriteLine($"IsTagged: {isTagged}");
+            if (isTagged)
+            {
+                Console.WriteLine($"TagName: {tagName}");
+            }
 
             var featureCenterBlazorDir = "./demos/FeatureCenter/Xenial.FeatureCenter.Blazor.Server";
             var featureCenterBlazor = Path.Combine(featureCenterBlazorDir, "Xenial.FeatureCenter.Blazor.Server.csproj");
@@ -140,8 +148,6 @@ namespace Xenial.Build
             Target("lic", DependsOn("test"),
                 async () =>
                 {
-                    var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
-                    var isTagged = !string.IsNullOrWhiteSpace(tagName);
                     if (isTagged)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -182,8 +188,22 @@ namespace Xenial.Build
             );
 
             Target("pack:zip", DependsOn("pack:nuget"),
-                () =>
+                async () =>
                 {
+                    if (isTagged)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"This is a tagged commit {tagName}, creating zip packages");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("This is not a tagged commit, skip zip packages");
+                        Console.ResetColor();
+                        return;
+                    }
+
                     var (fullFramework, _, net5, _, netstandardVersion) = FindTfms();
 
                     foreach (var tfm in new[] { fullFramework, net5, netstandardVersion })
@@ -226,15 +246,25 @@ namespace Xenial.Build
             {
                 await RunAsync("dotnet", "--version");
 
-                await RunAsync("dotnet", "zip install");
+                if (isTagged)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"This is a tagged commit {tagName}, installing dotnet zip install");
+                    Console.ResetColor();
+                    await RunAsync("dotnet", "zip install");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("This is not a tagged commit, skip dotnet zip install");
+                    Console.ResetColor();
+                }
+
 
                 foreach (var (tfm, rid) in new[] { ("net462", ""), ("net6.0-windows", "win-x64"), ("net6.0-windows", "win-x86") })
                 {
                     //TODO: remove /p:ErrorOnDuplicatePublishOutputFiles=false
                     //TODO: and investigate https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/duplicate-files-in-output
-
-                    var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
-                    var isTagged = !string.IsNullOrWhiteSpace(tagName);
 
                     var r2r = isTagged ? "/p:PublishReadyToRun=true" : "";
 
@@ -257,7 +287,21 @@ namespace Xenial.Build
 
                     await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj --framework {tfm} {ridP} {r2r} /p:ErrorOnDuplicatePublishOutputFiles=false {logOptions($"publish:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false");
 
-                    await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions($"zip:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:ErrorOnDuplicatePublishOutputFiles=false /p:TargetFramework={tfm} {r2r} {ridP} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.{package}{suffix} /p:PackageDir={artifactsDirectory}");
+
+                    if (isTagged)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"This is a tagged commit {tagName}, zipping up Xenial.FeatureCenter.Win");
+                        Console.ResetColor();
+
+                        await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions($"zip:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:ErrorOnDuplicatePublishOutputFiles=false /p:TargetFramework={tfm} {r2r} {ridP} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.{package}{suffix} /p:PackageDir={artifactsDirectory}");
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("This is not a tagged commit, skip zipping up Xenial.FeatureCenter.Win");
+                        Console.ResetColor();
+                    }
                 }
             });
 
@@ -382,6 +426,9 @@ namespace Xenial.Build
                             );
                 }
             });
+
+            Target("ci", DependsOn("publish:Xenial.FeatureCenter.Win", "publish:framework.featurecenter.xenial.io"));
+            Target("ci:full", DependsOn("ci", "docs"));
 
             Target("local", DependsOn("build:debug"));
 
