@@ -10,22 +10,6 @@ using Xenial.Framework.Generators.Internal;
 
 namespace Xenial.Framework.Generators.XAF;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 [Generator]
 public class XenialGenerator : ISourceGenerator
 {
