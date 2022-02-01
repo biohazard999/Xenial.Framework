@@ -10,6 +10,8 @@ using Microsoft.CodeAnalysis.CSharp;
 
 using VerifyXunit;
 
+using Xenial.Framework.Generators.Attributes;
+
 using Xunit;
 
 namespace Xenial.Framework.Generators.Tests;
