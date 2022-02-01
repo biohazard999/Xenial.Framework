@@ -49,7 +49,7 @@ public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
 
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        var xenialExpandMemberAttribute = compilation.GetTypeByMetadataName(XenialExpandMemberAttributeGenerator.XenialExpandMemberAttributeFullName);
+        var xenialExpandMemberAttribute = compilation.GetTypeByMetadataName(new XenialExpandMemberAttributeGenerator().AttributeFullName);
 
         foreach (var @class in types)
         {

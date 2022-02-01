@@ -19,7 +19,7 @@ public class LayoutBuilderGeneratorTests : BaseGeneratorTests<XenialLayoutBuilde
 {
     protected override XenialLayoutBuilderGenerator CreateTargetGenerator() => new();
 
-    protected override string GeneratorEmitProperty => XenialExpandMemberAttributeGenerator.GenerateXenialXenialExpandMemberAttributeMSBuildProperty;
+    protected override string GeneratorEmitProperty => new XenialExpandMemberAttributeGenerator().GenerateAttributeMSBuildProperty;
 
     protected override IEnumerable<PortableExecutableReference> AdditionalReferences
     {

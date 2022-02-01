@@ -13,12 +13,12 @@ public static class AttributeModifiers
     public const string InternalModifier = "internal";
     public const string PublicModifier = "public";
 
-    private const string xenialAttributesVisibilityMSBuildProperty = "XenialAttributesVisibility";
+    public const string XenialAttributesVisibilityMSBuildProperty = "XenialAttributesVisibility";
 
     public static string GetDefaultAttributeModifier(this GeneratorExecutionContext context)
     {
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue(
-            $"build_property.{xenialAttributesVisibilityMSBuildProperty}",
+            $"build_property.{XenialAttributesVisibilityMSBuildProperty}",
             out var attributeModifier)
         )
         {

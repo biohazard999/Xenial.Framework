@@ -13,25 +13,30 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXenialSourceGenerator
+public abstract record XenialAttributeGenerator(bool AddSources = true) : IXenialSourceGenerator
 {
-    private const string xenialExpandMemberAttributeName = "XenialExpandMemberAttribute";
-    private const string xenialNamespace = "Xenial";
-    internal const string XenialExpandMemberAttributeFullName = $"{xenialNamespace}.{xenialExpandMemberAttributeName}";
-    public const string GenerateXenialXenialExpandMemberAttributeMSBuildProperty = $"Generate{xenialExpandMemberAttributeName}";
+    protected const string XenialNamespace = "Xenial";
 
-    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
+    protected abstract string AttributeName { get; }
+
+    public string AttributeFullName => $"{XenialNamespace}.{AttributeName}";
+
+    public string GenerateAttributeMSBuildProperty => $"Generate{AttributeName}";
+
+    public virtual string AttributeVisibilityMSBuildProperty => AttributeModifiers.XenialAttributesVisibilityMSBuildProperty;
+
+    public virtual bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
 
     public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types, IList<string> addedSourceFiles)
-        => GenerateAttribute(context, compilation, addedSourceFiles);
+        => GenerateAttribute(context, compilation ?? throw new ArgumentNullException(nameof(compilation)), addedSourceFiles ?? throw new ArgumentNullException(nameof(addedSourceFiles)));
 
     private Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation, IList<string> addedSourceFiles)
     {
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialXenialExpandMemberAttributeMSBuildProperty}", out var generateXenialViewIdsAttrStr))
+        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateAttributeMSBuildProperty}", out var generateXenialAttrStr))
         {
-            if (bool.TryParse(generateXenialViewIdsAttrStr, out var generateXenialViewIdsAttr))
+            if (bool.TryParse(generateXenialAttrStr, out var generateXenialAttr))
             {
-                if (!generateXenialViewIdsAttr)
+                if (!generateXenialAttr)
                 {
                     return compilation;
                 }
@@ -41,8 +46,8 @@ public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXe
                 context.ReportDiagnostic(
                     Diagnostic.Create(
                         GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            GenerateXenialXenialExpandMemberAttributeMSBuildProperty,
-                            generateXenialViewIdsAttrStr
+                            GenerateAttributeMSBuildProperty,
+                            generateXenialAttrStr
                         )
                         , null
                     ));
@@ -50,7 +55,7 @@ public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXe
             }
         }
 
-        var (source, syntaxTree) = GenerateXenialLayoutBuilderAttribute(
+        var (source, syntaxTree) = GenerateAttribute(
             (CSharpParseOptions)context.ParseOptions,
             context.GetDefaultAttributeModifier(),
             context.CancellationToken
@@ -58,7 +63,7 @@ public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXe
 
         if (AddSources)
         {
-            var fileName = $"{xenialExpandMemberAttributeName}.g.cs";
+            var fileName = $"{AttributeName}.g.cs";
             addedSourceFiles.Add(fileName);
             context.AddSource(fileName, source);
         }
@@ -66,7 +71,7 @@ public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXe
         return compilation.AddSyntaxTrees(syntaxTree);
     }
 
-    public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialLayoutBuilderAttribute(
+    private (SourceText source, SyntaxTree syntaxTree) GenerateAttribute(
         CSharpParseOptions? parseOptions = null,
         string visibility = "internal",
         CancellationToken cancellationToken = default)
@@ -75,11 +80,30 @@ public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXe
 
         var syntaxWriter = CurlyIndenter.Create();
 
+        syntaxWriter = CreateAttribute(syntaxWriter, visibility);
+
+        var syntax = syntaxWriter.ToString();
+        var source = SourceText.From(syntax, Encoding.UTF8);
+        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
+        return (source, syntaxTree);
+    }
+
+    protected abstract CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility);
+}
+
+public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : XenialAttributeGenerator(AddSources)
+{
+    protected override string AttributeName => "XenialExpandMemberAttribute";
+
+    protected override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
+    {
+        _ = syntaxWriter ?? throw new ArgumentNullException(nameof(syntaxWriter));
+
         syntaxWriter.WriteLine($"using System;");
         syntaxWriter.WriteLine($"using System.ComponentModel;");
         syntaxWriter.WriteLine();
 
-        using (syntaxWriter.OpenBrace($"namespace {xenialNamespace}"))
+        using (syntaxWriter.OpenBrace($"namespace {XenialNamespace}"))
         {
             syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]");
 
@@ -94,9 +118,6 @@ public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : IXe
             }
         }
 
-        var syntax = syntaxWriter.ToString();
-        var source = SourceText.From(syntax, Encoding.UTF8);
-        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
-        return (source, syntaxTree);
+        return syntaxWriter;
     }
 }
