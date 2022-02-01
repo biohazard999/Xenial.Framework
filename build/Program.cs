@@ -82,17 +82,17 @@ namespace Xenial.Build
                 () => RunAsync("dotnet", $"rimraf . -i **/bin/**/*.* -i **/obj/**/*.* -i artifacts/**/*.* -e node_modules/**/*.* -e build/**/*.* -e artifacts/**/.gitkeep -q")
             );
 
-            Target("pack.lic", DependsOn("ensure-tools"),
-                () => RunAsync("dotnet", $"pack ./lic/Xenial.Framework.Licensing.sln  -c {Configuration} {logOptions("pack.lic")} {GetProperties()}")
+            Target("pack:lic", DependsOn("ensure-tools"),
+                () => RunAsync("dotnet", $"pack ./lic/Xenial.Framework.Licensing.sln  -c {Configuration} {logOptions("pack:lic")} {GetProperties()}")
             );
 
-            Target("lint", DependsOn("pack.lic", "ensure-tools"),
+            Target("lint", DependsOn("pack:lic", "ensure-tools"),
                 //TODO: Linting is currently failing
                 () => RunAsync("dotnet", "--version")
                 //() => RunAsync("dotnet", $"format {sln} --exclude ext --check --verbosity diagnostic")
             );
 
-            Target("restore", DependsOn("pack.lic", "lint"),
+            Target("restore", DependsOn("pack:lic", "lint"),
                 () => RunAsync("dotnet", $"restore {sln} {logOptions("restore")} {GetProperties()}")
             );
 
