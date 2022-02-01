@@ -15,7 +15,7 @@ namespace MyActions
         public GeneratesSimpleActionWhenDefinedController()
         {
             this.TargetViewType = DevExpress.ExpressApp.ViewType.DetailView;
-            this.GeneratesSimpleActionWhenDefinedSimpleAction = new DevExpress.ExpressApp.Actions.SimpleAction(this, "MyActions.GeneratesSimpleActionWhenDefinedSimpleAction", (DevExpress.Persistent.Base.PredefinedCategory)Xenial.Persistent.Base.XenialPredefinedCategory.View);
+            this.GeneratesSimpleActionWhenDefinedSimpleAction = new DevExpress.ExpressApp.Actions.SimpleAction(this, "MyActions.GeneratesSimpleActionWhenDefinedSimpleAction", );
             this.GeneratesSimpleActionWhenDefinedSimpleAction.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;
         }
         
