@@ -52,9 +52,17 @@ namespace Xenial.Build
                 ? "Xenial.Framework.sln"
                 : "Xenial.Framework.CrossPlatform.sln";
 
+            var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
+            var isTagged = !string.IsNullOrWhiteSpace(tagName);
+
             Console.WriteLine($"Is platform windows? {RuntimeInformation.IsOSPlatform(OSPlatform.Windows)}");
             Console.WriteLine($"Platform: {System.Environment.OSVersion.Platform}");
             Console.WriteLine($"SLN: {sln}");
+            Console.WriteLine($"IsTagged: {isTagged}");
+            if (isTagged)
+            {
+                Console.WriteLine($"TagName: {tagName}");
+            }
 
             var featureCenterBlazorDir = "./demos/FeatureCenter/Xenial.FeatureCenter.Blazor.Server";
             var featureCenterBlazor = Path.Combine(featureCenterBlazorDir, "Xenial.FeatureCenter.Blazor.Server.csproj");
@@ -140,8 +148,6 @@ namespace Xenial.Build
             Target("lic", DependsOn("test"),
                 async () =>
                 {
-                    var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
-                    var isTagged = !string.IsNullOrWhiteSpace(tagName);
                     if (isTagged)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -184,8 +190,6 @@ namespace Xenial.Build
             Target("pack:zip", DependsOn("pack:nuget"),
                 async () =>
                 {
-                    var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
-                    var isTagged = !string.IsNullOrWhiteSpace(tagName);
                     if (isTagged)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -241,10 +245,6 @@ namespace Xenial.Build
             Target("publish:Xenial.FeatureCenter.Win", DependsOn("pack"), async () =>
             {
                 await RunAsync("dotnet", "--version");
-
-
-                var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
-                var isTagged = !string.IsNullOrWhiteSpace(tagName);
 
                 if (isTagged)
                 {
