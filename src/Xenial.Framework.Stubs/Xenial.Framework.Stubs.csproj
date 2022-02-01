@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\Xenial.Framework\Base\DeclareViewAttribute.cs" Link="DeclareViewAttribute.cs" />
+    <Compile Include="..\Xenial.Framework\Base\GenerateNoViewAttribute.cs" Link="GenerateNoViewAttribute.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+</Project>
