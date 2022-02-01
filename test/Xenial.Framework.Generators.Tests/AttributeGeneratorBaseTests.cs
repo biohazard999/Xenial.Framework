@@ -25,7 +25,7 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
     protected const string CompilationName = "AssemblyName";
 
 #if FULL_FRAMEWORK || NETCOREAPP3_1
-    static BaseGeneratorTests() => RegisterModuleInitializers.RegisterVerifiers();
+    static AttributeGeneratorBaseTests() => RegisterModuleInitializers.RegisterVerifiers();
 #endif
     protected abstract TGenerator CreateTargetGenerator();
 
@@ -87,10 +87,6 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
         await Verifier.Verify(driver, settings);
     }
 
-    [Fact]
-    public Task EmitsGenerateAttributeByDefault()
-        => RunTest();
-
     protected string BuildProperty(string property)
         => $"build_property.{property}";
 
@@ -98,22 +94,24 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
     public Task EmitAttribute()
         => RunTest(withSources: true);
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public Task DoesEmitIfGenerateXenialAttributesMsBuildProperty(bool emitProperty)
-        => RunTest(
-            (options, gen) => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(gen.GenerateAttributeMSBuildProperty), emitProperty.ToString())),
-            settings => settings.UseParameters(emitProperty),
-            withSources: true
-        );
+    //[Theory]
+    //TODO: Make it possible to opt out of all Attributes with one MSBuildProperty
+    //[InlineData(true)]
+    //[InlineData(false)]
+    //public Task DoesEmitIfGenerateXenialAttributesMsBuildProperty(bool emitProperty)
+    //    => RunTest(
+    //        (options, gen) => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(gen.GenerateAttributeMSBuildProperty), emitProperty.ToString())),
+    //        settings => settings.UseParameters(emitProperty),
+    //        withSources: true
+    //    );
 
-    [Fact]
-    public Task DoesCreateDiagnosticIfGenerateXenialAttributesMsBuildPropertyIsNotABool()
-        => RunTest(
-            (options, gen) => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(gen.GenerateAttributeMSBuildProperty), "ABC")),
-            withSources: true
-        );
+    //[Fact]
+    //TODO: Make it possible to opt out of all Attributes with one MSBuildProperty
+    //public Task DoesCreateDiagnosticIfGenerateXenialAttributesMsBuildPropertyIsNotABool()
+    //    => RunTest(
+    //        (options, gen) => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(gen.GenerateAttributeMSBuildProperty), "ABC")),
+    //        withSources: true
+    //    );
 
     [Theory]
     [InlineData(true)]
@@ -137,10 +135,4 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
             (options, gen) => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(gen.AttributeVisibilityMSBuildProperty), "public")),
             withSources: true
         );
-}
-
-public class XenialExpandMemberTests : AttributeGeneratorBaseTests<XenialExpandMemberAttributeGenerator>
-{
-    protected override XenialExpandMemberAttributeGenerator CreateTargetGenerator()
-        => new XenialExpandMemberAttributeGenerator(false);
 }

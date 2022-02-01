@@ -101,11 +101,13 @@ public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : Xen
 
         syntaxWriter.WriteLine($"using System;");
         syntaxWriter.WriteLine($"using System.ComponentModel;");
+        syntaxWriter.WriteLine($"using System.Runtime.CompilerServices;");
         syntaxWriter.WriteLine();
 
         using (syntaxWriter.OpenBrace($"namespace {XenialNamespace}"))
         {
             syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]");
+            syntaxWriter.WriteLine("[CompilerGenerated]");
 
             using (syntaxWriter.OpenBrace($"{visibility} sealed class XenialExpandMemberAttribute : Attribute"))
             {
