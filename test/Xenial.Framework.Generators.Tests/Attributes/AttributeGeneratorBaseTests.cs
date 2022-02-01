@@ -18,7 +18,7 @@ using Xunit;
 
 using static Xenial.Framework.Generators.Tests.TestReferenceAssemblies;
 
-namespace Xenial.Framework.Generators.Tests;
+namespace Xenial.Framework.Generators.Tests.Attributes;
 
 [UsesVerify]
 public abstract class AttributeGeneratorBaseTests<TGenerator>

@@ -25,4 +25,31 @@
     <AdditionalFiles Include="Images/*.png" XenialImageNames="True" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Attributes\XenialExpandMemberAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet3_1.verified.txt">
+      <DependentUpon>XenialExpandMemberAttributeTests.cs</DependentUpon>
+    </None>
+    <None Update="Attributes\XenialExpandMemberAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet4_6.verified.txt">
+      <DependentUpon>XenialExpandMemberAttributeTests.cs</DependentUpon>
+    </None>
+    <None Update="Attributes\XenialExpandMemberAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet5_0.verified.txt">
+      <DependentUpon>XenialExpandMemberAttributeTests.cs</DependentUpon>
+    </None>
+    <None Update="Attributes\XenialExpandMemberAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet6_0.verified.txt">
+      <DependentUpon>XenialExpandMemberAttributeTests.cs</DependentUpon>
+    </None>
+    <None Update="Attributes\XenialImagesNamesAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet3_1.verified.txt">
+      <DependentUpon>XenialImagesNamesAttributeTests.cs</DependentUpon>
+    </None>
+    <None Update="Attributes\XenialImagesNamesAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet4_6.verified.txt">
+      <DependentUpon>XenialImagesNamesAttributeTests.cs</DependentUpon>
+    </None>
+    <None Update="Attributes\XenialImagesNamesAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet5_0.verified.txt">
+      <DependentUpon>XenialImagesNamesAttributeTests.cs</DependentUpon>
+    </None>
+    <None Update="Attributes\XenialImagesNamesAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet6_0.verified.txt">
+      <DependentUpon>XenialImagesNamesAttributeTests.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+
 </Project>
