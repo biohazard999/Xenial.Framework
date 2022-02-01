@@ -16,8 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Xenial.Framework.CompilerServices\Xenial.Framework.CompilerServices.csproj" />
-    <ProjectReference Include="..\..\src\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" />
+    <ProjectReference Include="..\..\lic\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" />
     <ProjectReference Include="..\..\stubs\Xenial.Framework.Stubs\Xenial.Framework.Stubs.csproj" />
   </ItemGroup>
 
