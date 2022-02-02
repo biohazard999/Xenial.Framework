@@ -20,8 +20,4 @@
     <ProjectReference Include="..\..\stubs\Xenial.Framework.Stubs\Xenial.Framework.Stubs.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="Verify.Xunit" Version="15.2.1" />
-  </ItemGroup>
-
 </Project>
