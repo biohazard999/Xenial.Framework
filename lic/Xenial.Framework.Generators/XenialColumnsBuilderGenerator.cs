@@ -15,7 +15,7 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-public class XenialColumnsBuilderGenerator : IXenialSourceGenerator
+public record XenialColumnsBuilderGenerator(bool AddSource = true) : IXenialSourceGenerator
 {
     private const string columnsBuilderBaseType = "Xenial.Framework.Layouts.ColumnsBuilder<TModelClass>";
 

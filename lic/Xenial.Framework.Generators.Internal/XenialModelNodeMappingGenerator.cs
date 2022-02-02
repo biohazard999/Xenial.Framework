@@ -19,7 +19,7 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators.XAF;
 
-internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenialSourceGenerator
+internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenialSourceGenerator
 {
     public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
 
@@ -130,7 +130,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
                     ? $"{@classSymbol.Name}.{interfaceTypeSymbol}.{string.Join(".", classSymbol.TypeArguments)}"
                     : $"{@classSymbol.Name}.{interfaceTypeSymbol}";
 
-                compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSources);
+                compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSource);
             }
         }
 
@@ -218,7 +218,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
                         ? $"{@classSymbol.Name}.{fromTypeSymbol}.{targetInterface}.{string.Join(".", classSymbol.TypeArguments)}"
                         : $"{@classSymbol.Name}.{fromTypeSymbol}.{targetInterface}";
 
-                    compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSources);
+                    compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSource);
                 }
             }
         }
@@ -276,7 +276,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
 
             var hintName = $"{@classSymbol.Name}.BaseMapper";
 
-            compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSources);
+            compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSource);
             mappedTypes[(@class, classSymbol)] = mapped;
         }
 
@@ -330,7 +330,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
 
             var hintName = $"{@classSymbol.Name}.RootMapper";
 
-            compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSources);
+            compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles, hintName, emitFile: AddSource);
         }
 
         return compilation;
@@ -536,7 +536,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
             cancellationToken: context.CancellationToken
         );
 
-        if (AddSources)
+        if (AddSource)
         {
             var fileName = $"XenialModelOptionsAttribute.g.cs";
             addedSourceFiles.Add(fileName);
@@ -592,7 +592,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
             cancellationToken: context.CancellationToken
         );
 
-        if (AddSources)
+        if (AddSource)
         {
             var fileName = $"XenialModelOptionsMapperAttribute.g.cs";
             addedSourceFiles.Add(fileName);
@@ -647,7 +647,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSources = true) : IXenia
             cancellationToken: context.CancellationToken
         );
 
-        if (AddSources)
+        if (AddSource)
         {
             var fileName = $"XenialModelOptionsToorMapperAttribute.g.cs";
             addedSourceFiles.Add(fileName);

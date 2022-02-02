@@ -8,6 +8,7 @@ namespace Xenial.Framework.Generators.Internal;
 
 public interface IXenialSourceGenerator
 {
+    bool AddSource { get; }
     Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,

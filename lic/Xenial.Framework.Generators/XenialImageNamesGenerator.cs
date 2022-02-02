@@ -15,7 +15,7 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-public class XenialImageNamesGenerator : IXenialSourceGenerator
+public record XenialImageNamesGenerator(bool AddSource = true) : IXenialSourceGenerator
 {
     private const string xenialImageNamesAttributeName = "XenialImageNamesAttribute";
     private const string xenialNamespace = "Xenial";

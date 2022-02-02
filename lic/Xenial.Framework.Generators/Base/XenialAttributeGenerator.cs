@@ -12,8 +12,7 @@ using Xenial.Framework.Generators.Internal;
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators.Base;
-
-public abstract record XenialAttributeGenerator(bool AddSources = true) : IXenialSourceGenerator
+public abstract record XenialAttributeGenerator(bool AddSource = true) : IXenialSourceGenerator
 {
     protected const string XenialNamespace = "Xenial";
 
@@ -70,7 +69,7 @@ public abstract record XenialAttributeGenerator(bool AddSources = true) : IXenia
             context.CancellationToken
         );
 
-        if (AddSources)
+        if (AddSource)
         {
             var fileName = $"{AttributeName}.g.cs";
             addedSourceFiles.Add(fileName);

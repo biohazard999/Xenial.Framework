@@ -22,7 +22,7 @@ public record XenialActionGeneratorOutputOptions(
     bool Controller = true
 );
 
-public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOptions) : IXenialSourceGenerator
+public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOptions, bool AddSource = true) : IXenialSourceGenerator
 {
     private const string xenialActionAttributeName = "XenialActionAttribute";
     private const string xenialNamespace = "Xenial";

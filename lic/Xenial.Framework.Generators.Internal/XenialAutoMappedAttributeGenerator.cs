@@ -19,7 +19,7 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators.XAF;
 
-internal record XenialAutoMappedAttributeGenerator(bool AddSources = true) : IXenialSourceGenerator
+internal record XenialAutoMappedAttributeGenerator(bool AddSource = true) : IXenialSourceGenerator
 {
     internal static (Compilation, INamedTypeSymbol) FindXenialAutoMappedAttribute(Compilation compilation)
     {
@@ -98,7 +98,7 @@ internal record XenialAutoMappedAttributeGenerator(bool AddSources = true) : IXe
             cancellationToken: context.CancellationToken
         );
 
-        if (AddSources)
+        if (AddSource)
         {
             var fileName = $"XenialAutoMappedAttribute.g.cs";
             addedSourceFiles.Add(fileName);

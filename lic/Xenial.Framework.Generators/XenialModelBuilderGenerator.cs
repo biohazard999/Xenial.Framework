@@ -15,7 +15,7 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-public class XenialModelBuilderGenerator : IXenialSourceGenerator
+public record XenialModelBuilderGenerator(bool AddSource = true) : IXenialSourceGenerator
 {
     private const string xenialLayoutBuilderAttributeName = "XenialModelBuilderAttribute";
     private const string xenialNamespace = "Xenial";

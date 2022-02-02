@@ -14,7 +14,7 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-public class XenialLayoutBuilderGenerator : IXenialSourceGenerator
+public record XenialLayoutBuilderGenerator(bool AddSource = true) : IXenialSourceGenerator
 {
     private const string layoutBuilderBaseType = "Xenial.Framework.Layouts.LayoutBuilder<TModelClass>";
     private const string layoutBuilderAttributeType = "Xenial.Framework.Layouts.DetailViewLayoutBuilderAttribute";

@@ -171,10 +171,10 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
     protected abstract TGenerator CreateTargetGenerator();
 
     protected TGenerator CreateGeneratorWithoutAddSources()
-        => CreateTargetGenerator() with { AddSources = false };
+        => CreateTargetGenerator() with { AddSource = false };
 
     protected TGenerator CreateGeneratorWithAddSources()
-        => CreateTargetGenerator() with { AddSources = true };
+        => CreateTargetGenerator() with { AddSource = true };
 
     internal async Task RunTest(Func<AttributeGeneratorTestOptions<TGenerator>, AttributeGeneratorTestOptions<TGenerator>>? configureOptions = null)
     {

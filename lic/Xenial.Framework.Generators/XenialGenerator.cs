@@ -11,19 +11,19 @@ using Xenial.Framework.Generators.Internal;
 namespace Xenial.Framework.Generators;
 
 [Generator]
-public class XenialGenerator : ISourceGenerator
+public record XenialGenerator(bool AddSources = true) : ISourceGenerator
 {
     private const string xenialDebugSourceGenerators = "XenialDebugSourceGenerators";
 
     public IList<IXenialSourceGenerator> Generators { get; } = new List<IXenialSourceGenerator>
     {
-        new XenialDuckTypesGenerator(),
+        new XenialDuckTypesGenerator(AddSources),
         new XenialViewIdsGenerator(),
         new XenialImageNamesGenerator(),
         new XenialXpoBuilderGenerator(),
         new XenialActionGenerator(new()),
         new XenialModelBuilderGenerator(),
-        new XenialExpandMemberAttributeGenerator(),
+        new XenialExpandMemberAttributeGenerator(AddSources),
         new XenialLayoutBuilderGenerator(),
         new XenialColumnsBuilderGenerator(),
     };
@@ -42,7 +42,9 @@ public class XenialGenerator : ISourceGenerator
                 if (
                     typeDeclarationSyntax.AttributeLists.Count > 0
                     || typeDeclarationSyntax.HasModifier(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword)
-                    || new XenialGenerator().Generators.Any(generator => generator.Accepts(typeDeclarationSyntax))
+                    || new XenialGenerator(false)
+                            .Generators
+                            .Any(generator => generator.Accepts(typeDeclarationSyntax))
                 )
                 {
                     var classSymbol = context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax);

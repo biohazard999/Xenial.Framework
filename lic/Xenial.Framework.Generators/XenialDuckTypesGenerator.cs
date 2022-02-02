@@ -13,7 +13,7 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-public record XenialDuckTypesGenerator(bool AddSources = true) : IXenialSourceGenerator
+public record XenialDuckTypesGenerator(bool AddSource = true) : IXenialSourceGenerator
 {
     private const string xenialDuckTypes = "XenialDuckTypes";
     public const string GenerateXenialDuckTypesMSBuildProperty = $"Generate{xenialDuckTypes}";
@@ -72,7 +72,7 @@ public record XenialDuckTypesGenerator(bool AddSources = true) : IXenialSourceGe
                 context.CancellationToken
             );
 
-            if (AddSources)
+            if (AddSource)
             {
                 var hintName = $"{name}.g.cs";
                 if (!addedSourceFiles.Contains(hintName))
