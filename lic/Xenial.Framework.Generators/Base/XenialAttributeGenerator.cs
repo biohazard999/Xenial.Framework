@@ -17,9 +17,11 @@ public abstract record XenialAttributeGenerator(bool AddSources = true) : IXenia
 {
     protected const string XenialNamespace = "Xenial";
 
-    protected abstract string AttributeName { get; }
+    public abstract string AttributeName { get; }
 
-    public string AttributeFullName => $"{XenialNamespace}.{AttributeName}";
+    public virtual string AttributeNamespace => XenialNamespace;
+
+    public string AttributeFullName => $"{AttributeNamespace}.{AttributeName}";
 
     public string GenerateAttributeMSBuildProperty => $"Generate{AttributeName}";
 
@@ -32,6 +34,13 @@ public abstract record XenialAttributeGenerator(bool AddSources = true) : IXenia
 
     private Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation, IList<string> addedSourceFiles)
     {
+        // Attribute is already declared in user code, skip generation
+        var namedTypeSymbol = compilation.GetTypeByMetadataName(AttributeFullName);
+        if (namedTypeSymbol is not null)
+        {
+            return compilation;
+        }
+
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateAttributeMSBuildProperty}", out var generateXenialAttrStr))
         {
             if (bool.TryParse(generateXenialAttrStr, out var generateXenialAttr))

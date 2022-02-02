@@ -7,7 +7,7 @@ namespace Xenial.Framework.Generators.Attributes;
 
 public record XenialImageNamesAttributeGenerator(bool AddSources = true) : XenialAttributeGenerator(AddSources)
 {
-    protected override string AttributeName => "XenialImageNamesAttribute";
+    public override string AttributeName => "XenialImageNamesAttribute";
 
     protected override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
     {

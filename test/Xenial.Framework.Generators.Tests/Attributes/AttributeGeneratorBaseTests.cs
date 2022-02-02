@@ -46,9 +46,12 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
 
     protected virtual IEnumerable<PortableExecutableReference> AdditionalReferences => Enumerable.Empty<PortableExecutableReference>();
 
-    protected static CSharpCompilation CreateCompilation()
+    protected static CSharpCompilation CreateCompilation(
+        Func<SyntaxTree[]>? syntaxTrees = null
+    )
         => CSharpCompilation.Create(CompilationName,
                 references: DefaultReferenceAssemblies,
+                syntaxTrees: syntaxTrees?.Invoke(),
                 //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
             );
@@ -56,14 +59,19 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
     protected async Task RunTest(
         Func<MockAnalyzerConfigOptionsProvider, TGenerator, MockAnalyzerConfigOptionsProvider>? analyzerOptions = null,
         Action<VerifySettings>? verifySettings = null,
-        bool withSources = false
+        Func<SyntaxTree[]>? syntaxTrees = null,
+        bool withSources = false,
+        bool compile = true
     )
     {
-        var compilation = CreateCompilation();
+        var compilation = CreateCompilation(syntaxTrees);
+
 
         var generator = CreateGenerator();
 
         var targetGenerator = withSources ? CreateGeneratorWithAddSources() : CreateGeneratorWithoutAddSources();
+
+        var type = compilation.GetTypeByMetadataName(targetGenerator.AttributeFullName);
 
         generator.Generators.Add(
             targetGenerator
@@ -81,7 +89,17 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
             optionsProvider: mockOptions
         );
 
-        driver = driver.RunGenerators(compilation);
+        if (compile)
+        {
+            (driver, var diagnositcs, var compilationException, var loadedType)
+                = driver.CompileAndLoadType(compilation, targetGenerator.AttributeFullName);
+
+            VerifyDiagnostics(diagnositcs, compilationException);
+        }
+        else
+        {
+            driver = driver.RunGenerators(compilation);
+        }
 
         var settings = new VerifySettings();
         settings.UniqueForTargetFrameworkAndVersion();
@@ -95,6 +113,17 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
     [Fact]
     public Task EmitAttribute()
         => RunTest(withSources: true);
+
+    private static void VerifyDiagnostics(ImmutableArray<Diagnostic> diagnostics, Exception? ex)
+    {
+        if (diagnostics.Length > 0 && ex is not null)
+        {
+            throw new AggregateException(new ArgumentException(string.Join(
+                Environment.NewLine,
+                diagnostics.Select(diag => new DiagnosticFormatter().Format(diag))
+            )), ex);
+        }
+    }
 
     //[Theory]
     //TODO: Make it possible to opt out of all Attributes with one MSBuildProperty
@@ -137,4 +166,34 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
             (options, gen) => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(gen.AttributeVisibilityMSBuildProperty), "public")),
             withSources: true
         );
+
+    [Fact]
+    public Task DoesNotEmitIfAttributeExist()
+        => RunTest(
+            syntaxTrees: () =>
+            {
+                var generator = CreateTargetGenerator();
+
+                return new[]
+                {
+                    BuildSyntaxTree(generator.AttributeName, @$"namespace {generator.AttributeNamespace}
+{{
+    public sealed class {generator.AttributeName} : System.Attribute {{ }}
+}}")
+                };
+            },
+            withSources: true
+        );
+
+    protected SyntaxTree BuildSyntaxTree(string fileName, string sourceText)
+    {
+        var syntaxTree =
+            CSharpSyntaxTree.ParseText(
+                sourceText,
+                new CSharpParseOptions(LanguageVersion.Default),
+                path: fileName
+            );
+
+        return syntaxTree;
+    }
 }

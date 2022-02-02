@@ -7,7 +7,7 @@ namespace Xenial.Framework.Generators.Attributes;
 
 public record XenialViewIdsAttributeGenerator(bool AddSources = true) : XenialAttributeGenerator(AddSources)
 {
-    protected override string AttributeName => "XenialViewIdsAttribute";
+    public override string AttributeName => "XenialViewIdsAttribute";
 
     protected override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
     {
