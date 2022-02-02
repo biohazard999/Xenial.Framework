@@ -7,9 +7,11 @@
       WarningLevel: 0,
       Location: MyNonPartialClass.cs: (3,4)-(4,37),
       Description: The class using the [Xenial.XenialImageNamesAttribute] needs to be partial,
+      HelpLink: ,
       MessageFormat: The class using the [Xenial.XenialImageNamesAttribute] needs to be partial,
       Message: The class using the [Xenial.XenialImageNamesAttribute] needs to be partial,
-      Category: Usage
+      Category: Usage,
+      CustomTags: []
     }
   ]
 }

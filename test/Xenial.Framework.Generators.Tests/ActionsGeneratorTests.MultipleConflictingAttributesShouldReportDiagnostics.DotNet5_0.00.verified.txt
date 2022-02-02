@@ -11,13 +11,15 @@ When using the [XenialActionAttribute] you must make sure it's only used once pe
       Description:
 When using the [XenialActionAttribute] you must make sure it's only used once per Action, check for multiple partial implementations of [Xenial.XenialAction(Category = "MyCat")]
     public partial class GeneratesSimpleActionWhenDefined { },
+      HelpLink: ,
       MessageFormat:
 When using the [XenialActionAttribute] you must make sure it's only used once per Action, check for multiple partial implementations of [Xenial.XenialAction(Category = "MyCat")]
     public partial class GeneratesSimpleActionWhenDefined { },
       Message:
 When using the [XenialActionAttribute] you must make sure it's only used once per Action, check for multiple partial implementations of [Xenial.XenialAction(Category = "MyCat")]
     public partial class GeneratesSimpleActionWhenDefined { },
-      Category: Usage
+      Category: Usage,
+      CustomTags: []
     },
     {
       Id: XENGEN0201,
@@ -30,13 +32,15 @@ When using the [XenialActionAttribute] you must make sure it's only used once pe
       Description:
 When using the [XenialActionAttribute] you must make sure it's only used once per Action, check for multiple partial implementations of [Xenial.XenialAction(Category = "MyCat")]
     public partial class GeneratesSimpleActionWhenDefined { },
+      HelpLink: ,
       MessageFormat:
 When using the [XenialActionAttribute] you must make sure it's only used once per Action, check for multiple partial implementations of [Xenial.XenialAction(Category = "MyCat")]
     public partial class GeneratesSimpleActionWhenDefined { },
       Message:
 When using the [XenialActionAttribute] you must make sure it's only used once per Action, check for multiple partial implementations of [Xenial.XenialAction(Category = "MyCat")]
     public partial class GeneratesSimpleActionWhenDefined { },
-      Category: Usage
+      Category: Usage,
+      CustomTags: []
     }
   ]
 }

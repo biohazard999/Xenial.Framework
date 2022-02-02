@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" PrivateAssets="All" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="All" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
     <PackageReference Include="Standard.Licensing" Version="1.1.5" PrivateAssets="All" />
@@ -36,8 +36,7 @@
     <None Include="$(OutputPath)\Standard.Licensing.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
-  <Target Name="AddGitMetadaAssemblyAttributes"
-          BeforeTargets="CoreGenerateAssemblyInfo">
+  <Target Name="AddGitMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
     <ItemGroup>
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
         <_Parameter1>XenialPackageVersion</_Parameter1>
