@@ -12,7 +12,7 @@ using Xenial.Framework.Generators.Internal;
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators.Base;
-public abstract record XenialAttributeGenerator(bool AddSource = true) : IXenialSourceGenerator
+public abstract record XenialAttributeGenerator(bool AddSource = true) : XenialBaseGenerator(AddSource)
 {
     protected const string XenialNamespace = "Xenial";
 
@@ -26,9 +26,9 @@ public abstract record XenialAttributeGenerator(bool AddSource = true) : IXenial
 
     public virtual string AttributeVisibilityMSBuildProperty => AttributeModifiers.XenialAttributesVisibilityMSBuildProperty;
 
-    public virtual bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
+    public override bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
 
-    public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types, IList<string> addedSourceFiles)
+    public override Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types, IList<string> addedSourceFiles)
         => GenerateAttribute(context, compilation ?? throw new ArgumentNullException(nameof(compilation)), addedSourceFiles ?? throw new ArgumentNullException(nameof(addedSourceFiles)));
 
     private Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation, IList<string> addedSourceFiles)
@@ -63,37 +63,9 @@ public abstract record XenialAttributeGenerator(bool AddSource = true) : IXenial
             }
         }
 
-        var (source, syntaxTree) = GenerateAttribute(
-            (CSharpParseOptions)context.ParseOptions,
-            context.GetDefaultAttributeModifier(),
-            context.CancellationToken
-        );
+        var source = CreateAttribute(CurlyIndenter.Create(), context.GetDefaultAttributeModifier());
 
-        if (AddSource)
-        {
-            var fileName = $"{AttributeName}.g.cs";
-            addedSourceFiles.Add(fileName);
-            context.AddSource(fileName, source);
-        }
-
-        return compilation.AddSyntaxTrees(syntaxTree);
-    }
-
-    private (SourceText source, SyntaxTree syntaxTree) GenerateAttribute(
-        CSharpParseOptions? parseOptions = null,
-        string visibility = "internal",
-        CancellationToken cancellationToken = default)
-    {
-        parseOptions ??= CSharpParseOptions.Default;
-
-        var syntaxWriter = CurlyIndenter.Create();
-
-        syntaxWriter = CreateAttribute(syntaxWriter, visibility);
-
-        var syntax = syntaxWriter.ToString();
-        var source = SourceText.From(syntax, Encoding.UTF8);
-        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
-        return (source, syntaxTree);
+        return AddCode(context, compilation, addedSourceFiles, AttributeName, source.ToString());
     }
 
     protected abstract CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility);
