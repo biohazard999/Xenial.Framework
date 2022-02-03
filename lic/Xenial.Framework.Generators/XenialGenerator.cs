@@ -17,13 +17,20 @@ public record XenialGenerator(bool AddSources = true) : ISourceGenerator
 
     public IList<IXenialSourceGenerator> Generators { get; } = new List<IXenialSourceGenerator>
     {
-        new XenialDuckTypesGenerator(AddSources),
+        //Attributes
+        new SystemIsExternalInitAttributeGenerator(AddSources),
+        new XenialActionAttributeGenerator(AddSources),
+        new XenialExpandMemberAttributeGenerator(AddSources),
+        new XenialImageNamesAttributeGenerator(AddSources),
+        new XenialViewIdsAttributeGenerator(AddSources),
+        new XenialXpoBuilderAttributeGenerator(AddSources),
+
+        //Generators
         new XenialViewIdsGenerator(),
         new XenialImageNamesGenerator(),
         new XenialXpoBuilderGenerator(),
         new XenialActionGenerator(new()),
         new XenialModelBuilderGenerator(),
-        new XenialExpandMemberAttributeGenerator(AddSources),
         new XenialLayoutBuilderGenerator(),
         new XenialColumnsBuilderGenerator(),
     };

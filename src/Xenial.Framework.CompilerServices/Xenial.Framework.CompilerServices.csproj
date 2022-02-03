@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
     <None Remove="build\Xenial.Framework.CompilerServices.props" />
     <None Remove="build\Xenial.Framework.CompilerServices.targets" />
   </ItemGroup>
