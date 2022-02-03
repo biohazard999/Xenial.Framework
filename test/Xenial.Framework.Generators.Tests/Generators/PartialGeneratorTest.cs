@@ -1,0 +1,107 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+
+using Xenial.Framework.Generators.Base;
+using Xenial.Framework.Generators.Tests.Base;
+
+namespace Xenial.Framework.Generators.Tests.Generators;
+
+
+public record PartialGeneratorTestOptions<TTargetGenerator> : GeneratorTestOptionsBase<TTargetGenerator>
+    where TTargetGenerator : XenialPartialGenerator
+{
+    public PartialGeneratorTestOptions(Func<TTargetGenerator> createTargetGenerator) : base(createTargetGenerator)
+    {
+    }
+}
+
+
+public abstract class PartialGeneratorTest<TGenerator>
+    where TGenerator : XenialPartialGenerator
+{
+
+#if FULL_FRAMEWORK || NETCOREAPP3_1
+    static PartialGeneratorTest() => RegisterModuleInitializers.RegisterVerifiers();
+#endif
+    protected abstract TGenerator CreateTargetGenerator();
+
+    protected TGenerator CreateGeneratorWithoutAddSources()
+        => CreateTargetGenerator() with { AddSource = false };
+
+    protected TGenerator CreateGeneratorWithAddSources()
+        => CreateTargetGenerator() with { AddSource = true };
+
+    internal async Task RunTest(Func<PartialGeneratorTestOptions<TGenerator>, PartialGeneratorTestOptions<TGenerator>>? configureOptions = null)
+    {
+        var options = new PartialGeneratorTestOptions<TGenerator>(CreateGeneratorWithAddSources);
+
+        if (configureOptions is not null)
+        {
+            options = configureOptions(options);
+        }
+
+        options = options with
+        {
+            TargetGenerator = options.AddSources ? CreateGeneratorWithAddSources() : CreateGeneratorWithoutAddSources()
+        };
+
+        options = options with
+        {
+            CreateGenerator = (o) =>
+            {
+                var generator = GeneratorTestOptionsBase.EmptyGenerator(o);
+
+                foreach (var dependendGenerator in options.TargetGenerator.DependsOnGenerators)
+                {
+                    generator.Generators.Add(dependendGenerator with
+                    {
+                        AddSource = false
+                    });
+                }
+
+                generator.Generators.Add(
+                    options.TargetGenerator
+                );
+                return generator;
+            }
+        };
+
+        var additionalFiles = options.AdditionalFiles(options).ToList();
+
+        var optionsProvider = options.MockOptionsProvider;
+
+        var additionalTexts = Enumerable.Empty<AdditionalText>().ToList();
+
+        foreach (var additionalFile in additionalFiles)
+        {
+            optionsProvider = optionsProvider.WithAdditionalTreeOptions(
+                additionalFiles.ToImmutableDictionary(k => (object)k, _ => (AnalyzerConfigOptions)new MockAnalyzerConfigOptions($"build_metadata.AdditionalFiles.{additionalFile.Key}", "true"))
+            );
+
+            additionalTexts = additionalTexts
+                .Concat(additionalFile.Files)
+                .ToList();
+        }
+
+        options = options with
+        {
+            MockOptionsProvider = optionsProvider,
+            AdditionalTexts = () => additionalTexts
+        };
+
+
+        if (options.Compile)
+        {
+            BaseGeneratorTest.Compile((o) => options);
+        }
+
+        await BaseGeneratorTest.RunTest((o) => options);
+    }
+}

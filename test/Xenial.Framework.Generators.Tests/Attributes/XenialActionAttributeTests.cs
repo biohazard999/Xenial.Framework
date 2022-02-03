@@ -8,5 +8,5 @@ namespace Xenial.Framework.Generators.Tests.Attributes;
 public class XenialActionAttributeTests : AttributeGeneratorBaseTests<XenialActionAttributeGenerator>
 {
     protected override XenialActionAttributeGenerator CreateTargetGenerator()
-        => new XenialActionAttributeGenerator(false);
+        => new();
 }

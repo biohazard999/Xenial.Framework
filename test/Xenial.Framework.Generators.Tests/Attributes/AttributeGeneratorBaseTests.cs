@@ -13,7 +13,7 @@ using Xunit;
 
 namespace Xenial.Framework.Generators.Tests.Attributes;
 
-public record AttributeGeneratorTestOptions<TTargetGenerator> : GeneratorTestOptions<TTargetGenerator>
+public record AttributeGeneratorTestOptions<TTargetGenerator> : GeneratorTestOptionsBase<TTargetGenerator>
     where TTargetGenerator : XenialAttributeGenerator
 {
     public AttributeGeneratorTestOptions(Func<TTargetGenerator> createTargetGenerator) : base(createTargetGenerator)
@@ -55,7 +55,7 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
         {
             CreateGenerator = (o) =>
             {
-                var generator = GeneratorTestOptions.EmptyGenerator(o);
+                var generator = GeneratorTestOptionsBase.EmptyGenerator(o);
 
                 generator.Generators.Add(
                     options.TargetGenerator
@@ -66,10 +66,10 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
 
         if (options.Compile)
         {
-            GeneratorTest.Compile((o) => options);
+            BaseGeneratorTest.Compile((o) => options);
         }
 
-        await GeneratorTest.RunTest((o) => options);
+        await BaseGeneratorTest.RunTest((o) => options);
     }
 
     [Fact]

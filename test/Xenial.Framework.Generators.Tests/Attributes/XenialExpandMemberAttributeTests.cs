@@ -8,5 +8,5 @@ namespace Xenial.Framework.Generators.Tests.Attributes;
 public class XenialExpandMemberAttributeTests : AttributeGeneratorBaseTests<XenialExpandMemberAttributeGenerator>
 {
     protected override XenialExpandMemberAttributeGenerator CreateTargetGenerator()
-        => new XenialExpandMemberAttributeGenerator(false);
+        => new();
 }

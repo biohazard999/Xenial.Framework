@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Text;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 using Xenial.Framework.Generators.Internal;
@@ -21,6 +22,20 @@ public abstract record XenialBaseGenerator(bool AddSource = true) : IXenialSourc
     public abstract bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax);
 
     public abstract Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types, IList<string> addedSourceFiles);
+
+    protected Compilation AddCode(
+        GeneratorExecutionContext context,
+        Compilation compilation,
+        IList<string> addedSourceFiles,
+        TypeDeclarationSyntax @class,
+        string syntax
+    ) => AddCode(
+        context,
+        compilation,
+        addedSourceFiles,
+        Path.GetFileNameWithoutExtension(@class?.SyntaxTree.FilePath),
+        syntax
+    );
 
     protected Compilation AddCode(
         GeneratorExecutionContext context,

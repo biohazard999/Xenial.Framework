@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Xenial.Framework.Generators.Internal;
+using Xenial.Framework.Generators.Partial;
 
 namespace Xenial.Framework.Generators;
 

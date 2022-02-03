@@ -14,14 +14,14 @@ using VerifyXunit;
 
 namespace Xenial.Framework.Generators.Tests.Base;
 
-internal class GeneratorTest
+internal class BaseGeneratorTest
 {
     public static (
-        GeneratorTestOptions options,
+        GeneratorTestOptionsBase options,
         Compilation compilation,
         XenialGenerator generator,
         GeneratorDriver driver
-    ) PrepareTest(Func<GeneratorTestOptions, GeneratorTestOptions> optionsFunctions)
+    ) PrepareTest(Func<GeneratorTestOptionsBase, GeneratorTestOptionsBase> optionsFunctions)
     {
         var options = optionsFunctions(new());
         var compilation = options.CreateCompilation(options);
@@ -39,7 +39,7 @@ internal class GeneratorTest
     }
 
     public static async Task RunTest(
-        Func<GeneratorTestOptions, GeneratorTestOptions> optionsFunctions,
+        Func<GeneratorTestOptionsBase, GeneratorTestOptionsBase> optionsFunctions,
         [CallerFilePath] string filePath = ""
     )
     {
@@ -57,7 +57,7 @@ internal class GeneratorTest
         await Verifier.Verify(driver, settings);
     }
 
-    public static void Compile(Func<GeneratorTestOptions, GeneratorTestOptions> optionsFunctions)
+    public static void Compile(Func<GeneratorTestOptionsBase, GeneratorTestOptionsBase> optionsFunctions)
     {
         var (options, compilation, generator, driver) = PrepareTest(optionsFunctions);
 

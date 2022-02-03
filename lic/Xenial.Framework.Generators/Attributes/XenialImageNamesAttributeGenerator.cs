@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Xenial.Framework.Generators.Base;
+using Xenial.Framework.Generators.Partial;
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators.Attributes;
