@@ -14,6 +14,10 @@ namespace Xenial.Framework.Generators.Base;
 
 public abstract record XenialBaseGenerator(bool AddSource = true) : IXenialSourceGenerator
 {
+    protected const string XenialNamespace = "Xenial";
+
+    public virtual string AttributeNamespace => XenialNamespace;
+
     public abstract bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax);
 
     public abstract Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types, IList<string> addedSourceFiles);
@@ -88,5 +92,31 @@ public abstract record XenialBaseGenerator(bool AddSource = true) : IXenialSourc
         var syntaxTree = CSharpSyntaxTree.ParseText(syntax, (CSharpParseOptions)context.ParseOptions, cancellationToken: context.CancellationToken);
 
         return compilation.AddSyntaxTrees(syntaxTree);
+    }
+
+    protected static bool IsInGlobalNamespace(
+        GeneratorExecutionContext context,
+        Compilation compilation,
+        INamedTypeSymbol classSymbol,
+        string attributeName,
+        Location location,
+        out Compilation comp
+    )
+    {
+        comp = compilation;
+        var isGlobalNamespace = classSymbol?.ContainingNamespace.ToString() == "<global namespace>";
+        if (isGlobalNamespace)
+        {
+            context.ReportDiagnostic(
+                Diagnostic.Create(
+                    GeneratorDiagnostics.ClassNeedsToBeInNamespace(
+                    attributeName
+                ), location)
+            );
+
+            return true;
+        }
+
+        return false;
     }
 }

@@ -10,12 +10,13 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
+using Xenial.Framework.Generators.Base;
 using Xenial.Framework.Generators.Internal;
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;
 
-public record XenialImageNamesGenerator(bool AddSource = true) : IXenialSourceGenerator
+public record XenialImageNamesGenerator(bool AddSource = true) : XenialBaseGenerator(AddSource)
 {
     private const string xenialImageNamesAttributeName = "XenialImageNamesAttribute";
     private const string xenialNamespace = "Xenial";
@@ -26,9 +27,9 @@ public record XenialImageNamesGenerator(bool AddSource = true) : IXenialSourceGe
 
     private const string imagesBaseFolder = "Images";
 
-    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
+    public override bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
 
-    public Compilation Execute(
+    public override Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
         IList<TypeDeclarationSyntax> types,
@@ -42,8 +43,6 @@ public record XenialImageNamesGenerator(bool AddSource = true) : IXenialSourceGe
         context.CancellationToken.ThrowIfCancellationRequested();
 
         var globalOptions = new GlobalOptions(context);
-
-        compilation = GenerateAttribute(context, compilation);
 
         var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
 
@@ -73,16 +72,8 @@ public record XenialImageNamesGenerator(bool AddSource = true) : IXenialSourceGe
             builder.WriteLine("using System.Runtime.CompilerServices;");
             builder.WriteLine();
 
-            var isGlobalNamespace = classSymbol.ContainingNamespace.ToString() == "<global namespace>";
-            if (isGlobalNamespace)
+            if (IsInGlobalNamespace(context, compilation, classSymbol, xenialImageNamesAttributeName, @class.GetLocation(), out compilation))
             {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        GeneratorDiagnostics.ClassNeedsToBeInNamespace(
-                        xenialImageNamesAttributeName
-                    ), @class.GetLocation())
-                );
-
                 return compilation;
             }
 
@@ -249,83 +240,6 @@ public record XenialImageNamesGenerator(bool AddSource = true) : IXenialSourceGe
             }
         }
     }
-
-    private static Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation)
-    {
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialImageNamesAttributeMSBuildProperty}", out var generateXenialImageNamesAttrStr))
-        {
-            if (bool.TryParse(generateXenialImageNamesAttrStr, out var generateXenialImageNamesAttr))
-            {
-                if (!generateXenialImageNamesAttr)
-                {
-                    return compilation;
-                }
-            }
-            else
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            GenerateXenialImageNamesAttributeMSBuildProperty,
-                            generateXenialImageNamesAttrStr
-                        )
-                        , null
-                    ));
-                return compilation;
-            }
-        }
-
-        var (source, syntaxTree) = GenerateXenialImageNamesAttribute(
-            (CSharpParseOptions)context.ParseOptions,
-            context.GetDefaultAttributeModifier(),
-            context.CancellationToken
-        );
-
-        context.AddSource($"{xenialImageNamesAttributeName}.g.cs", source);
-
-        return compilation.AddSyntaxTrees(syntaxTree);
-    }
-
-    public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialImageNamesAttribute(
-        CSharpParseOptions? parseOptions = null,
-        string visibility = "internal",
-        CancellationToken cancellationToken = default)
-    {
-        parseOptions = parseOptions ?? CSharpParseOptions.Default;
-
-        var syntaxWriter = CurlyIndenter.Create();
-
-        syntaxWriter.WriteLine($"using System;");
-        syntaxWriter.WriteLine($"using System.ComponentModel;");
-        syntaxWriter.WriteLine();
-
-        using (syntaxWriter.OpenBrace($"namespace {xenialNamespace}"))
-        {
-            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]");
-
-            using (syntaxWriter.OpenBrace($"{visibility} sealed class {xenialImageNamesAttributeName} : Attribute"))
-            {
-                syntaxWriter.WriteLine($"{visibility} {xenialImageNamesAttributeName}() {{ }}");
-
-                syntaxWriter.WriteLine();
-
-                //Properties need to be public in order to be used
-                syntaxWriter.WriteLine($"public bool {AttributeNames.Sizes} {{ get; set; }}");
-                syntaxWriter.WriteLine($"public bool {AttributeNames.SmartComments} {{ get; set; }}");
-                syntaxWriter.WriteLine($"public bool {AttributeNames.ResourceAccessors} {{ get; set; }}");
-
-                syntaxWriter.WriteLine("[EditorBrowsable(EditorBrowsableState.Never)]");
-                syntaxWriter.WriteLine($"public string {AttributeNames.DefaultImageSize} {{ get; set; }} = \"{AttributeNames.DefaultImageSizeValue}\";");
-            }
-        }
-
-        var syntax = syntaxWriter.ToString();
-        var source = SourceText.From(syntax, Encoding.UTF8);
-        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
-        return (source, syntaxTree);
-    }
-
-
 }
 
 internal static class AttributeNames

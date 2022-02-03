@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using VerifyXunit;
 
-using Xenial.Framework.Generators.Tests.Attributes;
+using Xenial.Framework.Generators.Tests.Base;
 
 using Xunit;
 

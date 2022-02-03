@@ -1,162 +1,23 @@
 ﻿
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 
 using System.Linq;
 using System.Threading.Tasks;
 
-using VerifyTests;
-
 using VerifyXunit;
 
 using Xenial.Framework.Generators.Base;
+using Xenial.Framework.Generators.Tests.Base;
 
 using Xunit;
 
-using static Xenial.Framework.Generators.Tests.TestReferenceAssemblies;
-
 namespace Xenial.Framework.Generators.Tests.Attributes;
-
-public record GeneratorTestOptions
-{
-    public string CompilationName { get; set; } = "AssemblyName";
-    public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.Default;
-
-    public Func<GeneratorTestOptions, CSharpCompilation> CreateCompilation { get; set; } = options
-        => CSharpCompilation.Create(options.CompilationName,
-            references: options.ReferenceAssemblies,
-            syntaxTrees: options.SyntaxTrees?.Invoke(options),
-            //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-        );
-
-    public Func<GeneratorTestOptions, XenialGenerator> CreateGenerator { get; set; }
-        = o => new();
-
-    public static Func<GeneratorTestOptions, XenialGenerator> EmptyGenerator { get; } = (o) =>
-    {
-        var generator = new XenialGenerator();
-        generator.Generators.Clear();
-        return generator;
-    };
-
-    public IEnumerable<PortableExecutableReference> ReferenceAssemblies { get; set; }
-        = DefaultReferenceAssemblies;
-
-    public Func<GeneratorTestOptions, IEnumerable<SyntaxTree>>? SyntaxTrees { get; set; }
-
-    public MockAnalyzerConfigOptionsProvider MockOptionsProvider { get; set; }
-        = MockAnalyzerConfigOptionsProvider.Empty;
-
-    public Func<GeneratorTestOptions, MockAnalyzerConfigOptionsProvider>? MockOptions { get; set; }
-
-    public Func<GeneratorTestOptions, XenialGenerator, GeneratorDriver> CreateDriver { get; set; }
-        = (options, generator)
-            => CSharpGeneratorDriver.Create(
-                new[] { generator },
-                optionsProvider: options.MockOptionsProvider
-            );
-
-    public string BuildProperty(string property)
-        => $"build_property.{property}";
-
-    public SyntaxTree BuildSyntaxTree(string fileName, string sourceText)
-    {
-        var syntaxTree =
-            CSharpSyntaxTree.ParseText(
-                sourceText,
-                new CSharpParseOptions(LanguageVersion),
-                path: fileName
-            );
-
-        return syntaxTree;
-    }
-
-    public Action<GeneratorTestOptions, VerifySettings>? VerifySettings { get; set; }
-
-    public bool Compile { get; set; } = true;
-    public bool AddSources { get; set; } = true;
-}
-
-public record GeneratorTestOptions<TTargetGenerator> : GeneratorTestOptions
-    where TTargetGenerator : class
-{
-    public GeneratorTestOptions(Func<TTargetGenerator> createTargetGenerator)
-        => TargetGenerator = createTargetGenerator();
-
-    public TTargetGenerator TargetGenerator { get; set; }
-}
 
 public record AttributeGeneratorTestOptions<TTargetGenerator> : GeneratorTestOptions<TTargetGenerator>
     where TTargetGenerator : XenialAttributeGenerator
 {
     public AttributeGeneratorTestOptions(Func<TTargetGenerator> createTargetGenerator) : base(createTargetGenerator)
     {
-    }
-}
-
-internal class GeneratorTest
-{
-    public static (
-        GeneratorTestOptions options,
-        Compilation compilation,
-        XenialGenerator generator,
-        GeneratorDriver driver
-    ) PrepareTest(Func<GeneratorTestOptions, GeneratorTestOptions> optionsFunctions)
-    {
-        var options = optionsFunctions(new());
-        var compilation = options.CreateCompilation(options);
-        var generator = options.CreateGenerator(options);
-
-        options = options with
-        {
-            MockOptionsProvider = options.MockOptions is not null
-                ? options.MockOptions(options)
-                : options.MockOptionsProvider
-        };
-
-        var driver = options.CreateDriver(options, generator);
-        return (options, compilation, generator, driver);
-    }
-
-    public static async Task RunTest(Func<GeneratorTestOptions, GeneratorTestOptions> optionsFunctions)
-    {
-        var (options, compilation, generator, driver) = PrepareTest(optionsFunctions);
-
-        driver = driver.RunGenerators(compilation);
-
-        var settings = new VerifySettings();
-        settings.UniqueForTargetFrameworkAndVersion();
-        options.VerifySettings?.Invoke(options, settings);
-        await Verifier.Verify(driver, settings);
-    }
-
-    public static void Compile(Func<GeneratorTestOptions, GeneratorTestOptions> optionsFunctions)
-    {
-        var (options, compilation, generator, driver) = PrepareTest(optionsFunctions);
-
-        driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out compilation, out var diagnositcs);
-
-        VerifyDiagnostics(diagnositcs, null);
-    }
-
-    private static void VerifyDiagnostics(ImmutableArray<Diagnostic> diagnostics, Exception? ex)
-    {
-        if (diagnostics.Length > 0)
-        {
-            var argumentException = new ArgumentException(string.Join(
-                Environment.NewLine,
-                diagnostics.Select(diag => new DiagnosticFormatter().Format(diag))
-            ));
-
-            throw ex is null
-                ? new AggregateException(argumentException)
-                : new AggregateException(argumentException, ex);
-        }
     }
 }
 

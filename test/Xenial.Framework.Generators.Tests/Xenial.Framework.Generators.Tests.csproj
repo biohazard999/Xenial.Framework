@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Generators\ImageNamesGeneratorTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Basic.Reference.Assemblies" Version="1.2.4" />
     <PackageReference Include="Basic.Reference.Assemblies.NetStandard20" Version="1.2.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
@@ -18,6 +22,201 @@
   <ItemGroup>
     <ProjectReference Include="..\..\lic\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" />
     <ProjectReference Include="..\..\stubs\Xenial.Framework.Stubs\Xenial.Framework.Stubs.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.Core3_1.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet3_1.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet4_6.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet5_0.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet6_0.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitDiagnosticIfInGlobalNamespace.Core3_1.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitDiagnosticIfInGlobalNamespace.DotNet3_1.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitDiagnosticIfInGlobalNamespace.DotNet4_6.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitDiagnosticIfInGlobalNamespace.DotNet5_0.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitDiagnosticIfInGlobalNamespace.DotNet6_0.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitDiagnosticIfNotPartial.Core3_1.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitDiagnosticIfNotPartial.DotNet3_1.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitDiagnosticIfNotPartial.DotNet4_6.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitDiagnosticIfNotPartial.DotNet5_0.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitDiagnosticIfNotPartial.DotNet6_0.verified.txt" />
+    <None Remove="Generators\ImageNamesGeneratorTests.EmitsGenerateAttributeByDefault.DotNet6_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.EmitsGenerateAttributeByDefault.DotNet5_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.EmitsGenerateAttributeByDefault.DotNet4_6.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.EmitsGenerateAttributeByDefault.DotNet3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.EmitsGenerateAttributeByDefault.Core3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesNotEmitIfAttributeIfOpted_emitProperty=True.DotNet6_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesNotEmitIfAttributeIfOpted_emitProperty=True.DotNet5_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesNotEmitIfAttributeIfOpted_emitProperty=True.DotNet4_6.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesNotEmitIfAttributeIfOpted_emitProperty=True.DotNet3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesNotEmitIfAttributeIfOpted_emitProperty=True.Core3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesNotEmitDiagnosticIfPartial.DotNet6_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesNotEmitDiagnosticIfPartial.DotNet5_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesNotEmitDiagnosticIfPartial.DotNet4_6.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesNotEmitDiagnosticIfPartial.DotNet3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesNotEmitDiagnosticIfPartial.Core3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitCustomAttributeModifier.DotNet6_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitCustomAttributeModifier.DotNet5_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitCustomAttributeModifier.DotNet4_6.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitCustomAttributeModifier.DotNet3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.DoesEmitCustomAttributeModifier.Core3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.BasicConstantGenerationWithRecord.DotNet6_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.BasicConstantGenerationWithRecord.DotNet5_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.BasicConstantGenerationWithRecord.DotNet4_6.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.BasicConstantGenerationWithRecord.DotNet3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.BasicConstantGenerationWithRecord.Core3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.BasicConstantGeneration.DotNet6_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.BasicConstantGeneration.DotNet5_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.BasicConstantGeneration.DotNet4_6.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.BasicConstantGeneration.DotNet3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.BasicConstantGeneration.Core3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.SmartCommentsGeneration.DotNet6_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.SmartCommentsGeneration.DotNet5_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.SmartCommentsGeneration.DotNet4_6.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.SmartCommentsGeneration.DotNet3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.SmartCommentsGeneration.Core3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.SizesGeneration.DotNet6_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.SizesGeneration.DotNet5_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.SizesGeneration.DotNet4_6.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.SizesGeneration.DotNet3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.SizesGeneration.Core3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.ResourceAccessorsGeneration.DotNet6_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.ResourceAccessorsGeneration.DotNet5_0.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.ResourceAccessorsGeneration.DotNet4_6.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.ResourceAccessorsGeneration.DotNet3_1.verified.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Generators\ImageNamesGeneratorTests.AttributeDrivenTests.ResourceAccessorsGeneration.Core3_1.verified.cs" />
   </ItemGroup>
 
 </Project>

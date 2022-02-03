@@ -38,4 +38,8 @@
     <!-- Package the Newtonsoft.Json dependency alongside the generator assembly -->
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Generators\" />
+  </ItemGroup>
+
 </Project>

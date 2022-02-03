@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
+﻿
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
-using Xenial.Framework.Generators.Internal;
+using System;
+using System.Collections.Generic;
+
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators.Base;
 public abstract record XenialAttributeGenerator(bool AddSource = true) : XenialBaseGenerator(AddSource)
 {
-    protected const string XenialNamespace = "Xenial";
-
     public abstract string AttributeName { get; }
-
-    public virtual string AttributeNamespace => XenialNamespace;
 
     public string AttributeFullName => $"{AttributeNamespace}.{AttributeName}";
 

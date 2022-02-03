@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
-
-using VerifyXunit;
-
-using Xunit;
-
-namespace Xenial.Framework.Generators.Tests;
+namespace Xenial.Framework.Generators.Tests.Generators;
 
 [UsesVerify]
 public class ImageNamesGeneratorTests : BaseGeneratorTests<XenialImageNamesGenerator>
@@ -190,15 +182,5 @@ public partial class MyGlobalClass
                 },
                 "MyProject.SubFolderImages"
             );
-    }
-}
-
-internal static partial class CompilationHelpers
-{
-    public static CSharpCompilation AddInlineXenialImageNamesAttribute(this CSharpCompilation compilation, string visibility = "internal")
-    {
-        (_, var syntaxTree) = XenialImageNamesGenerator.GenerateXenialImageNamesAttribute(visibility: visibility);
-
-        return compilation.AddSyntaxTrees(syntaxTree);
     }
 }
