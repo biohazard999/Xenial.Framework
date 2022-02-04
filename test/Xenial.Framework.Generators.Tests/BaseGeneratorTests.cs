@@ -12,6 +12,7 @@ using VerifyTests;
 
 using VerifyXunit;
 
+using Xenial.Framework.Generators.Attributes;
 using Xenial.Framework.Generators.Internal;
 
 using Xunit;

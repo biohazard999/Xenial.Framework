@@ -11,6 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <None Remove="build\Xenial.Framework.CompilerServices.props" />
     <None Remove="build\Xenial.Framework.CompilerServices.targets" />
   </ItemGroup>
@@ -23,14 +34,5 @@
       <PackagePath>build\</PackagePath>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
-  </ItemGroup>
-
-  <!-- We need to import the props and targets directly, because the project reference above does not do that automatically -->
-  <Import Project="..\Xenial.Framework.Generators\build\Xenial.Framework.Generators.props" />
-  <Import Project="..\Xenial.Framework.Generators\build\Xenial.Framework.Generators.targets" />
-
 
 </Project>

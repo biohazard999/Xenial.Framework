@@ -1,0 +1,17 @@
+{
+  Diagnostics: [
+    {
+      Id: XENGEN0202,
+      Title: When implementing the partial method [CreateGeneratesSimpleActionWhenDefinedActionCore] you must make sure it returns [MyActions.GeneratesSimpleActionWhenDefined] and have the visibility [private partial],
+      Severity: Error,
+      WarningLevel: 0,
+      Location: GeneratesSimpleActionWhenDefined: (10,8)-(12,9),
+      Description: When implementing the partial method [CreateGeneratesSimpleActionWhenDefinedActionCore] you must make sure it returns [MyActions.GeneratesSimpleActionWhenDefined] and have the visibility [private partial],
+      HelpLink: ,
+      MessageFormat: When implementing the partial method [CreateGeneratesSimpleActionWhenDefinedActionCore] you must make sure it returns [MyActions.GeneratesSimpleActionWhenDefined] and have the visibility [private partial],
+      Message: When implementing the partial method [CreateGeneratesSimpleActionWhenDefinedActionCore] you must make sure it returns [MyActions.GeneratesSimpleActionWhenDefined] and have the visibility [private partial],
+      Category: Usage,
+      CustomTags: []
+    }
+  ]
+}

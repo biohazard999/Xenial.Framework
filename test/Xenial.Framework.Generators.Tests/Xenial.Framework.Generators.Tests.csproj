@@ -9,21 +9,15 @@
     <PackageReference Include="Basic.Reference.Assemblies" Version="1.2.4" />
     <PackageReference Include="Basic.Reference.Assemblies.NetStandard20" Version="1.2.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageReference Include="Verify.SourceGenerators" Version="1.2.0" />
+    <PackageReference Include="Verify.SourceGenerators" Version="1.3.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="All" />
     <PackageReference Include="DevExpress.Xpo" Version="$(DxPackageVersion)" />
     <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Xenial.Framework.CompilerServices\Xenial.Framework.CompilerServices.csproj" />
-    <ProjectReference Include="..\..\src\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" />
-    <ProjectReference Include="..\..\src\Xenial.Framework\Xenial.Framework.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Images/*.png" />
-    <AdditionalFiles Include="Images/*.png" XenialImageNames="True" />
+    <ProjectReference Include="..\..\lic\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" />
+    <ProjectReference Include="..\..\stubs\Xenial.Framework.Stubs\Xenial.Framework.Stubs.csproj" />
   </ItemGroup>
 
 </Project>

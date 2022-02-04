@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Compile Include="..\..\src\Xenial.Framework\Base\DeclareViewAttribute.cs" Link="DeclareViewAttribute.cs" />
+    <Compile Include="..\..\src\Xenial.Framework\Base\GenerateNoViewAttribute.cs" Link="GenerateNoViewAttribute.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+</Project>
