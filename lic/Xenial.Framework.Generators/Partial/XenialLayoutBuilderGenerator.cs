@@ -9,7 +9,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-using Xenial.Framework.Generators.Internal;
 using Xenial.Framework.MsBuild;
 using Xenial.Framework.Generators.Base;
 

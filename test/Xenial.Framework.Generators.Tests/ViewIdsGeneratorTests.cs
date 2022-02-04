@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 using DevExpress.ExpressApp.DC;
@@ -12,36 +13,33 @@ using Microsoft.CodeAnalysis.CSharp;
 using VerifyXunit;
 
 using Xenial.Framework.Base;
+using Xenial.Framework.Generators.Partial;
+using Xenial.Framework.Generators.Tests.Generators;
 
 using Xunit;
 
 namespace Xenial.Framework.Generators.Tests;
 
 [UsesVerify]
-public class ViewIdsGeneratorTests : BaseGeneratorTests<XenialViewIdsGenerator>
+public class ViewIdsGeneratorTests : PartialGeneratorTest<XenialViewIdsGenerator>
 {
     protected override XenialViewIdsGenerator CreateTargetGenerator() => new();
 
-    protected override string GeneratorEmitProperty => XenialViewIdsGenerator.GenerateXenialViewIdsAttributeMSBuildProperty;
-
-    protected override IEnumerable<PortableExecutableReference> AdditionalReferences
-    {
-        get
+    public override Task RunSourceTest(string fileName, string source, [CallerFilePath] string filePath = "")
+        => RunTest(o => o with
         {
-            yield return MetadataReference.CreateFromFile(typeof(DomainComponentAttribute).Assembly.Location);
-            yield return MetadataReference.CreateFromFile(typeof(PersistentAttribute).Assembly.Location);
-            yield return MetadataReference.CreateFromFile(typeof(GenerateNoDetailViewAttribute).Assembly.Location);
-        }
-    }
-
-    protected Task RunSourceTest(string fileName, string source)
-        => RunTest(
-            options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false")),
-            compilationOptions: compilation => compilation.AddInlineXenialViewIdsAttribute(),
-            syntaxTrees: () => new[]
+            SyntaxTrees = o => new[]
             {
-                BuildSyntaxTree(fileName, source)
-            });
+                o.BuildSyntaxTree(fileName, source)
+            },
+            ReferenceAssembliesProvider = o => o.ReferenceAssemblies.Concat(new[]
+            {
+                MetadataReference.CreateFromFile(typeof(DomainComponentAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(PersistentAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(GenerateNoDetailViewAttribute).Assembly.Location)
+            }),
+            Compile = false
+        }, filePath);
 
     [Fact]
     public Task DoesEmitDiagnosticIfNotPartial()
@@ -237,14 +235,4 @@ namespace MyProject
     [Xenial.XenialViewIds]
     public partial class MyPartialClass { }
 }");
-}
-
-internal static partial class CompilationHelpers
-{
-    public static CSharpCompilation AddInlineXenialViewIdsAttribute(this CSharpCompilation compilation, string visibility = "internal")
-    {
-        (_, var syntaxTree) = XenialViewIdsGenerator.GenerateXenialViewIdsAttribute(visibility: visibility);
-
-        return compilation.AddSyntaxTrees(syntaxTree);
-    }
 }

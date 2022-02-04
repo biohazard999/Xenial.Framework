@@ -10,17 +10,18 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
+using Xenial.Framework.Generators.Attributes;
+using Xenial.Framework.Generators.Base;
 using Xenial.Framework.Generators.Internal;
 using Xenial.Framework.MsBuild;
 
-namespace Xenial.Framework.Generators;
+namespace Xenial.Framework.Generators.Partial;
 
-public record XenialViewIdsGenerator(bool AddSource = true) : IXenialSourceGenerator
+public record XenialViewIdsGenerator(bool AddSource = true) : XenialPartialGenerator(AddSource)
 {
-    private const string xenialViewIdsAttributeName = "XenialViewIdsAttribute";
-    private const string xenialNamespace = "Xenial";
-    private const string xenialImageNamesAttributeFullName = $"{xenialNamespace}.{xenialViewIdsAttributeName}";
-    public const string GenerateXenialViewIdsAttributeMSBuildProperty = $"Generate{xenialViewIdsAttributeName}";
+    public XenialViewIdsAttributeGenerator AttributeGenerator { get; } = new XenialViewIdsAttributeGenerator(false);
+
+    public override IEnumerable<XenialAttributeGenerator> DependsOnGenerators => new[] { AttributeGenerator };
 
     private const string fullQualifiedDomainComponentAttribute = "DevExpress.ExpressApp.DC.DomainComponentAttribute";
     private const string fullQualifiedXpoPersistentAttribute = "DevExpress.Xpo.PersistentAttribute";
@@ -35,9 +36,9 @@ public record XenialViewIdsGenerator(bool AddSource = true) : IXenialSourceGener
     private const string fullQualifiedDeclareListViewAttribute = "Xenial.Framework.Base.DeclareListViewAttribute";
     private const string fullQualifiedDeclareDashboardViewAttribute = "Xenial.Framework.Base.DeclareDashboardViewAttribute";
 
-    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
+    public override bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
 
-    public Compilation Execute(
+    public override Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
         IList<TypeDeclarationSyntax> types,
@@ -50,15 +51,12 @@ public record XenialViewIdsGenerator(bool AddSource = true) : IXenialSourceGener
 
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        compilation = GenerateAttribute(context, compilation);
-
-        var generateXenialImageNamesAttribute = compilation.GetTypeByMetadataName(xenialImageNamesAttributeFullName);
-
-        if (generateXenialImageNamesAttribute is null)
+        if (!FindAttributeFromGenerator(compilation, AttributeGenerator, out compilation))
         {
-            //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
             return compilation;
         }
+
+        var attribute = GetAttributeFromGenerator(compilation, AttributeGenerator);
 
         var collectedAttributes = new[]
         {
@@ -177,13 +175,13 @@ public record XenialViewIdsGenerator(bool AddSource = true) : IXenialSourceGener
         {
             context.CancellationToken.ThrowIfCancellationRequested();
 
-            var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, generateXenialImageNamesAttribute);
+            var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, attribute);
             if (!isAttributeDeclared || semanticModel is null || @classSymbol is null)
             {
                 continue;
             }
 
-            var @attribute = GetXenialViewIdsAttribute(@classSymbol, generateXenialImageNamesAttribute);
+            var @attrib = GetXenialViewIdsAttribute(@classSymbol, attribute);
 
             var builder = CurlyIndenter.Create();
 
@@ -199,7 +197,7 @@ public record XenialViewIdsGenerator(bool AddSource = true) : IXenialSourceGener
                 context.ReportDiagnostic(
                     Diagnostic.Create(
                         GeneratorDiagnostics.ClassNeedsToBeInNamespace(
-                        xenialViewIdsAttributeName
+                        attribute.Name
                     ), @class.GetLocation())
                 );
 
@@ -260,7 +258,7 @@ public record XenialViewIdsGenerator(bool AddSource = true) : IXenialSourceGener
         GeneratorExecutionContext context,
         Compilation compilation,
         TypeDeclarationSyntax @class,
-        INamedTypeSymbol generateXenialImageNamesAttribute
+        INamedTypeSymbol attribute
     )
     {
         var semanticModel = compilation.GetSemanticModel(@class.SyntaxTree);
@@ -276,13 +274,13 @@ public record XenialViewIdsGenerator(bool AddSource = true) : IXenialSourceGener
             return (semanticModel, null, false);
         }
 
-        var isAttributeDeclared = symbol.IsAttributeDeclared(generateXenialImageNamesAttribute);
+        var isAttributeDeclared = symbol.IsAttributeDeclared(attribute);
 
         if (isAttributeDeclared && !@class.HasModifier(SyntaxKind.PartialKeyword))
         {
             context.ReportDiagnostic(
                 Diagnostic.Create(
-                    GeneratorDiagnostics.ClassNeedsToBePartialWhenUsingAttribute(xenialImageNamesAttributeFullName),
+                    GeneratorDiagnostics.ClassNeedsToBePartialWhenUsingAttribute(attribute.Name),
                     @class.GetLocation()
             ));
 
@@ -294,80 +292,5 @@ public record XenialViewIdsGenerator(bool AddSource = true) : IXenialSourceGener
 
     private static AttributeData GetXenialViewIdsAttribute(INamedTypeSymbol symbol, INamedTypeSymbol generateXenialViewIdsAttribubute)
         => symbol.GetAttribute(generateXenialViewIdsAttribubute);
-
-    private static Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation)
-    {
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialViewIdsAttributeMSBuildProperty}", out var generateXenialViewIdsAttrStr))
-        {
-            if (bool.TryParse(generateXenialViewIdsAttrStr, out var generateXenialViewIdsAttr))
-            {
-                if (!generateXenialViewIdsAttr)
-                {
-                    return compilation;
-                }
-            }
-            else
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            GenerateXenialViewIdsAttributeMSBuildProperty,
-                            generateXenialViewIdsAttrStr
-                        )
-                        , null
-                    ));
-                return compilation;
-            }
-        }
-
-        var (source, syntaxTree) = GenerateXenialViewIdsAttribute(
-            (CSharpParseOptions)context.ParseOptions,
-            context.GetDefaultAttributeModifier(),
-            context.CancellationToken
-        );
-
-        context.AddSource($"{xenialViewIdsAttributeName}.g.cs", source);
-
-        return compilation.AddSyntaxTrees(syntaxTree);
-    }
-
-    public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialViewIdsAttribute(
-        CSharpParseOptions? parseOptions = null,
-        string visibility = "internal",
-        CancellationToken cancellationToken = default)
-    {
-        parseOptions = parseOptions ?? CSharpParseOptions.Default;
-
-        var syntaxWriter = CurlyIndenter.Create();
-
-        syntaxWriter.WriteLine($"using System;");
-        syntaxWriter.WriteLine($"using System.ComponentModel;");
-        syntaxWriter.WriteLine();
-
-        using (syntaxWriter.OpenBrace($"namespace {xenialNamespace}"))
-        {
-            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]");
-
-            using (syntaxWriter.OpenBrace($"{visibility} sealed class {xenialViewIdsAttributeName} : Attribute"))
-            {
-                //syntaxWriter.WriteLine($"{visibility} {xenialViewIdsAttributeName}() {{ }}");
-
-                //syntaxWriter.WriteLine();
-
-                ////Properties need to be public in order to be used
-                //syntaxWriter.WriteLine($"public bool {AttributeNames.Sizes} {{ get; set; }}");
-                //syntaxWriter.WriteLine($"public bool {AttributeNames.SmartComments} {{ get; set; }}");
-                //syntaxWriter.WriteLine($"public bool {AttributeNames.ResourceAccessors} {{ get; set; }}");
-
-                //syntaxWriter.WriteLine("[EditorBrowsable(EditorBrowsableState.Never)]");
-                //syntaxWriter.WriteLine($"public string {AttributeNames.DefaultImageSize} {{ get; set; }} = \"{AttributeNames.DefaultImageSizeValue}\";");
-            }
-        }
-
-        var syntax = syntaxWriter.ToString();
-        var source = SourceText.From(syntax, Encoding.UTF8);
-        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
-        return (source, syntaxTree);
-    }
 }
 
