@@ -26,7 +26,7 @@ public record GeneratorTestOptionsBase
         );
 
     public Func<GeneratorTestOptionsBase, XenialGenerator> CreateGenerator { get; set; }
-        = o => new();
+        = o => new XenialGenerator(o.AddSources);
 
     public IEnumerable<AdditionalFiles> AdditionalFiles { get; set; } = Enumerable.Empty<AdditionalFiles>();
 

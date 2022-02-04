@@ -14,7 +14,6 @@ public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : Xen
         _ = syntaxWriter ?? throw new ArgumentNullException(nameof(syntaxWriter));
 
         syntaxWriter.WriteLine($"using System;");
-        syntaxWriter.WriteLine($"using System.ComponentModel;");
         syntaxWriter.WriteLine($"using System.Runtime.CompilerServices;");
         syntaxWriter.WriteLine();
 

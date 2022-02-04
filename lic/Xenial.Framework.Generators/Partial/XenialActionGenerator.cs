@@ -161,74 +161,62 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
         foreach (var @class in types)
         {
             context.CancellationToken.ThrowIfCancellationRequested();
-
-            var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, attribute);
-            if (!isAttributeDeclared || semanticModel is null || @classSymbol is null)
+            if (TryGetTargetWithAttribute(context, compilation, @class, attribute, out var targetSymbol))
             {
-                continue;
-            }
-
-            var attrib = GetXenialActionAttribute(@classSymbol, attribute);
-
-            var isGlobalNamespace = classSymbol.ContainingNamespace.ToString() == "<global namespace>";
-            if (isGlobalNamespace)
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        GeneratorDiagnostics.ClassNeedsToBeInNamespace(
-                        attribute.Name
-                    ), @class.GetLocation())
-                );
-
-                return compilation;
-            }
-
-            ITypeSymbol? GetTargetType()
-            {
-                var detailViewActionInterface = @classSymbol.AllInterfaces
-                    .FirstOrDefault(i => i.OriginalDefinition.ToDisplayString() == "Xenial.IDetailViewAction<T>");
-
-                if (detailViewActionInterface is not null)
+                if (IsInGlobalNamespace(context, compilation, targetSymbol.Symbol, attribute.Name, @class.GetLocation(), out compilation))
                 {
-                    if (detailViewActionInterface.IsGenericType)
-                    {
-                        var targetType = detailViewActionInterface.TypeArguments.First();
-
-                        return targetType;
-                    }
+                    continue;
                 }
 
-                return null;
+                var attrib = GetXenialActionAttribute(targetSymbol.Symbol, attribute);
+
+                ITypeSymbol? GetTargetType()
+                {
+                    var detailViewActionInterface = targetSymbol.Symbol.AllInterfaces
+                        .FirstOrDefault(i => i.OriginalDefinition.ToDisplayString() == "Xenial.IDetailViewAction<T>");
+
+                    if (detailViewActionInterface is not null)
+                    {
+                        if (detailViewActionInterface.IsGenericType)
+                        {
+                            var targetType = detailViewActionInterface.TypeArguments.First();
+
+                            return targetType;
+                        }
+                    }
+
+                    return null;
+                }
+
+                var possibleCtors = targetSymbol.Symbol.InstanceConstructors
+                    //record copy constructor are implicitly declared
+                    .Where(ctor => !ctor.IsImplicitlyDeclared)
+                    .GroupBy(ctor => ctor.Parameters.Length)
+                    .Select(g => (lenght: g.Key, ctors: g.ToArray()))
+                    .OrderByDescending(g => g.lenght)
+                    .Select(g => g.ctors)
+                    .FirstOrDefault();
+
+                //TODO: error on conflicting ctor count
+                var possibleCtor = possibleCtors?.FirstOrDefault();
+
+                var executorMethod = @class.Members
+                    .OfType<MethodDeclarationSyntax>()
+                    .Where(method => method.Identifier.Text == "Execute")
+                    .FirstOrDefault();
+
+                var actionContext = new XenialActionGeneratorContext(
+                    targetSymbol.Symbol.ContainingNamespace,
+                    @class,
+                    targetSymbol.Symbol,
+                    attrib,
+                    GetTargetType(),
+                    possibleCtor,
+                    XenialMethodGeneratorContext.CreateContext(context, compilation.GetSemanticModel(@class.SyntaxTree), executorMethod)
+                );
+
+                collectedContexts.Add(actionContext);
             }
-
-            var possibleCtors = classSymbol.InstanceConstructors
-                //record copy constructor are implicitly declared
-                .Where(ctor => !ctor.IsImplicitlyDeclared)
-                .GroupBy(ctor => ctor.Parameters.Length)
-                .Select(g => (lenght: g.Key, ctors: g.ToArray()))
-                .OrderByDescending(g => g.lenght)
-                .Select(g => g.ctors)
-                .FirstOrDefault();
-
-            //TODO: error on conflicting ctor count
-            var possibleCtor = possibleCtors?.FirstOrDefault();
-
-            var executorMethod = @class.Members
-                .OfType<MethodDeclarationSyntax>()
-                .Where(method => method.Identifier.Text == "Execute")
-                .FirstOrDefault();
-
-            var actionContext = new XenialActionGeneratorContext(
-                @classSymbol.ContainingNamespace,
-                @class,
-                @classSymbol,
-                attrib,
-                GetTargetType(),
-                possibleCtor,
-                XenialMethodGeneratorContext.CreateContext(context, semanticModel, executorMethod)
-            );
-
-            collectedContexts.Add(actionContext);
         }
 
         foreach (var actionContext in collectedContexts)
@@ -647,32 +635,6 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
 
     private static AttributeData GetXenialActionAttribute(INamedTypeSymbol symbol, INamedTypeSymbol generateXenialActionAttribute)
         => symbol.GetAttribute(generateXenialActionAttribute);
-
-    private static (SemanticModel? semanticModel, INamedTypeSymbol? @classSymbol, bool isAttributeDeclared) TryGetTargetType(
-        GeneratorExecutionContext context,
-        Compilation compilation,
-        TypeDeclarationSyntax @class,
-        INamedTypeSymbol generateXenialImageNamesAttribute
-    )
-    {
-        var semanticModel = compilation.GetSemanticModel(@class.SyntaxTree);
-        if (semanticModel is null)
-        {
-            return (semanticModel, null, false);
-        }
-
-        var symbol = semanticModel.GetDeclaredSymbol(@class, context.CancellationToken);
-
-        if (symbol is null)
-        {
-            return (semanticModel, null, false);
-        }
-
-        var isAttributeDeclared = symbol.IsAttributeDeclared(generateXenialImageNamesAttribute);
-
-        return (semanticModel, symbol, isAttributeDeclared);
-    }
-
 }
 
 

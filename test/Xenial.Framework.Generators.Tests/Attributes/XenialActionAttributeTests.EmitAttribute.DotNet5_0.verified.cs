@@ -1,13 +1,10 @@
 ﻿//HintName: XenialActionAttribute.g.cs
 using System;
-
-using Xenial.ExpressApp;
-using Xenial.ExpressApp.Actions;
-using Xenial.ExpressApp.Templates;
-using Xenial.Persistent.Base;
+using System.Runtime.CompilerServices;
 
 namespace Xenial
 {
+    [CompilerGenerated]
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     internal sealed class XenialActionAttribute : Attribute
     {

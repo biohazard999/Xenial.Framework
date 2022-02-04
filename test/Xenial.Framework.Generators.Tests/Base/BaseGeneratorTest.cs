@@ -63,6 +63,8 @@ internal class BaseGeneratorTest
 
         driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out compilation, out var diagnositcs);
 
+        diagnositcs = compilation.GetDiagnostics().Concat(diagnositcs).ToImmutableArray();
+
         VerifyDiagnostics(diagnositcs, null);
     }
 

@@ -46,15 +46,12 @@ public record XenialActionAttributeGenerator(bool AddSources = true) : XenialAtt
         _ = syntaxWriter ?? throw new ArgumentNullException(nameof(syntaxWriter));
 
         syntaxWriter.WriteLine($"using System;");
-        syntaxWriter.WriteLine();
-        syntaxWriter.WriteLine("using Xenial.ExpressApp;");
-        syntaxWriter.WriteLine("using Xenial.ExpressApp.Actions;");
-        syntaxWriter.WriteLine("using Xenial.ExpressApp.Templates;");
-        syntaxWriter.WriteLine("using Xenial.Persistent.Base;");
+        syntaxWriter.WriteLine($"using System.Runtime.CompilerServices;");
         syntaxWriter.WriteLine();
 
         using (syntaxWriter.OpenBrace($"namespace {AttributeNamespace}"))
         {
+            syntaxWriter.WriteLine("[CompilerGenerated]");
             syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false)]");
             using (syntaxWriter.OpenBrace($"{visibility} sealed class {AttributeName} : Attribute"))
             {

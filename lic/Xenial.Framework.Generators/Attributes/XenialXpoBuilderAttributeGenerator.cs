@@ -14,11 +14,12 @@ public record XenialXpoBuilderAttributeGenerator(bool AddSources = true) : Xenia
         _ = syntaxWriter ?? throw new ArgumentNullException(nameof(syntaxWriter));
 
         syntaxWriter.WriteLine($"using System;");
-        syntaxWriter.WriteLine($"using System.ComponentModel;");
+        syntaxWriter.WriteLine($"using System.Runtime.CompilerServices;");
         syntaxWriter.WriteLine();
 
         using (syntaxWriter.OpenBrace($"namespace {XenialNamespace}"))
         {
+            syntaxWriter.WriteLine($"[CompilerGenerated]");
             syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]");
 
             using (syntaxWriter.OpenBrace($"{visibility} sealed class {AttributeName} : Attribute"))

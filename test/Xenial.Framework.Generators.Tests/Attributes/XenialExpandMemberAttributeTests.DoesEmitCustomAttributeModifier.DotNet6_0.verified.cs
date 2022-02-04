@@ -1,6 +1,5 @@
 ﻿//HintName: XenialExpandMemberAttribute.g.cs
 using System;
-using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Xenial

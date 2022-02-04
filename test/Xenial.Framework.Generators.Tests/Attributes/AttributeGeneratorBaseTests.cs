@@ -1,9 +1,11 @@
 ﻿
 using System;
-
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+
+using Microsoft.CodeAnalysis;
 
 using VerifyXunit;
 
@@ -38,12 +40,19 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
     protected TGenerator CreateGeneratorWithAddSources()
         => CreateTargetGenerator() with { AddSource = true };
 
+    protected virtual IEnumerable<PortableExecutableReference> AdditionalAssemblies() => Enumerable.Empty<PortableExecutableReference>();
+
     internal async Task RunTest(
         Func<AttributeGeneratorTestOptions<TGenerator>, AttributeGeneratorTestOptions<TGenerator>>? configureOptions = null,
         [CallerFilePath] string filePath = ""
     )
     {
         var options = new AttributeGeneratorTestOptions<TGenerator>(CreateGeneratorWithAddSources);
+
+        options = options with
+        {
+            ReferenceAssembliesProvider = o => o.ReferenceAssemblies.Concat(AdditionalAssemblies())
+        };
 
         if (configureOptions is not null)
         {
