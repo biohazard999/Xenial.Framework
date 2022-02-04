@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 using Xenial.Framework.Generators.Internal;
+using Xenial.Framework.Generators.Partial;
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators;

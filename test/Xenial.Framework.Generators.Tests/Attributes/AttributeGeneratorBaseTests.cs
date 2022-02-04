@@ -2,6 +2,7 @@
 using System;
 
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 using VerifyXunit;
@@ -37,7 +38,10 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
     protected TGenerator CreateGeneratorWithAddSources()
         => CreateTargetGenerator() with { AddSource = true };
 
-    internal async Task RunTest(Func<AttributeGeneratorTestOptions<TGenerator>, AttributeGeneratorTestOptions<TGenerator>>? configureOptions = null)
+    internal async Task RunTest(
+        Func<AttributeGeneratorTestOptions<TGenerator>, AttributeGeneratorTestOptions<TGenerator>>? configureOptions = null,
+        [CallerFilePath] string filePath = ""
+    )
     {
         var options = new AttributeGeneratorTestOptions<TGenerator>(CreateGeneratorWithAddSources);
 
@@ -69,7 +73,7 @@ public abstract class AttributeGeneratorBaseTests<TGenerator>
             BaseGeneratorTest.Compile((o) => options);
         }
 
-        await BaseGeneratorTest.RunTest((o) => options);
+        await BaseGeneratorTest.RunTest((o) => options, filePath);
     }
 
     [Fact]

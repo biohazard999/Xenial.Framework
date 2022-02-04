@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 using DevExpress.ExpressApp.DC;
@@ -10,36 +12,34 @@ using Microsoft.CodeAnalysis.CSharp;
 
 using VerifyXunit;
 
-using Xenial.Framework.Generators.Attributes;
+using Xenial.Framework.Generators.Partial;
 
 using Xunit;
 
-namespace Xenial.Framework.Generators.Tests;
+namespace Xenial.Framework.Generators.Tests.Generators;
 
 [UsesVerify]
-public class LayoutBuilderGeneratorTests : BaseGeneratorTests<XenialLayoutBuilderGenerator>
+public class LayoutBuilderGeneratorTests : PartialGeneratorTest<XenialLayoutBuilderGenerator>
 {
-    protected override XenialLayoutBuilderGenerator CreateTargetGenerator() => new();
+    protected override XenialLayoutBuilderGenerator CreateTargetGenerator()
+        => new();
 
-    protected override string GeneratorEmitProperty => new XenialExpandMemberAttributeGenerator().GenerateAttributeMSBuildProperty;
-
-    protected override IEnumerable<PortableExecutableReference> AdditionalReferences
-    {
-        get
+    public override Task RunSourceTest(string fileName, string source, [CallerFilePath] string filePath = "")
+        => RunTest(o => o with
         {
-            yield return MetadataReference.CreateFromFile(typeof(DomainComponentAttribute).Assembly.Location);
-            yield return MetadataReference.CreateFromFile(typeof(PersistentAttribute).Assembly.Location);
-            yield return MetadataReference.CreateFromFile(typeof(Xenial.Framework.Layouts.LayoutBuilder<>).Assembly.Location);
-        }
-    }
-
-    protected Task RunSourceTest(string fileName, string source, bool emitAttribute = false)
-        => RunTest(
-            options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), emitAttribute.ToString().ToLowerInvariant())),
-            syntaxTrees: () => new[]
+            SyntaxTrees = o => new[]
             {
-                BuildSyntaxTree(fileName, source)
-            });
+                o.BuildSyntaxTree(fileName, source)
+            },
+            ReferenceAssembliesProvider = o => o.ReferenceAssemblies.Concat(new[]
+            {
+                MetadataReference.CreateFromFile(typeof(DomainComponentAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(PersistentAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Xenial.Framework.Layouts.LayoutBuilder<>).Assembly.Location)
+            }),
+            Compile = false
+        }, filePath);
+
 
     [Fact]
     public Task DoesEmitDiagnosticIfNotPartial()
@@ -163,7 +163,7 @@ namespace MyProject
     [XenialExpandMember(Constants.Parent)]
     [XenialExpandMember(Constants._Parent.GrandParent)]
     public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
-}", true);
+}");
 
     [Fact]
     public Task DoesExpandComplexMemberTree2()
@@ -188,7 +188,7 @@ namespace MyProject
     [XenialExpandMember(Constants.Parent1)]
     [XenialExpandMember(Constants.Parent2)]
     public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
-}", true);
+}");
 
     [Fact]
     public Task DoesExpandComplexMemberTree3()
@@ -212,5 +212,5 @@ namespace MyProject
     [XenialExpandMember(Constants.Parent1)]
     [XenialExpandMember(Constants.Parent1)]
     public partial class TargetClassBuilder : LayoutBuilder<TargetClass> { }
-}", true);
+}");
 }

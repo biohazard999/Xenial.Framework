@@ -11,15 +11,22 @@ using Microsoft.CodeAnalysis.Text;
 
 using Xenial.Framework.Generators.Internal;
 using Xenial.Framework.MsBuild;
+using Xenial.Framework.Generators.Base;
 
-namespace Xenial.Framework.Generators;
+namespace Xenial.Framework.Generators.Partial;
 
-public record XenialLayoutBuilderGenerator(bool AddSource = true) : IXenialSourceGenerator
+public record XenialLayoutBuilderGenerator(bool AddSource = true) : XenialPartialGenerator(AddSource)
 {
     private const string layoutBuilderBaseType = "Xenial.Framework.Layouts.LayoutBuilder<TModelClass>";
     private const string layoutBuilderAttributeType = "Xenial.Framework.Layouts.DetailViewLayoutBuilderAttribute";
+    public XenialExpandMemberAttributeGenerator AttributeGenerator { get; } = new XenialExpandMemberAttributeGenerator(false);
 
-    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax)
+    public override IEnumerable<XenialAttributeGenerator> DependsOnGenerators => new[]
+    {
+        AttributeGenerator
+    };
+
+    public override bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax)
     {
         _ = typeDeclarationSyntax ?? throw new ArgumentNullException(nameof(typeDeclarationSyntax));
 
@@ -36,7 +43,7 @@ public record XenialLayoutBuilderGenerator(bool AddSource = true) : IXenialSourc
         return false;
     }
 
-    public Compilation Execute(
+    public override Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
         IList<TypeDeclarationSyntax> types,
@@ -181,6 +188,13 @@ public record XenialLayoutBuilderGenerator(bool AddSource = true) : IXenialSourc
             }
 
             compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles);
+
+            foreach (var syntaxTree in compilation.SyntaxTrees)
+            {
+                var str = syntaxTree.ToString();
+                Console.WriteLine(str);
+            }
+
 
             var layoutBuilderAttributeSymbol = compilation.GetTypeByMetadataName(layoutBuilderAttributeType);
 

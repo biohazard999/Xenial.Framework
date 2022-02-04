@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,7 +39,10 @@ public abstract class PartialGeneratorTest<TGenerator>
     protected TGenerator CreateGeneratorWithAddSources()
         => CreateTargetGenerator() with { AddSource = true };
 
-    internal async Task RunTest(Func<PartialGeneratorTestOptions<TGenerator>, PartialGeneratorTestOptions<TGenerator>>? configureOptions = null)
+    internal async Task RunTest(
+        Func<PartialGeneratorTestOptions<TGenerator>, PartialGeneratorTestOptions<TGenerator>>? configureOptions = null,
+        [CallerFilePath] string filePath = ""
+    )
     {
         var options = new PartialGeneratorTestOptions<TGenerator>(CreateGeneratorWithAddSources);
 
@@ -95,10 +99,10 @@ public abstract class PartialGeneratorTest<TGenerator>
             BaseGeneratorTest.Compile((o) => options);
         }
 
-        await BaseGeneratorTest.RunTest((o) => options);
+        await BaseGeneratorTest.RunTest((o) => options, filePath);
     }
 
-    public Task RunSourceTest(string fileName, string source)
+    public virtual Task RunSourceTest(string fileName, string source, [CallerFilePath] string filePath = "")
         => RunTest(o => o with
         {
             SyntaxTrees = o => new[]
@@ -106,9 +110,9 @@ public abstract class PartialGeneratorTest<TGenerator>
                 o.BuildSyntaxTree(fileName, source)
             },
             Compile = false
-        });
+        }, filePath);
 
-    public Task RunSourceTestWithAdditionalFiles(string fileName, string source, List<AdditionalFiles> additionalFiles)
+    public virtual Task RunSourceTestWithAdditionalFiles(string fileName, string source, List<AdditionalFiles> additionalFiles, [CallerFilePath] string filePath = "")
         => RunTest(options => options with
         {
             SyntaxTrees = o => new[]
@@ -117,6 +121,6 @@ public abstract class PartialGeneratorTest<TGenerator>
             },
             AdditionalFiles = additionalFiles,
             Compile = false
-        });
+        }, filePath);
 
 }

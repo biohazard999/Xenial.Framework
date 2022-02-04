@@ -19,7 +19,7 @@ public record GeneratorTestOptionsBase
 
     public Func<GeneratorTestOptionsBase, CSharpCompilation> CreateCompilation { get; set; } = options
         => CSharpCompilation.Create(options.CompilationName,
-            references: options.ReferenceAssemblies,
+            references: options.ReferenceAssembliesProvider(options),
             syntaxTrees: options.SyntaxTrees?.Invoke(options),
             //It's necessary to output as a DLL in order to get the compiler in a cooperative mood. 
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
@@ -37,8 +37,10 @@ public record GeneratorTestOptionsBase
         return generator;
     };
 
-    public IEnumerable<PortableExecutableReference> ReferenceAssemblies { get; set; }
-        = DefaultReferenceAssemblies;
+    public Func<GeneratorTestOptionsBase, IEnumerable<PortableExecutableReference>> ReferenceAssembliesProvider { get; set; }
+        = _ => DefaultReferenceAssemblies;
+
+    public IEnumerable<PortableExecutableReference> ReferenceAssemblies { get; set; } = DefaultReferenceAssemblies;
 
     public Func<GeneratorTestOptionsBase, IEnumerable<SyntaxTree>>? SyntaxTrees { get; set; }
 
