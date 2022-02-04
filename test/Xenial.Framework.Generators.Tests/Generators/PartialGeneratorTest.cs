@@ -97,4 +97,26 @@ public abstract class PartialGeneratorTest<TGenerator>
 
         await BaseGeneratorTest.RunTest((o) => options);
     }
+
+    public Task RunSourceTest(string fileName, string source)
+        => RunTest(o => o with
+        {
+            SyntaxTrees = o => new[]
+            {
+                o.BuildSyntaxTree(fileName, source)
+            },
+            Compile = false
+        });
+
+    public Task RunSourceTestWithAdditionalFiles(string fileName, string source, List<AdditionalFiles> additionalFiles)
+        => RunTest(options => options with
+        {
+            SyntaxTrees = o => new[]
+            {
+                o.BuildSyntaxTree(fileName, source)
+            },
+            AdditionalFiles = additionalFiles,
+            Compile = false
+        });
+
 }
