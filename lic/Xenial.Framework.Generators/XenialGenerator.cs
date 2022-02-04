@@ -14,6 +14,8 @@ namespace Xenial.Framework.Generators;
 [Generator]
 public record XenialGenerator(bool AddSources = true) : ISourceGenerator
 {
+    public XenialGenerator() : this(true) { }
+
     private const string xenialDebugSourceGenerators = "XenialDebugSourceGenerators";
 
     public IList<IXenialSourceGenerator> Generators { get; } = new List<IXenialSourceGenerator>
