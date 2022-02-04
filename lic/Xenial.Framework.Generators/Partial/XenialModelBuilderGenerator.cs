@@ -10,12 +10,12 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-using Xenial.Framework.Generators.Internal;
+using Xenial.Framework.Generators.Base;
 using Xenial.Framework.MsBuild;
 
-namespace Xenial.Framework.Generators;
+namespace Xenial.Framework.Generators.Partial;
 
-public record XenialModelBuilderGenerator(bool AddSource = true) : IXenialSourceGenerator
+public record XenialModelBuilderGenerator(bool AddSource = true) : XenialPartialGenerator(AddSource)
 {
     private const string xenialLayoutBuilderAttributeName = "XenialModelBuilderAttribute";
     private const string xenialNamespace = "Xenial";
@@ -24,7 +24,7 @@ public record XenialModelBuilderGenerator(bool AddSource = true) : IXenialSource
 
     private const string modelBuilderBaseType = "Xenial.Framework.ModelBuilders.ModelBuilder<TClassType>";
 
-    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax)
+    public override bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax)
     {
         _ = typeDeclarationSyntax ?? throw new ArgumentNullException(nameof(typeDeclarationSyntax));
 
@@ -41,7 +41,7 @@ public record XenialModelBuilderGenerator(bool AddSource = true) : IXenialSource
         return false;
     }
 
-    public Compilation Execute(
+    public override Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
         IList<TypeDeclarationSyntax> types,
