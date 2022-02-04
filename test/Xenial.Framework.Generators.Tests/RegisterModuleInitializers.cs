@@ -1,4 +1,6 @@
-﻿using VerifyTests;
+﻿using DiffEngine;
+
+using VerifyTests;
 
 namespace Xenial.Framework.Generators.Tests;
 
@@ -20,6 +22,7 @@ public static class RegisterModuleInitializers
         lock (locker)
         {
             wasCalled = true;
+            DiffTools.UseOrder(false, DiffTool.VisualStudioCode, DiffTool.VisualStudio);
             VerifySourceGenerators.Enable();
         }
     }
