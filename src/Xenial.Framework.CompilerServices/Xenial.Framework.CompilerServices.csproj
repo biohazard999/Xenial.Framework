@@ -18,6 +18,10 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <None Remove="build\Xenial.Framework.CompilerServices.props" />
     <None Remove="build\Xenial.Framework.CompilerServices.targets" />
   </ItemGroup>

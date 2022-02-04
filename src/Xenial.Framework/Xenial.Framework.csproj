@@ -16,7 +16,6 @@
     <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
-
   <ItemGroup>
     <Compile Update="**\*.Extension.cs">
       <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.Extension', '.cs'))</DependentUpon>
