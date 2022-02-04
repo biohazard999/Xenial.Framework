@@ -29,13 +29,13 @@ public record XenialGenerator(bool AddSources = true) : ISourceGenerator
         new XenialXpoBuilderAttributeGenerator(AddSources),
 
         //Generators
-        new XenialViewIdsGenerator(),
-        new XenialImageNamesGenerator(),
-        new XenialXpoBuilderGenerator(),
-        new XenialActionGenerator(new()),
-        new XenialModelBuilderGenerator(),
-        new XenialLayoutBuilderGenerator(),
-        new XenialColumnsBuilderGenerator(),
+        new XenialViewIdsGenerator(AddSources),
+        new XenialImageNamesGenerator(AddSources),
+        new XenialXpoBuilderGenerator(AddSources),
+        new XenialActionGenerator(new(),AddSources),
+        new XenialModelBuilderGenerator(AddSources),
+        new XenialLayoutBuilderGenerator(AddSources),
+        new XenialColumnsBuilderGenerator(AddSources),
     };
 
     public void Initialize(GeneratorInitializationContext context)
