@@ -28,8 +28,7 @@ public record GeneratorTestOptionsBase
     public Func<GeneratorTestOptionsBase, XenialGenerator> CreateGenerator { get; set; }
         = o => new();
 
-    public Func<GeneratorTestOptionsBase, IEnumerable<AdditionalFiles>> AdditionalFiles { get; set; }
-        = (o) => Enumerable.Empty<AdditionalFiles>();
+    public IEnumerable<AdditionalFiles> AdditionalFiles { get; set; } = Enumerable.Empty<AdditionalFiles>();
 
     public static Func<GeneratorTestOptionsBase, XenialGenerator> EmptyGenerator { get; } = (o) =>
     {
@@ -48,14 +47,13 @@ public record GeneratorTestOptionsBase
 
     public Func<GeneratorTestOptionsBase, MockAnalyzerConfigOptionsProvider>? MockOptions { get; set; }
 
-    public Func<IEnumerable<AdditionalText>> AdditionalTexts { get; set; } = () => Enumerable.Empty<AdditionalText>();
-
     public Func<GeneratorTestOptionsBase, XenialGenerator, GeneratorDriver> CreateDriver { get; set; }
         = (options, generator)
             => CSharpGeneratorDriver.Create(
                 new[] { generator },
                 optionsProvider: options.MockOptionsProvider,
-                additionalTexts: options.AdditionalTexts()
+                additionalTexts: options.AdditionalFiles
+                    .SelectMany(m => m.Files)
             );
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]

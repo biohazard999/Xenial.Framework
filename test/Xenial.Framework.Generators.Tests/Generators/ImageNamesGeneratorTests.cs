@@ -53,7 +53,7 @@ public class ImageNamesGeneratorTests : PartialGeneratorTest<XenialImageNamesGen
             {
                 o.BuildSyntaxTree(fileName, source)
             },
-            AdditionalFiles = _ => additionalFiles,
+            AdditionalFiles = additionalFiles,
             Compile = false
         });
 

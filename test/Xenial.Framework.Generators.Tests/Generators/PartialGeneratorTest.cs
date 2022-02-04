@@ -73,27 +73,20 @@ public abstract class PartialGeneratorTest<TGenerator>
             }
         };
 
-        var additionalFiles = options.AdditionalFiles(options).ToList();
+        var additionalFiles = options.AdditionalFiles.ToList();
 
         var optionsProvider = options.MockOptionsProvider;
-
-        var additionalTexts = Enumerable.Empty<AdditionalText>().ToList();
 
         foreach (var additionalFile in additionalFiles)
         {
             optionsProvider = optionsProvider.WithAdditionalTreeOptions(
-                additionalFiles.ToImmutableDictionary(k => (object)k, _ => (AnalyzerConfigOptions)new MockAnalyzerConfigOptions($"build_metadata.AdditionalFiles.{additionalFile.Key}", "true"))
+                additionalFile.Files.ToImmutableDictionary(k => (object)k, _ => (AnalyzerConfigOptions)new MockAnalyzerConfigOptions($"build_metadata.AdditionalFiles.{additionalFile.Key}", "true"))
             );
-
-            additionalTexts = additionalTexts
-                .Concat(additionalFile.Files)
-                .ToList();
         }
 
         options = options with
         {
-            MockOptionsProvider = optionsProvider,
-            AdditionalTexts = () => additionalTexts
+            MockOptionsProvider = optionsProvider
         };
 
 
