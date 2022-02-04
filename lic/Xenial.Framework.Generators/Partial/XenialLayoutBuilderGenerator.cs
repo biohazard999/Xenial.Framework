@@ -189,13 +189,6 @@ public record XenialLayoutBuilderGenerator(bool AddSource = true) : XenialPartia
 
             compilation = AddGeneratedCode(context, compilation, @class, builder, addedSourceFiles);
 
-            foreach (var syntaxTree in compilation.SyntaxTrees)
-            {
-                var str = syntaxTree.ToString();
-                Console.WriteLine(str);
-            }
-
-
             var layoutBuilderAttributeSymbol = compilation.GetTypeByMetadataName(layoutBuilderAttributeType);
 
             if (layoutBuilderAttributeSymbol is not null)

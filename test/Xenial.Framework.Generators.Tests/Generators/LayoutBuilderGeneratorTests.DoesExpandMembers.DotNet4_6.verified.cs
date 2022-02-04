@@ -26,3 +26,24 @@ namespace MyProject
         }
     }
 }
+namespace MyProject
+{
+    partial class TargetClassBuilder
+    {
+        private partial struct Constants
+        {
+            public partial struct _Parent
+            {
+                public const string Parents = "Parent.Parents";
+            }
+        }
+        
+        private partial struct Editor
+        {
+            public partial struct _Parent
+            {
+                public static LayoutPropertyEditorItem Parents { get { return LayoutPropertyEditorItem.Create("Parent.Parents"); } }
+            }
+        }
+    }
+}
