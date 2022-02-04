@@ -21,6 +21,8 @@ public record PartialGeneratorTestOptions<TTargetGenerator> : GeneratorTestOptio
     public PartialGeneratorTestOptions(Func<TTargetGenerator> createTargetGenerator) : base(createTargetGenerator)
     {
     }
+
+    public Func<TTargetGenerator, TTargetGenerator> PrepareGenerator { get; set; } = g => g;
 }
 
 
@@ -54,6 +56,11 @@ public abstract class PartialGeneratorTest<TGenerator>
         options = options with
         {
             TargetGenerator = options.AddSources ? CreateGeneratorWithAddSources() : CreateGeneratorWithoutAddSources()
+        };
+
+        options = options with
+        {
+            TargetGenerator = options.PrepareGenerator(options.TargetGenerator)
         };
 
         options = options with

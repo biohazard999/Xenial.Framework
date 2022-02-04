@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis.CSharp;
@@ -8,37 +9,33 @@ using VerifyTests;
 
 using VerifyXunit;
 
+using Xenial.Framework.Generators.Partial;
+using Xenial.Framework.Generators.Tests.Generators;
+
 using Xunit;
 
-namespace Xenial.Framework.Generators.Tests;
+namespace Xenial.Framework.Generators.Tests.Generators;
 
 [UsesVerify]
-public class ActionsGeneratorTests : BaseGeneratorTests<XenialActionGenerator>
+public class ActionsGeneratorTests : PartialGeneratorTest<XenialActionGenerator>
 {
     private static XenialActionGeneratorOutputOptions OnlyController => new(Attribute: false, PartialBuddy: false, Controller: true);
     private static XenialActionGeneratorOutputOptions OnlyDiagnostics => new(Attribute: false, PartialBuddy: false, Controller: false);
     private static XenialActionGeneratorOutputOptions PartialBuddyAndController => new(Attribute: false, PartialBuddy: true, Controller: true);
 
     protected override XenialActionGenerator CreateTargetGenerator() => new(new());
-    protected override string GeneratorEmitProperty => XenialActionGenerator.GenerateXenialActionAttributeMSBuildProperty;
 
-    protected Task RunSourceTest(string fileName, string source, Action<VerifySettings>? verifySettings = null, XenialActionGeneratorOutputOptions? outputOptions = null)
-        => RunTest(
-            options => options.WithGlobalOptions(new MockAnalyzerConfigOptions(BuildProperty(GeneratorEmitProperty), "false")),
-            compilationOptions: compilation => compilation.AddInlineXenialActionsAttribute(),
-            syntaxTrees: () => new[]
+    public Task RunSourceTest(string fileName, string source, Action<VerifySettings>? verifySettings = null, XenialActionGeneratorOutputOptions? outputOptions = null, [CallerFilePath] string filePath = "")
+        => RunTest(o => o with
+        {
+            SyntaxTrees = o => new[]
             {
-                BuildSyntaxTree(fileName, source)
+                o.BuildSyntaxTree(fileName, source)
             },
-            verifySettings: verifySettings,
-            prepareGenerator: gen =>
-            {
-                if (outputOptions is null)
-                {
-                    return gen;
-                }
-                return new XenialActionGenerator(outputOptions);
-            });
+            PrepareGenerator = o => o with { OutputOptions = outputOptions ?? o.OutputOptions },
+            VerifySettings = (o, settings) => verifySettings?.Invoke(settings),
+            Compile = false
+        }, filePath);
 
     [Fact]
     public Task WarnsIfClassIsNotPartial()
@@ -253,15 +250,4 @@ $@"namespace MyActions
     //    ["TargetObjectsCriteriaMode"] = "XenialTargetObjectsCriteriaMode", //
     //    ["TargetObjectsCriteria"] = "XenialTargetObjectsCriteriaMode", //
     //};
-
-}
-
-internal static partial class CompilationHelpers
-{
-    public static CSharpCompilation AddInlineXenialActionsAttribute(this CSharpCompilation compilation, string visibility = "internal")
-    {
-        (_, var syntaxTree) = XenialActionGenerator.GenerateXenialActionsAttribute(visibility: visibility);
-
-        return compilation.AddSyntaxTrees(syntaxTree);
-    }
 }

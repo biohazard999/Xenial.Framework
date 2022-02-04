@@ -11,10 +11,11 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-using Xenial.Framework.Generators.Internal;
+using Xenial.Framework.Generators.Attributes;
+using Xenial.Framework.Generators.Base;
 using Xenial.Framework.MsBuild;
 
-namespace Xenial.Framework.Generators;
+namespace Xenial.Framework.Generators.Partial;
 
 public record XenialActionGeneratorOutputOptions(
     bool Attribute = true,
@@ -22,14 +23,17 @@ public record XenialActionGeneratorOutputOptions(
     bool Controller = true
 );
 
-public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOptions, bool AddSource = true) : IXenialSourceGenerator
+public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOptions, bool AddSource = true)
+     : XenialPartialGenerator(AddSource)
 {
-    private const string xenialActionAttributeName = "XenialActionAttribute";
-    private const string xenialNamespace = "Xenial";
-    private const string xenialActionAttributeFullName = $"{xenialNamespace}.{xenialActionAttributeName}";
-    public const string GenerateXenialActionAttributeMSBuildProperty = $"Generate{xenialActionAttributeName}";
+    public static XenialActionAttributeGenerator AttributeGenerator { get; } = new XenialActionAttributeGenerator(false);
 
-    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
+    public override IEnumerable<XenialAttributeGenerator> DependsOnGenerators => new[]
+    {
+        AttributeGenerator
+    };
+
+    public override bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
 
     private record XenialMethodGeneratorContext(
         MethodDeclarationSyntax Syntax,
@@ -85,7 +89,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 context.ReportDiagnostic(
                     Diagnostic.Create(
                         GeneratorDiagnostics.ClassNeedsToBeInNamespace(
-                        xenialActionAttributeName
+                        AttributeGenerator.AttributeName
                     ), Class.GetLocation())
                 );
 
@@ -100,7 +104,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 context.ReportDiagnostic(
                     Diagnostic.Create(
                         GeneratorDiagnostics.ClassShouldBePartial(
-                        xenialActionAttributeName
+                        AttributeGenerator.AttributeName
                     ), Class.GetLocation())
                 );
 
@@ -115,7 +119,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 context.ReportDiagnostic(
                     Diagnostic.Create(
                         GeneratorDiagnostics.ConflictingAttributes(
-                        xenialActionAttributeName,
+                        AttributeGenerator.AttributeName,
                         new[] { "Category", "PredefinedCategory" }
                     ), Class.GetLocation())
                 );
@@ -125,7 +129,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 context.ReportDiagnostic(
                     Diagnostic.Create(
                         GeneratorDiagnostics.ConflictingAttributes(
-                        xenialActionAttributeName,
+                        AttributeGenerator.AttributeName,
                         new[] { "TargetViewId", "TargetViewIds" }
                     ), Class.GetLocation())
                 );
@@ -134,7 +138,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
         }
     }
 
-    public Compilation Execute(
+    public override Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
         IList<TypeDeclarationSyntax> types,
@@ -145,15 +149,12 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
         _ = types ?? throw new ArgumentNullException(nameof(types));
         _ = addedSourceFiles ?? throw new ArgumentNullException(nameof(addedSourceFiles));
 
-        compilation = GenerateAttribute(context, compilation);
-
-        var generateXenialActionAttribute = compilation.GetTypeByMetadataName(xenialActionAttributeFullName);
-
-        if (generateXenialActionAttribute is null)
+        if (!FindAttributeFromGenerator(compilation, AttributeGenerator, out compilation))
         {
-            //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
             return compilation;
         }
+
+        var attribute = GetAttributeFromGenerator(compilation, AttributeGenerator);
 
         var collectedContexts = new List<XenialActionGeneratorContext>();
 
@@ -161,13 +162,13 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
         {
             context.CancellationToken.ThrowIfCancellationRequested();
 
-            var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, generateXenialActionAttribute);
+            var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, attribute);
             if (!isAttributeDeclared || semanticModel is null || @classSymbol is null)
             {
                 continue;
             }
 
-            var @attribute = GetXenialActionAttribute(@classSymbol, generateXenialActionAttribute);
+            var attrib = GetXenialActionAttribute(@classSymbol, attribute);
 
             var isGlobalNamespace = classSymbol.ContainingNamespace.ToString() == "<global namespace>";
             if (isGlobalNamespace)
@@ -175,7 +176,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 context.ReportDiagnostic(
                     Diagnostic.Create(
                         GeneratorDiagnostics.ClassNeedsToBeInNamespace(
-                        xenialActionAttributeName
+                        attribute.Name
                     ), @class.GetLocation())
                 );
 
@@ -221,7 +222,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 @classSymbol.ContainingNamespace,
                 @class,
                 @classSymbol,
-                attribute,
+                attrib,
                 GetTargetType(),
                 possibleCtor,
                 XenialMethodGeneratorContext.CreateContext(context, semanticModel, executorMethod)
@@ -405,7 +406,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
                 builder.WriteLine($"this.{actionName} = new DevExpress.ExpressApp.Actions.SimpleAction(this, \"{actionId}\", {category});");
                 builder.WriteLine($"this.{actionName}.SelectionDependencyType = DevExpress.ExpressApp.Actions.SelectionDependencyType.RequireSingleObject;");
 
-                foreach (var mappingAttribute in actionAttributeNames.Where(m => !new[]
+                foreach (var mappingAttribute in XenialActionAttributeGenerator.ActionAttributeNames.Where(m => !new[]
                 {
                         "Id",
                         "Category",
@@ -598,118 +599,6 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
         }
     }
 
-    private static Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation)
-    {
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialActionAttributeMSBuildProperty}", out var generateXenialActionAttrStr))
-        {
-            if (bool.TryParse(generateXenialActionAttrStr, out var generateXenialActionAttr))
-            {
-                if (!generateXenialActionAttr)
-                {
-                    return compilation;
-                }
-            }
-            else
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            GenerateXenialActionAttributeMSBuildProperty,
-                            generateXenialActionAttrStr
-                        )
-                        , null
-                    ));
-
-                return compilation;
-            }
-        }
-
-        var (source, syntaxTree) = GenerateXenialActionsAttribute(
-            (CSharpParseOptions)context.ParseOptions,
-            context.GetDefaultAttributeModifier(),
-            context.CancellationToken
-        );
-
-        var hintName = $"{xenialActionAttributeName}.g.cs";
-
-        context.AddSource(hintName, source);
-
-        return compilation.AddSyntaxTrees(syntaxTree);
-    }
-
-    private static readonly Dictionary<string, string> actionAttributeNames = new()
-    {
-        ["Caption"] = "string",
-        ["ImageName"] = "string",
-        ["Category"] = "string",
-        ["DiagnosticInfo"] = "string",
-        ["Id"] = "string",
-        ["TargetViewId"] = "string",
-        ["TargetViewIds"] = "string[]",
-        ["TargetObjectsCriteria"] = "string",
-        ["ConfirmationMessage"] = "string",
-        ["ToolTip"] = "string",
-        ["Shortcut"] = "string",
-
-        ["TargetObjectType"] = "Type",
-        ["TypeOfView"] = "Type",
-
-        ["QuickAccess"] = "bool",
-
-        ["Tag"] = "object",
-
-        ["PredefinedCategory"] = "XenialPredefinedCategory",
-        ["SelectionDependencyType"] = "XenialSelectionDependencyType",
-        ["ActionMeaning"] = "XenialActionMeaning",
-        ["TargetViewType"] = "XenialViewType",
-        ["TargetViewNesting"] = "XenialNesting",
-        ["TargetObjectsCriteriaMode"] = "XenialTargetObjectsCriteriaMode",
-        ["PaintStyle"] = "XenialActionItemPaintStyle",
-    };
-
-    public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialActionsAttribute(
-        CSharpParseOptions? parseOptions = null,
-        string visibility = "internal",
-        CancellationToken cancellationToken = default
-    )
-    {
-        parseOptions = parseOptions ?? CSharpParseOptions.Default;
-        var builder = CurlyIndenter.Create();
-
-        builder.WriteLine($"using System;");
-        builder.WriteLine();
-        builder.WriteLine("using Xenial.ExpressApp;");
-        builder.WriteLine("using Xenial.ExpressApp.Actions;");
-        builder.WriteLine("using Xenial.ExpressApp.Templates;");
-        builder.WriteLine("using Xenial.Persistent.Base;");
-        builder.WriteLine();
-
-        using (builder.OpenBrace($"namespace {xenialNamespace}"))
-        {
-            builder.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false)]");
-            using (builder.OpenBrace($"{visibility} sealed class {xenialActionAttributeName} : Attribute"))
-            {
-                builder.WriteLine($"{visibility} {xenialActionAttributeName}() {{ }}");
-
-                foreach (var actionAttributePair in actionAttributeNames)
-                {
-                    builder.WriteLine($"public {actionAttributePair.Value} {actionAttributePair.Key} {{ get; set; }}");
-                }
-            }
-
-            builder.WriteLine();
-
-            builder.WriteLine($"{visibility} interface IDetailViewAction<T> {{ }}");
-            builder.WriteLine();
-            builder.WriteLine($"{visibility} interface IListViewAction<T> {{ }}");
-        }
-
-        var syntax = builder.ToString();
-        var source = SourceText.From(syntax, Encoding.UTF8);
-        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
-        return (source, syntaxTree);
-    }
-
     private static Compilation AddGeneratedCode(
         GeneratorExecutionContext context,
         Compilation compilation,
@@ -748,7 +637,7 @@ public record XenialActionGenerator(XenialActionGeneratorOutputOptions OutputOpt
         context.ReportDiagnostic(
             Diagnostic.Create(
                 GeneratorDiagnostics.ConflictingClasses(
-                    xenialActionAttributeName,
+                    AttributeGenerator.AttributeName,
                     @class.ToString()
                 ), @class.GetLocation()
             ));

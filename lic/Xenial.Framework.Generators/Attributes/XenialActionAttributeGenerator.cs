@@ -10,7 +10,7 @@ public record XenialActionAttributeGenerator(bool AddSources = true) : XenialAtt
 {
     public override string AttributeName => "XenialActionAttribute";
 
-    private static readonly Dictionary<string, string> actionAttributeNames = new()
+    public static readonly Dictionary<string, string> ActionAttributeNames = new()
     {
         ["Caption"] = "string",
         ["ImageName"] = "string",
@@ -60,7 +60,7 @@ public record XenialActionAttributeGenerator(bool AddSources = true) : XenialAtt
             {
                 syntaxWriter.WriteLine($"{visibility} {AttributeName}() {{ }}");
 
-                foreach (var actionAttributePair in actionAttributeNames)
+                foreach (var actionAttributePair in ActionAttributeNames)
                 {
                     syntaxWriter.WriteLine($"public {actionAttributePair.Value} {actionAttributePair.Key} {{ get; set; }}");
                 }
