@@ -12,7 +12,6 @@ using Microsoft.CodeAnalysis.Text;
 
 using Xenial.Framework.Generators.Attributes;
 using Xenial.Framework.Generators.Base;
-using Xenial.Framework.Generators.Internal;
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators.Partial;

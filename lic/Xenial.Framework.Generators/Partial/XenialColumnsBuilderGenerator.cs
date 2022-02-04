@@ -10,17 +10,16 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-using Xenial.Framework.Generators.Internal;
-using Xenial.Framework.Generators.Partial;
 using Xenial.Framework.MsBuild;
+using Xenial.Framework.Generators.Base;
 
-namespace Xenial.Framework.Generators;
+namespace Xenial.Framework.Generators.Partial;
 
-public record XenialColumnsBuilderGenerator(bool AddSource = true) : IXenialSourceGenerator
+public record XenialColumnsBuilderGenerator(bool AddSource = true) : XenialPartialGenerator(AddSource)
 {
     private const string columnsBuilderBaseType = "Xenial.Framework.Layouts.ColumnsBuilder<TModelClass>";
 
-    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax)
+    public override bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax)
     {
         _ = typeDeclarationSyntax ?? throw new ArgumentNullException(nameof(typeDeclarationSyntax));
 
@@ -37,7 +36,7 @@ public record XenialColumnsBuilderGenerator(bool AddSource = true) : IXenialSour
         return false;
     }
 
-    public Compilation Execute(
+    public override Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
         IList<TypeDeclarationSyntax> types,
@@ -146,30 +145,6 @@ public record XenialColumnsBuilderGenerator(bool AddSource = true) : IXenialSour
                 ////We also don't need to specify the visibility for partial types
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
-                    //using (builder.OpenBrace("private struct PropertyIdentifier"))
-                    //{
-                    //    builder.WriteLine("private string propertyName;");
-                    //    builder.WriteLine("public string PropertyName { get { return this.propertyName; } }");
-                    //    builder.WriteLine();
-
-                    //    using (builder.OpenBrace("private PropertyIdentifier(string propertyName)"))
-                    //    {
-                    //        builder.WriteLine("this.propertyName = propertyName;");
-                    //    }
-                    //    builder.WriteLine();
-
-                    //    using (builder.OpenBrace("public static implicit operator string(PropertyIdentifier identifier)"))
-                    //    {
-                    //        builder.WriteLine("return identifier.PropertyName;");
-                    //    }
-                    //    builder.WriteLine();
-
-                    //    using (builder.OpenBrace("public static PropertyIdentifier Create(string propertyName)"))
-                    //    {
-                    //        builder.WriteLine("return new PropertyIdentifier(propertyName);");
-                    //    }
-                    //}
-
                     if (XenialLayoutBuilderGenerator.GetAllProperties(targetType).Any())
                     {
                         builder.WriteLine();
@@ -180,12 +155,6 @@ public record XenialColumnsBuilderGenerator(bool AddSource = true) : IXenialSour
                             WritePropertyConstants(builder, properties, Enumerable.Empty<string>());
                         }
                         builder.WriteLine();
-
-                        //using (builder.OpenBrace("private partial struct Property"))
-                        //{
-                        //    WritePropertyConstants(builder, properties, Enumerable.Empty<string>());
-                        //}
-                        //builder.WriteLine();
 
                         using (builder.OpenBrace("private partial struct Column"))
                         {
@@ -341,19 +310,6 @@ public record XenialColumnsBuilderGenerator(bool AddSource = true) : IXenialSour
         {
             var value = ToPropertyTrain(prefix, property.Name);
             builder.WriteLine($"public const string {property.Name} = \"{value}\";");
-        }
-    }
-
-    private static void WritePropertyIdentitfiers(
-        CurlyIndenter builder,
-        IEnumerable<IPropertySymbol> properties,
-        IEnumerable<string> prefix
-    )
-    {
-        foreach (var property in properties)
-        {
-            var value = ToPropertyTrain(prefix, property.Name);
-            builder.WriteLine($"public static PropertyIdentifier {property.Name} {{ get {{ return PropertyIdentifier.Create(\"{value}\"); }} }}");
         }
     }
 
