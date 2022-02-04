@@ -10,7 +10,6 @@ using VerifyTests;
 using VerifyXunit;
 
 using Xenial.Framework.Generators.Partial;
-using Xenial.Framework.Generators.Tests.Generators;
 
 using Xunit;
 

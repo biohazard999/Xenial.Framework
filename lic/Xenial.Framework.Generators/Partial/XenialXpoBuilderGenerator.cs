@@ -11,24 +11,24 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-using Xenial.Framework.Generators.Internal;
+using Xenial.Framework.Generators.Attributes;
+using Xenial.Framework.Generators.Base;
 using Xenial.Framework.MsBuild;
 
-namespace Xenial.Framework.Generators;
+namespace Xenial.Framework.Generators.Partial;
 
-public record XenialXpoBuilderGenerator(bool AddSource = true) : IXenialSourceGenerator
+public record XenialXpoBuilderGenerator(bool AddSource = true) : XenialPartialGenerator(AddSource)
 {
-    private const string xenialXpoBuilderAttributeName = "XenialXpoBuilderAttribute";
-    private const string xenialNamespace = "Xenial";
-    private const string xenialXpoBuilderAttributeFullName = $"{xenialNamespace}.{xenialXpoBuilderAttributeName}";
-    public const string GenerateXenialXpoBuilderAttributeMSBuildProperty = $"Generate{xenialXpoBuilderAttributeName}";
+    public XenialXpoBuilderAttributeGenerator AttributeGenerator { get; } = new XenialXpoBuilderAttributeGenerator(false);
+
+    public override IEnumerable<XenialAttributeGenerator> DependsOnGenerators => new[] { AttributeGenerator };
 
     private const string fullQualifiedXpoPersistentAttribute = "DevExpress.Xpo.PersistentAttribute";
     private const string fullQualifiedXpoNonPersistentAttribute = "DevExpress.Xpo.NonPersistentAttribute";
 
-    public bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
+    public override bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax) => false;
 
-    public Compilation Execute(
+    public override Compilation Execute(
         GeneratorExecutionContext context,
         Compilation compilation,
         IList<TypeDeclarationSyntax> types,
@@ -41,15 +41,12 @@ public record XenialXpoBuilderGenerator(bool AddSource = true) : IXenialSourceGe
 
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        compilation = GenerateAttribute(context, compilation);
-
-        var generateXenialXpoBuilderAttribute = compilation.GetTypeByMetadataName(xenialXpoBuilderAttributeFullName);
-
-        if (generateXenialXpoBuilderAttribute is null)
+        if (!FindAttributeFromGenerator(compilation, AttributeGenerator, out compilation))
         {
-            //TODO: Warning Diagnostics for either setting the right MSBuild properties or referencing `Xenial.Framework.CompilerServices`
             return compilation;
         }
+
+        var attribute = GetAttributeFromGenerator(compilation, AttributeGenerator);
 
         var builders = new Dictionary<INamedTypeSymbol, string>(SymbolEqualityComparer.Default);
 
@@ -57,13 +54,13 @@ public record XenialXpoBuilderGenerator(bool AddSource = true) : IXenialSourceGe
         {
             context.CancellationToken.ThrowIfCancellationRequested();
 
-            var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, generateXenialXpoBuilderAttribute);
+            var (semanticModel, @classSymbol, isAttributeDeclared) = TryGetTargetType(context, compilation, @class, attribute);
             if (!isAttributeDeclared || semanticModel is null || @classSymbol is null)
             {
                 continue;
             }
 
-            var @attribute = GetXenialAttribute(@classSymbol, generateXenialXpoBuilderAttribute);
+            var attrib = GetXenialAttribute(@classSymbol, attribute);
 
             var builder = CurlyIndenter.Create();
 
@@ -79,7 +76,7 @@ public record XenialXpoBuilderGenerator(bool AddSource = true) : IXenialSourceGe
                 context.ReportDiagnostic(
                     Diagnostic.Create(
                         GeneratorDiagnostics.ClassNeedsToBeInNamespace(
-                        xenialXpoBuilderAttributeName
+                        attribute.Name
                     ), @class.GetLocation())
                 );
 
@@ -94,7 +91,7 @@ public record XenialXpoBuilderGenerator(bool AddSource = true) : IXenialSourceGe
                 builders,
                 @class,
                 classSymbol,
-                generateXenialXpoBuilderAttribute
+                attribute
             );
         }
 
@@ -656,85 +653,4 @@ public record XenialXpoBuilderGenerator(bool AddSource = true) : IXenialSourceGe
 
     private static AttributeData GetXenialAttribute(INamedTypeSymbol symbol, INamedTypeSymbol generateXenialViewIdsAttribubute)
         => symbol.GetAttribute(generateXenialViewIdsAttribubute);
-
-    private static Compilation GenerateAttribute(GeneratorExecutionContext context, Compilation compilation)
-    {
-        if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateXenialXpoBuilderAttributeMSBuildProperty}", out var generateXenialViewIdsAttrStr))
-        {
-            if (bool.TryParse(generateXenialViewIdsAttrStr, out var generateXenialViewIdsAttr))
-            {
-                if (!generateXenialViewIdsAttr)
-                {
-                    return compilation;
-                }
-            }
-            else
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        GeneratorDiagnostics.InvalidBooleanMsBuildProperty(
-                            GenerateXenialXpoBuilderAttributeMSBuildProperty,
-                            generateXenialViewIdsAttrStr
-                        )
-                        , null
-                    ));
-                return compilation;
-            }
-        }
-
-        var (source, syntaxTree) = GenerateXenialXpoBuilderAttribute(
-            (CSharpParseOptions)context.ParseOptions,
-            context.GetDefaultAttributeModifier(),
-            context.CancellationToken
-        );
-
-        context.AddSource($"{xenialXpoBuilderAttributeName}.g.cs", source);
-
-        return compilation.AddSyntaxTrees(syntaxTree);
-    }
-
-    public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialXpoBuilderAttribute(
-        CSharpParseOptions? parseOptions = null,
-        string visibility = "internal",
-        CancellationToken cancellationToken = default)
-    {
-        parseOptions = parseOptions ?? CSharpParseOptions.Default;
-
-        var syntaxWriter = CurlyIndenter.Create();
-
-        syntaxWriter.WriteLine($"using System;");
-        syntaxWriter.WriteLine($"using System.ComponentModel;");
-        syntaxWriter.WriteLine();
-
-        using (syntaxWriter.OpenBrace($"namespace {xenialNamespace}"))
-        {
-            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]");
-
-            //using (syntaxWriter.OpenBrace($"{visibility} sealed class {xenialXpoBuilderAttributeName} : Attribute"))
-            //{
-            //    syntaxWriter.WriteLine($"public Type TargetType {{ get; private set; }}");
-            //    syntaxWriter.WriteLine();
-
-            //    using (syntaxWriter.OpenBrace($"{visibility} {xenialXpoBuilderAttributeName}(Type targetType)"))
-            //    {
-            //        syntaxWriter.WriteLine("this.TargetType = targetType;");
-            //    }
-            //}
-            using (syntaxWriter.OpenBrace($"{visibility} sealed class {xenialXpoBuilderAttributeName} : Attribute"))
-            {
-                //syntaxWriter.WriteLine($"public Type TargetType {{ get; private set; }}");
-                //syntaxWriter.WriteLine();
-
-                //using (syntaxWriter.OpenBrace($"{visibility} {xenialXpoBuilderAttributeName}(Type targetType)"))
-                //{
-                //    syntaxWriter.WriteLine("this.TargetType = targetType;");
-                //}
-            }
-        }
-
-        var syntax = syntaxWriter.ToString();
-        var source = SourceText.From(syntax, Encoding.UTF8);
-        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
-        return (source, syntaxTree);
-    }
 }
