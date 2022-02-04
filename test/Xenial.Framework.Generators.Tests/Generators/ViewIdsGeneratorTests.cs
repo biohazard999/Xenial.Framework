@@ -14,11 +14,10 @@ using VerifyXunit;
 
 using Xenial.Framework.Base;
 using Xenial.Framework.Generators.Partial;
-using Xenial.Framework.Generators.Tests.Generators;
 
 using Xunit;
 
-namespace Xenial.Framework.Generators.Tests;
+namespace Xenial.Framework.Generators.Tests.Generators;
 
 [UsesVerify]
 public class ViewIdsGeneratorTests : PartialGeneratorTest<XenialViewIdsGenerator>
