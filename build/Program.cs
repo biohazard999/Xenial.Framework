@@ -173,8 +173,12 @@ namespace Xenial.Build
                 () => RunAsync("dotnet", $"rimraf . -i **/bin/**/*.* -i **/obj/**/*.* -i artifacts/**/*.* -e node_modules/**/*.* -e build/**/*.* -e artifacts/**/.gitkeep -q")
             );
 
-            Target("ncrunch:lic", DependsOn("ensure-tools:ncrunch"),
+            Target("ncrunch:lic", DependsOn("ensure-tools:ncrunch", "restore:lic"),
                 () => RunAsync(ncrunchPath, $"./lic/Xenial.Framework.Licensing.sln  -NCrunchCacheStoragePath tmp/ncrunch /T /o artifacts/ncrunch/Xenial.Framework.Licensing")
+            );
+
+            Target("restore:lic", DependsOn("ensure-tools"),
+                () => RunAsync("dotnet", $"restore ./lic/Xenial.Framework.Licensing.sln")
             );
 
             Target("build:lic", DependsOn("ensure-tools"),
@@ -207,7 +211,7 @@ namespace Xenial.Build
                 () => RunAsync("dotnet", $"build {sln} --no-restore -c {Configuration} {logOptions("build")} {GetProperties()}")
             );
 
-            Target("ncrunch:sln", DependsOn("ensure-tools:ncrunch"),
+            Target("ncrunch:sln", DependsOn("ensure-tools:ncrunch", "restore"),
                 () => RunAsync(ncrunchPath, $"{sln} -NCrunchCacheStoragePath tmp/ncrunch /T /o artifacts/ncrunch/Xenial.Framework")
             );
 
