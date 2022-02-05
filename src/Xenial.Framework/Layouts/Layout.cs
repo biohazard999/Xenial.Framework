@@ -49,6 +49,22 @@ public partial class LayoutBuilder<TModelClass> : LayoutBuilder
 
     public LayoutPropertyEditorItem PropertyEditor<TProperty>(Expression<Func<TModelClass, TProperty>> expression, Action<LayoutPropertyEditorItem> configurePropertyEditor)
         => LayoutPropertyEditorItem.Create(ExpressionHelper.Property(expression), configurePropertyEditor);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public LayoutStaticTextItem StaticTextItem(string text)
+        => new(text);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="imageName"></param>
+    /// <returns></returns>
+    public LayoutStaticImageItem StaticImageItem(string imageName)
+        => new(imageName);
 }
 
 /// <summary>

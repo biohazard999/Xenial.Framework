@@ -13,6 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Xenial.Framework\Xenial.Framework.csproj" />
   </ItemGroup>
   

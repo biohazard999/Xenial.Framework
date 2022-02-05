@@ -72,18 +72,6 @@ public partial class ModelDetailViewLayoutNodesGeneratorUpdater
 
     }
 
-    internal interface IViewItemFactory
-    {
-        IModelViewItem? CreateViewItem(IModelViewItems modelViewItems, LayoutItemLeaf layoutItemLeaf);
-    }
-
-    internal interface IViewItemFactory<TModelViewItem, TLayoutItemLeaf>
-        where TModelViewItem : IModelViewItem
-        where TLayoutItemLeaf : LayoutItemLeaf
-    {
-        TModelViewItem? CreateViewItem(IModelViewItems modelViewItems, TLayoutItemLeaf layoutItemLeaf);
-    }
-
     internal interface IModelViewLayoutElementFactory
     {
         bool Handles(LayoutItemNode layoutItemNode);

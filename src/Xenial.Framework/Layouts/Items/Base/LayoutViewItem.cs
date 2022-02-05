@@ -43,6 +43,14 @@ public abstract partial record LayoutViewItem : LayoutItemLeaf
     protected LayoutViewItem(string viewItemId)
         => (ViewItemId, Id) = (viewItemId, Slugifier.GenerateSlug(viewItemId));
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="viewItemId"></param>
+    /// <returns></returns>
+    protected static string Sluggify(string viewItemId)
+        => DefaultSlugifier.GenerateSlug(viewItemId);
+
     private string? caption;
 
     internal bool WasCaptionSet { get; set; }
