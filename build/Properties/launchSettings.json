@@ -4,6 +4,16 @@
       "commandName": "Project",
       "commandLineArgs": "lic -s",
       "workingDirectory": "..\\"
+    },
+    "Xenial.Build:ensure-tools:ncrunch": {
+      "commandName": "Project",
+      "commandLineArgs": "lic ensure-tools:ncrunch",
+      "workingDirectory": "..\\"
+    },
+    "Xenial.Build:ncrunch:lic": {
+      "commandName": "Project",
+      "commandLineArgs": "lic ncrunch:lic",
+      "workingDirectory": "..\\"
     }
   }
 }

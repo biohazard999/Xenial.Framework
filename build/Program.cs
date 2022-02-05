@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+
+using AngleSharp.Html.Parser;
 
 using GlobExpressions;
 
@@ -54,6 +57,7 @@ namespace Xenial.Build
 
             var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
             var isTagged = !string.IsNullOrWhiteSpace(tagName);
+            var ncrunchPath = "";
 
             Console.WriteLine($"Is platform windows? {RuntimeInformation.IsOSPlatform(OSPlatform.Windows)}");
             Console.WriteLine($"Platform: {System.Environment.OSVersion.Platform}");
@@ -76,10 +80,105 @@ namespace Xenial.Build
                 ["XenialDebug"] = false.ToString()
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
-            Target("ensure-tools", () => EnsureTools());
+            Target("ensure-tools:nuget", () => EnsureTools());
+
+            Target("ensure-tools:ncrunch", async () =>
+            {
+                var toolsDir = "./tmp/tools";
+                var toolsPath = $"{toolsDir}/ncrunch.console";
+                static string FindNCrunch(string toolsPath)
+                {
+                    var files = Directory.GetFiles(toolsPath, "NCrunch.exe", SearchOption.AllDirectories);
+                    if (files.Length > 0)
+                    {
+                        var ncrunchPath = files[0].Replace("\\", "/");
+                        Console.WriteLine($"Path NCrunch.Console: {ncrunchPath}");
+                        return ncrunchPath;
+                    }
+                    return null;
+                }
+                ncrunchPath = FindNCrunch(toolsDir);
+                if (ncrunchPath is not null)
+                {
+                    return;
+                }
+
+                using var client = new HttpClient();
+                var response = await client.GetStringAsync(new Uri("https://www.ncrunch.net/download/"));
+                static async Task<string> GetConsoleDownloadLink(HttpClient client, string response)
+                {
+                    var parser = new HtmlParser();
+                    var document = await parser.ParseDocumentAsync(response);
+                    var elements = document.QuerySelectorAll(".otherInstallerBox");
+
+                    foreach (var element in elements)
+                    {
+                        var header = element.QuerySelector("h1.header");
+                        if (header is not null && header.TextContent.Contains("Console Tool"))
+                        {
+                            var versionInfoElement = element.QuerySelector("span.inverseDownloadButton");
+                            if (versionInfoElement is not null && versionInfoElement.HasAttribute("onclick"))
+                            {
+                                var onClickHandler = versionInfoElement.GetAttribute("onclick");
+                                if (!string.IsNullOrEmpty(onClickHandler))
+                                {
+                                    var items = onClickHandler.Split(",");
+                                    if (items.Length >= 2)
+                                    {
+                                        var ncrunchVersion = items[1].Trim().Trim('\'');
+
+                                        var versionUri = $"https://www.ncrunch.net/download/getZip?version={ncrunchVersion}&vs=console";
+
+                                        response = await client.GetStringAsync(new Uri(versionUri));
+                                        document = await parser.ParseDocumentAsync(response);
+                                        var iframe = document.GetElementById("downloadFrame");
+                                        if (iframe is not null && iframe.HasAttribute("src"))
+                                        {
+                                            return iframe.GetAttribute("src");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return null;
+                }
+
+                var downloadLink = await GetConsoleDownloadLink(client, response);
+                if (!string.IsNullOrEmpty(downloadLink))
+                {
+                    Console.WriteLine($"Found NCrunch.Console: {downloadLink}");
+                    Console.WriteLine($"Downloading NCrunch.Console");
+                    var zipFile = await client.GetByteArrayAsync(new Uri(downloadLink));
+
+                    var downloadDir = "./tmp/downloads";
+                    var targetFileName = $"{downloadDir}/ncrunch.console.zip";
+
+                    Console.WriteLine($"Saving NCrunch.Console: {targetFileName}");
+                    await File.WriteAllBytesAsync(targetFileName, zipFile);
+
+                    Console.WriteLine($"Extracting NCrunch.Console: {toolsPath}");
+                    using var stream = File.OpenRead(targetFileName);
+                    using var zipArchive = new ZipArchive(stream, ZipArchiveMode.Read);
+                    zipArchive.ExtractToDirectory(toolsPath, true);
+                    stream.Close();
+
+                    ncrunchPath = FindNCrunch(toolsPath);
+                }
+            });
+
+            Target("ensure-tools", DependsOn("ensure-tools:ncrunch"));
 
             Target("clean", DependsOn("ensure-tools"),
                 () => RunAsync("dotnet", $"rimraf . -i **/bin/**/*.* -i **/obj/**/*.* -i artifacts/**/*.* -e node_modules/**/*.* -e build/**/*.* -e artifacts/**/.gitkeep -q")
+            );
+
+            Target("ncrunch:lic", DependsOn("ensure-tools:ncrunch", "restore:lic"),
+                () => RunAsync(ncrunchPath, $"./lic/Xenial.Framework.Licensing.sln  -NCrunchCacheStoragePath tmp/ncrunch /T /o artifacts/ncrunch/Xenial.Framework.Licensing")
+            );
+
+            Target("restore:lic", DependsOn("ensure-tools"),
+                () => RunAsync("dotnet", $"restore ./lic/Xenial.Framework.Licensing.sln")
             );
 
             Target("build:lic", DependsOn("ensure-tools"),
@@ -93,7 +192,6 @@ namespace Xenial.Build
             Target("pack:lic", DependsOn("ensure-tools", "build:lic", "test:lic"),
                 () => RunAsync("dotnet", $"pack ./lic/Xenial.Framework.Licensing.sln  -c {Configuration} {logOptions("pack:lic")} {GetProperties()}")
             );
-
 
             Target("lint", DependsOn("pack:lic", "ensure-tools"),
                 //TODO: Linting is currently failing
@@ -111,6 +209,10 @@ namespace Xenial.Build
 
             Target("build", DependsOn("restore"),
                 () => RunAsync("dotnet", $"build {sln} --no-restore -c {Configuration} {logOptions("build")} {GetProperties()}")
+            );
+
+            Target("ncrunch:sln", DependsOn("ensure-tools:ncrunch", "restore"),
+                () => RunAsync(ncrunchPath, $"{sln} -NCrunchCacheStoragePath tmp/ncrunch /T /o artifacts/ncrunch/Xenial.Framework")
             );
 
             Target("build:debug", DependsOn("restore"),
@@ -197,7 +299,7 @@ namespace Xenial.Build
             );
 
             Target("pack:zip", DependsOn("pack:nuget"),
-                async () =>
+                () =>
                 {
                     if (isTagged)
                     {
@@ -435,6 +537,8 @@ namespace Xenial.Build
                             );
                 }
             });
+
+            Target("ncrunch", DependsOn("ncrunch:lic", "ncrunch:sln"));
 
             Target("ci", DependsOn("publish:Xenial.FeatureCenter.Win", "publish:framework.featurecenter.xenial.io"));
             Target("ci:full", DependsOn("ci", "docs"));
