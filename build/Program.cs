@@ -97,7 +97,7 @@ namespace Xenial.Build
                     }
                     return null;
                 }
-                ncrunchPath = FindNCrunch(toolsPath);
+                ncrunchPath = FindNCrunch(toolsDir);
                 if (ncrunchPath is not null)
                 {
                     return;
