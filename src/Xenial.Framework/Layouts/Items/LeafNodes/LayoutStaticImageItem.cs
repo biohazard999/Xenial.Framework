@@ -34,7 +34,7 @@ public partial record LayoutStaticImageItem : LayoutViewItem
     ///
     /// <param name="imageName">    Name of the image. </param>
 
-    public LayoutStaticImageItem(string imageName) : this(imageName, Sluggify(imageName)) { }
+    public LayoutStaticImageItem(string imageName) : this(imageName, imageName) { }
 
     /// <summary>
     /// 

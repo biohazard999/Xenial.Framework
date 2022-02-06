@@ -32,19 +32,19 @@ public class LayoutViewItemTests
 
 public class LayoutViewItemBusinessObject
 {
-    public string MyString { get; set; }
+    //public string MyString { get; set; }
 }
 
 public partial class LayoutViewItemBusinessObjectLayoutBuilder : LayoutBuilder<LayoutViewItemBusinessObject>
 {
     public Layout BuildLayout() => new()
     {
-        Editor.MyString,
-        Editor.MyString with
-        {
-            Caption = "My Caption 2"
-        },
+        //Editor.MyString,
+        //Editor.MyString with
+        //{
+        //    Caption = "My Caption 2"
+        //},
         StaticTextItem("This is a text"),
-        StaticImageItem("BO_Customer")
+        //StaticImageItem("BO_Customer")
     };
 }

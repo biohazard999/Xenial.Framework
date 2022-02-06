@@ -31,11 +31,12 @@ public partial record LayoutStaticTextItem : LayoutViewItem
     /// </summary>
     ///
     /// <param name="text"> The text. </param>
-    public LayoutStaticTextItem(string text) : this(text, Sluggify(text)) { }
+    public LayoutStaticTextItem(string text) : this(text, text) { }
 
     /// <summary>
     /// 
     /// </summary>
+    /// 
     /// <param name="text"></param>
     /// <param name="id"></param>
     public LayoutStaticTextItem(string text, string id) : base(id)
