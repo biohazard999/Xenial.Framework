@@ -173,25 +173,6 @@ public interface IDetailViewOptionsExtensions
     /// <returns></returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     IEnumerable<IDetailViewOptionsExtension> AsEnumerable();
-
-    /// <inheritdoc />
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    bool Equals(object obj);
-
-    /// <inheritdoc />
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    int GetHashCode();
-
-    /// <inheritdoc />
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    string ToString();
-
-    /// <summary>Gets the <see cref="System.Type"/> of the current instance.</summary>
-    /// <returns>The <see cref="System.Type"/> instance that represents the exact runtime
-    /// type of the current instance.</returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "By Design")]
-    Type GetType();
 }
 
 /// <summary>
