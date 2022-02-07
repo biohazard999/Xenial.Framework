@@ -87,9 +87,33 @@ public static class DetailViewOptionsExt
 }
 
 /// <summary>
+/// Common base class for Option classes.
+/// </summary>
+public abstract class OptionsBase
+{
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => base.Equals(obj);
+
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => base.GetHashCode();
+
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override string ToString() => base.ToString();
+
+    /// <summary>Gets the <see cref="System.Type"/> of the current instance.</summary>
+    /// <returns>The <see cref="System.Type"/> instance that represents the exact runtime
+    /// type of the current instance.</returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public new Type GetType() => base.GetType();
+}
+
+/// <summary>
 /// 
 /// </summary>
-public sealed class DetailViewOptionsExtensions : IDetailViewOptionsExtensions
+public sealed class DetailViewOptionsExtensions : OptionsBase, IDetailViewOptionsExtensions
 {
     private readonly List<IDetailViewOptionsExtension> extensions = new();
 
