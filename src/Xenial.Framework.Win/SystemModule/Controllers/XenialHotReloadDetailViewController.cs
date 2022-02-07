@@ -104,8 +104,8 @@ public sealed class XenialHotReloadDetailViewController : ViewController
 
         if (view.Model is IModelDetailView detailView && application is WinApplication winApplication && winApplication.MainWindow is WinWindow winWindow)
         {
-            var itemsBuilder = new ModelDetailViewLayoutModelDetailViewItemsNodesGenerator();
-            var builder = new ModelDetailViewLayoutNodesGeneratorUpdater();
+            var itemsBuilder = new XenialModelDetailViewItemsNodesGenerator();
+            var builder = new XenialDetailViewLayoutNodesGeneratorUpdater();
 
             var imageName = detailView.ImageName;
 

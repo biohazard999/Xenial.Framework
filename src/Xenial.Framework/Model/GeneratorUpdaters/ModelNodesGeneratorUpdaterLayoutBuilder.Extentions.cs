@@ -23,8 +23,8 @@ public static partial class ModelNodesGeneratorUpdatersExtentions
     {
         _ = updaters ?? throw new ArgumentNullException(nameof(updaters));
 
-        updaters.Add(new ModelDetailViewLayoutModelDetailViewItemsNodesGenerator());
-        updaters.Add(new ModelDetailViewLayoutNodesGeneratorUpdater());
+        updaters.Add(new XenialModelDetailViewItemsNodesGenerator());
+        updaters.Add(new XenialDetailViewLayoutNodesGeneratorUpdater());
 
         return updaters;
     }

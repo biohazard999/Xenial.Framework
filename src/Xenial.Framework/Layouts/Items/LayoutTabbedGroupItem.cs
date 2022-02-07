@@ -1,13 +1,11 @@
-﻿using System;
-
+﻿
 using DevExpress.ExpressApp.Layout;
+
 using DevExpress.ExpressApp.Model;
-using DevExpress.Utils;
+
+using System;
 
 using Xenial.Framework.Layouts.Items.Base;
-using Xenial.Framework.Layouts.Items.PubTernal;
-
-using Locations = DevExpress.Persistent.Base.Locations;
 
 #pragma warning disable CA1710 //Rename Type to end in Collection -> By Design
 #pragma warning disable CA2227 //Collection fields should not have a setter: By Design
