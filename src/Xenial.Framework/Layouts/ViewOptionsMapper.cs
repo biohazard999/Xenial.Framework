@@ -15,7 +15,7 @@ internal partial class ViewOptionsMapper
 {
     partial void MapNodeCore(DetailViewOptions from, IModelDetailView to)
     {
-        foreach (var option in from.ExtensionsCollection)
+        foreach (var option in from.ExtensionsCollection.AsEnumerable())
         {
             MappingFactory.Factory.MapDetailViewOptions(option, to);
         }

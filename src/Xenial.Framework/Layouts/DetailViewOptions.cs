@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.SystemModule;
 
 namespace Xenial.Framework.Layouts;
 
@@ -86,10 +87,73 @@ public static class DetailViewOptionsExt
 /// <summary>
 /// 
 /// </summary>
-public sealed class DetailViewOptionsExtensions : List<IDetailViewOptionsExtension> { }
+public sealed class DetailViewOptionsExtensions
+{
+    private readonly List<IDetailViewOptionsExtension> extensions = new();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="extension"></param>
+    internal void Add(IDetailViewOptionsExtension extension)
+        => extensions.Add(extension ?? throw new ArgumentNullException(nameof(extension)));
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="extensions"></param>
+    internal void AddRange(IEnumerable<IDetailViewOptionsExtension> extensions)
+    {
+        _ = extensions ?? throw new ArgumentNullException(nameof(extensions));
+        foreach (var extension in extensions)
+        {
+            Add(extension);
+        }
+    }
+
+    internal IEnumerable<IDetailViewOptionsExtension> AsEnumerable()
+        => extensions;
+
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => base.Equals(obj);
+
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => base.GetHashCode();
+
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override string ToString() => base.ToString();
+
+    /// <summary>Gets the <see cref="System.Type"/> of the current instance.</summary>
+    /// <returns>The <see cref="System.Type"/> instance that represents the exact runtime
+    /// type of the current instance.</returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public new Type GetType() => base.GetType();
+}
 
 /// <summary>
 /// 
 /// </summary>
-public interface IDetailViewOptionsExtension { }
+public interface IDetailViewOptionsExtension
+{
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    bool Equals(object obj);
+
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    int GetHashCode();
+
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    string ToString();
+
+    /// <summary>Gets the <see cref="System.Type"/> of the current instance.</summary>
+    /// <returns>The <see cref="System.Type"/> instance that represents the exact runtime
+    /// type of the current instance.</returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "By Design")]
+    Type GetType();
+}
 
