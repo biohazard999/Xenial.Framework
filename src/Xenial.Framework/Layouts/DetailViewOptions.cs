@@ -89,31 +89,32 @@ public static class DetailViewOptionsExt
 /// <summary>
 /// Common base class for Option classes.
 /// </summary>
-public abstract class OptionsBase
+[EditorBrowsable(EditorBrowsableState.Never)]
+public abstract class FluentInterface : IFluentInterface
 {
     /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override bool Equals(object obj) => base.Equals(obj);
+    bool IFluentInterface.Equals(object obj) => base.Equals(obj);
 
     /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override int GetHashCode() => base.GetHashCode();
+    int IFluentInterface.GetHashCode() => base.GetHashCode();
 
     /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override string ToString() => base.ToString();
+    string IFluentInterface.ToString() => base.ToString();
 
     /// <summary>Gets the <see cref="System.Type"/> of the current instance.</summary>
     /// <returns>The <see cref="System.Type"/> instance that represents the exact runtime
     /// type of the current instance.</returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public new Type GetType() => base.GetType();
+    Type IFluentInterface.GetType() => GetType();
 }
 
 /// <summary>
 /// 
 /// </summary>
-public sealed class DetailViewOptionsExtensions : OptionsBase, IDetailViewOptionsExtensions
+public sealed class DetailViewOptionsExtensions : FluentInterface, IDetailViewOptionsExtensions
 {
     private readonly List<IDetailViewOptionsExtension> extensions = new();
 
@@ -147,11 +148,48 @@ public sealed class DetailViewOptionsExtensions : OptionsBase, IDetailViewOption
         => extensions;
 }
 
+/// <summary>
+/// Interface that is used to build fluent interfaces by hiding methods declared by <see cref="object"/> from IntelliSense.
+/// </summary>
+/// <remarks>
+/// Code that consumes implementations of this interface should expect one of two things:
+/// <list type = "number">
+///   <item>When referencing the interface from within the same solution (project reference), you will still see the methods this interface is meant to hide.</item>
+///   <item>When referencing the interface through the compiled output assembly (external reference), the standard Object methods will be hidden as intended.</item>
+///   <item>When using Resharper, be sure to configure it to respect the attribute: Options, go to Environment | IntelliSense | Completion Appearance and check "Filter members by [EditorBrowsable] attribute".</item>
+/// </list>
+/// See https://kzu.github.io/IFluentInterface for more information.
+/// </remarks>
+///	<nuget id="IFluentInterface" />
+[EditorBrowsable(EditorBrowsableState.Never)]
+public interface IFluentInterface
+{
+    /// <summary>
+    /// Redeclaration that hides the <see cref="object.GetType()"/> method from IntelliSense.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    Type GetType();
+    /// <summary>
+    /// Redeclaration that hides the <see cref="object.GetHashCode()"/> method from IntelliSense.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    int GetHashCode();
+    /// <summary>
+    /// Redeclaration that hides the <see cref="object.ToString()"/> method from IntelliSense.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    string ToString();
+    /// <summary>
+    /// Redeclaration that hides the <see cref="object.Equals(object)"/> method from IntelliSense.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    bool Equals(object obj);
+}
 
 /// <summary>
 /// 
 /// </summary>
-public interface IDetailViewOptionsExtensions
+public interface IDetailViewOptionsExtensions : IFluentInterface
 {
     /// <summary>
     /// 
