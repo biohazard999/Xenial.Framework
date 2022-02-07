@@ -20,7 +20,24 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
         nameof(IModelActionContainerViewItem.ActionContainer)
     }
 )]
-public partial record LayoutActionContainerItem(string ActionContainerId)
-    : LayoutViewItem(ActionContainerId)
+public partial record LayoutActionContainerItem : LayoutViewItem
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public string ActionContainerId { get; init; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="actionContainerId"></param>
+    public LayoutActionContainerItem(string actionContainerId) : this(actionContainerId, actionContainerId) { }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="actionContainerId"></param>
+    /// <param name="id"></param>
+    public LayoutActionContainerItem(string actionContainerId, string id) : base(id)
+        => ActionContainerId = actionContainerId;
 }
