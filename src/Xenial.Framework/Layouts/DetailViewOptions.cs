@@ -34,17 +34,19 @@ namespace Xenial.Framework.Layouts;
 //)]
 public partial record DetailViewOptions
 {
-    private Action<DetailViewOptionsExtensions>? extensions;
+    private Action<IDetailViewOptionsExtensions>? extensions;
 
     /// <summary>
     /// 
     /// </summary>
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public DetailViewOptionsExtensions ExtensionsCollection { get; private set; } = new();
 
     /// <summary>
     /// 
     /// </summary>
-    public Action<DetailViewOptionsExtensions>? Extensions
+    public Action<IDetailViewOptionsExtensions>? Extensions
     {
         get => extensions;
         set
@@ -74,11 +76,11 @@ public static class DetailViewOptionsExt
     /// <param name="options"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static DetailViewOptionsExtensions Generic(this DetailViewOptionsExtensions list, GenericDetailViewOptions options)
+    public static IDetailViewOptionsExtensions Generic(this IDetailViewOptionsExtensions list, GenericDetailViewOptions options)
     {
         _ = list ?? throw new ArgumentNullException(nameof(list));
         _ = options ?? throw new ArgumentNullException(nameof(options));
-        list.Add(options);
+        ((DetailViewOptionsExtensions)list).Add(options);
 
         return list;
     }
@@ -87,7 +89,7 @@ public static class DetailViewOptionsExt
 /// <summary>
 /// 
 /// </summary>
-public sealed class DetailViewOptionsExtensions
+public sealed class DetailViewOptionsExtensions : IDetailViewOptionsExtensions
 {
     private readonly List<IDetailViewOptionsExtension> extensions = new();
 
@@ -112,24 +114,32 @@ public sealed class DetailViewOptionsExtensions
 
     internal IEnumerable<IDetailViewOptionsExtension> AsEnumerable()
         => extensions;
+}
+
+
+/// <summary>
+/// 
+/// </summary>
+public interface IDetailViewOptionsExtensions
+{
+    /// <inheritdoc />
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    bool Equals(object obj);
 
     /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override bool Equals(object obj) => base.Equals(obj);
+    int GetHashCode();
 
     /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override int GetHashCode() => base.GetHashCode();
-
-    /// <inheritdoc />
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public override string ToString() => base.ToString();
+    string ToString();
 
     /// <summary>Gets the <see cref="System.Type"/> of the current instance.</summary>
     /// <returns>The <see cref="System.Type"/> instance that represents the exact runtime
     /// type of the current instance.</returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public new Type GetType() => base.GetType();
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "By Design")]
+    Type GetType();
 }
 
 /// <summary>
