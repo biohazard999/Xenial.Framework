@@ -87,34 +87,9 @@ public static class DetailViewOptionsExt
 }
 
 /// <summary>
-/// Common base class for Option classes.
-/// </summary>
-[EditorBrowsable(EditorBrowsableState.Never)]
-public abstract class FluentInterface
-{
-    /// <inheritdoc />
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public bool Equals(object obj) => base.Equals(obj);
-
-    /// <inheritdoc />
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public int GetHashCode() => base.GetHashCode();
-
-    /// <inheritdoc />
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public string ToString() => base.ToString();
-
-    /// <summary>Gets the <see cref="System.Type"/> of the current instance.</summary>
-    /// <returns>The <see cref="System.Type"/> instance that represents the exact runtime
-    /// type of the current instance.</returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public Type GetType() => GetType();
-}
-
-/// <summary>
 /// 
 /// </summary>
-public sealed class DetailViewOptionsExtensions : FluentInterface, IDetailViewOptionsExtensions
+public sealed class DetailViewOptionsExtensions : IDetailViewOptionsExtensions
 {
     private readonly List<IDetailViewOptionsExtension> extensions = new();
 
