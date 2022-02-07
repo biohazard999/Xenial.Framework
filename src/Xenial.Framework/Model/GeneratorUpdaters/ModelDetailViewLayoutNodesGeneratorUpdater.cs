@@ -21,160 +21,125 @@ namespace Xenial.Framework.Model.GeneratorUpdaters;
 /// <summary>
 /// 
 /// </summary>
+/// <param name="items"></param>
+/// <param name="layoutItemLeaf"></param>
+/// <returns></returns>
+public delegate IModelViewItem CreateViewItem(IModelViewItems items, LayoutViewItem layoutItemLeaf);
+
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="T"></typeparam>
+/// <param name="items"></param>
+/// <param name="layoutItemLeaf"></param>
+/// <returns></returns>
+public delegate IModelViewItem CreateViewItem<T>(IModelViewItems items, T layoutItemLeaf)
+    where T : LayoutViewItem;
+
+/// <summary>
+/// 
+/// </summary>
 [XenialCheckLicense]
 public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenerator : ModelNodesGeneratorUpdater<ModelDetailViewItemsNodesGenerator>
 {
-
-    internal interface IViewItemFactory
+    internal class NodeBuilderFactory
     {
-        bool Handles(LayoutViewItem layoutItemNode);
-        IModelViewItem? CreateViewItem(IModelViewItems modelViewItems, LayoutViewItem layoutItemLeaf);
-    }
-    internal class NodeBuilderFactory : IViewItemFactory
-    {
-        private readonly Dictionary<Type, Lazy<IViewItemFactory>> modelViewLayoutElementFactories
-            = new Dictionary<Type, Lazy<IViewItemFactory>>();
+        internal Dictionary<Type, CreateViewItem> ViewItemFactory { get; } = new();
 
-        internal NodeBuilderFactory Register<TLayoutItemNode, TModelViewLayoutElementFactory>(Func<TModelViewLayoutElementFactory> functor)
-            where TLayoutItemNode : LayoutItemNode
-            where TModelViewLayoutElementFactory : IViewItemFactory
+        internal NodeBuilderFactory Register<TViewItem>(CreateViewItem<TViewItem> factory)
+            where TViewItem : LayoutViewItem
         {
-            modelViewLayoutElementFactories[typeof(TLayoutItemNode)] = new Lazy<IViewItemFactory>(() => functor());
-
+            ViewItemFactory[typeof(TViewItem)] = (items, item) => factory(items, (TViewItem)item);
             return this;
         }
 
-        bool IViewItemFactory.Handles(LayoutViewItem layoutItemNode) => true;
-
-        private IViewItemFactory? FindFactory(Type? type)
+        private CreateViewItem? FindFactory(Type? type)
         {
             if (type is null)
             {
                 return null;
             }
-            if (modelViewLayoutElementFactories.TryGetValue(type, out var modelViewLayoutElementFactory))
+            if (ViewItemFactory.TryGetValue(type, out var modelViewLayoutElementFactory))
             {
-                return modelViewLayoutElementFactory.Value;
+                return modelViewLayoutElementFactory;
             }
             return FindFactory(type.GetBaseType());
         }
 
-        public IModelViewItem? CreateViewItem(IModelViewItems parentNode, LayoutViewItem layoutItemNode)
+        internal IModelViewItem? CreateViewItem(IModelViewItems parentNode, LayoutViewItem layoutItemNode)
         {
             var builder = FindFactory(layoutItemNode.GetType());
+
             if (builder is not null)
             {
-                if (builder.Handles(layoutItemNode))
-                {
-                    return builder.CreateViewItem(parentNode, layoutItemNode);
-                }
+                return builder(parentNode, layoutItemNode);
             }
 
             return null;
         }
-
     }
 
-    internal interface IViewItemFactory<TModelViewItem, TLayoutItemLeaf>
-        where TModelViewItem : IModelViewItem
-        where TLayoutItemLeaf : LayoutItemLeaf
-    {
-        TModelViewItem? CreateViewItem(IModelViewItems modelViewItems, TLayoutItemLeaf layoutItemLeaf);
-    }
+    private static MemberEditorInfoCalculator MemberEditorInfoCalculator { get; } = new();
 
     private readonly NodeBuilderFactory nodeBuilderFactory
         = new NodeBuilderFactory()
-            .Register<LayoutPropertyEditorItem, LayoutPropertyEditorItemBuilder>(() => new())
-            .Register<LayoutStaticTextItem, LayoutStaticTextItemBuilder>(() => new())
-            .Register<LayoutStaticImageItem, LayoutStaticImageItemBuilder>(() => new())
-            .Register<LayoutActionContainerItem, LayoutActionContainerItemBuilder>(() => new())
-        //.Register<LayoutEmptySpaceItem, EmptySpaceItemBuilder>(() => new EmptySpaceItemBuilder())
-        //.Register<LayoutViewItem, LayoutViewItemBuilder>(() => new LayoutViewItemBuilder())
-        ;
+            .Register<LayoutPropertyEditorItem>((viewItems, layoutItemNode) =>
+            {
+                var viewItem = viewItems.AddNode<IModelPropertyEditor>(layoutItemNode.Id);
+                viewItem.PropertyName = layoutItemNode.ViewItemId;
 
+                //For whatever reason we need to reset the editor here
+                viewItem.ClearValue(nameof(viewItem.PropertyEditorType));
 
+                if (!string.IsNullOrEmpty(layoutItemNode.EditorAlias))
+                {
+                    viewItem.PropertyEditorType
+                        = MemberEditorInfoCalculator.GetEditorType(
+                            viewItem.ModelMember,
+                            layoutItemNode.EditorAlias
+                    );
+                }
 
-    private MemberEditorInfoCalculator MemberEditorInfoCalculator { get; } = new();
+                return viewItem;
+            })
+            .Register<LayoutStaticTextItem>((viewItems, layoutItemNode) =>
+            {
+                var newViewItem = viewItems.AddNode<IModelStaticText>(layoutItemNode.Id);
+
+                newViewItem.Text = layoutItemNode.Text;
+
+                return newViewItem;
+            })
+            .Register<LayoutStaticImageItem>((viewItems, layoutItemNode) =>
+            {
+                var newViewItem = viewItems.AddNode<IModelStaticImage>(layoutItemNode.Id);
+
+                newViewItem.ImageName = layoutItemNode.ImageName;
+
+                return newViewItem;
+            })
+            .Register<LayoutActionContainerItem>((viewItems, layoutItemNode) =>
+            {
+                var newViewItem = viewItems.AddNode<IModelActionContainerViewItem>(layoutItemNode.Id);
+
+                if (viewItems.Application.ActionDesign is IModelActionToContainerMapping modelActionToContainerMapping)
+                {
+                    newViewItem.ActionContainer = modelActionToContainerMapping[layoutItemNode.ActionContainerId];
+                }
+
+                return newViewItem;
+            })
+            .Register<LayoutDashboardViewItem>((viewItems, layoutItemNode) =>
+            {
+                var newViewItem = viewItems.AddNode<IModelDashboardViewItem>(layoutItemNode.Id);
+
+                newViewItem.View = viewItems.Application.Views.FirstOrDefault(m => m.Id == layoutItemNode.DashboardViewId);
+
+                return newViewItem;
+            });
+
 
     private static readonly ViewItemMapper itemMapper = new();
-
-    internal abstract class ModelViewItemFactory<TModelViewLayoutElement, TLayoutItemNode> : IViewItemFactory
-       where TModelViewLayoutElement : IModelViewItem
-       where TLayoutItemNode : LayoutViewItem
-    {
-        bool IViewItemFactory.Handles(LayoutViewItem layoutItemNode) => layoutItemNode is TLayoutItemNode;
-
-        IModelViewItem? IViewItemFactory.CreateViewItem(IModelViewItems modelViewItems, LayoutViewItem layoutItemLeaf)
-        {
-            if (layoutItemLeaf is TLayoutItemNode tLayoutItemNode)
-            {
-                return CreateViewItem(modelViewItems, tLayoutItemNode);
-            }
-            return null;
-        }
-
-        /// <summary>   Creates view layout element. </summary>
-        ///
-        /// <param name="parentNode">       The parent node. </param>
-        /// <param name="layoutItemNode">   The layout item node. </param>
-        ///
-        /// <returns>   The new view layout element. </returns>
-
-        protected abstract TModelViewLayoutElement? CreateViewItem(IModelNode parentNode, TLayoutItemNode layoutItemNode);
-    }
-
-    internal class LayoutPropertyEditorItemBuilder : ModelViewItemFactory<IModelPropertyEditor, LayoutPropertyEditorItem>
-    {
-        protected override IModelPropertyEditor? CreateViewItem(IModelNode viewItems, LayoutPropertyEditorItem layoutItemNode)
-        {
-            var newViewItem = viewItems.AddNode<IModelPropertyEditor>(layoutItemNode.Id);
-            newViewItem.PropertyName = layoutItemNode.ViewItemId;
-
-            //For whatever reason we need to reset the editor here
-            newViewItem.ClearValue(nameof(newViewItem.PropertyEditorType));
-
-            return newViewItem;
-        }
-    }
-
-    internal class LayoutStaticImageItemBuilder : ModelViewItemFactory<IModelStaticImage, LayoutStaticImageItem>
-    {
-        protected override IModelStaticImage? CreateViewItem(IModelNode viewItems, LayoutStaticImageItem layoutItemNode)
-        {
-            var newViewItem = viewItems.AddNode<IModelStaticImage>(layoutItemNode.Id);
-
-            newViewItem.ImageName = layoutItemNode.ImageName;
-
-            return newViewItem;
-        }
-    }
-
-    internal class LayoutActionContainerItemBuilder : ModelViewItemFactory<IModelActionContainerViewItem, LayoutActionContainerItem>
-    {
-        protected override IModelActionContainerViewItem? CreateViewItem(IModelNode viewItems, LayoutActionContainerItem layoutItemNode)
-        {
-            var newViewItem = viewItems.AddNode<IModelActionContainerViewItem>(layoutItemNode.Id);
-
-            if (viewItems.Application.ActionDesign is IModelActionToContainerMapping modelActionToContainerMapping)
-            {
-                newViewItem.ActionContainer = modelActionToContainerMapping[layoutItemNode.ActionContainerId];
-            }
-
-            return newViewItem;
-        }
-    }
-
-    internal class LayoutStaticTextItemBuilder : ModelViewItemFactory<IModelStaticText, LayoutStaticTextItem>
-    {
-        protected override IModelStaticText? CreateViewItem(IModelNode viewItems, LayoutStaticTextItem layoutItemNode)
-        {
-            var newViewItem = viewItems.AddNode<IModelStaticText>(layoutItemNode.Id);
-
-            newViewItem.Text = layoutItemNode.Text;
-
-            return newViewItem;
-        }
-    }
 
     /// <summary>
     /// 
@@ -213,27 +178,9 @@ public sealed partial class ModelDetailViewLayoutModelDetailViewItemsNodesGenera
                     if (viewItem is null)
                     {
                         var newViewItem = nodeBuilderFactory.CreateViewItem(viewItems, layoutViewItemNode);
-                        //var newViewItem = viewItems.AddNode<IModelPropertyEditor>(layoutViewItemNode.Id);
-                        //newViewItem.PropertyName = layoutViewItemNode.ViewItemId;
 
-                        ////For whatever reason we need to reset the editor here
-                        //if (newViewItem is IModelPropertyEditor oldPropertyEditor)
-                        //{
-                        //    newViewItem.ClearValue(nameof(newViewItem.PropertyEditorType));
-                        //}
                         viewItem = newViewItem;
                     }
-
-                    //if (
-                    //    viewItem is IModelPropertyEditor modelPropertyEditor
-                    //    && !string.IsNullOrEmpty(layoutViewItemNode.EditorAlias))
-                    //{
-                    //    modelPropertyEditor.PropertyEditorType
-                    //        = MemberEditorInfoCalculator.GetEditorType(
-                    //            modelPropertyEditor.ModelMember,
-                    //            layoutViewItemNode.EditorAlias
-                    //    );
-                    //}
                 }
 
                 foreach (var layoutViewItemNode in VisitNodes<LayoutViewItem>(layout))
