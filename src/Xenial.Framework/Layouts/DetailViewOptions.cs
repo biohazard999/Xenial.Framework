@@ -148,7 +148,7 @@ public interface IDetailViewOptionsExtensions
     /// </summary>
     /// <returns></returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    IEnumerable<IDetailViewOptionsExtension> AsEnumerable()
+    IEnumerable<IDetailViewOptionsExtension> AsEnumerable();
 
     /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
