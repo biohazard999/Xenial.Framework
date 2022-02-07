@@ -1,13 +1,11 @@
-﻿using System;
-
+﻿
 using DevExpress.ExpressApp.Layout;
+
 using DevExpress.ExpressApp.Model;
-using DevExpress.Utils;
+
+using System;
 
 using Xenial.Framework.Layouts.Items.Base;
-
-using Locations = DevExpress.Persistent.Base.Locations;
-using ToolTipIconType = DevExpress.Persistent.Base.ToolTipIconType;
 
 #pragma warning disable CA1710 //Rename Type to end in Collection -> By Design
 #pragma warning disable CA2227 //Collection fields should not have a setter: By Design

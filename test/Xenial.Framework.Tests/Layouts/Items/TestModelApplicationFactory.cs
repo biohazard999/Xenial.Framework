@@ -51,6 +51,25 @@ namespace Xenial.Framework.Tests.Layouts
             return detailView;
         }
 
+        internal static IModelDetailView? CreateComplexDetailViewWithLayout<T>(Func<LayoutBuilder<T>, Layout> layoutFunctor)
+            where T : class
+        {
+            var model = CreateApplication(new(new[]
+            {
+                typeof(T)
+            },
+            typesInfo =>
+            {
+                ModelBuilder.Create<T>(typesInfo)
+                    .RemoveAttribute(typeof(DetailViewLayoutBuilderAttribute))
+                    .WithDetailViewLayout(layoutFunctor)
+                .Build();
+            }));
+
+            var detailView = model.FindDetailView<T>();
+            return detailView;
+        }
+
         internal static IModelDetailView? CreateComplexDetailViewWithLayout(Func<LayoutBuilder<SimpleBusinessObject>, Layout> layoutFunctor)
         {
             var model = CreateApplication(new(new[]

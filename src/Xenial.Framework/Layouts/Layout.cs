@@ -94,6 +94,75 @@ public partial class LayoutBuilder
     public LayoutEmptySpaceItem EmptySpaceItem(string id)
         => LayoutEmptySpaceItem.Create(id);
 
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public LayoutStaticTextItem StaticTextItem(string text)
+        => new(text);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public LayoutStaticTextItem StaticTextItem(string text, string id)
+        => new(text, id);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="imageName"></param>
+    /// <returns></returns>
+    public LayoutStaticImageItem StaticImageItem(string imageName)
+        => new(imageName);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="imageName"></param>
+    /// <param name="id"></param>    /// 
+    /// <returns></returns>
+    public LayoutStaticImageItem StaticImageItem(string imageName, string id)
+        => new(imageName, id);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="actionContainerId"></param>
+    /// <returns></returns>
+    public LayoutActionContainerItem ActionContainerItem(string actionContainerId)
+        => new(actionContainerId);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="actionContainerId"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public LayoutActionContainerItem ActionContainerItem(string actionContainerId, string id)
+        => new(actionContainerId, id);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dashboardViewId"></param>
+    /// <returns></returns>
+    public LayoutDashboardViewItem DashboardViewItem(string dashboardViewId)
+        => new(dashboardViewId);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dashboardViewId"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public LayoutDashboardViewItem DashboardViewItem(string dashboardViewId, string id)
+        => new(dashboardViewId, id);
+
     #endregion
 
     #region Group Items

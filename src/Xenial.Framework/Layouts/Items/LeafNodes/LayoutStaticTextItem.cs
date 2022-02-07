@@ -31,8 +31,14 @@ public partial record LayoutStaticTextItem : LayoutViewItem
     /// </summary>
     ///
     /// <param name="text"> The text. </param>
+    public LayoutStaticTextItem(string text) : this(text, text) { }
 
-    public LayoutStaticTextItem(string text)
-        : base(text)
-            => Text = text;
+    /// <summary>
+    /// 
+    /// </summary>
+    /// 
+    /// <param name="text"></param>
+    /// <param name="id"></param>
+    public LayoutStaticTextItem(string text, string id) : base(id)
+        => Text = text;
 }

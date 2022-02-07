@@ -34,7 +34,13 @@ public partial record LayoutStaticImageItem : LayoutViewItem
     ///
     /// <param name="imageName">    Name of the image. </param>
 
-    public LayoutStaticImageItem(string imageName)
-        : base(imageName)
-            => ImageName = imageName;
+    public LayoutStaticImageItem(string imageName) : this(imageName, imageName) { }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="imageName"></param>
+    /// <param name="id"></param>
+    public LayoutStaticImageItem(string imageName, string id) : base(id)
+        => ImageName = imageName;
 }

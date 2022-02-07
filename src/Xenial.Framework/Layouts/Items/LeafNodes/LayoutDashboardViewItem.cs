@@ -22,7 +22,24 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
         nameof(IModelViewItem.Caption),
     }
 )]
-public partial record LayoutDashboardViewItem(string DashboardViewId)
-    : LayoutViewItem(DashboardViewId)
+public partial record LayoutDashboardViewItem : LayoutViewItem
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public string DashboardViewId { get; init; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dashboardViewId"></param>
+    public LayoutDashboardViewItem(string dashboardViewId) : this(dashboardViewId, dashboardViewId) { }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dashboardViewId"></param>
+    /// <param name="id"></param>
+    public LayoutDashboardViewItem(string dashboardViewId, string id) : base(id)
+        => DashboardViewId = dashboardViewId;
 }

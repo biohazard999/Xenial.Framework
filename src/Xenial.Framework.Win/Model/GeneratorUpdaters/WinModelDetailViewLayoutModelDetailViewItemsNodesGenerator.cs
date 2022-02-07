@@ -34,15 +34,15 @@ public sealed class WinModelDetailViewLayoutModelDetailViewItemsNodesGenerator :
         {
             if (viewItems.Parent is IModelDetailView modelDetailView)
             {
-                var builder = ModelDetailViewLayoutNodesGeneratorUpdater.FindFunctor(modelDetailView);
+                var builder = XenialDetailViewLayoutNodesGeneratorUpdater.FindFunctor(modelDetailView);
                 if (builder is null)
                 {
                     return;
                 }
 
-                var layout = ModelDetailViewLayoutNodesGeneratorUpdater.InvokeBuilder(builder, modelDetailView);
+                var layout = XenialDetailViewLayoutNodesGeneratorUpdater.InvokeBuilder(builder, modelDetailView);
 
-                ModelDetailViewLayoutNodesGeneratorUpdater.MarkDuplicateNodes(layout);
+                XenialDetailViewLayoutNodesGeneratorUpdater.MarkDuplicateNodes(layout);
 
                 foreach (var layoutViewItemNode in VisitNodes<LayoutPropertyEditorItem>(layout))
                 {

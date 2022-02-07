@@ -17,7 +17,7 @@ using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.Tests.xUnit;
 
-[VerifyXunit.UsesVerify]
+[UsesVerify]
 public class VerificationTests
 {
     static VerificationTests() => VerifyTests.VerifyAngleSharpDiffing.Initialize();
