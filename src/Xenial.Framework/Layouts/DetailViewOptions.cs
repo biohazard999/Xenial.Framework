@@ -41,7 +41,7 @@ public partial record DetailViewOptions
     /// </summary>
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public DetailViewOptionsExtensions ExtensionsCollection { get; private set; } = new();
+    public IDetailViewOptionsExtensions ExtensionsCollection { get; } = new DetailViewOptionsExtensions();
 
     /// <summary>
     /// 
@@ -80,7 +80,7 @@ public static class DetailViewOptionsExt
     {
         _ = list ?? throw new ArgumentNullException(nameof(list));
         _ = options ?? throw new ArgumentNullException(nameof(options));
-        ((DetailViewOptionsExtensions)list).Add(options);
+        list.Add(options);
 
         return list;
     }
@@ -97,13 +97,15 @@ public sealed class DetailViewOptionsExtensions : IDetailViewOptionsExtensions
     /// 
     /// </summary>
     /// <param name="extension"></param>
-    internal void Add(IDetailViewOptionsExtension extension)
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public void Add(IDetailViewOptionsExtension extension)
         => extensions.Add(extension ?? throw new ArgumentNullException(nameof(extension)));
     /// <summary>
     /// 
     /// </summary>
     /// <param name="extensions"></param>
-    internal void AddRange(IEnumerable<IDetailViewOptionsExtension> extensions)
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public void AddRange(IEnumerable<IDetailViewOptionsExtension> extensions)
     {
         _ = extensions ?? throw new ArgumentNullException(nameof(extensions));
         foreach (var extension in extensions)
@@ -112,7 +114,12 @@ public sealed class DetailViewOptionsExtensions : IDetailViewOptionsExtensions
         }
     }
 
-    internal IEnumerable<IDetailViewOptionsExtension> AsEnumerable()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public IEnumerable<IDetailViewOptionsExtension> AsEnumerable()
         => extensions;
 }
 
@@ -122,6 +129,27 @@ public sealed class DetailViewOptionsExtensions : IDetailViewOptionsExtensions
 /// </summary>
 public interface IDetailViewOptionsExtensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="extension"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    void Add(IDetailViewOptionsExtension extension);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="extensions"></param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    void AddRange(IEnumerable<IDetailViewOptionsExtension> extensions);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    IEnumerable<IDetailViewOptionsExtension> AsEnumerable()
+
     /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
     bool Equals(object obj);
