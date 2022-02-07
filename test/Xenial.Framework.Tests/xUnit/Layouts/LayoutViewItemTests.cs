@@ -19,7 +19,7 @@ namespace Xenial.Framework.Tests.xUnit.Layouts;
 [UsesVerify]
 public class LayoutViewItemTests
 {
-    [Fact]
+    [Fact(Skip = "Implement mappers first")]
     public async Task TestLayoutViewItem()
     {
         var detailView = CreateComplexDetailViewWithLayout<LayoutViewItemBusinessObject>(_ => new LayoutViewItemBusinessObjectLayoutBuilder().BuildLayout());
