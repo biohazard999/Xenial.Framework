@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 using DevExpress.ExpressApp.Model;
@@ -60,10 +61,41 @@ public partial record DetailViewOptions
 /// <summary>
 /// 
 /// </summary>
-public sealed class GenericDetailViewOptions : Dictionary<string, object>, IDetailViewOptionsExtension
+public sealed class GenericDetailViewOptions : IGenericDetailViewOptions
 {
+    private readonly Dictionary<string, object> dictionary = new();
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public object this[string index] { get => dictionary[index]; set => dictionary[index] = value; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public IEnumerable<KeyValuePair<string, object>> AsEnumerable()
+        => new ReadOnlyDictionary<string, object>(dictionary);
 }
 
+/// <summary>
+/// 
+/// </summary>
+public interface IGenericDetailViewOptions : IDetailViewOptionsExtension
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    object this[string index]
+    {
+        get;
+        set;
+    }
+}
 /// <summary>
 /// 
 /// </summary>
@@ -120,7 +152,7 @@ public sealed class DetailViewOptionsExtensions : IDetailViewOptionsExtensions
     /// <returns></returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public IEnumerable<IDetailViewOptionsExtension> AsEnumerable()
-        => extensions;
+        => extensions.AsReadOnly();
 }
 
 /// <summary>
@@ -153,25 +185,5 @@ public interface IDetailViewOptionsExtensions
 /// <summary>
 /// 
 /// </summary>
-public interface IDetailViewOptionsExtension
-{
-    /// <inheritdoc />
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    bool Equals(object obj);
-
-    /// <inheritdoc />
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    int GetHashCode();
-
-    /// <inheritdoc />
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    string ToString();
-
-    /// <summary>Gets the <see cref="System.Type"/> of the current instance.</summary>
-    /// <returns>The <see cref="System.Type"/> instance that represents the exact runtime
-    /// type of the current instance.</returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "By Design")]
-    Type GetType();
-}
-
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "By Design")]
+public interface IDetailViewOptionsExtension { }

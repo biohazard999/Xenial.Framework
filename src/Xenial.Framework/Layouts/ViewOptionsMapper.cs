@@ -38,7 +38,7 @@ internal partial class ViewOptionsMapper
     {
         if (node is ModelNode modelNode)
         {
-            foreach (var item in genericOptions)
+            foreach (var item in genericOptions.AsEnumerable())
             {
                 modelNode.SetValue(item.Key, item.Value);
             }
