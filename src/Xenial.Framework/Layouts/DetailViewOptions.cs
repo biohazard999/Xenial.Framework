@@ -96,6 +96,47 @@ public interface IGenericDetailViewOptions : IDetailViewOptionsExtension
         set;
     }
 }
+
+/// <summary>
+/// 
+/// </summary>
+public sealed class HiddenActionsOptions
+    : IHiddenActionsDetailViewOptions,
+      IDetailViewOptionsExtension,
+      IEnumerable,
+      IEnumerable<string>
+{
+    private readonly List<string> hiddenActions = new();
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="hiddenActionId"></param>
+    /// <returns></returns>
+    public void Add(string hiddenActionId)
+        => hiddenActions.Add(hiddenActionId);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public IEnumerable<string> AsEnumerable()
+        => hiddenActions.AsReadOnly();
+
+    IEnumerator<string> IEnumerable<string>.GetEnumerator() => ((IEnumerable<string>)hiddenActions).GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)hiddenActions).GetEnumerator();
+}
+/// <summary>
+/// 
+/// </summary>
+public interface IHiddenActionsDetailViewOptions
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="hiddenActionId"></param>
+    void Add(string hiddenActionId);
+}
 /// <summary>
 /// 
 /// </summary>
@@ -109,6 +150,22 @@ public static class DetailViewOptionsExt
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     public static IDetailViewOptionsExtensions Generic(this IDetailViewOptionsExtensions list, GenericDetailViewOptions options)
+    {
+        _ = list ?? throw new ArgumentNullException(nameof(list));
+        _ = options ?? throw new ArgumentNullException(nameof(options));
+        list.Add(options);
+
+        return list;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="options"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static IDetailViewOptionsExtensions HiddenActions(this IDetailViewOptionsExtensions list, HiddenActionsOptions options)
     {
         _ = list ?? throw new ArgumentNullException(nameof(list));
         _ = options ?? throw new ArgumentNullException(nameof(options));

@@ -4,6 +4,7 @@ using System.Text;
 
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
+using DevExpress.ExpressApp.SystemModule;
 
 using Xenial.Framework.Model.GeneratorUpdaters;
 
@@ -57,6 +58,24 @@ internal partial class ViewOptionsMapper
             foreach (var item in genericOptions)
             {
                 modelNode.SetValue(item.Key, item.Value);
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="hiddenActionOptions"></param>
+    /// <param name="node"></param>
+    public static void MapHiddenActions(HiddenActionsOptions hiddenActionOptions, IModelNode node)
+    {
+        if (node is IModelDetailView modelDetailView && modelDetailView is IModelViewHiddenActions modelViewHiddenActions)
+        {
+            foreach (var actionId in hiddenActionOptions)
+            {
+                var action = modelViewHiddenActions.HiddenActions.AddNode<IModelActionLink>(actionId);
+                action.ActionId = actionId;
             }
         }
     }

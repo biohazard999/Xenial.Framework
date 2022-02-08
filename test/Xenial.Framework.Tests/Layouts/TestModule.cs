@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
+using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
+using DevExpress.ExpressApp.SystemModule;
 
 namespace Xenial.Framework.Tests.Layouts
 {
@@ -27,6 +30,13 @@ namespace Xenial.Framework.Tests.Layouts
         {
             this.boModelTypes = boModelTypes;
             this.customizeTypesInfo = customizeTypesInfo;
+        }
+
+        public override void ExtendModelInterfaces(ModelInterfaceExtenders extenders)
+        {
+            base.ExtendModelInterfaces(extenders);
+            using var controller = new HideActionsViewController();
+            ((IModelExtender)controller).ExtendModelInterfaces(extenders);
         }
 
         /// <summary>   returns empty types. </summary>
