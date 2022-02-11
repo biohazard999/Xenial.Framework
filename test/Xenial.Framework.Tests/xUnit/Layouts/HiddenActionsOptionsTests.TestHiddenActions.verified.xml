@@ -1,0 +1,18 @@
+<DetailView Id="LayoutViewItemBusinessObject_DetailView"
+            ClassName="Xenial.Framework.Tests.xUnit.Layouts.LayoutViewItemBusinessObject">
+  <HiddenActions>
+    <ActionLink ActionId="Save" />
+    <ActionLink ActionId="SaveAndNew" />
+  </HiddenActions>
+  <Items>
+    <PropertyEditor Id="MyString"
+                    PropertyName="MyString" />
+  </Items>
+  <Layout>
+    <LayoutGroup Id="Main">
+      <LayoutItem Id="MyString"
+                  ViewItem="MyString"
+                  Index="0" />
+    </LayoutGroup>
+  </Layout>
+</DetailView>

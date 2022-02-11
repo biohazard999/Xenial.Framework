@@ -8,7 +8,7 @@ namespace Xenial.Framework.Validation;
 /// <summary>
 /// 
 /// </summary>
-public class XenialValidationModule : XenialModuleBase
+public sealed class XenialValidationModule : XenialModuleBase
 {
     static XenialValidationModule()
         => XenialValidationModuleInitializer.Initialize();
@@ -31,7 +31,7 @@ public static class XenialValidationModuleInitializer
             {
                 if (options is ValidationDetailViewOptions validationOptions)
                 {
-                    new ViewOptionsMapper()
+                    new ValidationViewOptionsMapper()
                         .Map(validationOptions, model);
                 }
             });

@@ -22,6 +22,14 @@ public sealed class MappingFactory
             }
         });
 
+        RegisterDetailOptionsMapper((options, node) =>
+        {
+            if (options is HiddenActionsOptions hiddenActionsOptions)
+            {
+                ViewOptionsMapper.MapHiddenActions(hiddenActionsOptions, node);
+            }
+        });
+
         RegisterListOptionsMapper((options, node) =>
         {
             if (options is GenericListViewOptions genericOptions)
