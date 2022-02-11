@@ -7,7 +7,7 @@ namespace Xenial.Framework.Validation.Win;
 /// <summary>
 /// 
 /// </summary>
-public class XenialValidationWindowsFormsModule : XenialModuleBase
+public sealed class XenialValidationWindowsFormsModule : XenialModuleBase
 {
     /// <summary>
     /// 

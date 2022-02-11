@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <NoWarn>CA1716;$(NoWarn)</NoWarn>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>

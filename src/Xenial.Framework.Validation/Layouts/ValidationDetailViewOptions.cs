@@ -15,7 +15,7 @@ public partial record ValidationDetailViewOptions : IDetailViewOptionsExtension
 }
 
 [XenialModelOptionsMapper(typeof(ValidationDetailViewOptions))]
-internal partial class ViewOptionsMapper
+internal partial class ValidationViewOptionsMapper
 {
 }
 
