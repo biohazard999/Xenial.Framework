@@ -174,5 +174,11 @@ namespace Xenial.FeatureCenter.Module
             $"Demo: {XenialVersion.Version}/{XenialVersion.Branch}",
             $"DxVersion: {XenialVersion.DxVersion}"
         };
+
+        public static string TargetFramework
+            => typeof(FeatureCenterModule).Assembly
+                .GetCustomAttributes(false)
+                .OfType<TargetFrameworkAttribute>()
+                .First().TargetFramework;
     }
 }
