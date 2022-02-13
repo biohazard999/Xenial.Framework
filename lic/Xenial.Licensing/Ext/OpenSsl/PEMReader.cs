@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
@@ -386,10 +386,6 @@ namespace Xenial.Licensing.Ext.OpenSsl
             // TODO ECGost3410NamedCurves support (returns ECDomainParameters though)
 
             X9ECParameters ecP = CustomNamedCurves.GetByName(name);
-            if (ecP == null)
-            {
-                ecP = ECNamedCurveTable.GetByName(name);
-            }
 
             if (ecP == null)
                 throw new Exception("unknown curve name: " + name);

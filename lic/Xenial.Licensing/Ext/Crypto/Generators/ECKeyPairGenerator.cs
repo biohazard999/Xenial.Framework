@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 using Xenial.Licensing.Ext.Asn1;
 using Xenial.Licensing.Ext.Asn1.Nist;
@@ -138,10 +138,7 @@ namespace Xenial.Licensing.Ext.Crypto.Generators
             // TODO ECGost3410NamedCurves support (returns ECDomainParameters though)
 
             X9ECParameters ecP = CustomNamedCurves.GetByOid(oid);
-            if (ecP == null)
-            {
-                ecP = ECNamedCurveTable.GetByOid(oid);
-            }
+
             return ecP;
         }
 

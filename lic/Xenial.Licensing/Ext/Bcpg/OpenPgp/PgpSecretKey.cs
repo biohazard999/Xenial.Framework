@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.IO;
 
@@ -1229,17 +1229,17 @@ namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
                 {
                     throw new PgpException("no q value found");
                 }
+                throw null;
+                //PublicKeyPacket pubPacket = new PublicKeyPacket(PublicKeyAlgorithmTag.ECDsa, DateTime.UtcNow,
+                //    new ECDsaPublicBcpgKey(ECNamedCurveTable.GetOid(curveName), new BigInteger(1, qVal)));
 
-                PublicKeyPacket pubPacket = new PublicKeyPacket(PublicKeyAlgorithmTag.ECDsa, DateTime.UtcNow,
-                    new ECDsaPublicBcpgKey(ECNamedCurveTable.GetOid(curveName), new BigInteger(1, qVal)));
+                //SXprUtilities.SkipCloseParenthesis(inputStream);
 
-                SXprUtilities.SkipCloseParenthesis(inputStream);
+                //byte[] dValue = GetDValue(inputStream, rawPassPhrase, clearPassPhrase, curveName);
+                //// TODO: check SHA-1 hash.
 
-                byte[] dValue = GetDValue(inputStream, rawPassPhrase, clearPassPhrase, curveName);
-                // TODO: check SHA-1 hash.
-
-                return new PgpSecretKey(new SecretKeyPacket(pubPacket, SymmetricKeyAlgorithmTag.Null, null, null,
-                    new ECSecretBcpgKey(new BigInteger(1, dValue)).GetEncoded()), new PgpPublicKey(pubPacket));
+                //return new PgpSecretKey(new SecretKeyPacket(pubPacket, SymmetricKeyAlgorithmTag.Null, null, null,
+                //    new ECSecretBcpgKey(new BigInteger(1, dValue)).GetEncoded()), new PgpPublicKey(pubPacket));
             }
 
             throw new PgpException("unknown key type found");
