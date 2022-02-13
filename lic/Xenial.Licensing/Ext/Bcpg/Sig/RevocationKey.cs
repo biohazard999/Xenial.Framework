@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Xenial.Licensing.Ext.Bcpg
+namespace Xenial.Licensing.Ext.Bcpg.Sig
 {
     /// <summary>
     /// Represents revocation key OpenPGP signature sub packet.
@@ -22,7 +22,7 @@ namespace Xenial.Licensing.Ext.Bcpg
 
         public RevocationKey(
 			bool					isCritical,
-			RevocationKeyTag		signatureClass,
+            RevocationKeyTag signatureClass,
 			PublicKeyAlgorithmTag	keyAlgorithm,
 			byte[]					fingerprint)
 			: base(SignatureSubpacketTag.RevocationKey, isCritical, false,
@@ -31,7 +31,7 @@ namespace Xenial.Licensing.Ext.Bcpg
 		}
 
 		private static byte[] CreateData(
-			RevocationKeyTag		signatureClass,
+            RevocationKeyTag signatureClass,
 			PublicKeyAlgorithmTag	keyAlgorithm,
 			byte[]					fingerprint)
 		{

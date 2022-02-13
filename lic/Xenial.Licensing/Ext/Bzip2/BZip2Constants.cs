@@ -24,7 +24,7 @@
 
 using System;
 
-namespace Xenial.Licensing.Ext.Apache.Bzip2
+namespace Xenial.Licensing.Ext.Bzip2
 {
     /**
     * Base class for both the compress and decompress classes.

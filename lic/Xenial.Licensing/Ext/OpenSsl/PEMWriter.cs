@@ -15,7 +15,6 @@ using Xenial.Licensing.Ext.Crypto.Parameters;
 using Xenial.Licensing.Ext.Math;
 using Xenial.Licensing.Ext.Pkcs;
 using Xenial.Licensing.Ext.Security;
-using Xenial.Licensing.Ext.Security.Certificates;
 using Xenial.Licensing.Ext.Utilities.Encoders;
 using Xenial.Licensing.Ext.Utilities.IO.Pem;
 using Xenial.Licensing.Ext.X509;

@@ -1,7 +1,6 @@
 using System;
 using Xenial.Licensing.Ext.Math;
 using Xenial.Licensing.Ext.Math.EC;
-using Xenial.Licensing.Ext.Security;
 using Xenial.Licensing.Ext.Crypto;
 using Xenial.Licensing.Ext.Crypto.Parameters;
 

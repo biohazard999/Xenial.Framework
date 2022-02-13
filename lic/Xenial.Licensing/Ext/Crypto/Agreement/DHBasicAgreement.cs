@@ -2,7 +2,6 @@ using System;
 
 using Xenial.Licensing.Ext.Crypto.Parameters;
 using Xenial.Licensing.Ext.Math;
-using Xenial.Licensing.Ext.Security;
 
 namespace Xenial.Licensing.Ext.Crypto.Agreement
 {

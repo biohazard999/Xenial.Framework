@@ -6,7 +6,6 @@ using Xenial.Licensing.Ext.Asn1;
 using Xenial.Licensing.Ext.Asn1.Cms;
 using Xenial.Licensing.Ext.Asn1.X509;
 using Xenial.Licensing.Ext.Crypto;
-using Xenial.Licensing.Ext.Security;
 
 namespace Xenial.Licensing.Ext.Cms
 {

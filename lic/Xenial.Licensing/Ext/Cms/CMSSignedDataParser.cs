@@ -8,7 +8,6 @@ using Xenial.Licensing.Ext.Asn1.X509;
 using Xenial.Licensing.Ext.Crypto;
 using Xenial.Licensing.Ext.Crypto.IO;
 using Xenial.Licensing.Ext.Security;
-using Xenial.Licensing.Ext.Security.Certificates;
 using Xenial.Licensing.Ext.Utilities;
 using Xenial.Licensing.Ext.Utilities.Collections;
 using Xenial.Licensing.Ext.Utilities.IO;

@@ -27,7 +27,7 @@ using System.IO;
 
 using Xenial.Licensing.Ext.Utilities;
 
-namespace Xenial.Licensing.Ext.Apache.Bzip2
+namespace Xenial.Licensing.Ext.Bzip2
 {
 	/**
     * An input stream that decompresses from the BZip2 format (with the file

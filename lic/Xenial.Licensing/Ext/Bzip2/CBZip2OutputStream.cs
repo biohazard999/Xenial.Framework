@@ -27,7 +27,7 @@ using System.IO;
 
 using Xenial.Licensing.Ext.Utilities;
 
-namespace Xenial.Licensing.Ext.Apache.Bzip2
+namespace Xenial.Licensing.Ext.Bzip2
 {
 	/**
     * An output stream that compresses into the BZip2 format (with the file
@@ -1350,7 +1350,7 @@ namespace Xenial.Licensing.Ext.Apache.Bzip2
 
             for (i = 0; i <= last; i++) {
                 if (rNToGo == 0) {
-                    rNToGo = (char) BZip2Constants.rNums[rTPos];
+                    rNToGo = (char)BZip2Constants.rNums[rTPos];
                     rTPos++;
                     if (rTPos == 512) {
                         rTPos = 0;
@@ -1605,12 +1605,12 @@ namespace Xenial.Licensing.Ext.Apache.Bzip2
                         while (true) {
                             switch (zPend % 2) {
                             case 0:
-                                szptr[wr] = (short) BZip2Constants.RUNA;
+                                szptr[wr] = (short)BZip2Constants.RUNA;
                                 wr++;
                                 mtfFreq[BZip2Constants.RUNA]++;
                                 break;
                             case 1:
-                                szptr[wr] = (short) BZip2Constants.RUNB;
+                                szptr[wr] = (short)BZip2Constants.RUNB;
                                 wr++;
                                 mtfFreq[BZip2Constants.RUNB]++;
                                 break;
@@ -1633,12 +1633,12 @@ namespace Xenial.Licensing.Ext.Apache.Bzip2
                 while (true) {
                     switch (zPend % 2) {
                     case 0:
-                        szptr[wr] = (short) BZip2Constants.RUNA;
+                        szptr[wr] = (short)BZip2Constants.RUNA;
                         wr++;
                         mtfFreq[BZip2Constants.RUNA]++;
                         break;
                     case 1:
-                        szptr[wr] = (short) BZip2Constants.RUNB;
+                        szptr[wr] = (short)BZip2Constants.RUNB;
                         wr++;
                         mtfFreq[BZip2Constants.RUNB]++;
                         break;

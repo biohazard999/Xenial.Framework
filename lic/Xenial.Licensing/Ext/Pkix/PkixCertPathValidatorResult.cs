@@ -2,7 +2,6 @@ using System;
 using System.Text;
 
 using Xenial.Licensing.Ext.Crypto;
-using Xenial.Licensing.Ext.Security;
 
 namespace Xenial.Licensing.Ext.Pkix
 {

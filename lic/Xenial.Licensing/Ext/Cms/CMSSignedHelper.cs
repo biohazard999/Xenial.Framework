@@ -14,7 +14,6 @@ using Xenial.Licensing.Ext.Asn1.X509;
 using Xenial.Licensing.Ext.Asn1.X9;
 using Xenial.Licensing.Ext.Crypto;
 using Xenial.Licensing.Ext.Security;
-using Xenial.Licensing.Ext.Security.Certificates;
 using Xenial.Licensing.Ext.Utilities;
 using Xenial.Licensing.Ext.X509;
 using Xenial.Licensing.Ext.X509.Store;

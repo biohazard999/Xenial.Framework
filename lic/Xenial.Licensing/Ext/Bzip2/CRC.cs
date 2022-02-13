@@ -24,7 +24,7 @@
 
 using System;
 
-namespace Xenial.Licensing.Ext.Apache.Bzip2
+namespace Xenial.Licensing.Ext.Bzip2
 {
 	/**
     * A simple class the hold and calculate the CRC for sanity checking

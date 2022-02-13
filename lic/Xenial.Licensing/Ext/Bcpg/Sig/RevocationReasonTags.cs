@@ -1,4 +1,4 @@
-namespace Xenial.Licensing.Ext.Bcpg
+namespace Xenial.Licensing.Ext.Bcpg.Sig
 {
     public enum RevocationReasonTag
 		: byte

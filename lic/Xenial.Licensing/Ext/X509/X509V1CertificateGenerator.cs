@@ -9,7 +9,6 @@ using Xenial.Licensing.Ext.Crypto.Parameters;
 using Xenial.Licensing.Ext.Crypto.Operators;
 using Xenial.Licensing.Ext.Math;
 using Xenial.Licensing.Ext.Security;
-using Xenial.Licensing.Ext.Security.Certificates;
 using Xenial.Licensing.Ext.Utilities;
 
 namespace Xenial.Licensing.Ext.X509

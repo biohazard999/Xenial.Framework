@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-using Xenial.Licensing.Ext.Apache.Bzip2;
+using Xenial.Licensing.Ext.Bzip2;
 using Xenial.Licensing.Ext.Utilities;
 using Xenial.Licensing.Ext.Utilities.Zlib;
 
@@ -167,7 +167,7 @@ namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 		}
 
 		private class SafeCBZip2OutputStream : CBZip2OutputStream
-		{
+        {
 			public SafeCBZip2OutputStream(Stream output)
 				: base(output)
 			{

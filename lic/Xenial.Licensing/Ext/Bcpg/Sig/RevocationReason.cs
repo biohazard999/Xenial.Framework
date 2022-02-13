@@ -3,7 +3,7 @@ using System.Text;
 
 using Xenial.Licensing.Ext.Utilities;
 
-namespace Xenial.Licensing.Ext.Bcpg
+namespace Xenial.Licensing.Ext.Bcpg.Sig
 {
     /// <summary>
     /// Represents revocation reason OpenPGP signature sub packet.
@@ -18,14 +18,14 @@ namespace Xenial.Licensing.Ext.Bcpg
 
         public RevocationReason(
 			bool                isCritical,
-			RevocationReasonTag reason,
+            RevocationReasonTag reason,
 			string              description)
             : base(SignatureSubpacketTag.RevocationReason, isCritical, false, CreateData(reason, description))
         {
         }
 
         private static byte[] CreateData(
-			RevocationReasonTag	reason,
+            RevocationReasonTag reason,
 			string				description)
         {
             byte[] descriptionBytes = Strings.ToUtf8ByteArray(description);
