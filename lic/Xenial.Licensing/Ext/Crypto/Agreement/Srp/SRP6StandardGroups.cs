@@ -1,10 +1,10 @@
 ﻿using System;
 
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities.Encoders;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Utilities.Encoders;
 
-namespace Org.BouncyCastle.Crypto.Agreement.Srp
+namespace Xenial.Licensing.Ext.Crypto.Agreement.Srp
 {
     public class Srp6StandardGroups
     {

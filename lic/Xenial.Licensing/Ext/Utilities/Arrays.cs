@@ -1,9 +1,9 @@
 using System;
 using System.Text;
 
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Utilities
+namespace Xenial.Licensing.Ext.Utilities
 {
     /// <summary> General array utilities.</summary>
     public abstract class Arrays

@@ -4,27 +4,27 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.CryptoPro;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Pkcs;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Security.Certificates;
-using Org.BouncyCastle.Utilities.Encoders;
-using Org.BouncyCastle.Utilities.IO.Pem;
-using Org.BouncyCastle.X509;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.CryptoPro;
+using Xenial.Licensing.Ext.Asn1.Pkcs;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Asn1.X9;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Generators;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Pkcs;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Security.Certificates;
+using Xenial.Licensing.Ext.Utilities.Encoders;
+using Xenial.Licensing.Ext.Utilities.IO.Pem;
+using Xenial.Licensing.Ext.X509;
 
-namespace Org.BouncyCastle.OpenSsl
+namespace Xenial.Licensing.Ext.OpenSsl
 {
 	/// <remarks>General purpose writer for OpenSSL PEM objects.</remarks>
 	public class PemWriter
-		: Org.BouncyCastle.Utilities.IO.Pem.PemWriter
+		: Xenial.Licensing.Ext.Utilities.IO.Pem.PemWriter
 	{
 		/// <param name="writer">The TextWriter object to write the output to.</param>
 		public PemWriter(

@@ -1,4 +1,4 @@
-namespace Org.BouncyCastle.Bcpg
+namespace Xenial.Licensing.Ext.Bcpg
 {
 	/// <remarks>Basic PGP packet tag types.</remarks>
     public enum PacketTag

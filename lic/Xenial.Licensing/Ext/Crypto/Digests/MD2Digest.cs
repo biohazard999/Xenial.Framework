@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Digests
+namespace Xenial.Licensing.Ext.Crypto.Digests
 {
 
     /**

@@ -1,13 +1,13 @@
 using System;
 using System.IO;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.IO;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities.IO;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.IO;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities.IO;
 
-namespace Org.BouncyCastle.Bcpg.OpenPgp
+namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 {
 	/// <remarks>A password based encryption object.</remarks>
     public class PgpPbeEncryptedData

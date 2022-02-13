@@ -3,9 +3,9 @@ using System.Collections;
 using System.Diagnostics;
 using System.Text;
 
-using Org.BouncyCastle.Math.EC.Multiplier;
+using Xenial.Licensing.Ext.Math.EC.Multiplier;
 
-namespace Org.BouncyCastle.Math.EC
+namespace Xenial.Licensing.Ext.Math.EC
 {
     /**
      * base class for points on elliptic curves.
@@ -1838,7 +1838,7 @@ namespace Org.BouncyCastle.Math.EC
         }
 
         /* (non-Javadoc)
-         * @see Org.BouncyCastle.Math.EC.ECPoint#twice()
+         * @see Xenial.Licensing.Ext.Math.EC.ECPoint#twice()
          */
         public override ECPoint Twice()
         {

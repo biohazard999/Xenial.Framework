@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Engines
+namespace Xenial.Licensing.Ext.Crypto.Engines
 {
 	/**
 	* implementation of GOST 28147-89

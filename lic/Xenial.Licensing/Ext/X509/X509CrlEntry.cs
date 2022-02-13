@@ -3,15 +3,15 @@ using System.Collections;
 using System.IO;
 using System.Text;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Utilities;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Security.Certificates;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.X509.Extension;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Utilities;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Security.Certificates;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.X509.Extension;
 
-namespace Org.BouncyCastle.X509
+namespace Xenial.Licensing.Ext.X509
 {
 	/**
 	 * The following extensions are listed in RFC 2459 as relevant to CRL Entries

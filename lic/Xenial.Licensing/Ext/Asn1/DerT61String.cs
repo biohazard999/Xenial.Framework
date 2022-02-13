@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1
+namespace Xenial.Licensing.Ext.Asn1
 {
     /**
      * Der T61String (also the teletex string) - 8-bit characters

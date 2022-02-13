@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Ocsp;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Utilities.Date;
-using Org.BouncyCastle.X509;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Ocsp;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Utilities.Date;
+using Xenial.Licensing.Ext.X509;
 
-namespace Org.BouncyCastle.Ocsp
+namespace Xenial.Licensing.Ext.Ocsp
 {
 	public class SingleResp
 		: X509ExtensionBase

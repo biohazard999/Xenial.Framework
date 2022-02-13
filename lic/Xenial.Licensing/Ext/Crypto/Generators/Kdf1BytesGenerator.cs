@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Parameters;
 
-namespace Org.BouncyCastle.Crypto.Generators
+namespace Xenial.Licensing.Ext.Crypto.Generators
 {
 	/**
 	 * KFD2 generator for derived keys and ivs as defined by IEEE P1363a/ISO 18033

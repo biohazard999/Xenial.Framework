@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Bcpg.Sig;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Date;
+using Xenial.Licensing.Ext.Bcpg.Sig;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Date;
 
-namespace Org.BouncyCastle.Bcpg
+namespace Xenial.Licensing.Ext.Bcpg
 {
 	/// <remarks>Generic signature packet.</remarks>
     public class SignaturePacket

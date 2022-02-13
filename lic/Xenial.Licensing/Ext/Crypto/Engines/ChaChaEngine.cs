@@ -1,7 +1,7 @@
 using System;
-using Org.BouncyCastle.Crypto.Utilities;
+using Xenial.Licensing.Ext.Crypto.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Engines
+namespace Xenial.Licensing.Ext.Crypto.Engines
 {
 	/// <summary>
 	/// Implementation of Daniel J. Bernstein's ChaCha stream cipher.

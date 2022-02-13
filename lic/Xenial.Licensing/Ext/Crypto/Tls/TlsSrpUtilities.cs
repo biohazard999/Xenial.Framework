@@ -2,10 +2,10 @@
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     public abstract class TlsSrpUtilities
     {

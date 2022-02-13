@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Math.EC.Endo
+namespace Xenial.Licensing.Ext.Math.EC.Endo
 {
     public class GlvTypeBEndomorphism
         :   GlvEndomorphism

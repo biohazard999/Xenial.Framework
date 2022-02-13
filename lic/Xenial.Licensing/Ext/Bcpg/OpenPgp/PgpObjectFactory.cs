@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Bcpg.OpenPgp
+namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 {
 	/// <remarks>
     /// General class for reading a PGP object stream.

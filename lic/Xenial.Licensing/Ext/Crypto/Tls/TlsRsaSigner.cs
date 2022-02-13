@@ -1,14 +1,14 @@
 using System;
 
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Encodings;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Crypto.Digests;
+using Xenial.Licensing.Ext.Crypto.Encodings;
+using Xenial.Licensing.Ext.Crypto.Engines;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Crypto.Signers;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     public class TlsRsaSigner
         :   AbstractTlsSigner

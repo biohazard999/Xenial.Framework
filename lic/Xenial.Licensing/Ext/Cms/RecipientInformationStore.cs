@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Cms
+namespace Xenial.Licensing.Ext.Cms
 {
 	public class RecipientInformationStore
 	{

@@ -1,4 +1,4 @@
-namespace Org.BouncyCastle.Bcpg
+namespace Xenial.Licensing.Ext.Bcpg
 {
     /**
     * Basic tags for symmetric key algorithms

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Text;
 
-namespace Org.BouncyCastle.Utilities.Collections
+namespace Xenial.Licensing.Ext.Utilities.Collections
 {
     public abstract class CollectionUtilities
     {

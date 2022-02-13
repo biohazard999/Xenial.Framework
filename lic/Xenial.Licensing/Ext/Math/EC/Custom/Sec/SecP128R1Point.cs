@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Org.BouncyCastle.Math.Raw;
+using Xenial.Licensing.Ext.Math.Raw;
 
-namespace Org.BouncyCastle.Math.EC.Custom.Sec
+namespace Xenial.Licensing.Ext.Math.EC.Custom.Sec
 {
     internal class SecP128R1Point
         : AbstractFpPoint

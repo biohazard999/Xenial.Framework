@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Digests
+namespace Xenial.Licensing.Ext.Crypto.Digests
 {
     /// <summary>
     /// Implementation of SHAKE based on following KeccakNISTInterface.c from http://keccak.noekeon.org/

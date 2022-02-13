@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Tsp
+namespace Xenial.Licensing.Ext.Asn1.Tsp
 {
 	public class TstInfo
 		: Asn1Encodable

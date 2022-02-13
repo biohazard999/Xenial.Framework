@@ -1,11 +1,11 @@
 using System;
 using System.IO;
 
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.IO;
+using Xenial.Licensing.Ext.Asn1.Pkcs;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.IO;
 
-namespace Org.BouncyCastle.Cms
+namespace Xenial.Licensing.Ext.Cms
 {
 	public class CmsTypedStream
 	{

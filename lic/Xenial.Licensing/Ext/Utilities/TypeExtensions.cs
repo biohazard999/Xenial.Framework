@@ -3,7 +3,7 @@
 using System;
 using System.Reflection;
 
-namespace Org.BouncyCastle
+namespace Xenial.Licensing.Ext
 {
     internal static class TypeExtensions
     {

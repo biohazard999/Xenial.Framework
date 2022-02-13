@@ -2,15 +2,15 @@ using System;
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Cms;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Security.Certificates;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.X509;
-using Org.BouncyCastle.X509.Store;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Cms;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Security.Certificates;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.X509;
+using Xenial.Licensing.Ext.X509.Store;
 
-namespace Org.BouncyCastle.Cms
+namespace Xenial.Licensing.Ext.Cms
 {
 	/**
 	* general class for handling a pkcs7-signature message.

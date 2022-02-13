@@ -1,9 +1,9 @@
 ﻿using System;
 
-using Org.BouncyCastle.Math.Raw;
-using Org.BouncyCastle.Utilities.Encoders;
+using Xenial.Licensing.Ext.Math.Raw;
+using Xenial.Licensing.Ext.Utilities.Encoders;
 
-namespace Org.BouncyCastle.Math.EC.Custom.Djb
+namespace Xenial.Licensing.Ext.Math.EC.Custom.Djb
 {
     internal class Curve25519
         : AbstractFpCurve

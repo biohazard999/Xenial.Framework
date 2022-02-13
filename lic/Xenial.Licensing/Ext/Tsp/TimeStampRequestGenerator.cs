@@ -1,14 +1,14 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Tsp;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Tsp;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Math;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Tsp
+namespace Xenial.Licensing.Ext.Tsp
 {
 	/**
 	 * Generator for RFC 3161 Time Stamp Request objects.

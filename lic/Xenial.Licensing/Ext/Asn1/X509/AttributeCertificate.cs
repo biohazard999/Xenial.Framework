@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Asn1;
+using Xenial.Licensing.Ext.Asn1;
 
-namespace Org.BouncyCastle.Asn1.X509
+namespace Xenial.Licensing.Ext.Asn1.X509
 {
     public class AttributeCertificate
         : Asn1Encodable

@@ -1,9 +1,9 @@
 using System;
 using System.Text;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto
+namespace Xenial.Licensing.Ext.Crypto
 {
     /**
      * super class for all Password Based Encyrption (Pbe) parameter generator classes.

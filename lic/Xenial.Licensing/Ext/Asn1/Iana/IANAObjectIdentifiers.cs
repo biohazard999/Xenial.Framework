@@ -1,4 +1,4 @@
-namespace Org.BouncyCastle.Asn1.Iana
+namespace Xenial.Licensing.Ext.Asn1.Iana
 {
 	public abstract class IanaObjectIdentifiers
 	{

@@ -1,6 +1,6 @@
-﻿using Org.BouncyCastle.Math;
+﻿using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Crypto.Agreement.JPake
+namespace Xenial.Licensing.Ext.Crypto.Agreement.JPake
 {
     /// <summary>
     /// Standard pre-computed prime order groups for use by J-PAKE.

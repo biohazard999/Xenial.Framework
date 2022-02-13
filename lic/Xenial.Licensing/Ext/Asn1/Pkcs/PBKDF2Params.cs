@@ -1,10 +1,10 @@
 using System;
 
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Pkcs
+namespace Xenial.Licensing.Ext.Asn1.Pkcs
 {
     public class Pbkdf2Params
         : Asn1Encodable

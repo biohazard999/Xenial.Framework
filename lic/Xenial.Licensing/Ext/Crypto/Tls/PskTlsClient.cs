@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     public class PskTlsClient
         :   AbstractTlsClient

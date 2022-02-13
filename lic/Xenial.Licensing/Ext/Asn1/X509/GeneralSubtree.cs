@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Asn1.X509
+namespace Xenial.Licensing.Ext.Asn1.X509
 {
 	/**
 	 * Class for containing a restriction object subtrees in NameConstraints. See

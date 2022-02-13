@@ -1,10 +1,10 @@
 using System;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Macs
+namespace Xenial.Licensing.Ext.Crypto.Macs
 {
 	/**
 	* implementation of GOST 28147-89 MAC

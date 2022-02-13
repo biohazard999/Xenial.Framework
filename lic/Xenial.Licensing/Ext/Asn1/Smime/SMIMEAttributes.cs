@@ -1,7 +1,7 @@
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Pkcs;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Pkcs;
 
-namespace Org.BouncyCastle.Asn1.Smime
+namespace Xenial.Licensing.Ext.Asn1.Smime
 {
     public abstract class SmimeAttributes
     {

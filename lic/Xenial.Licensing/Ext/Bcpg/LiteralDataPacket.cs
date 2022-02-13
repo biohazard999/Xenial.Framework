@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Bcpg
+namespace Xenial.Licensing.Ext.Bcpg
 {
 	/// <remarks>Generic literal data packet.</remarks>
     public class LiteralDataPacket

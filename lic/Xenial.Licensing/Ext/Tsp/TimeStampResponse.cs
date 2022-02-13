@@ -2,13 +2,13 @@ using System;
 using System.IO;
 using System.Text;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Cmp;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Asn1.Tsp;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Cmp;
+using Xenial.Licensing.Ext.Asn1.Pkcs;
+using Xenial.Licensing.Ext.Asn1.Tsp;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Tsp
+namespace Xenial.Licensing.Ext.Tsp
 {
 	/**
 	 * Base class for an RFC 3161 Time Stamp Response object.

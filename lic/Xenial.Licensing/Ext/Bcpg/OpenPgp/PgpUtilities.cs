@@ -2,16 +2,16 @@ using System;
 using System.IO;
 using System.Text;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Encoders;
-using Org.BouncyCastle.Utilities.IO;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Encoders;
+using Xenial.Licensing.Ext.Utilities.IO;
 
-namespace Org.BouncyCastle.Bcpg.OpenPgp
+namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 {
 	/// <remarks>Basic utility class.</remarks>
     public sealed class PgpUtilities

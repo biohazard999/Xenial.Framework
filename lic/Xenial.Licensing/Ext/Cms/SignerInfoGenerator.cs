@@ -1,12 +1,12 @@
 using System;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Cms;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.X509;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Cms;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.X509;
 
-namespace Org.BouncyCastle.Cms
+namespace Xenial.Licensing.Ext.Cms
 {
     internal interface ISignerInfoGenerator
     {

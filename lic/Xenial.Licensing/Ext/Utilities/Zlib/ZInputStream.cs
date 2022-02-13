@@ -37,7 +37,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace Org.BouncyCastle.Utilities.Zlib
+namespace Xenial.Licensing.Ext.Utilities.Zlib
 {
 	public class ZInputStream
 		: Stream

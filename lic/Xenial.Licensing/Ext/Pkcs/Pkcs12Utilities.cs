@@ -1,11 +1,11 @@
 using System;
 using System.IO;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Asn1.X509;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Pkcs;
+using Xenial.Licensing.Ext.Asn1.X509;
 
-namespace Org.BouncyCastle.Pkcs
+namespace Xenial.Licensing.Ext.Pkcs
 {
 	/**
 	 * Utility class for reencoding PKCS#12 files to definite length.

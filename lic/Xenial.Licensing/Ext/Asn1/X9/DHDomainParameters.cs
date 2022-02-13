@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.X9
+namespace Xenial.Licensing.Ext.Asn1.X9
 {
 	public class DHDomainParameters
 		: Asn1Encodable

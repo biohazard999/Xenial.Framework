@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Crypto.Parameters;
+using Xenial.Licensing.Ext.Crypto.Parameters;
 
-namespace Org.BouncyCastle.Crypto.Modes
+namespace Xenial.Licensing.Ext.Crypto.Modes
 {
     /**
     * Implements OpenPGP's rather strange version of Cipher-FeedBack (CFB) mode

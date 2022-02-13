@@ -2,23 +2,23 @@ using System;
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Cms;
-using Org.BouncyCastle.Asn1.Nist;
-using Org.BouncyCastle.Asn1.Oiw;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.IO;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Date;
-using Org.BouncyCastle.X509;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Cms;
+using Xenial.Licensing.Ext.Asn1.Nist;
+using Xenial.Licensing.Ext.Asn1.Oiw;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Asn1.X9;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Generators;
+using Xenial.Licensing.Ext.Crypto.IO;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Date;
+using Xenial.Licensing.Ext.X509;
 
-namespace Org.BouncyCastle.Cms
+namespace Xenial.Licensing.Ext.Cms
 {
     /// <remarks>
     /// General class for generating a CMS enveloped-data message.

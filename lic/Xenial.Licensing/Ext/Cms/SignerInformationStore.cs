@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Cms
+namespace Xenial.Licensing.Ext.Cms
 {
     public class SignerInformationStore
     {

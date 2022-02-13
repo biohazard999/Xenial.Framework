@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Asn1.Crmf
+namespace Xenial.Licensing.Ext.Asn1.Crmf
 {
     public class CertReqMsg
         : Asn1Encodable

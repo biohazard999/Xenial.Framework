@@ -1,9 +1,9 @@
 ﻿using System;
 
-using Org.BouncyCastle.Math.Raw;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Math.Raw;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Math.EC.Custom.Sec
+namespace Xenial.Licensing.Ext.Math.EC.Custom.Sec
 {
     internal class SecT233FieldElement
         : ECFieldElement

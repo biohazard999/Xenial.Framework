@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     public class BasicTlsPskIdentity
         : TlsPskIdentity

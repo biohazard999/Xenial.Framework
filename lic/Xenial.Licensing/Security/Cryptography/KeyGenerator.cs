@@ -25,9 +25,9 @@
 
 
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Generators;
+using Xenial.Licensing.Ext.Security;
 
 namespace Standard.Licensing.Security.Cryptography
 {

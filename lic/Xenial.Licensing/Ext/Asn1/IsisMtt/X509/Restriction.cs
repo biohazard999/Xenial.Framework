@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Asn1.X500;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1.X500;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.IsisMtt.X509
+namespace Xenial.Licensing.Ext.Asn1.IsisMtt.X509
 {
 	/**
 	* Some other restriction regarding the usage of this certificate.

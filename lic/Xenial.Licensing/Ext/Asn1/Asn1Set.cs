@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 #endif
 
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Collections;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Collections;
 
-namespace Org.BouncyCastle.Asn1
+namespace Xenial.Licensing.Ext.Asn1
 {
     abstract public class Asn1Set
         : Asn1Object, IEnumerable

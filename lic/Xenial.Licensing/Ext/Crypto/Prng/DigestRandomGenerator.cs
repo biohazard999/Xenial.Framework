@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Utilities;
+using Xenial.Licensing.Ext.Crypto.Digests;
+using Xenial.Licensing.Ext.Crypto.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Prng
+namespace Xenial.Licensing.Ext.Crypto.Prng
 {
 	/**
 	 * Random generation based on the digest with counter. Calling AddSeedMaterial will

@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Asn1;
+using Xenial.Licensing.Ext.Asn1;
 
-namespace Org.BouncyCastle.Asn1.Misc
+namespace Xenial.Licensing.Ext.Asn1.Misc
 {
     public class IdeaCbcPar
         : Asn1Encodable

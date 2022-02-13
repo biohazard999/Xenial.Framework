@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     /// <summary>RFC 5246 7.4.1.4.1</summary>
     public abstract class HashAlgorithm

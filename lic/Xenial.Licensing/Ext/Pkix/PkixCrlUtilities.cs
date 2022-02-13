@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Utilities.Collections;
-using Org.BouncyCastle.X509;
-using Org.BouncyCastle.X509.Store;
+using Xenial.Licensing.Ext.Utilities.Collections;
+using Xenial.Licensing.Ext.X509;
+using Xenial.Licensing.Ext.X509.Store;
 
-namespace Org.BouncyCastle.Pkix
+namespace Xenial.Licensing.Ext.Pkix
 {
 	public class PkixCrlUtilities
 	{

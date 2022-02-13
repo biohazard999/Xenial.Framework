@@ -1,10 +1,10 @@
 using System;
 
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Agreement.Srp
+namespace Xenial.Licensing.Ext.Crypto.Agreement.Srp
 {
 	public class Srp6Utilities
 	{

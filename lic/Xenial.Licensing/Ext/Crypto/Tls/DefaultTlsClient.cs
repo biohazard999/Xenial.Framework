@@ -2,14 +2,14 @@ using System;
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Modes;
-using Org.BouncyCastle.Crypto.Parameters;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Digests;
+using Xenial.Licensing.Ext.Crypto.Engines;
+using Xenial.Licensing.Ext.Crypto.Modes;
+using Xenial.Licensing.Ext.Crypto.Parameters;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     public abstract class DefaultTlsClient
         :   AbstractTlsClient

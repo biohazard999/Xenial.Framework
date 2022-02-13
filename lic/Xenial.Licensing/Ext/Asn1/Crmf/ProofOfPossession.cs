@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Crmf
+namespace Xenial.Licensing.Ext.Asn1.Crmf
 {
     public class ProofOfPossession
         : Asn1Encodable, IAsn1Choice

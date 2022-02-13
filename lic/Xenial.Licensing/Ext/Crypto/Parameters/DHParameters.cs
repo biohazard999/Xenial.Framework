@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Parameters
+namespace Xenial.Licensing.Ext.Crypto.Parameters
 {
     public class DHParameters
 		: ICipherParameters

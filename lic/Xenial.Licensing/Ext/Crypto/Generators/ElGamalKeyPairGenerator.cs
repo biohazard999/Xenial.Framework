@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Crypto.Generators
+namespace Xenial.Licensing.Ext.Crypto.Generators
 {
     /**
      * a ElGamal key pair generator.

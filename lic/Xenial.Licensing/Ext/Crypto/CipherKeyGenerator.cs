@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Security;
 
-namespace Org.BouncyCastle.Crypto
+namespace Xenial.Licensing.Ext.Crypto
 {
 	/**
 	 * The base class for symmetric, or secret, cipher key generators.

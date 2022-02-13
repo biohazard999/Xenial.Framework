@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Utilities.Collections;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Utilities.Collections;
 
-namespace Org.BouncyCastle.Pkcs
+namespace Xenial.Licensing.Ext.Pkcs
 {
     public abstract class Pkcs12Entry
     {

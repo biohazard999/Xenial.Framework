@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 
-using Org.BouncyCastle.Utilities.Date;
+using Xenial.Licensing.Ext.Utilities.Date;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     internal class DtlsRecordLayer
         :   DatagramTransport

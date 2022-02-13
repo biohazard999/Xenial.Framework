@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Bcpg.OpenPgp
+namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 {
 	/// <remarks>
 	/// Thrown if the key checksum is invalid.

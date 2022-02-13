@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Math.Field
+namespace Xenial.Licensing.Ext.Math.Field
 {
     public interface IPolynomialExtensionField
         : IExtensionField

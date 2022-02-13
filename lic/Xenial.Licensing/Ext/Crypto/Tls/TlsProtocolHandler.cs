@@ -3,23 +3,23 @@ using System.Collections;
 using System.IO;
 using System.Text;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Crypto.Agreement;
-using Org.BouncyCastle.Crypto.Agreement.Srp;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Encodings;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.IO;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto.Prng;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Date;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Crypto.Agreement;
+using Xenial.Licensing.Ext.Crypto.Agreement.Srp;
+using Xenial.Licensing.Ext.Crypto.Digests;
+using Xenial.Licensing.Ext.Crypto.Encodings;
+using Xenial.Licensing.Ext.Crypto.Engines;
+using Xenial.Licensing.Ext.Crypto.Generators;
+using Xenial.Licensing.Ext.Crypto.IO;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Crypto.Prng;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Date;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     [Obsolete("Use 'TlsClientProtocol' instead")]
     public class TlsProtocolHandler

@@ -1,14 +1,14 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Collections;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Collections;
 
-namespace Org.BouncyCastle.Crypto.Generators
+namespace Xenial.Licensing.Ext.Crypto.Generators
 {
 	/**
 	 * Key generation parameters for NaccacheStern cipher. For details on this cipher, please see

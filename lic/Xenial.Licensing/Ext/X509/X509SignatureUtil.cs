@@ -1,16 +1,16 @@
 using System;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.CryptoPro;
-using Org.BouncyCastle.Asn1.Nist;
-using Org.BouncyCastle.Asn1.Oiw;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Asn1.TeleTrust;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Crypto;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.CryptoPro;
+using Xenial.Licensing.Ext.Asn1.Nist;
+using Xenial.Licensing.Ext.Asn1.Oiw;
+using Xenial.Licensing.Ext.Asn1.Pkcs;
+using Xenial.Licensing.Ext.Asn1.TeleTrust;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Asn1.X9;
+using Xenial.Licensing.Ext.Crypto;
 
-namespace Org.BouncyCastle.X509
+namespace Xenial.Licensing.Ext.X509
 {
 	internal class X509SignatureUtilities
 	{

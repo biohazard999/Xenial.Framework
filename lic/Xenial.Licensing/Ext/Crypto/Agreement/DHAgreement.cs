@@ -1,12 +1,12 @@
 using System;
 using System.Diagnostics;
 
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Crypto.Generators;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Security;
 
-namespace Org.BouncyCastle.Crypto.Agreement
+namespace Xenial.Licensing.Ext.Crypto.Agreement
 {
 	/**
 	 * a Diffie-Hellman key exchange engine.

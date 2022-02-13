@@ -1,13 +1,13 @@
 using System;
 using System.IO;
-using Org.BouncyCastle.Asn1;
+using Xenial.Licensing.Ext.Asn1;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Date;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Date;
 
-namespace Org.BouncyCastle.Bcpg.OpenPgp
+namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 {
 	/// <remarks>A PGP signature object.</remarks>
     public class PgpSignature

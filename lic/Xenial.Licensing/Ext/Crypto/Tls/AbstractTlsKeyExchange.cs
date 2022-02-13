@@ -2,7 +2,7 @@
 using System.Collections;
 using System.IO;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     public abstract class AbstractTlsKeyExchange
         :   TlsKeyExchange

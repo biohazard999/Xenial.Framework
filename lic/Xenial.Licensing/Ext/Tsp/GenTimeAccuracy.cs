@@ -1,7 +1,7 @@
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Tsp;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Tsp;
 
-namespace Org.BouncyCastle.Tsp
+namespace Xenial.Licensing.Ext.Tsp
 {
 	public class GenTimeAccuracy
 	{

@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Utilities.Date;
+using Xenial.Licensing.Ext.Utilities.Date;
 
-namespace Org.BouncyCastle.Bcpg.Sig
+namespace Xenial.Licensing.Ext.Bcpg.Sig
 {
     /**
     * packet giving signature creation time.

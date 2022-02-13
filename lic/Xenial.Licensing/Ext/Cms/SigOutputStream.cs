@@ -1,10 +1,10 @@
 using System;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Utilities.IO;
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Utilities.IO;
+using Xenial.Licensing.Ext.Security;
 
-namespace Org.BouncyCastle.Cms
+namespace Xenial.Licensing.Ext.Cms
 {
 	internal class SigOutputStream
 		: BaseOutputStream

@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Asn1.X509
+namespace Xenial.Licensing.Ext.Asn1.X509
 {
 	public class X509Attributes
 	{

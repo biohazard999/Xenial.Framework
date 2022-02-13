@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.X509;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.X509;
 
-namespace Org.BouncyCastle.Asn1.Ocsp
+namespace Xenial.Licensing.Ext.Asn1.Ocsp
 {
     public class ResponderID
         : Asn1Encodable, IAsn1Choice

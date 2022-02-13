@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Crypto.Parameters
+namespace Xenial.Licensing.Ext.Crypto.Parameters
 {
     public class DsaPrivateKeyParameters
 		: DsaKeyParameters

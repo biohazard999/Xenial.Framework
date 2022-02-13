@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Crypto.Parameters
+namespace Xenial.Licensing.Ext.Crypto.Parameters
 {
 	public class RsaKeyParameters
 		: AsymmetricKeyParameter

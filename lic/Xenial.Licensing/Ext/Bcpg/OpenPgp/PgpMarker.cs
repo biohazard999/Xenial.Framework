@@ -1,4 +1,4 @@
-namespace Org.BouncyCastle.Bcpg.OpenPgp
+namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 {
 	/// <remarks>
 	/// A PGP marker packet - in general these should be ignored other than where

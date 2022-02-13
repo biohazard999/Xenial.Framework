@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Crypto.Parameters;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Crypto.Parameters;
 
-namespace Org.BouncyCastle.Cms
+namespace Xenial.Licensing.Ext.Cms
 {
 	internal interface CmsSecureReadable
 	{

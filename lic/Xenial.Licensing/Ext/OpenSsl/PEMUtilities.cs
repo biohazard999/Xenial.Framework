@@ -1,12 +1,12 @@
 using System;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Generators;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.OpenSsl
+namespace Xenial.Licensing.Ext.OpenSsl
 {
 	internal sealed class PemUtilities
 	{

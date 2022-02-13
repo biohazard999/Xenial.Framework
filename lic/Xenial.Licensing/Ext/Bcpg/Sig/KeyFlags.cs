@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Bcpg.Sig
+namespace Xenial.Licensing.Ext.Bcpg.Sig
 {
     /**
     * Packet holding the key flag values.

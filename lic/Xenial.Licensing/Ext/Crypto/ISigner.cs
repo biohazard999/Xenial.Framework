@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 
-namespace Org.BouncyCastle.Crypto
+namespace Xenial.Licensing.Ext.Crypto
 {
     public interface ISigner
     {

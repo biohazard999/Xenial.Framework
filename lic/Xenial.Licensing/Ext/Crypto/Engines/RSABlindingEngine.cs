@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Crypto.Engines
+namespace Xenial.Licensing.Ext.Crypto.Engines
 {
 	/**
 	* This does your basic RSA Chaum's blinding and unblinding as outlined in

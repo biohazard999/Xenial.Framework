@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Digests;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Signers
+namespace Xenial.Licensing.Ext.Crypto.Signers
 {
     /// <summary> ISO9796-2 - mechanism using a hash function with recovery (scheme 1)</summary>
     public class Iso9796d2Signer : ISignerWithRecovery

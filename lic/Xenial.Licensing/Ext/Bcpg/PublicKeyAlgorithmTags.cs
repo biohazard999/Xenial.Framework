@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Bcpg
+namespace Xenial.Licensing.Ext.Bcpg
 {
     /// <remarks>Public Key Algorithm tag numbers.</remarks>
     public enum PublicKeyAlgorithmTag

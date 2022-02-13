@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Security;
 
-namespace Org.BouncyCastle.Bcpg.OpenPgp
+namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 {
 	/// <remarks>A one pass signature object.</remarks>
     public class PgpOnePassSignature

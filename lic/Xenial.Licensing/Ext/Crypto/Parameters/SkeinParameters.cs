@@ -3,9 +3,9 @@ using System.Collections;
 using System.Globalization;
 using System.IO;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Parameters
+namespace Xenial.Licensing.Ext.Crypto.Parameters
 {
 
 	/// <summary>
@@ -25,9 +25,9 @@ namespace Org.BouncyCastle.Crypto.Parameters
 	/// <see cref="SkeinParameters.Builder.SetPersonalisation(byte[])">arbitrary</see> personalisation string.</li>
 	/// </ul>
 	/// </remarks>
-	/// <seealso cref="Org.BouncyCastle.Crypto.Digests.SkeinEngine"/>
-	/// <seealso cref="Org.BouncyCastle.Crypto.Digests.SkeinDigest"/>
-	/// <seealso cref="Org.BouncyCastle.Crypto.Macs.SkeinMac"/>
+	/// <seealso cref="Xenial.Licensing.Ext.Crypto.Digests.SkeinEngine"/>
+	/// <seealso cref="Xenial.Licensing.Ext.Crypto.Digests.SkeinDigest"/>
+	/// <seealso cref="Xenial.Licensing.Ext.Crypto.Macs.SkeinMac"/>
 	public class SkeinParameters
 		: ICipherParameters
 	{

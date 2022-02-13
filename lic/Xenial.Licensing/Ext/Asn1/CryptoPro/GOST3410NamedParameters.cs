@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Collections;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Collections;
 
-namespace Org.BouncyCastle.Asn1.CryptoPro
+namespace Xenial.Licensing.Ext.Asn1.CryptoPro
 {
     /**
     * table of the available named parameters for GOST 3410-94.

@@ -1,19 +1,19 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Sec;
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Math.EC;
-using Org.BouncyCastle.Math.EC.Custom.Djb;
-using Org.BouncyCastle.Math.EC.Custom.Sec;
-using Org.BouncyCastle.Math.EC.Endo;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Collections;
-using Org.BouncyCastle.Utilities.Encoders;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Sec;
+using Xenial.Licensing.Ext.Asn1.X9;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Math.EC;
+using Xenial.Licensing.Ext.Math.EC.Custom.Djb;
+using Xenial.Licensing.Ext.Math.EC.Custom.Sec;
+using Xenial.Licensing.Ext.Math.EC.Endo;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Collections;
+using Xenial.Licensing.Ext.Utilities.Encoders;
 
-namespace Org.BouncyCastle.Crypto.EC
+namespace Xenial.Licensing.Ext.Crypto.EC
 {
     public sealed class CustomNamedCurves
     {

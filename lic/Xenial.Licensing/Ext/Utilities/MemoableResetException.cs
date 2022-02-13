@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Utilities
+namespace Xenial.Licensing.Ext.Utilities
 {
     /**
      * Exception to be thrown on a failure to reset an object implementing Memoable.

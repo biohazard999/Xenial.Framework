@@ -1,6 +1,6 @@
-using Org.BouncyCastle.Asn1;
+using Xenial.Licensing.Ext.Asn1;
 
-namespace Org.BouncyCastle.Asn1.Ocsp
+namespace Xenial.Licensing.Ext.Asn1.Ocsp
 {
     public abstract class OcspObjectIdentifiers
     {

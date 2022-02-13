@@ -1,10 +1,10 @@
 using System;
 
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Math.EC;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Math.EC;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.X9
+namespace Xenial.Licensing.Ext.Asn1.X9
 {
     /**
      * ASN.1 def for Elliptic-Curve Curve structure. See

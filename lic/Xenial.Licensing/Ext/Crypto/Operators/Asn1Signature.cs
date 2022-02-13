@@ -2,21 +2,21 @@ using System;
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.CryptoPro;
-using Org.BouncyCastle.Asn1.Nist;
-using Org.BouncyCastle.Asn1.Oiw;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Asn1.TeleTrust;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Crypto.IO;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Collections;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.CryptoPro;
+using Xenial.Licensing.Ext.Asn1.Nist;
+using Xenial.Licensing.Ext.Asn1.Oiw;
+using Xenial.Licensing.Ext.Asn1.Pkcs;
+using Xenial.Licensing.Ext.Asn1.TeleTrust;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Asn1.X9;
+using Xenial.Licensing.Ext.Crypto.IO;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Collections;
 
-namespace Org.BouncyCastle.Crypto.Operators
+namespace Xenial.Licensing.Ext.Crypto.Operators
 {
 	internal class X509Utilities
 	{

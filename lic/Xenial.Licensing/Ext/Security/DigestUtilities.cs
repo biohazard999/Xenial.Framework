@@ -1,18 +1,18 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.CryptoPro;
-using Org.BouncyCastle.Asn1.Nist;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Asn1.Oiw;
-using Org.BouncyCastle.Asn1.TeleTrust;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.CryptoPro;
+using Xenial.Licensing.Ext.Asn1.Nist;
+using Xenial.Licensing.Ext.Asn1.Pkcs;
+using Xenial.Licensing.Ext.Asn1.Oiw;
+using Xenial.Licensing.Ext.Asn1.TeleTrust;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Crypto.Digests;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Security
+namespace Xenial.Licensing.Ext.Security
 {
     /// <remarks>
     ///  Utility class for creating IDigest objects from their names/Oids

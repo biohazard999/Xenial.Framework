@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Math.EC
+namespace Xenial.Licensing.Ext.Math.EC
 {
     internal class LongArray
     {

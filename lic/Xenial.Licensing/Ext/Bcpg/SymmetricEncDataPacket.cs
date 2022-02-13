@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Bcpg
+namespace Xenial.Licensing.Ext.Bcpg
 {
 	/// <remarks>Basic type for a symmetric key encrypted packet.</remarks>
     public class SymmetricEncDataPacket

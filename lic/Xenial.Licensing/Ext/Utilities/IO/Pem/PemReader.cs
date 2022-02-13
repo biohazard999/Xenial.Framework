@@ -3,9 +3,9 @@ using System.Collections;
 using System.IO;
 using System.Text;
 
-using Org.BouncyCastle.Utilities.Encoders;
+using Xenial.Licensing.Ext.Utilities.Encoders;
 
-namespace Org.BouncyCastle.Utilities.IO.Pem
+namespace Xenial.Licensing.Ext.Utilities.IO.Pem
 {
 	public class PemReader
 	{

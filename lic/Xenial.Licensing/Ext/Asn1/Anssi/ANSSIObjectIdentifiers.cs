@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Asn1.Anssi
+namespace Xenial.Licensing.Ext.Asn1.Anssi
 {
     public sealed class AnssiObjectIdentifiers
     {

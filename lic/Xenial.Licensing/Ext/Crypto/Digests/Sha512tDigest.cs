@@ -1,9 +1,9 @@
 ﻿using System;
 
-using Org.BouncyCastle.Crypto.Utilities;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Crypto.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Digests
+namespace Xenial.Licensing.Ext.Crypto.Digests
 {
     /**
      * FIPS 180-4 implementation of SHA-512/t

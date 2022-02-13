@@ -1,10 +1,10 @@
 using System;
 
-using Org.BouncyCastle.Asn1.Oiw;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1.Oiw;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Ess
+namespace Xenial.Licensing.Ext.Asn1.Ess
 {
 	[Obsolete("Use version in Asn1.Esf instead")]
 	public class OtherCertID

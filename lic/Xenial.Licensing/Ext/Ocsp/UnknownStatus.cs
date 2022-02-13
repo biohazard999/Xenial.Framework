@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Ocsp
+namespace Xenial.Licensing.Ext.Ocsp
 {
 	/**
 	 * wrapper for the UnknownInfo object

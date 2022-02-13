@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Esf
+namespace Xenial.Licensing.Ext.Asn1.Esf
 {
 	/// <remarks>
 	/// RFC 3126: 4.3.2 Revocation Values Attribute Definition

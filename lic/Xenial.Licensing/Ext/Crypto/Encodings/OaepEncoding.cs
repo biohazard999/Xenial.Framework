@@ -1,10 +1,10 @@
 using System;
 
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Crypto.Digests;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Security;
 
-namespace Org.BouncyCastle.Crypto.Encodings
+namespace Xenial.Licensing.Ext.Crypto.Encodings
 {
     /**
     * Optimal Asymmetric Encryption Padding (OAEP) - see PKCS 1 V 2.

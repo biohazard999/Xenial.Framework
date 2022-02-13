@@ -1,8 +1,8 @@
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Cms;
-using Org.BouncyCastle.Asn1.X509;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Cms;
+using Xenial.Licensing.Ext.Asn1.X509;
 
-namespace Org.BouncyCastle.Asn1.Smime
+namespace Xenial.Licensing.Ext.Asn1.Smime
 {
     /**
      * The SmimeEncryptionKeyPreference object.

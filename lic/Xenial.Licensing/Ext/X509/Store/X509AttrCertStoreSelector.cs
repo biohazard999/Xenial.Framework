@@ -2,14 +2,14 @@ using System;
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities.Collections;
-using Org.BouncyCastle.Utilities.Date;
-using Org.BouncyCastle.X509.Extension;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Utilities.Collections;
+using Xenial.Licensing.Ext.Utilities.Date;
+using Xenial.Licensing.Ext.X509.Extension;
 
-namespace Org.BouncyCastle.X509.Store
+namespace Xenial.Licensing.Ext.X509.Store
 {
 	/**
 	* This class is an <code>Selector</code> like implementation to select

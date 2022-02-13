@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto.Utilities;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Crypto.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Engines
+namespace Xenial.Licensing.Ext.Crypto.Engines
 {
     /**
      * Serpent is a 128-bit 32-round block cipher with variable key lengths,

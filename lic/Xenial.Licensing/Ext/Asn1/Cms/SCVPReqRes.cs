@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Asn1.Cms
+namespace Xenial.Licensing.Ext.Asn1.Cms
 {
     public class ScvpReqRes
         : Asn1Encodable

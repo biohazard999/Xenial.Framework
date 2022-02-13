@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Security;
 
-namespace Org.BouncyCastle.Crypto.Prng
+namespace Xenial.Licensing.Ext.Crypto.Prng
 {
     public class X931SecureRandom
         :   SecureRandom

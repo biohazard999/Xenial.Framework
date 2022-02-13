@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Asn1.X509;
+using Xenial.Licensing.Ext.Asn1.X509;
 
-namespace Org.BouncyCastle.Pkix
+namespace Xenial.Licensing.Ext.Pkix
 {
 	/// <summary>
 	/// This class helps to handle CRL revocation reasons mask. Each CRL handles a

@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Asn1.X509.SigI
+namespace Xenial.Licensing.Ext.Asn1.X509.SigI
 {
 	/**
 	 * Object Identifiers of SigI specifciation (German Signature Law

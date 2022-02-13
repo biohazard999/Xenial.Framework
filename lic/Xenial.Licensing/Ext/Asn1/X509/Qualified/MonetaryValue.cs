@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.X509.Qualified
+namespace Xenial.Licensing.Ext.Asn1.X509.Qualified
 {
     /**
     * The MonetaryValue object.

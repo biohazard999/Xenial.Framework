@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace Org.BouncyCastle.Utilities.IO
+namespace Xenial.Licensing.Ext.Utilities.IO
 {
     public class TeeOutputStream
 		: BaseOutputStream

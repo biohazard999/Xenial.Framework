@@ -7,11 +7,11 @@ using System.Text;
 using System.Collections.Generic;
 #endif
 
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Encoders;
+using Xenial.Licensing.Ext.Asn1.Pkcs;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Encoders;
 
-namespace Org.BouncyCastle.Asn1.X509
+namespace Xenial.Licensing.Ext.Asn1.X509
 {
     /**
     * <pre>

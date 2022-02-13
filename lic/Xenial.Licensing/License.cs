@@ -30,8 +30,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Asn1.X9;
+using Xenial.Licensing.Ext.Security;
 
 using Standard.Licensing.Security.Cryptography;
 

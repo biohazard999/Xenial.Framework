@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Crypto
+namespace Xenial.Licensing.Ext.Crypto
 {
     /// <summary>
     /// Base interface for operators that serve as stream-based signature calculators.

@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Asn1.Icao
+namespace Xenial.Licensing.Ext.Asn1.Icao
 {
 	public class LdsVersionInfo
 		: Asn1Encodable

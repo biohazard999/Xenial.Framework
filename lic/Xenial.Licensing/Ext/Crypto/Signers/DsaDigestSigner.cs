@@ -3,13 +3,13 @@ using System.Collections;
 using System.IO;
 using System.Text;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Crypto.Signers;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Security;
 
-namespace Org.BouncyCastle.Crypto.Signers
+namespace Xenial.Licensing.Ext.Crypto.Signers
 {
 	public class DsaDigestSigner
 		: ISigner

@@ -1,14 +1,14 @@
 using System;
 using System.IO;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Utilities
+namespace Xenial.Licensing.Ext.Asn1.Utilities
 {
-    [Obsolete("Use Org.BouncyCastle.Utilities.IO.FilterStream")]
+    [Obsolete("Use Xenial.Licensing.Ext.Utilities.IO.FilterStream")]
     public class FilterStream : Stream
     {
-        [Obsolete("Use Org.BouncyCastle.Utilities.IO.FilterStream")]
+        [Obsolete("Use Xenial.Licensing.Ext.Utilities.IO.FilterStream")]
         public FilterStream(Stream s)
         {
             this.s = s;

@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     /**
      * Parsing and encoding of a <i>Certificate</i> struct from RFC 4346.
@@ -19,7 +19,7 @@ namespace Org.BouncyCastle.Crypto.Tls
      * } Certificate;
      * </pre>
      *
-     * @see Org.BouncyCastle.Asn1.X509.X509CertificateStructure
+     * @see Xenial.Licensing.Ext.Asn1.X509.X509CertificateStructure
      */
     public class Certificate
     {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
 
-using Org.BouncyCastle.Crypto.Prng;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Crypto.Prng;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     internal abstract class AbstractTlsContext
         : TlsContext

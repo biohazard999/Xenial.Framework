@@ -1,5 +1,5 @@
 ﻿
-namespace Org.BouncyCastle.Crypto
+namespace Xenial.Licensing.Ext.Crypto
 {
     /// <summary>
     /// Operators that reduce their input to a single block return an object

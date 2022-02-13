@@ -1,9 +1,9 @@
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
 using System;
 
-namespace Org.BouncyCastle.Cms
+namespace Xenial.Licensing.Ext.Cms
 {
     internal class BaseDigestCalculator
         : IDigestCalculator

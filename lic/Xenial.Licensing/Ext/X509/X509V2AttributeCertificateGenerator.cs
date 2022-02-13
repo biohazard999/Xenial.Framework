@@ -2,16 +2,16 @@ using System;
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Operators;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Security.Certificates;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Operators;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Security.Certificates;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.X509
+namespace Xenial.Licensing.Ext.X509
 {
 	/// <remarks>Class to produce an X.509 Version 2 AttributeCertificate.</remarks>
 	public class X509V2AttributeCertificateGenerator

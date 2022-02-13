@@ -1,9 +1,9 @@
 ﻿using System;
 
-using Org.BouncyCastle.Math.EC.Multiplier;
-using Org.BouncyCastle.Utilities.Encoders;
+using Xenial.Licensing.Ext.Math.EC.Multiplier;
+using Xenial.Licensing.Ext.Utilities.Encoders;
 
-namespace Org.BouncyCastle.Math.EC.Custom.Sec
+namespace Xenial.Licensing.Ext.Math.EC.Custom.Sec
 {
     internal class SecT233K1Curve
         : AbstractF2mCurve

@@ -1,7 +1,7 @@
-using Org.BouncyCastle.Utilities.Collections;
-using Org.BouncyCastle.X509;
+using Xenial.Licensing.Ext.Utilities.Collections;
+using Xenial.Licensing.Ext.X509;
 
-namespace Org.BouncyCastle.Pkix
+namespace Xenial.Licensing.Ext.Pkix
 {
     public abstract class PkixCertPathChecker
     {

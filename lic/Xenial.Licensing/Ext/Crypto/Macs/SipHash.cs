@@ -1,9 +1,9 @@
 ﻿using System;
 
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto.Utilities;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Crypto.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Macs
+namespace Xenial.Licensing.Ext.Crypto.Macs
 {
     /// <summary>
     /// Implementation of SipHash as specified in "SipHash: a fast short-input PRF", by Jean-Philippe

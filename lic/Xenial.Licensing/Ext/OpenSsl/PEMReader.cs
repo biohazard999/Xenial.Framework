@@ -4,25 +4,25 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Nist;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Asn1.Sec;
-using Org.BouncyCastle.Asn1.TeleTrust;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.EC;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Pkcs;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Encoders;
-using Org.BouncyCastle.Utilities.IO.Pem;
-using Org.BouncyCastle.X509;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Nist;
+using Xenial.Licensing.Ext.Asn1.Pkcs;
+using Xenial.Licensing.Ext.Asn1.Sec;
+using Xenial.Licensing.Ext.Asn1.TeleTrust;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Asn1.X9;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.EC;
+using Xenial.Licensing.Ext.Crypto.Generators;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Pkcs;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Encoders;
+using Xenial.Licensing.Ext.Utilities.IO.Pem;
+using Xenial.Licensing.Ext.X509;
 
-namespace Org.BouncyCastle.OpenSsl
+namespace Xenial.Licensing.Ext.OpenSsl
 {
     /**
     * Class for reading OpenSSL PEM encoded streams containing 
@@ -32,7 +32,7 @@ namespace Org.BouncyCastle.OpenSsl
     * Certificates will be returned using the appropriate java.security type.</p>
     */
     public class PemReader
-        : Org.BouncyCastle.Utilities.IO.Pem.PemReader
+        : Xenial.Licensing.Ext.Utilities.IO.Pem.PemReader
     {
 //		private static readonly IDictionary parsers = new Hashtable();
 

@@ -2,16 +2,16 @@ using System;
 using System.Collections;
 using System.Globalization;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Iana;
-using Org.BouncyCastle.Asn1.Pkcs;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Macs;
-using Org.BouncyCastle.Crypto.Paddings;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Iana;
+using Xenial.Licensing.Ext.Asn1.Pkcs;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Engines;
+using Xenial.Licensing.Ext.Crypto.Macs;
+using Xenial.Licensing.Ext.Crypto.Paddings;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Security
+namespace Xenial.Licensing.Ext.Security
 {
     /// <remarks>
     ///  Utility class for creating HMac object from their names/Oids

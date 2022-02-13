@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Bcpg
+namespace Xenial.Licensing.Ext.Bcpg
 {
 	/// <remarks>Base class for a DSA secret key.</remarks>
 	public class DsaSecretBcpgKey

@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Utilities.Collections;
+using Xenial.Licensing.Ext.Utilities.Collections;
 
-namespace Org.BouncyCastle.Utilities.IO.Pem
+namespace Xenial.Licensing.Ext.Utilities.IO.Pem
 {
 	public class PemObject
 		: PemObjectGenerator

@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace Org.BouncyCastle.Utilities.IO
+namespace Xenial.Licensing.Ext.Utilities.IO
 {
     public class FilterStream : Stream
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Math.EC.Multiplier
+namespace Xenial.Licensing.Ext.Math.EC.Multiplier
 {
     public class FixedPointCombMultiplier
         : AbstractECMultiplier

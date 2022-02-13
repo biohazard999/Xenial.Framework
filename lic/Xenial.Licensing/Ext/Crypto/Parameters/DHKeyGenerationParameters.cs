@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Security;
 
-namespace Org.BouncyCastle.Crypto.Parameters
+namespace Xenial.Licensing.Ext.Crypto.Parameters
 {
     public class DHKeyGenerationParameters
 		: KeyGenerationParameters

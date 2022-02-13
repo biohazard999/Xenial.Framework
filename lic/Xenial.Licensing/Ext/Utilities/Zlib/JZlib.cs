@@ -34,7 +34,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * and contributors of zlib.
  */
 
-namespace Org.BouncyCastle.Utilities.Zlib {
+namespace Xenial.Licensing.Ext.Utilities.Zlib {
 
     public sealed class JZlib{
         private const String _version="1.0.7";

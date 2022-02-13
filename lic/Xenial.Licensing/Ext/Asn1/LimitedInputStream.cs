@@ -1,8 +1,8 @@
 using System.IO;
 
-using Org.BouncyCastle.Utilities.IO;
+using Xenial.Licensing.Ext.Utilities.IO;
 
-namespace Org.BouncyCastle.Asn1
+namespace Xenial.Licensing.Ext.Asn1
 {
     internal abstract class LimitedInputStream
         : BaseInputStream

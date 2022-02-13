@@ -1,9 +1,9 @@
 using System;
 using System.Text;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1
+namespace Xenial.Licensing.Ext.Asn1
 {
     /**
      * Der UniversalString object.

@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Tsp
+namespace Xenial.Licensing.Ext.Tsp
 {
 #if !(NETCF_1_0 || NETCF_2_0 || SILVERLIGHT || PORTABLE)
     [Serializable]

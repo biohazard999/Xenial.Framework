@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1.X500;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1.X500;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.X509.SigI
+namespace Xenial.Licensing.Ext.Asn1.X509.SigI
 {
 	/**
 	* Contains personal data for the otherName field in the subjectAltNames

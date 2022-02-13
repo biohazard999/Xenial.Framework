@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.X509.Store
+namespace Xenial.Licensing.Ext.X509.Store
 {
 	public sealed class X509StoreFactory
 	{

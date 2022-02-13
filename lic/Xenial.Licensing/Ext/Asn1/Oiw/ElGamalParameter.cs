@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Asn1.Oiw
+namespace Xenial.Licensing.Ext.Asn1.Oiw
 {
     public class ElGamalParameter
         : Asn1Encodable

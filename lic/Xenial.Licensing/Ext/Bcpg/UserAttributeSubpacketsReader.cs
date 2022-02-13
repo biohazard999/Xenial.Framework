@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using Org.BouncyCastle.Bcpg.Attr;
-using Org.BouncyCastle.Utilities.IO;
+using Xenial.Licensing.Ext.Bcpg.Attr;
+using Xenial.Licensing.Ext.Utilities.IO;
 
-namespace Org.BouncyCastle.Bcpg
+namespace Xenial.Licensing.Ext.Bcpg
 {
     /**
     * reader for user attribute sub-packets

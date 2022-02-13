@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Org.BouncyCastle.Utilities.Collections
+namespace Xenial.Licensing.Ext.Utilities.Collections
 {
 	public abstract class UnmodifiableSet
 		: ISet

@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Crypto.Utilities
+namespace Xenial.Licensing.Ext.Crypto.Utilities
 {
     internal sealed class Pack
     {

@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Crypto.Utilities;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Crypto.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Modes.Gcm
+namespace Xenial.Licensing.Ext.Crypto.Modes.Gcm
 {
     internal abstract class GcmUtilities
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Agreement.JPake
+namespace Xenial.Licensing.Ext.Crypto.Agreement.JPake
 {
     /// <summary>
     /// The payload sent/received during the second round of a J-PAKE exchange.

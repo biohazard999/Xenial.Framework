@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Security;
 
-namespace Org.BouncyCastle.Crypto.Paddings
+namespace Xenial.Licensing.Ext.Crypto.Paddings
 {
     /**
     * A padder that adds X9.23 padding to a block - if a SecureRandom is

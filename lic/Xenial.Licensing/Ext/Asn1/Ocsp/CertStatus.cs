@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Ocsp
+namespace Xenial.Licensing.Ext.Asn1.Ocsp
 {
     public class CertStatus
         : Asn1Encodable, IAsn1Choice

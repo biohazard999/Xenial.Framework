@@ -1,10 +1,10 @@
 using System;
 using System.Globalization;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Math.EC;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Math.EC;
 
-namespace Org.BouncyCastle.Crypto.Parameters
+namespace Xenial.Licensing.Ext.Crypto.Parameters
 {
     public class ECPublicKeyParameters
         : ECKeyParameters

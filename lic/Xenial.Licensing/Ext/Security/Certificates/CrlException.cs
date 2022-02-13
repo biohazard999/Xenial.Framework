@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Security.Certificates
+namespace Xenial.Licensing.Ext.Security.Certificates
 {
 #if !(NETCF_1_0 || NETCF_2_0 || SILVERLIGHT || PORTABLE)
     [Serializable]

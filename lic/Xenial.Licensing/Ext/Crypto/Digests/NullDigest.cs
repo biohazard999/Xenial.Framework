@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Org.BouncyCastle.Crypto.Digests
+namespace Xenial.Licensing.Ext.Crypto.Digests
 {
 	public class NullDigest : IDigest
 	{

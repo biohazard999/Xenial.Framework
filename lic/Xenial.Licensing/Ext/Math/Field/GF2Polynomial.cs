@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Math.Field
+namespace Xenial.Licensing.Ext.Math.Field
 {
     internal class GF2Polynomial
         : IPolynomial

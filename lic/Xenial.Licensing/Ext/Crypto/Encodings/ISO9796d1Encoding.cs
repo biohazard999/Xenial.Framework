@@ -1,9 +1,9 @@
 using System;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Crypto.Encodings
+namespace Xenial.Licensing.Ext.Crypto.Encodings
 {
 	/**
 	* ISO 9796-1 padding. Note in the light of recent results you should

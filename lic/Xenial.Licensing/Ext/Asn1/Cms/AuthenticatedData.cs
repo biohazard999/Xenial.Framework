@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Cms
+namespace Xenial.Licensing.Ext.Asn1.Cms
 {
 	public class AuthenticatedData
 		: Asn1Encodable

@@ -1,4 +1,4 @@
-namespace Org.BouncyCastle.Asn1.Misc
+namespace Xenial.Licensing.Ext.Asn1.Misc
 {
     public abstract class MiscObjectIdentifiers
     {

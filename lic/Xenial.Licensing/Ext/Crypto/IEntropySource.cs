@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Crypto
+namespace Xenial.Licensing.Ext.Crypto
 {
 	/// <summary>
 	/// Base interface describing an entropy source for a DRBG.

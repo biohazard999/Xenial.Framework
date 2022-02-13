@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.IsisMtt.X509
+namespace Xenial.Licensing.Ext.Asn1.IsisMtt.X509
 {
 	/**
 	* A declaration of majority.

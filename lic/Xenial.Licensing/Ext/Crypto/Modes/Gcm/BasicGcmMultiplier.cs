@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Crypto.Modes.Gcm
+namespace Xenial.Licensing.Ext.Crypto.Modes.Gcm
 {
     public class BasicGcmMultiplier
         : IGcmMultiplier

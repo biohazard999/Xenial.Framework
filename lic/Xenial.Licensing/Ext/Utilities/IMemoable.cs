@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Utilities
+namespace Xenial.Licensing.Ext.Utilities
 {
 	public interface IMemoable
 	{

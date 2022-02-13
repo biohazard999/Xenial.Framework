@@ -1,8 +1,8 @@
-using Org.BouncyCastle.Math.EC;
+using Xenial.Licensing.Ext.Math.EC;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.X9
+namespace Xenial.Licensing.Ext.Asn1.X9
 {
     /**
      * class for describing an ECPoint as a Der object.

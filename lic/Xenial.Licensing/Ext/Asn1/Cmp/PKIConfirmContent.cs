@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Cmp
+namespace Xenial.Licensing.Ext.Asn1.Cmp
 {
 	public class PkiConfirmContent
 		: Asn1Encodable

@@ -2,10 +2,10 @@
 using System.Collections;
 using System.IO;
 
-using Org.BouncyCastle.Crypto.Agreement;
-using Org.BouncyCastle.Crypto.Parameters;
+using Xenial.Licensing.Ext.Crypto.Agreement;
+using Xenial.Licensing.Ext.Crypto.Parameters;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     public abstract class DefaultTlsServer
         :   AbstractTlsServer

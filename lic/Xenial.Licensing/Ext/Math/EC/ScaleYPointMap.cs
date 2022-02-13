@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Math.EC
+namespace Xenial.Licensing.Ext.Math.EC
 {
     public class ScaleYPointMap
         : ECPointMap

@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Asn1.Pkcs
+namespace Xenial.Licensing.Ext.Asn1.Pkcs
 {
     public class PbeS2Parameters
         : Asn1Encodable

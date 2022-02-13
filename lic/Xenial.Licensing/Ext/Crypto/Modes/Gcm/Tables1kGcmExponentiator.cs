@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Crypto.Modes.Gcm
+namespace Xenial.Licensing.Ext.Crypto.Modes.Gcm
 {
     public class Tables1kGcmExponentiator
         : IGcmExponentiator

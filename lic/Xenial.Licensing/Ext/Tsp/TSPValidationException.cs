@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Tsp
+namespace Xenial.Licensing.Ext.Tsp
 {
 	/**
 	 * Exception thrown if a TSP request or response fails to validate.

@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Math.EC.Abc;
+using Xenial.Licensing.Ext.Math.EC.Abc;
 
-namespace Org.BouncyCastle.Math.EC.Multiplier
+namespace Xenial.Licensing.Ext.Math.EC.Multiplier
 {
     /**
     * Class implementing the WTNAF (Window

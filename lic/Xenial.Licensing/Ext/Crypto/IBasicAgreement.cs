@@ -1,7 +1,7 @@
 using System;
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Crypto
+namespace Xenial.Licensing.Ext.Crypto
 {
     /**
      * The basic interface that basic Diffie-Hellman implementations

@@ -1,4 +1,4 @@
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     /**
      * RFC 2246 6.2.1

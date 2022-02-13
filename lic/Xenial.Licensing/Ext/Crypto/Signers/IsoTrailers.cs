@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Collections;
+using Xenial.Licensing.Ext.Crypto.Digests;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Collections;
 
-namespace Org.BouncyCastle.Crypto.Signers
+namespace Xenial.Licensing.Ext.Crypto.Signers
 {
     public class IsoTrailers
     {

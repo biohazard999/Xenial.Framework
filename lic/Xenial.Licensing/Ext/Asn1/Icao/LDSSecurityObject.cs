@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Asn1.Icao
+namespace Xenial.Licensing.Ext.Asn1.Icao
 {
 	/**
 	 * The LDSSecurityObject object (V1.8).

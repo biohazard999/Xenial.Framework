@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Math.EC.Custom.Sec
+namespace Xenial.Licensing.Ext.Math.EC.Custom.Sec
 {
     internal class SecT163K1Point
         : AbstractF2mPoint

@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Asn1;
+using Xenial.Licensing.Ext.Asn1;
 
-namespace Org.BouncyCastle.Crypto.Agreement.Kdf
+namespace Xenial.Licensing.Ext.Crypto.Agreement.Kdf
 {
 	public class DHKdfParameters
 		: IDerivationParameters

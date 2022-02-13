@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Crypto
+namespace Xenial.Licensing.Ext.Crypto
 {
     /// <summary>
     /// Base interface for a provider to support the dynamic creation of signature verifiers.

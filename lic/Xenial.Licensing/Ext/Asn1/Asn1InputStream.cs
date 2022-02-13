@@ -2,9 +2,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-using Org.BouncyCastle.Utilities.IO;
+using Xenial.Licensing.Ext.Utilities.IO;
 
-namespace Org.BouncyCastle.Asn1
+namespace Xenial.Licensing.Ext.Asn1
 {
     /**
      * a general purpose ASN.1 decoder - note: this class differs from the

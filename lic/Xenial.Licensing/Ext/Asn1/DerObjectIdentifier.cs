@@ -3,10 +3,10 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1
+namespace Xenial.Licensing.Ext.Asn1
 {
     public class DerObjectIdentifier
         : Asn1Object

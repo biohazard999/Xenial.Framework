@@ -1,4 +1,4 @@
-namespace Org.BouncyCastle.Bcpg.OpenPgp
+namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 {
 	public abstract class PgpObject
 	{

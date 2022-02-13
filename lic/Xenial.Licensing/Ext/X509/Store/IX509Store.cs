@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Org.BouncyCastle.X509.Store
+namespace Xenial.Licensing.Ext.X509.Store
 {
 	public interface IX509Store
 	{

@@ -1,13 +1,13 @@
 using System.Collections;
 
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Math.EC;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Collections;
-using Org.BouncyCastle.Utilities.Encoders;
+using Xenial.Licensing.Ext.Asn1.X9;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Math.EC;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Collections;
+using Xenial.Licensing.Ext.Utilities.Encoders;
 
-namespace Org.BouncyCastle.Asn1.TeleTrust
+namespace Xenial.Licensing.Ext.Asn1.TeleTrust
 {
     /**
     * elliptic curves defined in "ECC Brainpool Standard Curves and Curve Generation"

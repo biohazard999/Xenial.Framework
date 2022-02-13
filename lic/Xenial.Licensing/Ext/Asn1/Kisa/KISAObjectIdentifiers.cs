@@ -1,4 +1,4 @@
-namespace Org.BouncyCastle.Asn1.Kisa
+namespace Xenial.Licensing.Ext.Asn1.Kisa
 {
 	public abstract class KisaObjectIdentifiers
 	{

@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Crypto
+namespace Xenial.Licensing.Ext.Crypto
 {
 	/// <summary>The interface stream ciphers conform to.</summary>
     public interface IStreamCipher

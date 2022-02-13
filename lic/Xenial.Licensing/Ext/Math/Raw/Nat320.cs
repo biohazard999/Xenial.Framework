@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 
-using Org.BouncyCastle.Crypto.Utilities;
+using Xenial.Licensing.Ext.Crypto.Utilities;
 
-namespace Org.BouncyCastle.Math.Raw
+namespace Xenial.Licensing.Ext.Math.Raw
 {
     internal abstract class Nat320
     {

@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Cms
+namespace Xenial.Licensing.Ext.Asn1.Cms
 {
     /**
      * a signed data object.

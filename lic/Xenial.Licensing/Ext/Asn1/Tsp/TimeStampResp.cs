@@ -1,10 +1,10 @@
 using System;
 
-using Org.BouncyCastle.Asn1.Cmp;
-using Org.BouncyCastle.Asn1.Cms;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1.Cmp;
+using Xenial.Licensing.Ext.Asn1.Cms;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Tsp
+namespace Xenial.Licensing.Ext.Asn1.Tsp
 {
 	public class TimeStampResp
 		: Asn1Encodable

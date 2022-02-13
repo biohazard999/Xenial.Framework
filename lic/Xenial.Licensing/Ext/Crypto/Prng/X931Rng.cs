@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Crypto.Prng
+namespace Xenial.Licensing.Ext.Crypto.Prng
 {
     internal class X931Rng
     {

@@ -1,7 +1,7 @@
 using System;
-using Org.BouncyCastle.Crypto;
+using Xenial.Licensing.Ext.Crypto;
 
-namespace Org.BouncyCastle.Crypto.Parameters
+namespace Xenial.Licensing.Ext.Crypto.Parameters
 {
     public class RC5Parameters
 		: KeyParameter

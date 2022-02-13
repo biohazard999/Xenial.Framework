@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Ocsp;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.Ocsp;
 
-namespace Org.BouncyCastle.Ocsp
+namespace Xenial.Licensing.Ext.Ocsp
 {
 	public class OcspResp
 	{

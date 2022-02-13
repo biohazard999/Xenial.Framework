@@ -1,9 +1,9 @@
 using System;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.Asn1.Pkcs
+namespace Xenial.Licensing.Ext.Asn1.Pkcs
 {
     /**
      * the infamous Pfx from Pkcs12

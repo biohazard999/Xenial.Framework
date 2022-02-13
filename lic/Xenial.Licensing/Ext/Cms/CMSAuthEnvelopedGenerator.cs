@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Asn1.Nist;
+using Xenial.Licensing.Ext.Asn1.Nist;
 
-namespace Org.BouncyCastle.Cms
+namespace Xenial.Licensing.Ext.Cms
 {
 	internal class CmsAuthEnvelopedGenerator
 	{

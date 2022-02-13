@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Org.BouncyCastle.Crypto.Prng.Drbg;
+using Xenial.Licensing.Ext.Crypto.Prng.Drbg;
 
-namespace Org.BouncyCastle.Crypto.Prng
+namespace Xenial.Licensing.Ext.Crypto.Prng
 {
     internal interface IDrbgProvider
     {

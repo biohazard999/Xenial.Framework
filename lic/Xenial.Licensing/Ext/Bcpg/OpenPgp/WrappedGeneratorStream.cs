@@ -1,8 +1,8 @@
 using System.IO;
 
-using Org.BouncyCastle.Utilities.IO;
+using Xenial.Licensing.Ext.Utilities.IO;
 
-namespace Org.BouncyCastle.Bcpg.OpenPgp
+namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 {
 	public class WrappedGeneratorStream
 		: FilterStream

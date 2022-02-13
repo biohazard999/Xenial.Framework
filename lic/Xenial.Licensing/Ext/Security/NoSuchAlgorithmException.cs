@@ -1,6 +1,6 @@
 using System;
 
-namespace Org.BouncyCastle.Security
+namespace Xenial.Licensing.Ext.Security
 {
 	[Obsolete("Never thrown")]
 #if !(NETCF_1_0 || NETCF_2_0 || SILVERLIGHT || PORTABLE)

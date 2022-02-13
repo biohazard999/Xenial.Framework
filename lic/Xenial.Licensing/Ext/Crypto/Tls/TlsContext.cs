@@ -1,9 +1,9 @@
 ﻿using System;
 
-using Org.BouncyCastle.Crypto.Prng;
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Crypto.Prng;
+using Xenial.Licensing.Ext.Security;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     public interface TlsContext
     {

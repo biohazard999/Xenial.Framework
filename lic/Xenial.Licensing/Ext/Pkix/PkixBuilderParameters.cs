@@ -1,12 +1,12 @@
 using System;
 using System.Text;
 
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.X509.Store;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Collections;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.X509.Store;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Collections;
 
-namespace Org.BouncyCastle.Pkix
+namespace Xenial.Licensing.Ext.Pkix
 {
 	/// <summary>
     /// Summary description for PkixBuilderParameters.

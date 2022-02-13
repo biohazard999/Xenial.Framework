@@ -1,6 +1,6 @@
-using Org.BouncyCastle.Bcpg.Attr;
+using Xenial.Licensing.Ext.Bcpg.Attr;
 
-namespace Org.BouncyCastle.Bcpg.OpenPgp
+namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 {
 	/// <remarks>Container for a list of user attribute subpackets.</remarks>
     public class PgpUserAttributeSubpacketVector

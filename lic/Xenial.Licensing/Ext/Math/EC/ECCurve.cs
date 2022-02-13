@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Math.EC.Abc;
-using Org.BouncyCastle.Math.EC.Endo;
-using Org.BouncyCastle.Math.EC.Multiplier;
-using Org.BouncyCastle.Math.Field;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Math.EC.Abc;
+using Xenial.Licensing.Ext.Math.EC.Endo;
+using Xenial.Licensing.Ext.Math.EC.Multiplier;
+using Xenial.Licensing.Ext.Math.Field;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Math.EC
+namespace Xenial.Licensing.Ext.Math.EC
 {
     /// <remarks>Base class for an elliptic curve.</remarks>
     public abstract class ECCurve

@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.X500
+namespace Xenial.Licensing.Ext.Asn1.X500
 {
 	public class DirectoryString
 		: Asn1Encodable, IAsn1Choice, IAsn1String

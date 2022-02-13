@@ -1,11 +1,11 @@
 using System;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Math.EC;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Math.EC;
 
-namespace Org.BouncyCastle.Crypto.Agreement
+namespace Xenial.Licensing.Ext.Crypto.Agreement
 {
     public class ECMqvBasicAgreement
         : IBasicAgreement

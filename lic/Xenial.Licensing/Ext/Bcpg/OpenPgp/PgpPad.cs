@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Bcpg.OpenPgp
+namespace Xenial.Licensing.Ext.Bcpg.OpenPgp
 {
     /// <remarks>Padding functions.</remarks>
     public sealed class PgpPad

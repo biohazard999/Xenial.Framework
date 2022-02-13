@@ -1,6 +1,6 @@
-using Org.BouncyCastle.Crypto.Parameters;
+using Xenial.Licensing.Ext.Crypto.Parameters;
 
-namespace Org.BouncyCastle.Crypto.Modes
+namespace Xenial.Licensing.Ext.Crypto.Modes
 {
 	/// <summary>
 	/// A block cipher mode that includes authenticated encryption with a streaming mode

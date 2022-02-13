@@ -1,7 +1,7 @@
 using System;
-using Org.BouncyCastle.Security;
+using Xenial.Licensing.Ext.Security;
 
-namespace Org.BouncyCastle.Pkix
+namespace Xenial.Licensing.Ext.Pkix
 {
 	/**
 	 * An exception indicating one of a variety of problems encountered when 

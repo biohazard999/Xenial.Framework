@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1.Anssi;
-using Org.BouncyCastle.Asn1.Nist;
-using Org.BouncyCastle.Asn1.Sec;
-using Org.BouncyCastle.Asn1.TeleTrust;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Collections;
+using Xenial.Licensing.Ext.Asn1.Anssi;
+using Xenial.Licensing.Ext.Asn1.Nist;
+using Xenial.Licensing.Ext.Asn1.Sec;
+using Xenial.Licensing.Ext.Asn1.TeleTrust;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Collections;
 
-namespace Org.BouncyCastle.Asn1.X9
+namespace Xenial.Licensing.Ext.Asn1.X9
 {
     /**
      * A general class that reads all X9.62 style EC curve tables.

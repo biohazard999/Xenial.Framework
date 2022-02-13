@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Math;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Math;
 
-namespace Org.BouncyCastle.X509
+namespace Xenial.Licensing.Ext.X509
 {
 	/// <remarks>Interface for an X.509 Attribute Certificate.</remarks>
 	public interface IX509AttributeCertificate

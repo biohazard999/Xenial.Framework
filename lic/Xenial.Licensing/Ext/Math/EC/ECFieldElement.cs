@@ -1,10 +1,10 @@
 using System;
 using System.Diagnostics;
 
-using Org.BouncyCastle.Math.Raw;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Math.Raw;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Math.EC
+namespace Xenial.Licensing.Ext.Math.EC
 {
     public abstract class ECFieldElement
     {

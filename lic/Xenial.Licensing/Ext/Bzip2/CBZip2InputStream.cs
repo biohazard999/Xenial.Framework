@@ -25,9 +25,9 @@
 using System;
 using System.IO;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Apache.Bzip2
+namespace Xenial.Licensing.Ext.Apache.Bzip2
 {
 	/**
     * An input stream that decompresses from the BZip2 format (with the file

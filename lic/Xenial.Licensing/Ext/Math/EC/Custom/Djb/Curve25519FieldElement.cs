@@ -1,9 +1,9 @@
 ﻿using System;
 
-using Org.BouncyCastle.Math.Raw;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Math.Raw;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Math.EC.Custom.Djb
+namespace Xenial.Licensing.Ext.Math.EC.Custom.Djb
 {
     internal class Curve25519FieldElement
         :   ECFieldElement

@@ -1,4 +1,4 @@
-﻿namespace Org.BouncyCastle.Crypto
+﻿namespace Xenial.Licensing.Ext.Crypto
 {
     /// <summary>
     /// Operators that reduce their input to the validation of a signature produce this type.

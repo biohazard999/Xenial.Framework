@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Collections;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Collections;
 
-namespace Org.BouncyCastle.Pkix
+namespace Xenial.Licensing.Ext.Pkix
 {
     public class PkixNameConstraintValidator
     {
@@ -339,7 +339,7 @@ namespace Org.BouncyCastle.Pkix
             ISet set = new HashSet();
 
             // difficult, adding always all IPs is not wrong
-            if (Org.BouncyCastle.Utilities.Arrays.AreEqual(ipWithSubmask1, ipWithSubmask2))
+            if (Xenial.Licensing.Ext.Utilities.Arrays.AreEqual(ipWithSubmask1, ipWithSubmask2))
             {
                 set.Add(ipWithSubmask1);
             }
@@ -629,7 +629,7 @@ namespace Org.BouncyCastle.Pkix
                 ipSubnetAddress[i] = (byte)(ip[i] & subnetMask[i]);
             }
 
-            return Org.BouncyCastle.Utilities.Arrays.AreEqual(permittedSubnetAddress, ipSubnetAddress);
+            return Xenial.Licensing.Ext.Utilities.Arrays.AreEqual(permittedSubnetAddress, ipSubnetAddress);
         }
 
         private bool EmailIsConstrained(String email, String constraint)
@@ -1685,11 +1685,11 @@ namespace Org.BouncyCastle.Pkix
          */
         private static int CompareTo(byte[] ip1, byte[] ip2)
         {
-            if (Org.BouncyCastle.Utilities.Arrays.AreEqual(ip1, ip2))
+            if (Xenial.Licensing.Ext.Utilities.Arrays.AreEqual(ip1, ip2))
             {
                 return 0;
             }
-            if (Org.BouncyCastle.Utilities.Arrays.AreEqual(Max(ip1, ip2), ip1))
+            if (Xenial.Licensing.Ext.Utilities.Arrays.AreEqual(Max(ip1, ip2), ip1))
             {
                 return 1;
             }
@@ -1747,7 +1747,7 @@ namespace Org.BouncyCastle.Pkix
                 Object o = it1.Current;
                 if (o is byte[])
                 {
-                    hash += Org.BouncyCastle.Utilities.Arrays.GetHashCode((byte[])o);
+                    hash += Xenial.Licensing.Ext.Utilities.Arrays.GetHashCode((byte[])o);
                 }
                 else
                 {
@@ -1826,7 +1826,7 @@ namespace Org.BouncyCastle.Pkix
             }
             if ((o1 is byte[]) && (o2 is byte[]))
             {
-                return Org.BouncyCastle.Utilities.Arrays.AreEqual((byte[])o1, (byte[])o2);
+                return Xenial.Licensing.Ext.Utilities.Arrays.AreEqual((byte[])o1, (byte[])o2);
             }
             else
             {

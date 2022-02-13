@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Collections;
 #endif
 
-namespace Org.BouncyCastle.Utilities
+namespace Xenial.Licensing.Ext.Utilities
 {
     internal abstract class Platform
     {

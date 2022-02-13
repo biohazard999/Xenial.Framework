@@ -1,10 +1,10 @@
 using System;
 
-using Org.BouncyCastle.Math.EC.Endo;
-using Org.BouncyCastle.Math.EC.Multiplier;
-using Org.BouncyCastle.Math.Field;
+using Xenial.Licensing.Ext.Math.EC.Endo;
+using Xenial.Licensing.Ext.Math.EC.Multiplier;
+using Xenial.Licensing.Ext.Math.Field;
 
-namespace Org.BouncyCastle.Math.EC
+namespace Xenial.Licensing.Ext.Math.EC
 {
     public class ECAlgorithms
     {

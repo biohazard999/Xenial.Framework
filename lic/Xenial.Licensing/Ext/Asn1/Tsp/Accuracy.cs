@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.Tsp
+namespace Xenial.Licensing.Ext.Asn1.Tsp
 {
 	public class Accuracy
 		: Asn1Encodable

@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 #endif
 
-namespace Org.BouncyCastle.Crypto.Prng
+namespace Xenial.Licensing.Ext.Crypto.Prng
 {
     /**
      * A thread based seed generator - one source of randomness.

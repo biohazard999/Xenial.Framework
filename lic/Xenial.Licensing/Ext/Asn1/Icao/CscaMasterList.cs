@@ -1,8 +1,8 @@
 using System;
 
-using Org.BouncyCastle.Asn1.X509;
+using Xenial.Licensing.Ext.Asn1.X509;
 
-namespace Org.BouncyCastle.Asn1.Icao
+namespace Xenial.Licensing.Ext.Asn1.Icao
 {
 	/**
 	 * The CscaMasterList object. This object can be wrapped in a

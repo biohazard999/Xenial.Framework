@@ -3,21 +3,21 @@ using System.Collections;
 using System.IO;
 using System.Text;
 
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.IsisMtt;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Utilities;
-using Org.BouncyCastle.Utilities.Collections;
-using Org.BouncyCastle.Utilities.Date;
-using Org.BouncyCastle.X509;
-using Org.BouncyCastle.X509.Extension;
-using Org.BouncyCastle.X509.Store;
+using Xenial.Licensing.Ext.Asn1;
+using Xenial.Licensing.Ext.Asn1.IsisMtt;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Crypto;
+using Xenial.Licensing.Ext.Crypto.Parameters;
+using Xenial.Licensing.Ext.Math;
+using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Utilities.Collections;
+using Xenial.Licensing.Ext.Utilities.Date;
+using Xenial.Licensing.Ext.X509;
+using Xenial.Licensing.Ext.X509.Extension;
+using Xenial.Licensing.Ext.X509.Store;
 
-namespace Org.BouncyCastle.Pkix
+namespace Xenial.Licensing.Ext.Pkix
 {
 	/// <summary>
 	/// Summary description for PkixCertPathValidatorUtilities.
@@ -684,7 +684,7 @@ namespace Org.BouncyCastle.Pkix
 		/// <param name="certStores">a List containing only X509Store objects. These
 		/// are used to search for certificates.</param>
 		/// <returns>a Collection of all found <see cref="X509Certificate"/> or
-		/// <see cref="Org.BouncyCastle.X509.IX509AttributeCertificate"/> objects.
+		/// <see cref="Xenial.Licensing.Ext.X509.IX509AttributeCertificate"/> objects.
 		/// May be empty but never <code>null</code>.</returns>
 		/// <exception cref="Exception"></exception>
 		internal static ICollection FindCertificates(

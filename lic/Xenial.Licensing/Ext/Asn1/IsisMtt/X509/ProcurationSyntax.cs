@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 
-using Org.BouncyCastle.Asn1.X500;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Utilities;
+using Xenial.Licensing.Ext.Asn1.X500;
+using Xenial.Licensing.Ext.Asn1.X509;
+using Xenial.Licensing.Ext.Utilities;
 
-namespace Org.BouncyCastle.Asn1.IsisMtt.X509
+namespace Xenial.Licensing.Ext.Asn1.IsisMtt.X509
 {
 	/**
 	* Attribute to indicate that the certificate holder may sign in the name of a

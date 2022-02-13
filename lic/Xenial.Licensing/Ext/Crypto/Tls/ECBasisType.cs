@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Org.BouncyCastle.Crypto.Tls
+namespace Xenial.Licensing.Ext.Crypto.Tls
 {
     /// <summary>RFC 4492 5.4. (Errata ID: 2389)</summary>
     public abstract class ECBasisType

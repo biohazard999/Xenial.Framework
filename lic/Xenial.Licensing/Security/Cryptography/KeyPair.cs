@@ -25,7 +25,7 @@
 
 
 
-using Org.BouncyCastle.Crypto;
+using Xenial.Licensing.Ext.Crypto;
 
 namespace Standard.Licensing.Security.Cryptography
 {
