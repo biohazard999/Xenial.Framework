@@ -3,4 +3,13 @@
   <PropertyGroup>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\lic\Xenial.Licensing\Xenial.Licensing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.13.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+  </ItemGroup>
+  
 </Project>
