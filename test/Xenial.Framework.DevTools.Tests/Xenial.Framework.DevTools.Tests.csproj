@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Xenial.Framework.DevTools.Win\Xenial.Framework.DevTools.Win.csproj" />
+    <ProjectReference Include="..\..\src\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
+  </ItemGroup>
+
+</Project>
