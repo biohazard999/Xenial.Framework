@@ -146,7 +146,7 @@ namespace Xenial.Framework.MsBuild
             }
             else
             {
-                var license = Standard.Licensing.License.Load(xenialLicense);
+                var license = Licensing.License.Load(xenialLicense);
                 var publicKey = JsonConvert.DeserializeObject<Dictionary<string, string>>(xenialPublicKeys)["Xenial"];
                 var isSignitureValid = license.VerifySignature(publicKey);
                 if (!isSignitureValid)
@@ -154,7 +154,7 @@ namespace Xenial.Framework.MsBuild
                     context.ReportDiagnostic(Diagnostic.Create(signitureIsInvalidRule, Location.None));
                 }
 
-                isTrial = license.Type == Standard.Licensing.LicenseType.Trial;
+                isTrial = license.Type == Licensing.LicenseType.Trial;
             }
 
             if (isTrial)

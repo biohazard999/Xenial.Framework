@@ -32,7 +32,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
-    <PackageReference Include="Standard.Licensing" Version="1.1.5" />
     <!-- TODO: CodeStyle Analyzer -->
     <!-- <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.0.1">
       <PrivateAssets>all</PrivateAssets>
@@ -41,6 +40,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Xenial.Licensing" Version="$(_XenialLicGenVersion)" />
+    
     <PackageReference Include="Xenial.Framework.LicGen" Version="$(_XenialLicGenVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
