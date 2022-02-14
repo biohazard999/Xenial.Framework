@@ -9,7 +9,7 @@ public record XenialViewIdsAttributeGenerator(bool AddSources = true) : XenialAt
 {
     public override string AttributeName => "XenialViewIdsAttribute";
 
-    protected override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
+    internal override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
     {
         _ = syntaxWriter ?? throw new ArgumentNullException(nameof(syntaxWriter));
 

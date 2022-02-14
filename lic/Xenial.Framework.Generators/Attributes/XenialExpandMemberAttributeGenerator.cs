@@ -9,7 +9,7 @@ public record XenialExpandMemberAttributeGenerator(bool AddSources = true) : Xen
 {
     public override string AttributeName => "XenialExpandMemberAttribute";
 
-    protected override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
+    internal override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
     {
         _ = syntaxWriter ?? throw new ArgumentNullException(nameof(syntaxWriter));
 

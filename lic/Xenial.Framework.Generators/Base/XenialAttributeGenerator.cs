@@ -60,5 +60,5 @@ public abstract record XenialAttributeGenerator(bool AddSource = true) : XenialB
         return AddCode(context, compilation, addedSourceFiles, AttributeName, source.ToString());
     }
 
-    protected abstract CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility);
+    internal abstract CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility);
 }
