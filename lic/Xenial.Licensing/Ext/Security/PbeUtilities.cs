@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 
 using Xenial.Licensing.Ext.Asn1;
@@ -12,7 +12,7 @@ using Xenial.Licensing.Ext.Crypto;
 using Xenial.Licensing.Ext.Crypto.Digests;
 using Xenial.Licensing.Ext.Crypto.Engines;
 using Xenial.Licensing.Ext.Crypto.Generators;
-using Xenial.Licensing.Ext.Crypto.Macs;
+
 using Xenial.Licensing.Ext.Crypto.Modes;
 using Xenial.Licensing.Ext.Crypto.Paddings;
 using Xenial.Licensing.Ext.Crypto.Parameters;
@@ -211,21 +211,9 @@ namespace Xenial.Licensing.Ext.Security
         {
             PbeParametersGenerator generator;
 
-            if (type.Equals(Pkcs5S1))
-            {
-                generator = new Pkcs5S1ParametersGenerator(digest);
-            }
-            else if (type.Equals(Pkcs5S2))
-            {
-                generator = new Pkcs5S2ParametersGenerator();
-            }
-            else if (type.Equals(Pkcs12))
+            if (type.Equals(Pkcs12))
             {
                 generator = new Pkcs12ParametersGenerator(digest);
-            }
-            else if (type.Equals(OpenSsl))
-            {
-                generator = new OpenSslPbeParametersGenerator();
             }
             else
             {
@@ -314,14 +302,7 @@ namespace Xenial.Licensing.Ext.Security
             {
                 return new Pkcs12PbeParams(salt, iterationCount);
             }
-            else if (IsPkcs5Scheme2(algorithm))
-            {
-                return new Pbkdf2Params(salt, iterationCount);
-            }
-            else
-            {
-                return new PbeParameter(salt, iterationCount);
-            }
+            throw null;
         }
 
         public static ICipherParameters GenerateCipherParameters(
@@ -387,180 +368,17 @@ namespace Xenial.Licensing.Ext.Security
             {
                 // See below
             }
-            else
-            {
-                PbeParameter pbeParams = PbeParameter.GetInstance(pbeParameters);
-                salt = pbeParams.GetSalt();
-                iterationCount = pbeParams.IterationCount.IntValue;
-                keyBytes = PbeParametersGenerator.Pkcs5PasswordToBytes(password);
-            }
 
             ICipherParameters parameters = null;
 
-            if (IsPkcs5Scheme2(mechanism))
-            {
-                PbeS2Parameters s2p = PbeS2Parameters.GetInstance(pbeParameters.ToAsn1Object());
-                AlgorithmIdentifier encScheme = s2p.EncryptionScheme;
-                DerObjectIdentifier encOid = encScheme.Algorithm;
-                Asn1Object encParams = encScheme.Parameters.ToAsn1Object();
-
-                // TODO What about s2p.KeyDerivationFunc.Algorithm?
-                Pbkdf2Params pbeParams = Pbkdf2Params.GetInstance(s2p.KeyDerivationFunc.Parameters.ToAsn1Object());
-
-                byte[] iv;
-                if (encOid.Equals(PkcsObjectIdentifiers.RC2Cbc)) // PKCS5.B.2.3
-                {
-                    RC2CbcParameter rc2Params = RC2CbcParameter.GetInstance(encParams);
-                    iv = rc2Params.GetIV();
-                }
-                else
-                {
-                    iv = Asn1OctetString.GetInstance(encParams).GetOctets();
-                }
-
-                salt = pbeParams.GetSalt();
-                iterationCount = pbeParams.IterationCount.IntValue;
-                keyBytes = PbeParametersGenerator.Pkcs5PasswordToBytes(password);
-
-                int keyLength = pbeParams.KeyLength != null
-                    ?	pbeParams.KeyLength.IntValue * 8
-                    :	GeneratorUtilities.GetDefaultKeySize(encOid);
-
-                PbeParametersGenerator gen = MakePbeGenerator(
-                    (string)algorithmType[mechanism], null, keyBytes, salt, iterationCount);
-
-                parameters = gen.GenerateDerivedParameters(encOid.Id, keyLength);
-
-                if (iv != null)
-                {
-                    // FIXME? OpenSSL weirdness with IV of zeros (for ECB keys?)
-                    if (Arrays.AreEqual(iv, new byte[iv.Length]))
-                    {
-                        //Console.Error.Write("***** IV all 0 (length " + iv.Length + ") *****");
-                    }
-                    else
-                    {
-                        parameters = new ParametersWithIV(parameters, iv);
-                    }
-                }
-            }
-            else if (Platform.StartsWith(mechanism, "PBEwithSHA-1"))
+            if (Platform.StartsWith(mechanism, "PBEwithSHA-1"))
             {
                 PbeParametersGenerator generator = MakePbeGenerator(
                     (string) algorithmType[mechanism], new Sha1Digest(), keyBytes, salt, iterationCount);
-
-                if (mechanism.Equals("PBEwithSHA-1and128bitAES-CBC-BC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("AES", 128, 128);
-                }
-                else if (mechanism.Equals("PBEwithSHA-1and192bitAES-CBC-BC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("AES", 192, 128);
-                }
-                else if (mechanism.Equals("PBEwithSHA-1and256bitAES-CBC-BC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("AES", 256, 128);
-                }
-                else if (mechanism.Equals("PBEwithSHA-1and128bitRC4"))
-                {
-                    parameters = generator.GenerateDerivedParameters("RC4", 128);
-                }
-                else if (mechanism.Equals("PBEwithSHA-1and40bitRC4"))
-                {
-                    parameters = generator.GenerateDerivedParameters("RC4", 40);
-                }
-                else if (mechanism.Equals("PBEwithSHA-1and3-keyDESEDE-CBC"))
+                if (mechanism.Equals("PBEwithSHA-1and3-keyDESEDE-CBC"))
                 {
                     parameters = generator.GenerateDerivedParameters("DESEDE", 192, 64);
                 }
-                else if (mechanism.Equals("PBEwithSHA-1and2-keyDESEDE-CBC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("DESEDE", 128, 64);
-                }
-                else if (mechanism.Equals("PBEwithSHA-1and128bitRC2-CBC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("RC2", 128, 64);
-                }
-                else if (mechanism.Equals("PBEwithSHA-1and40bitRC2-CBC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("RC2", 40, 64);
-                }
-                else if (mechanism.Equals("PBEwithSHA-1andDES-CBC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("DES", 64, 64);
-                }
-                else if (mechanism.Equals("PBEwithSHA-1andRC2-CBC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("RC2", 64, 64);
-                }
-            }
-            else if (Platform.StartsWith(mechanism, "PBEwithSHA-256"))
-            {
-                PbeParametersGenerator generator = MakePbeGenerator(
-                    (string) algorithmType[mechanism], new Sha256Digest(), keyBytes, salt, iterationCount);
-
-                if (mechanism.Equals("PBEwithSHA-256and128bitAES-CBC-BC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("AES", 128, 128);
-                }
-                else if (mechanism.Equals("PBEwithSHA-256and192bitAES-CBC-BC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("AES", 192, 128);
-                }
-                else if (mechanism.Equals("PBEwithSHA-256and256bitAES-CBC-BC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("AES", 256, 128);
-                }
-            }
-            else if (Platform.StartsWith(mechanism, "PBEwithMD5"))
-            {
-                PbeParametersGenerator generator = MakePbeGenerator(
-                    (string)algorithmType[mechanism], new MD5Digest(), keyBytes, salt, iterationCount);
-
-                if (mechanism.Equals("PBEwithMD5andDES-CBC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("DES", 64, 64);
-                }
-                else if (mechanism.Equals("PBEwithMD5andRC2-CBC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("RC2", 64, 64);
-                }
-                else if (mechanism.Equals("PBEwithMD5and128bitAES-CBC-OpenSSL"))
-                {
-                    parameters = generator.GenerateDerivedParameters("AES", 128, 128);
-                }
-                else if (mechanism.Equals("PBEwithMD5and192bitAES-CBC-OpenSSL"))
-                {
-                    parameters = generator.GenerateDerivedParameters("AES", 192, 128);
-                }
-                else if (mechanism.Equals("PBEwithMD5and256bitAES-CBC-OpenSSL"))
-                {
-                    parameters = generator.GenerateDerivedParameters("AES", 256, 128);
-                }
-            }
-            else if (Platform.StartsWith(mechanism, "PBEwithMD2"))
-            {
-                PbeParametersGenerator generator = MakePbeGenerator(
-                    (string)algorithmType[mechanism], new MD2Digest(), keyBytes, salt, iterationCount);
-                if (mechanism.Equals("PBEwithMD2andDES-CBC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("DES", 64, 64);
-                }
-                else if (mechanism.Equals("PBEwithMD2andRC2-CBC"))
-                {
-                    parameters = generator.GenerateDerivedParameters("RC2", 64, 64);
-                }
-            }
-            else if (Platform.StartsWith(mechanism, "PBEwithHmac"))
-            {
-                string digestName = mechanism.Substring("PBEwithHmac".Length);
-                IDigest digest = DigestUtilities.GetDigest(digestName);
-
-                PbeParametersGenerator generator = MakePbeGenerator(
-                    (string) algorithmType[mechanism], digest, keyBytes, salt, iterationCount);
-
-                int bitLen = digest.GetDigestSize() * 8;
-                parameters = generator.GenerateDerivedMacParameters(bitLen);
             }
 
             Array.Clear(keyBytes, 0, keyBytes.Length);
@@ -579,13 +397,6 @@ namespace Xenial.Licensing.Ext.Security
         {
             string algorithm = algID.Algorithm.Id;
 
-            if (IsPkcs5Scheme2(algorithm))
-            {
-                PbeS2Parameters s2p = PbeS2Parameters.GetInstance(algID.Parameters.ToAsn1Object());
-                AlgorithmIdentifier encScheme = s2p.EncryptionScheme;
-                return CipherUtilities.GetCipher(encScheme.Algorithm);
-            }
-
             return CreateEngine(algorithm);
         }
 
@@ -593,13 +404,6 @@ namespace Xenial.Licensing.Ext.Security
             string algorithm)
         {
             string mechanism = (string)algorithms[Platform.ToUpperInvariant(algorithm)];
-
-            if (Platform.StartsWith(mechanism, "PBEwithHmac"))
-            {
-                string digestName = mechanism.Substring("PBEwithHmac".Length);
-
-                return MacUtilities.GetMac("HMAC/" + digestName);
-            }
 
             if (Platform.StartsWith(mechanism, "PBEwithMD2")
                 ||	Platform.StartsWith(mechanism, "PBEwithMD5")

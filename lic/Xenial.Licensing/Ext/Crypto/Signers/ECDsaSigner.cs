@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-using Xenial.Licensing.Ext.Crypto.Digests;
+
 using Xenial.Licensing.Ext.Crypto.Parameters;
 using Xenial.Licensing.Ext.Math;
 using Xenial.Licensing.Ext.Math.EC;
@@ -51,14 +51,6 @@ namespace Xenial.Licensing.Ext.Crypto.Signers
 
             if (forSigning)
             {
-                if (parameters is ParametersWithRandom)
-                {
-                    ParametersWithRandom rParam = (ParametersWithRandom)parameters;
-
-                    providedRandom = rParam.Random;
-                    parameters = rParam.Parameters;
-                }
-
                 if (!(parameters is ECPrivateKeyParameters))
                     throw new InvalidKeyException("EC private key required for signing");
 

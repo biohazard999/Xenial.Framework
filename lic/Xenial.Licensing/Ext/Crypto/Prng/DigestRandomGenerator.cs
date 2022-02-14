@@ -1,6 +1,6 @@
 using System;
 
-using Xenial.Licensing.Ext.Crypto.Digests;
+
 using Xenial.Licensing.Ext.Crypto.Utilities;
 
 namespace Xenial.Licensing.Ext.Crypto.Prng

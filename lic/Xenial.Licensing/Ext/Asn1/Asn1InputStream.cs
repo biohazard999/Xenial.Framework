@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 
@@ -94,17 +94,8 @@ namespace Xenial.Licensing.Ext.Asn1
                 // TODO There are other tags that may be constructed (e.g. BitString)
                 switch (tagNo)
                 {
-                    case Asn1Tags.OctetString:
-                        //
-                        // yes, people actually do this...
-                        //
-                        return new BerOctetString(BuildDerEncodableVector(defIn));
                     case Asn1Tags.Sequence:
                         return CreateDerSequence(defIn);
-                    case Asn1Tags.Set:
-                        return CreateDerSet(defIn);
-                    case Asn1Tags.External:
-                        return new DerExternal(BuildDerEncodableVector(defIn));                
                     default:
                         throw new IOException("unknown tag " + tagNo + " encountered");
                 }
@@ -138,12 +129,6 @@ namespace Xenial.Licensing.Ext.Asn1
             return DerSequence.FromVector(BuildDerEncodableVector(dIn));
         }
 
-        internal virtual DerSet CreateDerSet(
-            DefiniteLengthInputStream dIn)
-        {
-            return DerSet.FromVector(BuildDerEncodableVector(dIn), false);
-        }
-
         public Asn1Object ReadObject()
         {
             int tag = ReadByte();
@@ -172,30 +157,9 @@ namespace Xenial.Licensing.Ext.Asn1
                 if (!isConstructed)
                     throw new IOException("indefinite length primitive encoding encountered");
 
-                IndefiniteLengthInputStream indIn = new IndefiniteLengthInputStream(this.s, limit);
-                Asn1StreamParser sp = new Asn1StreamParser(indIn, limit);
-
-                if ((tag & Asn1Tags.Application) != 0)
-                {
-                    return new BerApplicationSpecificParser(tagNo, sp).ToAsn1Object();
-                }
-
-                if ((tag & Asn1Tags.Tagged) != 0)
-                {
-                    return new BerTaggedObjectParser(true, tagNo, sp).ToAsn1Object();
-                }
-
                 // TODO There are other tags that may be constructed (e.g. BitString)
                 switch (tagNo)
                 {
-                    case Asn1Tags.OctetString:
-                        return new BerOctetStringParser(sp).ToAsn1Object();
-                    case Asn1Tags.Sequence:
-                        return new BerSequenceParser(sp).ToAsn1Object();
-                    case Asn1Tags.Set:
-                        return new BerSetParser(sp).ToAsn1Object();
-                    case Asn1Tags.External:
-                        return new DerExternalParser(sp).ToAsn1Object();
                     default:
                         throw new IOException("unknown BER object encountered");
                 }
@@ -317,10 +281,6 @@ namespace Xenial.Licensing.Ext.Asn1
         {
             switch (tagNo)
             {
-                case Asn1Tags.Boolean:
-                    return DerBoolean.FromOctetString(GetBuffer(defIn, tmpBuffers));
-                case Asn1Tags.Enumerated:
-                    return DerEnumerated.FromOctetString(GetBuffer(defIn, tmpBuffers));
                 case Asn1Tags.ObjectIdentifier:
                     return DerObjectIdentifier.FromOctetString(GetBuffer(defIn, tmpBuffers));
             }
@@ -331,38 +291,14 @@ namespace Xenial.Licensing.Ext.Asn1
             {
                 case Asn1Tags.BitString:
                     return DerBitString.FromAsn1Octets(bytes);
-                case Asn1Tags.BmpString:
-                    return new DerBmpString(bytes);
-                case Asn1Tags.GeneralizedTime:
-                    return new DerGeneralizedTime(bytes);
-                case Asn1Tags.GeneralString:
-                    return new DerGeneralString(bytes);
-                case Asn1Tags.GraphicString:
-                    return new DerGraphicString(bytes);
-                case Asn1Tags.IA5String:
-                    return new DerIA5String(bytes);
                 case Asn1Tags.Integer:
                     return new DerInteger(bytes);
                 case Asn1Tags.Null:
                     return DerNull.Instance;   // actual content is ignored (enforce 0 length?)
-                case Asn1Tags.NumericString:
-                    return new DerNumericString(bytes);
                 case Asn1Tags.OctetString:
                     return new DerOctetString(bytes);
                 case Asn1Tags.PrintableString:
                     return new DerPrintableString(bytes);
-                case Asn1Tags.T61String:
-                    return new DerT61String(bytes);
-                case Asn1Tags.UniversalString:
-                    return new DerUniversalString(bytes);
-                case Asn1Tags.UtcTime:
-                    return new DerUtcTime(bytes);
-                case Asn1Tags.Utf8String:
-                    return new DerUtf8String(bytes);
-                case Asn1Tags.VideotexString:
-                    return new DerVideotexString(bytes);
-                case Asn1Tags.VisibleString:
-                    return new DerVisibleString(bytes);
                 default:
                     throw new IOException("unknown tag " + tagNo + " encountered");
             }

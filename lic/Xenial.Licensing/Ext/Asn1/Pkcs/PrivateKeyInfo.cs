@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.IO;
 
@@ -12,7 +12,6 @@ namespace Xenial.Licensing.Ext.Asn1.Pkcs
     {
         private readonly Asn1OctetString        privKey;
         private readonly AlgorithmIdentifier	algID;
-        private readonly Asn1Set				attributes;
 
         public static PrivateKeyInfo GetInstance(Asn1TaggedObject obj, bool explicitly)
         {
@@ -29,19 +28,12 @@ namespace Xenial.Licensing.Ext.Asn1.Pkcs
             return new PrivateKeyInfo(Asn1Sequence.GetInstance(obj));
         }
 
-        public PrivateKeyInfo(AlgorithmIdentifier algID, Asn1Encodable privateKey)
-            : this(algID, privateKey, null)
-        {
-        }
-
         public PrivateKeyInfo(
             AlgorithmIdentifier	algID,
-            Asn1Encodable       privateKey,
-            Asn1Set				attributes)
+            Asn1Encodable       privateKey)
         {
             this.algID = algID;
             this.privKey = new DerOctetString(privateKey.GetEncoded(Asn1Encodable.Der));
-            this.attributes = attributes;
         }
 
         private PrivateKeyInfo(Asn1Sequence seq)
@@ -62,7 +54,8 @@ namespace Xenial.Licensing.Ext.Asn1.Pkcs
 
             if (e.MoveNext())
             {
-                attributes = Asn1Set.GetInstance((Asn1TaggedObject)e.Current, false);
+                //attributes = Asn1Set.GetInstance((Asn1TaggedObject)e.Current, false);
+                
             }
         }
 
@@ -98,11 +91,6 @@ namespace Xenial.Licensing.Ext.Asn1.Pkcs
             }
         }
 
-        public virtual Asn1Set Attributes
-        {
-            get { return attributes; }
-        }
-
         /**
          * write out an RSA private key with its associated information
          * as described in Pkcs8.
@@ -124,10 +112,10 @@ namespace Xenial.Licensing.Ext.Asn1.Pkcs
         {
             Asn1EncodableVector v = new Asn1EncodableVector(new DerInteger(0), algID, privKey);
 
-            if (attributes != null)
-            {
-                v.Add(new DerTaggedObject(false, 0, attributes));
-            }
+            //if (attributes != null)
+            //{
+            //    v.Add(new DerTaggedObject(false, 0, attributes));
+            //}
 
             return new DerSequence(v);
         }

@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.IO;
 
 using Xenial.Licensing.Ext.Utilities;
-using Xenial.Licensing.Ext.Utilities.Collections;
+
 
 namespace Xenial.Licensing.Ext.Asn1
 {
@@ -90,11 +90,6 @@ namespace Xenial.Licensing.Ext.Asn1
             //
             if (obj.IsExplicit())
             {
-                if (obj is BerTaggedObject)
-                {
-                    return new BerSequence(inner);
-                }
-
                 return new DerSequence(inner);
             }
 
@@ -147,8 +142,6 @@ namespace Xenial.Licensing.Ext.Asn1
                 if (obj is Asn1Sequence)
                     return ((Asn1Sequence)obj).Parser;
 
-                if (obj is Asn1Set)
-                    return ((Asn1Set)obj).Parser;
 
                 // NB: Asn1OctetString implements Asn1OctetStringParser directly
 //				if (obj is Asn1OctetString)
@@ -260,9 +253,5 @@ namespace Xenial.Licensing.Ext.Asn1
             seq.Add(obj);
         }
 
-        public override string ToString()
-        {
-            return CollectionUtilities.ToString(seq);
-        }
     }
 }

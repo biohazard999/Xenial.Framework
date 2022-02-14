@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 
 using Xenial.Licensing.Ext.Asn1;
@@ -6,7 +6,7 @@ using Xenial.Licensing.Ext.Crypto.Parameters;
 using Xenial.Licensing.Ext.Math;
 using Xenial.Licensing.Ext.Math.EC;
 using Xenial.Licensing.Ext.Utilities;
-using Xenial.Licensing.Ext.Utilities.Collections;
+
 
 namespace Xenial.Licensing.Ext.Asn1.CryptoPro
 {
@@ -142,15 +142,6 @@ namespace Xenial.Licensing.Ext.Asn1.CryptoPro
             DerObjectIdentifier oid)
         {
             return (ECDomainParameters) parameters[oid];
-        }
-
-        /**
-         * returns an enumeration containing the name strings for curves
-         * contained in this structure.
-         */
-        public static IEnumerable Names
-        {
-            get { return new EnumerableProxy(names.Values); }
         }
 
         public static ECDomainParameters GetByName(

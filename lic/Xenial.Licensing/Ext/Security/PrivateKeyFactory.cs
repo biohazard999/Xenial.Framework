@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.IO;
 using System.Text;
@@ -48,62 +48,7 @@ namespace Xenial.Licensing.Ext.Security
             DerObjectIdentifier algOid = algID.Algorithm;
 
             // TODO See RSAUtil.isRsaOid in Java build
-            if (algOid.Equals(PkcsObjectIdentifiers.RsaEncryption)
-                || algOid.Equals(X509ObjectIdentifiers.IdEARsa)
-                || algOid.Equals(PkcsObjectIdentifiers.IdRsassaPss)
-                || algOid.Equals(PkcsObjectIdentifiers.IdRsaesOaep))
-            {
-                RsaPrivateKeyStructure keyStructure = RsaPrivateKeyStructure.GetInstance(keyInfo.ParsePrivateKey());
-
-                return new RsaPrivateCrtKeyParameters(
-                    keyStructure.Modulus,
-                    keyStructure.PublicExponent,
-                    keyStructure.PrivateExponent,
-                    keyStructure.Prime1,
-                    keyStructure.Prime2,
-                    keyStructure.Exponent1,
-                    keyStructure.Exponent2,
-                    keyStructure.Coefficient);
-            }
-            // TODO?
-//			else if (algOid.Equals(X9ObjectIdentifiers.DHPublicNumber))
-            else if (algOid.Equals(PkcsObjectIdentifiers.DhKeyAgreement))
-            {
-                DHParameter para = new DHParameter(
-                    Asn1Sequence.GetInstance(algID.Parameters.ToAsn1Object()));
-                DerInteger derX = (DerInteger)keyInfo.ParsePrivateKey();
-
-                BigInteger lVal = para.L;
-                int l = lVal == null ? 0 : lVal.IntValue;
-                DHParameters dhParams = new DHParameters(para.P, para.G, null, l);
-
-                return new DHPrivateKeyParameters(derX.Value, dhParams, algOid);
-            }
-            else if (algOid.Equals(OiwObjectIdentifiers.ElGamalAlgorithm))
-            {
-                ElGamalParameter  para = new ElGamalParameter(
-                    Asn1Sequence.GetInstance(algID.Parameters.ToAsn1Object()));
-                DerInteger derX = (DerInteger)keyInfo.ParsePrivateKey();
-
-                return new ElGamalPrivateKeyParameters(
-                    derX.Value,
-                    new ElGamalParameters(para.P, para.G));
-            }
-            else if (algOid.Equals(X9ObjectIdentifiers.IdDsa))
-            {
-                DerInteger derX = (DerInteger)keyInfo.ParsePrivateKey();
-                Asn1Encodable ae = algID.Parameters;
-
-                DsaParameters parameters = null;
-                if (ae != null)
-                {
-                    DsaParameter para = DsaParameter.GetInstance(ae.ToAsn1Object());
-                    parameters = new DsaParameters(para.P, para.Q, para.G);
-                }
-
-                return new DsaPrivateKeyParameters(derX.Value, parameters);
-            }
-            else if (algOid.Equals(X9ObjectIdentifiers.IdECPublicKey))
+            if (algOid.Equals(X9ObjectIdentifiers.IdECPublicKey))
             {
                 X962Parameters para = new X962Parameters(algID.Parameters.ToAsn1Object());
 
@@ -127,41 +72,6 @@ namespace Xenial.Licensing.Ext.Security
 
                 ECDomainParameters dParams = new ECDomainParameters(x9.Curve, x9.G, x9.N, x9.H,  x9.GetSeed());
                 return new ECPrivateKeyParameters(d, dParams);
-            }
-            else if (algOid.Equals(CryptoProObjectIdentifiers.GostR3410x2001))
-            {
-                Gost3410PublicKeyAlgParameters gostParams = new Gost3410PublicKeyAlgParameters(
-                    Asn1Sequence.GetInstance(algID.Parameters.ToAsn1Object()));
-
-                ECDomainParameters ecP = ECGost3410NamedCurves.GetByOid(gostParams.PublicKeyParamSet);
-
-                if (ecP == null)
-                    throw new ArgumentException("Unrecognized curve OID for GostR3410x2001 private key");
-
-                Asn1Object privKey = keyInfo.ParsePrivateKey();
-                ECPrivateKeyStructure ec;
-
-                if (privKey is DerInteger)
-                {
-                    // TODO Do we need to pass any parameters here?
-                    ec = new ECPrivateKeyStructure(ecP.N.BitLength, ((DerInteger)privKey).Value);
-                }
-                else
-                {
-                    ec = ECPrivateKeyStructure.GetInstance(privKey);
-                }
-
-                return new ECPrivateKeyParameters("ECGOST3410", ec.GetKey(), gostParams.PublicKeyParamSet);
-            }
-            else if (algOid.Equals(CryptoProObjectIdentifiers.GostR3410x94))
-            {
-                Gost3410PublicKeyAlgParameters gostParams = new Gost3410PublicKeyAlgParameters(
-                    Asn1Sequence.GetInstance(algID.Parameters.ToAsn1Object()));
-
-                DerOctetString derX = (DerOctetString)keyInfo.ParsePrivateKey();
-                BigInteger x = new BigInteger(1, Arrays.Reverse(derX.GetOctets()));
-
-                return new Gost3410PrivateKeyParameters(x, gostParams.PublicKeyParamSet);
             }
             else
             {

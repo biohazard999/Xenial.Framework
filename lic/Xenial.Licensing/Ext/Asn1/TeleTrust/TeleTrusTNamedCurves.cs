@@ -1,10 +1,10 @@
-using System.Collections;
+﻿using System.Collections;
 
 using Xenial.Licensing.Ext.Asn1.X9;
 using Xenial.Licensing.Ext.Math;
 using Xenial.Licensing.Ext.Math.EC;
 using Xenial.Licensing.Ext.Utilities;
-using Xenial.Licensing.Ext.Utilities.Collections;
+
 using Xenial.Licensing.Ext.Utilities.Encoders;
 
 namespace Xenial.Licensing.Ext.Asn1.TeleTrust
@@ -449,15 +449,6 @@ namespace Xenial.Licensing.Ext.Asn1.TeleTrust
             DerObjectIdentifier oid)
         {
             return (string)names[oid];
-        }
-
-        /**
-         * returns an enumeration containing the name strings for curves
-         * contained in this structure.
-         */
-        public static IEnumerable Names
-        {
-            get { return new EnumerableProxy(names.Values); }
         }
 
         public static DerObjectIdentifier GetOid(

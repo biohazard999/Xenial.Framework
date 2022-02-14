@@ -1,13 +1,12 @@
-using System;
+﻿using System;
 using System.Collections;
 
 using Xenial.Licensing.Ext.Asn1;
 using Xenial.Licensing.Ext.Asn1.CryptoPro;
 using Xenial.Licensing.Ext.Asn1.X9;
 using Xenial.Licensing.Ext.Crypto.Generators;
-using Xenial.Licensing.Ext.Security;
 using Xenial.Licensing.Ext.Utilities;
-using Xenial.Licensing.Ext.Utilities.Collections;
+
 
 namespace Xenial.Licensing.Ext.Crypto.Parameters
 {
@@ -89,17 +88,6 @@ namespace Xenial.Licensing.Ext.Crypto.Parameters
         public override int GetHashCode()
         {
             return parameters.GetHashCode() ^ base.GetHashCode();
-        }
-
-        internal ECKeyGenerationParameters CreateKeyGenerationParameters(
-            SecureRandom random)
-        {
-            if (publicKeyParamSet != null)
-            {
-                return new ECKeyGenerationParameters(publicKeyParamSet, random);
-            }
-
-            return new ECKeyGenerationParameters(parameters, random);
         }
 
         internal static string VerifyAlgorithmName(string algorithm)

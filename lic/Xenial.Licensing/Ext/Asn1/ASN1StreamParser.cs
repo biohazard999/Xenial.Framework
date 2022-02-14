@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 
 namespace Xenial.Licensing.Ext.Asn1
@@ -41,14 +41,6 @@ namespace Xenial.Licensing.Ext.Asn1
 			// TODO There are other tags that may be constructed (e.g. BIT_STRING)
 			switch (tagValue)
 			{
-				case Asn1Tags.External:
-					return new DerExternalParser(this);
-				case Asn1Tags.OctetString:
-					return new BerOctetStringParser(this);
-				case Asn1Tags.Sequence:
-					return new BerSequenceParser(this);
-				case Asn1Tags.Set:
-					return new BerSetParser(this);
 				default:
 					throw new Asn1Exception("unknown BER object encountered: 0x" + tagValue.ToString("X"));
 			}
@@ -56,24 +48,12 @@ namespace Xenial.Licensing.Ext.Asn1
 
 		internal IAsn1Convertible ReadImplicit(bool constructed, int tag)
 		{
-			if (_in is IndefiniteLengthInputStream)
-			{
-				if (!constructed)
-					throw new IOException("indefinite length primitive encoding encountered");
-
-				return ReadIndef(tag);
-			}
-
 			if (constructed)
 			{
 				switch (tag)
 				{
-					case Asn1Tags.Set:
-						return new DerSetParser(this);
 					case Asn1Tags.Sequence:
 						return new DerSequenceParser(this);
-					case Asn1Tags.OctetString:
-						return new BerOctetStringParser(this);
 				}
 			}
 			else
@@ -102,13 +82,6 @@ namespace Xenial.Licensing.Ext.Asn1
 			}
 
 			Asn1EncodableVector v = ReadVector();
-
-			if (_in is IndefiniteLengthInputStream)
-			{
-				return v.Count == 1
-					?   new BerTaggedObject(true, tag, v[0])
-					:   new BerTaggedObject(false, tag, BerSequence.FromVector(v));
-			}
 
 			return v.Count == 1
 				?   new DerTaggedObject(true, tag, v[0])
@@ -141,20 +114,7 @@ namespace Xenial.Licensing.Ext.Asn1
 				if (!isConstructed)
 					throw new IOException("indefinite length primitive encoding encountered");
 
-				IndefiniteLengthInputStream indIn = new IndefiniteLengthInputStream(_in, _limit);
-				Asn1StreamParser sp = new Asn1StreamParser(indIn, _limit);
-
-				if ((tag & Asn1Tags.Application) != 0)
-				{
-					return new BerApplicationSpecificParser(tagNo, sp);
-				}
-
-				if ((tag & Asn1Tags.Tagged) != 0)
-				{
-					return new BerTaggedObjectParser(true, tagNo, sp);
-				}
-
-				return sp.ReadIndef(tagNo);
+                throw null;
 			}
 			else
 			{
@@ -165,27 +125,13 @@ namespace Xenial.Licensing.Ext.Asn1
 					return new DerApplicationSpecific(isConstructed, tagNo, defIn.ToArray());
 				}
 
-				if ((tag & Asn1Tags.Tagged) != 0)
-				{
-					return new BerTaggedObjectParser(isConstructed, tagNo, new Asn1StreamParser(defIn));
-				}
-
 				if (isConstructed)
 				{
 					// TODO There are other tags that may be constructed (e.g. BitString)
 					switch (tagNo)
 					{
-						case Asn1Tags.OctetString:
-							//
-							// yes, people actually do this...
-							//
-							return new BerOctetStringParser(new Asn1StreamParser(defIn));
 						case Asn1Tags.Sequence:
 							return new DerSequenceParser(new Asn1StreamParser(defIn));
-						case Asn1Tags.Set:
-							return new DerSetParser(new Asn1StreamParser(defIn));
-						case Asn1Tags.External:
-							return new DerExternalParser(new Asn1StreamParser(defIn));
 						default:
                             throw new IOException("unknown tag " + tagNo + " encountered");
                     }
@@ -212,10 +158,7 @@ namespace Xenial.Licensing.Ext.Asn1
 		private void Set00Check(
 			bool enabled)
 		{
-			if (_in is IndefiniteLengthInputStream)
-			{
-				((IndefiniteLengthInputStream) _in).SetEofOn00(enabled);
-			}
+			
 		}
 
 		internal Asn1EncodableVector ReadVector()

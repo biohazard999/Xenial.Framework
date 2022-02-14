@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.IO;
 
@@ -32,7 +32,7 @@ namespace Xenial.Licensing.Ext.Asn1
 				return GetInstance(o);
 			}
 
-			return BerOctetString.FromSequence(Asn1Sequence.GetInstance(o));
+            throw null;
 		}
 
         /**

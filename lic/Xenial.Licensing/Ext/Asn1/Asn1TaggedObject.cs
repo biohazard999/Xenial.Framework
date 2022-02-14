@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 using Xenial.Licensing.Ext.Utilities;
 
@@ -14,7 +14,7 @@ namespace Xenial.Licensing.Ext.Asn1
     {
         internal static bool IsConstructed(bool isExplicit, Asn1Object obj)
         {
-            if (isExplicit || obj is Asn1Sequence || obj is Asn1Set)
+            if (isExplicit || obj is Asn1Sequence)
                 return true;
             Asn1TaggedObject tagged = obj as Asn1TaggedObject;
             if (tagged == null)
@@ -164,8 +164,6 @@ namespace Xenial.Licensing.Ext.Asn1
 		{
 			switch (tag)
 			{
-				case Asn1Tags.Set:
-					return Asn1Set.GetInstance(this, isExplicit).Parser;
 				case Asn1Tags.Sequence:
 					return Asn1Sequence.GetInstance(this, isExplicit).Parser;
 				case Asn1Tags.OctetString:

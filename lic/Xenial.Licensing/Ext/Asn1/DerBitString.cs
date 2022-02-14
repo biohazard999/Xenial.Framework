@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Text;
 
@@ -246,17 +246,6 @@ namespace Xenial.Licensing.Ext.Asn1
 
             int padBits = octets[0];
             byte[] data = Arrays.CopyOfRange(octets, 1, octets.Length);
-
-            if (padBits > 0 && padBits < 8 && data.Length > 0)
-            {
-                int last = data[data.Length - 1];
-                int mask = (1 << padBits) - 1;
-
-                if ((last & mask) != 0)
-                {
-                    return new BerBitString(data, padBits);
-                }
-            }
 
             return new DerBitString(data, padBits);
 		}

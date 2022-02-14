@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 
 using Xenial.Licensing.Ext.Utilities.IO;
 
@@ -26,10 +26,6 @@ namespace Xenial.Licensing.Ext.Asn1
 
 		protected virtual void SetParentEofDetect(bool on)
         {
-            if (_in is IndefiniteLengthInputStream)
-            {
-                ((IndefiniteLengthInputStream)_in).SetEofOn00(on);
-            }
         }
     }
 }

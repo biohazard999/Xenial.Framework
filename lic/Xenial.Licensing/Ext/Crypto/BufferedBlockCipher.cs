@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 
 using Xenial.Licensing.Ext.Crypto.Parameters;
@@ -65,15 +65,7 @@ namespace Xenial.Licensing.Ext.Crypto
 			bool				forEncryption,
 			ICipherParameters	parameters)
 		{
-			this.forEncryption = forEncryption;
-
-            ParametersWithRandom pwr = parameters as ParametersWithRandom;
-            if (pwr != null)
-                parameters = pwr.Parameters;
-
-            Reset();
-
-			cipher.Init(forEncryption, parameters);
+			
 		}
 
 		/**

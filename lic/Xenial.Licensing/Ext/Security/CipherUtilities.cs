@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 
 using Xenial.Licensing.Ext.Asn1;
@@ -9,12 +9,12 @@ using Xenial.Licensing.Ext.Asn1.Ntt;
 using Xenial.Licensing.Ext.Asn1.Oiw;
 using Xenial.Licensing.Ext.Asn1.Pkcs;
 using Xenial.Licensing.Ext.Crypto;
-using Xenial.Licensing.Ext.Crypto.Agreement;
-using Xenial.Licensing.Ext.Crypto.Digests;
-using Xenial.Licensing.Ext.Crypto.Encodings;
+
+
+
 using Xenial.Licensing.Ext.Crypto.Engines;
 using Xenial.Licensing.Ext.Crypto.Generators;
-using Xenial.Licensing.Ext.Crypto.Macs;
+
 using Xenial.Licensing.Ext.Crypto.Modes;
 using Xenial.Licensing.Ext.Crypto.Paddings;
 using Xenial.Licensing.Ext.Utilities;
@@ -260,28 +260,7 @@ namespace Xenial.Licensing.Ext.Security
             }
 
             IBasicAgreement iesAgreement = null;
-            if (algorithm == "IES")
-            {
-                iesAgreement = new DHBasicAgreement();
-            }
-            else if (algorithm == "ECIES")
-            {
-                iesAgreement = new ECDHBasicAgreement();
-            }
-
-            if (iesAgreement != null)
-            {
-                return new BufferedIesCipher(
-                    new IesEngine(
-                    iesAgreement,
-                    new Kdf2BytesGenerator(
-                    new Sha1Digest()),
-                    new HMac(
-                    new Sha1Digest())));
-            }
-
-
-
+            
             if (Platform.StartsWith(algorithm, "PBE"))
             {
                 if (Platform.EndsWith(algorithm, "-CBC"))
@@ -291,39 +270,11 @@ namespace Xenial.Licensing.Ext.Security
                         return new PaddedBufferedBlockCipher(
                             new CbcBlockCipher(new DesEngine()));
                     }
-                    else if (algorithm == "PBEWITHSHA1ANDRC2-CBC")
-                    {
-                        return new PaddedBufferedBlockCipher(
-                            new CbcBlockCipher(new RC2Engine()));
-                    }
                     else if (Strings.IsOneOf(algorithm,
                         "PBEWITHSHAAND2-KEYTRIPLEDES-CBC", "PBEWITHSHAAND3-KEYTRIPLEDES-CBC"))
                     {
                         return new PaddedBufferedBlockCipher(
                             new CbcBlockCipher(new DesEdeEngine()));
-                    }
-                    else if (Strings.IsOneOf(algorithm,
-                        "PBEWITHSHAAND128BITRC2-CBC", "PBEWITHSHAAND40BITRC2-CBC"))
-                    {
-                        return new PaddedBufferedBlockCipher(
-                            new CbcBlockCipher(new RC2Engine()));
-                    }
-                }
-                else if (Platform.EndsWith(algorithm, "-BC") || Platform.EndsWith(algorithm, "-OPENSSL"))
-                {
-                    if (Strings.IsOneOf(algorithm,
-                        "PBEWITHSHAAND128BITAES-CBC-BC",
-                        "PBEWITHSHAAND192BITAES-CBC-BC",
-                        "PBEWITHSHAAND256BITAES-CBC-BC",
-                        "PBEWITHSHA256AND128BITAES-CBC-BC",
-                        "PBEWITHSHA256AND192BITAES-CBC-BC",
-                        "PBEWITHSHA256AND256BITAES-CBC-BC",
-                        "PBEWITHMD5AND128BITAES-CBC-OPENSSL",
-                        "PBEWITHMD5AND192BITAES-CBC-OPENSSL",
-                        "PBEWITHMD5AND256BITAES-CBC-OPENSSL"))
-                    {
-                        return new PaddedBufferedBlockCipher(
-                            new CbcBlockCipher(new AesFastEngine()));
                     }
                 }
             }
@@ -357,108 +308,11 @@ namespace Xenial.Licensing.Ext.Security
 
             switch (cipherAlgorithm)
             {
-                case CipherAlgorithm.AES:
-                    blockCipher = new AesFastEngine();
-                    break;
-                case CipherAlgorithm.ARC4:
-                    streamCipher = new RC4Engine();
-                    break;
-                case CipherAlgorithm.BLOWFISH:
-                    blockCipher = new BlowfishEngine();
-                    break;
-                case CipherAlgorithm.CAMELLIA:
-                    blockCipher = new CamelliaEngine();
-                    break;
-                case CipherAlgorithm.CAST5:
-                    blockCipher = new Cast5Engine();
-                    break;
-                case CipherAlgorithm.CAST6:
-                    blockCipher = new Cast6Engine();
-                    break;
                 case CipherAlgorithm.DES:
                     blockCipher = new DesEngine();
                     break;
                 case CipherAlgorithm.DESEDE:
                     blockCipher = new DesEdeEngine();
-                    break;
-                case CipherAlgorithm.ELGAMAL:
-                    asymBlockCipher = new ElGamalEngine();
-                    break;
-                case CipherAlgorithm.GOST28147:
-                    blockCipher = new Gost28147Engine();
-                    break;
-                case CipherAlgorithm.HC128:
-                    streamCipher = new HC128Engine();
-                    break;
-                case CipherAlgorithm.HC256:
-                    streamCipher = new HC256Engine();
-                    break;
-                case CipherAlgorithm.IDEA:
-                    blockCipher = new IdeaEngine();
-                    break;
-                case CipherAlgorithm.NOEKEON:
-                    blockCipher = new NoekeonEngine();
-                    break;
-                case CipherAlgorithm.PBEWITHSHAAND128BITRC4:
-                case CipherAlgorithm.PBEWITHSHAAND40BITRC4:
-                    streamCipher = new RC4Engine();
-                    break;
-                case CipherAlgorithm.RC2:
-                    blockCipher = new RC2Engine();
-                    break;
-                case CipherAlgorithm.RC5:
-                    blockCipher = new RC532Engine();
-                    break;
-                case CipherAlgorithm.RC5_64:
-                    blockCipher = new RC564Engine();
-                    break;
-                case CipherAlgorithm.RC6:
-                    blockCipher = new RC6Engine();
-                    break;
-                case CipherAlgorithm.RIJNDAEL:
-                    blockCipher = new RijndaelEngine();
-                    break;
-                case CipherAlgorithm.RSA:
-                    asymBlockCipher = new RsaBlindedEngine();
-                    break;
-                case CipherAlgorithm.SALSA20:
-                    streamCipher = new Salsa20Engine();
-                    break;
-                case CipherAlgorithm.SEED:
-                    blockCipher = new SeedEngine();
-                    break;
-                case CipherAlgorithm.SERPENT:
-                    blockCipher = new SerpentEngine();
-                    break;
-                case CipherAlgorithm.SKIPJACK:
-                    blockCipher = new SkipjackEngine();
-                    break;
-                case CipherAlgorithm.TEA:
-                    blockCipher = new TeaEngine();
-                    break;
-                case CipherAlgorithm.THREEFISH_256:
-                    blockCipher = new ThreefishEngine(ThreefishEngine.BLOCKSIZE_256);
-                    break;
-                case CipherAlgorithm.THREEFISH_512:
-                    blockCipher = new ThreefishEngine(ThreefishEngine.BLOCKSIZE_512);
-                    break;
-                case CipherAlgorithm.THREEFISH_1024:
-                    blockCipher = new ThreefishEngine(ThreefishEngine.BLOCKSIZE_1024);
-                    break;
-                case CipherAlgorithm.TNEPRES:
-                    blockCipher = new TnepresEngine();
-                    break;
-                case CipherAlgorithm.TWOFISH:
-                    blockCipher = new TwofishEngine();
-                    break;
-                case CipherAlgorithm.VMPC:
-                    streamCipher = new VmpcEngine();
-                    break;
-                case CipherAlgorithm.VMPC_KSA3:
-                    streamCipher = new VmpcKsa3Engine();
-                    break;
-                case CipherAlgorithm.XTEA:
-                    blockCipher = new XteaEngine();
                     break;
                 default:
                     throw new SecurityUtilityException("Cipher " + algorithm + " not recognised.");
@@ -468,8 +322,6 @@ namespace Xenial.Licensing.Ext.Security
             {
                 if (parts.Length > 1)
                     throw new ArgumentException("Modes and paddings not used for stream ciphers");
-
-                return new BufferedStreamCipher(streamCipher);
             }
 
 
@@ -522,41 +374,6 @@ namespace Xenial.Licensing.Ext.Security
                     case CipherPadding.ISO9797_1PADDING:
                         padding = new ISO7816d4Padding();
                         break;
-                    case CipherPadding.ISO9796_1:
-                    case CipherPadding.ISO9796_1PADDING:
-                        asymBlockCipher = new ISO9796d1Encoding(asymBlockCipher);
-                        break;
-                    case CipherPadding.OAEP:
-                    case CipherPadding.OAEPPADDING:
-                        asymBlockCipher = new OaepEncoding(asymBlockCipher);
-                        break;
-                    case CipherPadding.OAEPWITHMD5ANDMGF1PADDING:
-                        asymBlockCipher = new OaepEncoding(asymBlockCipher, new MD5Digest());
-                        break;
-                    case CipherPadding.OAEPWITHSHA1ANDMGF1PADDING:
-                    case CipherPadding.OAEPWITHSHA_1ANDMGF1PADDING:
-                        asymBlockCipher = new OaepEncoding(asymBlockCipher, new Sha1Digest());
-                        break;
-                    case CipherPadding.OAEPWITHSHA224ANDMGF1PADDING:
-                    case CipherPadding.OAEPWITHSHA_224ANDMGF1PADDING:
-                        asymBlockCipher = new OaepEncoding(asymBlockCipher, new Sha224Digest());
-                        break;
-                    case CipherPadding.OAEPWITHSHA256ANDMGF1PADDING:
-                    case CipherPadding.OAEPWITHSHA_256ANDMGF1PADDING:
-                        asymBlockCipher = new OaepEncoding(asymBlockCipher, new Sha256Digest());
-                        break;
-                    case CipherPadding.OAEPWITHSHA384ANDMGF1PADDING:
-                    case CipherPadding.OAEPWITHSHA_384ANDMGF1PADDING:
-                        asymBlockCipher = new OaepEncoding(asymBlockCipher, new Sha384Digest());
-                        break;
-                    case CipherPadding.OAEPWITHSHA512ANDMGF1PADDING:
-                    case CipherPadding.OAEPWITHSHA_512ANDMGF1PADDING:
-                        asymBlockCipher = new OaepEncoding(asymBlockCipher, new Sha512Digest());
-                        break;
-                    case CipherPadding.PKCS1:
-                    case CipherPadding.PKCS1PADDING:
-                        asymBlockCipher = new Pkcs1Encoding(asymBlockCipher);
-                        break;
                     case CipherPadding.PKCS5:
                     case CipherPadding.PKCS5PADDING:
                     case CipherPadding.PKCS7:
@@ -602,55 +419,9 @@ namespace Xenial.Licensing.Ext.Security
                         case CipherMode.CBC:
                             blockCipher = new CbcBlockCipher(blockCipher);
                             break;
-                        case CipherMode.CCM:
-                            aeadBlockCipher = new CcmBlockCipher(blockCipher);
-                            break;
-                        case CipherMode.CFB:
-                        {
-                            int bits = (di < 0)
-                                ?	8 * blockCipher.GetBlockSize()
-                                :	int.Parse(mode.Substring(di));
-    
-                            blockCipher = new CfbBlockCipher(blockCipher, bits);
-                            break;
-                        }
-                        case CipherMode.CTR:
-                            blockCipher = new SicBlockCipher(blockCipher);
-                            break;
                         case CipherMode.CTS:
                             cts = true;
                             blockCipher = new CbcBlockCipher(blockCipher);
-                            break;
-                        case CipherMode.EAX:
-                            aeadBlockCipher = new EaxBlockCipher(blockCipher);
-                            break;
-                        case CipherMode.GCM:
-                            aeadBlockCipher = new GcmBlockCipher(blockCipher);
-                            break;
-                        case CipherMode.GOFB:
-                            blockCipher = new GOfbBlockCipher(blockCipher);
-                            break;
-                        case CipherMode.OCB:
-                            aeadBlockCipher = new OcbBlockCipher(blockCipher, CreateBlockCipher(cipherAlgorithm));
-                            break;
-                        case CipherMode.OFB:
-                        {
-                            int bits = (di < 0)
-                                ?	8 * blockCipher.GetBlockSize()
-                                :	int.Parse(mode.Substring(di));
-    
-                            blockCipher = new OfbBlockCipher(blockCipher, bits);
-                            break;
-                        }
-                        case CipherMode.OPENPGPCFB:
-                            blockCipher = new OpenPgpCfbBlockCipher(blockCipher);
-                            break;
-                        case CipherMode.SIC:
-                            if (blockCipher.GetBlockSize() < 16)
-                            {
-                                throw new ArgumentException("Warning: SIC-Mode can become a twotime-pad if the blocksize of the cipher is too small. Use a cipher with a block size of at least 128 bits (e.g. AES)");
-                            }
-                            blockCipher = new SicBlockCipher(blockCipher);
                             break;
                         default:
                             throw new SecurityUtilityException("Cipher " + algorithm + " not recognised.");
@@ -668,17 +439,10 @@ namespace Xenial.Licensing.Ext.Security
                     throw new SecurityUtilityException("CTS mode not valid for AEAD ciphers.");
                 if (padded && parts.Length > 2 && parts[2] != "")
                     throw new SecurityUtilityException("Bad padding specified for AEAD cipher.");
-
-                return new BufferedAeadBlockCipher(aeadBlockCipher);
             }
 
             if (blockCipher != null)
             {
-                if (cts)
-                {
-                    return new CtsBlockCipher(blockCipher);
-                }
-
                 if (padding != null)
                 {
                     return new PaddedBufferedBlockCipher(blockCipher, padding);
@@ -690,11 +454,6 @@ namespace Xenial.Licensing.Ext.Security
                 }
 
                 return new PaddedBufferedBlockCipher(blockCipher);
-            }
-
-            if (asymBlockCipher != null)
-            {
-                return new BufferedAsymmetricBlockCipher(asymBlockCipher);
             }
 
             throw new SecurityUtilityException("Cipher " + algorithm + " not recognised.");
@@ -722,31 +481,8 @@ namespace Xenial.Licensing.Ext.Security
         {
             switch (cipherAlgorithm)
             {
-                case CipherAlgorithm.AES: return new AesFastEngine();
-                case CipherAlgorithm.BLOWFISH: return new BlowfishEngine();
-                case CipherAlgorithm.CAMELLIA: return new CamelliaEngine();
-                case CipherAlgorithm.CAST5: return new Cast5Engine();
-                case CipherAlgorithm.CAST6: return new Cast6Engine();
                 case CipherAlgorithm.DES: return new DesEngine();
                 case CipherAlgorithm.DESEDE: return new DesEdeEngine();
-                case CipherAlgorithm.GOST28147: return new Gost28147Engine();
-                case CipherAlgorithm.IDEA: return new IdeaEngine();
-                case CipherAlgorithm.NOEKEON: return new NoekeonEngine();
-                case CipherAlgorithm.RC2: return new RC2Engine();
-                case CipherAlgorithm.RC5: return new RC532Engine();
-                case CipherAlgorithm.RC5_64: return new RC564Engine();
-                case CipherAlgorithm.RC6: return new RC6Engine();
-                case CipherAlgorithm.RIJNDAEL: return new RijndaelEngine();
-                case CipherAlgorithm.SEED: return new SeedEngine();
-                case CipherAlgorithm.SERPENT: return new SerpentEngine();
-                case CipherAlgorithm.SKIPJACK: return new SkipjackEngine();
-                case CipherAlgorithm.TEA: return new TeaEngine();
-                case CipherAlgorithm.THREEFISH_256: return new ThreefishEngine(ThreefishEngine.BLOCKSIZE_256);
-                case CipherAlgorithm.THREEFISH_512: return new ThreefishEngine(ThreefishEngine.BLOCKSIZE_512);
-                case CipherAlgorithm.THREEFISH_1024: return new ThreefishEngine(ThreefishEngine.BLOCKSIZE_1024);
-                case CipherAlgorithm.TNEPRES: return new TnepresEngine();
-                case CipherAlgorithm.TWOFISH: return new TwofishEngine();
-                case CipherAlgorithm.XTEA: return new XteaEngine();
                 default:
                     throw new SecurityUtilityException("Cipher " + cipherAlgorithm + " not recognised or not a block cipher");
             }

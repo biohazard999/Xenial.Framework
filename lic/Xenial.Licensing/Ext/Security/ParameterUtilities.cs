@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections;
 
 using Xenial.Licensing.Ext.Asn1;
 using Xenial.Licensing.Ext.Asn1.CryptoPro;
 using Xenial.Licensing.Ext.Asn1.Kisa;
-using Xenial.Licensing.Ext.Asn1.Misc;
+
 using Xenial.Licensing.Ext.Asn1.Nist;
 using Xenial.Licensing.Ext.Asn1.Ntt;
 using Xenial.Licensing.Ext.Asn1.Oiw;
@@ -191,9 +191,6 @@ namespace Xenial.Licensing.Ext.Security
             if (canonical == "DESEDE" || canonical =="DESEDE3")
                 return new DesEdeParameters(keyBytes, offset, length);
 
-            if (canonical == "RC2")
-                return new RC2Parameters(keyBytes, offset, length);
-
             return new KeyParameter(keyBytes, offset, length);
         }
 
@@ -231,18 +228,6 @@ namespace Xenial.Licensing.Ext.Security
                     || canonical == "RIJNDAEL" || canonical == "SKIPJACK" || canonical == "TWOFISH")
                 {
                     iv = ((Asn1OctetString) asn1Params).GetOctets();
-                }
-                else if (canonical == "CAST5")
-                {
-                    iv = Cast5CbcParameters.GetInstance(asn1Params).GetIV();
-                }
-                else if (canonical == "IDEA")
-                {
-                    iv = IdeaCbcPar.GetInstance(asn1Params).GetIV();
-                }
-                else if (canonical == "RC2")
-                {
-                    iv = RC2CbcParameter.GetInstance(asn1Params).GetIV();
                 }
             }
             catch (Exception e)
@@ -284,15 +269,6 @@ namespace Xenial.Licensing.Ext.Security
             int basicIVKeySize = FindBasicIVSize(canonical);
             if (basicIVKeySize != -1)
                 return CreateIVOctetString(random, basicIVKeySize);
-
-            if (canonical == "CAST5")
-                return new Cast5CbcParameters(CreateIV(random, 8), 128);
-
-            if (canonical == "IDEA")
-                return new IdeaCbcPar(CreateIV(random, 8));
-
-            if (canonical == "RC2")
-                return new RC2CbcParameter(CreateIV(random, 8));
 
             throw new SecurityUtilityException("Algorithm " + algorithm + " not recognised.");
         }

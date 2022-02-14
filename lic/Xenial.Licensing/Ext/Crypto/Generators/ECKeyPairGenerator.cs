@@ -42,46 +42,38 @@ namespace Xenial.Licensing.Ext.Crypto.Generators
         public void Init(
             KeyGenerationParameters parameters)
         {
-            if (parameters is ECKeyGenerationParameters)
+
+            DerObjectIdentifier oid;
+            switch (parameters.Strength)
             {
-                ECKeyGenerationParameters ecP = (ECKeyGenerationParameters) parameters;
-
-                this.publicKeyParamSet = ecP.PublicKeyParamSet;
-                this.parameters = ecP.DomainParameters;
+                case 192:
+                    oid = X9ObjectIdentifiers.Prime192v1;
+                    break;
+                case 224:
+                    oid = SecObjectIdentifiers.SecP224r1;
+                    break;
+                case 239:
+                    oid = X9ObjectIdentifiers.Prime239v1;
+                    break;
+                case 256:
+                    oid = X9ObjectIdentifiers.Prime256v1;
+                    break;
+                case 384:
+                    oid = SecObjectIdentifiers.SecP384r1;
+                    break;
+                case 521:
+                    oid = SecObjectIdentifiers.SecP521r1;
+                    break;
+                default:
+                    throw new InvalidParameterException("unknown key size.");
             }
-            else
-            {
-                DerObjectIdentifier oid;
-                switch (parameters.Strength)
-                {
-                    case 192:
-                        oid = X9ObjectIdentifiers.Prime192v1;
-                        break;
-                    case 224:
-                        oid = SecObjectIdentifiers.SecP224r1;
-                        break;
-                    case 239:
-                        oid = X9ObjectIdentifiers.Prime239v1;
-                        break;
-                    case 256:
-                        oid = X9ObjectIdentifiers.Prime256v1;
-                        break;
-                    case 384:
-                        oid = SecObjectIdentifiers.SecP384r1;
-                        break;
-                    case 521:
-                        oid = SecObjectIdentifiers.SecP521r1;
-                        break;
-                    default:
-                        throw new InvalidParameterException("unknown key size.");
-                }
 
-                X9ECParameters ecps = FindECCurveByOid(oid);
+            X9ECParameters ecps = FindECCurveByOid(oid);
 
-                this.publicKeyParamSet = oid;
-                this.parameters = new ECDomainParameters(
-                    ecps.Curve, ecps.G, ecps.N, ecps.H, ecps.GetSeed());
-            }
+            this.publicKeyParamSet = oid;
+            this.parameters = new ECDomainParameters(
+                ecps.Curve, ecps.G, ecps.N, ecps.H, ecps.GetSeed());
+
 
             this.random = parameters.Random;
 
@@ -101,7 +93,7 @@ namespace Xenial.Licensing.Ext.Crypto.Generators
             BigInteger d;
             int minWeight = n.BitLength >> 2;
 
-            for (;;)
+            for (; ; )
             {
                 d = new BigInteger(n.BitLength, random);
 

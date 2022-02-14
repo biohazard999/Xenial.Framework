@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 
 using Xenial.Licensing.Ext.Asn1;
@@ -7,9 +7,10 @@ using Xenial.Licensing.Ext.Asn1.Nist;
 using Xenial.Licensing.Ext.Asn1.Pkcs;
 using Xenial.Licensing.Ext.Asn1.Oiw;
 using Xenial.Licensing.Ext.Asn1.TeleTrust;
-using Xenial.Licensing.Ext.Crypto.Digests;
+
 using Xenial.Licensing.Ext.Crypto;
 using Xenial.Licensing.Ext.Utilities;
+using Xenial.Licensing.Ext.Crypto.Digests;
 
 namespace Xenial.Licensing.Ext.Security
 {
@@ -152,34 +153,34 @@ namespace Xenial.Licensing.Ext.Security
 
                 switch (digestAlgorithm)
                 {
-                    case DigestAlgorithm.GOST3411:      return new Gost3411Digest();
-                    case DigestAlgorithm.KECCAK_224:    return new KeccakDigest(224);
-                    case DigestAlgorithm.KECCAK_256:    return new KeccakDigest(256);
-                    case DigestAlgorithm.KECCAK_288:    return new KeccakDigest(288);
-                    case DigestAlgorithm.KECCAK_384:    return new KeccakDigest(384);
-                    case DigestAlgorithm.KECCAK_512:    return new KeccakDigest(512);
-                    case DigestAlgorithm.MD2:           return new MD2Digest();
-                    case DigestAlgorithm.MD4:		    return new MD4Digest();
-                    case DigestAlgorithm.MD5:		    return new MD5Digest();
-                    case DigestAlgorithm.RIPEMD128:	    return new RipeMD128Digest();
-                    case DigestAlgorithm.RIPEMD160:	    return new RipeMD160Digest();
-                    case DigestAlgorithm.RIPEMD256:	    return new RipeMD256Digest();
-                    case DigestAlgorithm.RIPEMD320:	    return new RipeMD320Digest();
-                    case DigestAlgorithm.SHA_1:		    return new Sha1Digest();
-                    case DigestAlgorithm.SHA_224:	    return new Sha224Digest();
-                    case DigestAlgorithm.SHA_256:	    return new Sha256Digest();
-                    case DigestAlgorithm.SHA_384:	    return new Sha384Digest();
-                    case DigestAlgorithm.SHA_512:	    return new Sha512Digest();
-                    case DigestAlgorithm.SHA_512_224:   return new Sha512tDigest(224);
-                    case DigestAlgorithm.SHA_512_256:   return new Sha512tDigest(256);
-                    case DigestAlgorithm.SHA3_224:      return new Sha3Digest(224);
-                    case DigestAlgorithm.SHA3_256:      return new Sha3Digest(256);
-                    case DigestAlgorithm.SHA3_384:      return new Sha3Digest(384);
-                    case DigestAlgorithm.SHA3_512:      return new Sha3Digest(512);
-                    case DigestAlgorithm.SHAKE128:      return new ShakeDigest(128);
-                    case DigestAlgorithm.SHAKE256:      return new ShakeDigest(256);
-                    case DigestAlgorithm.TIGER:         return new TigerDigest();
-                    case DigestAlgorithm.WHIRLPOOL:     return new WhirlpoolDigest();
+                    //case DigestAlgorithm.GOST3411: return new Gost3411Digest();
+                    //case DigestAlgorithm.KECCAK_224: return new KeccakDigest(224);
+                    //case DigestAlgorithm.KECCAK_256: return new KeccakDigest(256);
+                    //case DigestAlgorithm.KECCAK_288: return new KeccakDigest(288);
+                    //case DigestAlgorithm.KECCAK_384: return new KeccakDigest(384);
+                    //case DigestAlgorithm.KECCAK_512: return new KeccakDigest(512);
+                    //case DigestAlgorithm.MD2: return new MD2Digest();
+                    //case DigestAlgorithm.MD4: return new MD4Digest();
+                    //case DigestAlgorithm.MD5: return new MD5Digest();
+                    //case DigestAlgorithm.RIPEMD128: return new RipeMD128Digest();
+                    //case DigestAlgorithm.RIPEMD160: return new RipeMD160Digest();
+                    //case DigestAlgorithm.RIPEMD256: return new RipeMD256Digest();
+                    //case DigestAlgorithm.RIPEMD320: return new RipeMD320Digest();
+                    case DigestAlgorithm.SHA_1: return new Sha1Digest();
+                    //case DigestAlgorithm.SHA_224: return new Sha224Digest();
+                    case DigestAlgorithm.SHA_256: return new Sha256Digest();
+                    //case DigestAlgorithm.SHA_384: return new Sha384Digest();
+                    case DigestAlgorithm.SHA_512: return new Sha512Digest();
+                    //case DigestAlgorithm.SHA_512_224: return new Sha512tDigest(224);
+                    //case DigestAlgorithm.SHA_512_256: return new Sha512tDigest(256);
+                    //case DigestAlgorithm.SHA3_224: return new Sha3Digest(224);
+                    //case DigestAlgorithm.SHA3_256: return new Sha3Digest(256);
+                    //case DigestAlgorithm.SHA3_384: return new Sha3Digest(384);
+                    //case DigestAlgorithm.SHA3_512: return new Sha3Digest(512);
+                    //case DigestAlgorithm.SHAKE128: return new ShakeDigest(128);
+                    //case DigestAlgorithm.SHAKE256: return new ShakeDigest(256);
+                    //case DigestAlgorithm.TIGER: return new TigerDigest();
+                    //case DigestAlgorithm.WHIRLPOOL: return new WhirlpoolDigest();
                 }
             }
             catch (ArgumentException)

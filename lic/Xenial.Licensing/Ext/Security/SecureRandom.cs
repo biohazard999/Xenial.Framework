@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 
 using Xenial.Licensing.Ext.Crypto;
-using Xenial.Licensing.Ext.Crypto.Digests;
+
 using Xenial.Licensing.Ext.Crypto.Prng;
 using Xenial.Licensing.Ext.Utilities;
 

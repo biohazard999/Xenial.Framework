@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 using Xenial.Licensing.Ext.Crypto;
 using Xenial.Licensing.Ext.Crypto.Parameters;
@@ -60,12 +60,7 @@ namespace Xenial.Licensing.Ext.Crypto.Paddings
 			this.forEncryption = forEncryption;
 
 			SecureRandom initRandom = null;
-			if (parameters is ParametersWithRandom)
-			{
-				ParametersWithRandom p = (ParametersWithRandom)parameters;
-				initRandom = p.Random;
-				parameters = p.Parameters;
-			}
+			
 
 			Reset();
 			padding.Init(initRandom);
