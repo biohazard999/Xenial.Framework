@@ -604,7 +604,7 @@ public class XenialDevToolsWindowController : WindowController
                                 },
                             //{ Name: "SplitterItem" } => typeof(LayoutSplitterItem),
                             //{ Name: "SeparatorItem" } => typeof(LayoutSeparatorItem),
-                            _ => throw new ArgumentOutOfRangeException(nameof(node), node, "Could not find node type")
+                            _ => throw new ArgumentOutOfRangeException(nameof(node), node, $"Could not find node type: '{node.Name}'{Environment.NewLine}{node.OuterXml}")
                         };
 
                     var items = new List<LayoutGeneratorInfo>();
