@@ -23,4 +23,11 @@
     <ProjectReference Include="..\..\src\Xenial.Framework\Xenial.Framework.csproj" />
   </ItemGroup>
   
+  <ItemGroup>
+    <None Update="xUnit\Layouts\ExoticViewItemTests.TestLayoutViewItem.verified.xml">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>ExoticViewItemTests.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+  
 </Project>

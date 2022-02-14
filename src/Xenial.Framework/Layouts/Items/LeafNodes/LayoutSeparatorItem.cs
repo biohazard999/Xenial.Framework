@@ -4,22 +4,21 @@ using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.Layouts.Items.LeafNodes;
 
-/// <summary>   (Immutable) a layout empty space item. </summary>
+/// <summary>   (Immutable) a layout static text item. </summary>
 [XenialCheckLicense]
 [XenialModelOptions(
-    typeof(IModelLayoutItem), IgnoredMembers = new[]
+    typeof(IModelSeparatorBase), IgnoredMembers = new[]
     {
-        nameof(IModelLayoutItem.Id),
-        nameof(IModelLayoutItem.Index)
+        nameof(IModelSeparatorBase.Id),
     }
 )]
-public partial record LayoutEmptySpaceItem : LayoutItemLeaf
+public partial record LayoutSeparatorItem : LayoutItemLeaf
 {
     /// <summary>   Creates this instance. </summary>
     ///
     /// <returns>   Xenial.Framework.Layouts.Items.LayoutEmptySpaceItem. </returns>
 
-    public static LayoutEmptySpaceItem Create()
+    public static LayoutSeparatorItem Create()
         => new();
 
     /// <summary>   Creates the specified identifier. </summary>
@@ -28,22 +27,22 @@ public partial record LayoutEmptySpaceItem : LayoutItemLeaf
     ///
     /// <returns>   Xenial.Framework.Layouts.Items.LayoutEmptySpaceItem. </returns>
 
-    public static LayoutEmptySpaceItem Create(string id)
+    public static LayoutSeparatorItem Create(string id)
         => new(id);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LayoutEmptySpaceItem"/> class.
+    /// Initializes a new instance of the <see cref="LayoutSeparatorItem"/> class.
     /// </summary>
 
-    public LayoutEmptySpaceItem() { }
+    public LayoutSeparatorItem() { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LayoutEmptySpaceItem"/> class.
+    /// Initializes a new instance of the <see cref="LayoutSeparatorItem"/> class.
     /// </summary>
     ///
     /// <param name="id">   The identifier. </param>
 
-    public LayoutEmptySpaceItem(string id)
+    public LayoutSeparatorItem(string id)
         => Id = Slugifier.GenerateSlug(id);
 }
 

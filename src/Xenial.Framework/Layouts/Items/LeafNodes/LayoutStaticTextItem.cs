@@ -42,3 +42,4 @@ public partial record LayoutStaticTextItem : LayoutViewItem
     public LayoutStaticTextItem(string text, string id) : base(id)
         => Text = text;
 }
+

@@ -95,6 +95,39 @@ public partial class LayoutBuilder
         => LayoutEmptySpaceItem.Create(id);
 
 
+
+    /// <summary>   Empties the space item. </summary>
+    ///
+    /// <returns>   Xenial.Framework.Layouts.Items.LayoutEmptySpaceItem. </returns>
+
+    public LayoutSeparatorItem Separator()
+        => LayoutSeparatorItem.Create();
+
+    /// <summary>   Empties the space item. </summary>
+    ///
+    /// <param name="id">   The identifier. </param>
+    ///
+    /// <returns>   Xenial.Framework.Layouts.Items.LayoutEmptySpaceItem. </returns>
+
+    public LayoutSeparatorItem Separator(string id)
+        => LayoutSeparatorItem.Create(id);
+
+    /// <summary>   Empties the space item. </summary>
+    ///
+    /// <returns>   Xenial.Framework.Layouts.Items.LayoutEmptySpaceItem. </returns>
+
+    public LayoutSplitterItem Splitter()
+        => LayoutSplitterItem.Create();
+
+    /// <summary>   Empties the space item. </summary>
+    ///
+    /// <param name="id">   The identifier. </param>
+    ///
+    /// <returns>   Xenial.Framework.Layouts.Items.LayoutEmptySpaceItem. </returns>
+
+    public LayoutSplitterItem Splitter(string id)
+        => LayoutSplitterItem.Create(id);
+
     /// <summary>
     /// 
     /// </summary>
