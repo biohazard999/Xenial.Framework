@@ -1,4 +1,4 @@
-﻿﻿//
+﻿//
 // Copyright © 2012 - 2013 Nauck IT KG     http://www.nauck-it.de
 //
 // Author:
@@ -32,7 +32,7 @@ using Xenial.Licensing;
 using NUnit.Framework;
 using Xenial.Licensing.Validation;
 
-namespace Standard.Licensing.Tests
+namespace Xenial.Licensing.Tests
 {
     [TestFixture]
     public class LicenseValidationTests
@@ -158,10 +158,10 @@ namespace Standard.Licensing.Tests
             var validationResults = license
                 .Validate()
                 .AssertThat(lic => lic.ProductFeatures.Contains("Sales Module"),
-                            new GeneralValidationFailure { Message = "Sales Module not licensed!"})
+                            new GeneralValidationFailure { Message = "Sales Module not licensed!" })
                 .And()
                 .AssertThat(lic => lic.AdditionalAttributes.Get("Assembly Signature") == "123456789",
-                            new GeneralValidationFailure { Message = "Assembly Signature does not match!"})
+                            new GeneralValidationFailure { Message = "Assembly Signature does not match!" })
                 .And()
                 .Signature(publicKey)
                 .AssertValidLicense().ToList();

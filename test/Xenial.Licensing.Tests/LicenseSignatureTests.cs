@@ -1,4 +1,4 @@
-﻿﻿//
+﻿//
 // Copyright © 2012 - 2013 Nauck IT KG     http://www.nauck-it.de
 //
 // Author:
@@ -31,7 +31,7 @@ using Xenial.Licensing;
 using Xenial.Licensing.Security.Cryptography;
 using NUnit.Framework;
 
-namespace Standard.Licensing.Tests
+namespace Xenial.Licensing.Tests
 {
     [TestFixture]
     public class LicenseSignatureTests

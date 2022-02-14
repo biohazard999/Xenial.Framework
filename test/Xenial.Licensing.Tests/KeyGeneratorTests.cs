@@ -27,8 +27,7 @@ using System.Collections.Generic;
 using Xenial.Licensing.Security.Cryptography;
 using NUnit.Framework;
 
-
-namespace Standard.Licensing.Tests
+namespace Xenial.Licensing.Tests
 {
     [TestFixture]
     public class KeyGeneratorTests
@@ -46,7 +45,7 @@ namespace Standard.Licensing.Tests
             pubKeySet.Add(
                 "MIIBKjCB4wYHKoZIzj0CATCB1wIBATAsBgcqhkjOPQEBAiEA/////wAAAAEAAAAAAAAAAAAAAAD///////////////8wWwQg/////wAAAAEAAAAAAAAAAAAAAAD///////////////wEIFrGNdiqOpPns+u9VXaYhrxlHQawzFOw9jvOPD4n0mBLAxUAxJ02CIbnBJNqZnjhE50mt4GffpAEIQNrF9Hy4SxCR/i85uVjpEDydwN9gS3rM6D0oTlF2JjClgIhAP////8AAAAA//////////+85vqtpxeehPO5ysL8YyVRAgEBA0IABNVLQ1xKY80BFMgGXec++Vw7n8vvNrq32PaHuBiYMm0PEj2JoB7qSSWhfgcjxNVJsxqJ6gDQVWgl0r7LH4dr0KU=");
 
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 var keyGenerator = new KeyGenerator(256); //default key size
                 var pair = keyGenerator.GenerateKeyPair();
