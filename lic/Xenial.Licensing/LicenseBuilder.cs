@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Standard.Licensing
+namespace Xenial.Licensing
 {
     /// <summary>
     /// Implementation of the <see cref="ILicenseBuilder"/>, a fluent api

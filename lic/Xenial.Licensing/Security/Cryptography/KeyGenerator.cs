@@ -29,7 +29,7 @@ using Xenial.Licensing.Ext.Crypto;
 using Xenial.Licensing.Ext.Crypto.Generators;
 using Xenial.Licensing.Ext.Security;
 
-namespace Standard.Licensing.Security.Cryptography
+namespace Xenial.Licensing.Security.Cryptography
 {
     /// <summary>
     /// Represents a generator for signature keys of <see cref="License"/>.

@@ -1,4 +1,4 @@
-﻿﻿//
+﻿//
 // Copyright © 2012 - 2013 Nauck IT KG     http://www.nauck-it.de
 //
 // Author:
@@ -23,7 +23,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-namespace Standard.Licensing
+namespace Xenial.Licensing
 {
     /// <summary>
     /// Defines the type of a <see cref="License"/>

@@ -27,7 +27,7 @@
 
 using Xenial.Licensing.Ext.Crypto;
 
-namespace Standard.Licensing.Security.Cryptography
+namespace Xenial.Licensing.Security.Cryptography
 {
     /// <summary>
     /// Represents a private/public encryption key pair.

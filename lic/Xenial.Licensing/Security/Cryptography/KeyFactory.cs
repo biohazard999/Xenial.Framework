@@ -31,7 +31,7 @@ using Xenial.Licensing.Ext.X509;
 
 using System;
 
-namespace Standard.Licensing.Security.Cryptography
+namespace Xenial.Licensing.Security.Cryptography
 {
     internal static class KeyFactory
     {

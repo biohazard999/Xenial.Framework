@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Standard.Licensing.Validation
+namespace Xenial.Licensing.Validation
 {
     internal class ValidationChainBuilder : IStartValidationChain, IValidationChain
     {
@@ -79,7 +79,7 @@ namespace Standard.Licensing.Validation
                 if (!validator.Validate(license))
                     yield return validator.FailureResult
                                  ?? new GeneralValidationFailure
-                                        {
+                                 {
                                             Message = "License validation failed!"
                                         };
             }

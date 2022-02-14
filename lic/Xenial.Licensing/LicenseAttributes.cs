@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Standard.Licensing
+namespace Xenial.Licensing
 {
     /// <summary>
     /// Represents a dictionary of license attributes.

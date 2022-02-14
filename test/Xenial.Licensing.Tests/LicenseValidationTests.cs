@@ -28,8 +28,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xenial.Licensing;
 using NUnit.Framework;
-using Standard.Licensing.Validation;
+using Xenial.Licensing.Validation;
 
 namespace Standard.Licensing.Tests
 {
@@ -157,10 +158,10 @@ namespace Standard.Licensing.Tests
             var validationResults = license
                 .Validate()
                 .AssertThat(lic => lic.ProductFeatures.Contains("Sales Module"),
-                            new GeneralValidationFailure {Message = "Sales Module not licensed!"})
+                            new GeneralValidationFailure { Message = "Sales Module not licensed!"})
                 .And()
                 .AssertThat(lic => lic.AdditionalAttributes.Get("Assembly Signature") == "123456789",
-                            new GeneralValidationFailure {Message = "Assembly Signature does not match!"})
+                            new GeneralValidationFailure { Message = "Assembly Signature does not match!"})
                 .And()
                 .Signature(publicKey)
                 .AssertValidLicense().ToList();

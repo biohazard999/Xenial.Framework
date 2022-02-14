@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Standard.Licensing
+namespace Xenial.Licensing
 {
     /// <summary>
     /// Fluent api to create and sign a new <see cref="License"/>. 

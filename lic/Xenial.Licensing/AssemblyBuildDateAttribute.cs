@@ -26,7 +26,7 @@
 using System;
 using System.Globalization;
 
-namespace Standard.Licensing
+namespace Xenial.Licensing
 {
     /// <summary>
     /// Defines assembly build date information for an assembly manifest.

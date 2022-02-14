@@ -24,10 +24,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
-
+using Xenial.Licensing.Security.Cryptography;
 using NUnit.Framework;
 
-using Standard.Licensing.Security.Cryptography;
 
 namespace Standard.Licensing.Tests
 {

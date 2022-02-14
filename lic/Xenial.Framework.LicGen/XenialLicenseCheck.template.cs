@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Standard.Licensing;
-using Standard.Licensing.Validation;
+using Xenial.Licensing;
+using Xenial.Licensing.Validation;
 
 #nullable enable
 

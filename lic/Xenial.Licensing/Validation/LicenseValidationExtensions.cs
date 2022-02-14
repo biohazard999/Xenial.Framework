@@ -29,7 +29,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace Standard.Licensing.Validation
+namespace Xenial.Licensing.Validation
 {
     /// <summary>
     /// Extension methods for <see cref="License"/> validation.

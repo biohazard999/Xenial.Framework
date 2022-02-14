@@ -32,15 +32,14 @@ using System.Xml.Linq;
 
 using Xenial.Licensing.Ext.Asn1.X9;
 using Xenial.Licensing.Ext.Security;
+using Xenial.Licensing.Security.Cryptography;
 
-using Standard.Licensing.Security.Cryptography;
-
-namespace Standard.Licensing
+namespace Xenial.Licensing
 {
     /// <summary>
     /// A software license
     /// </summary>
-    public class License
+    public sealed class License
     {
         private readonly XElement xmlData;
         private readonly string signatureAlgorithm = X9ObjectIdentifiers.ECDsaWithSha512.Id;

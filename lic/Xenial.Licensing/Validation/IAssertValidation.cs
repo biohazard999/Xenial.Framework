@@ -25,7 +25,7 @@
 
 using System.Collections.Generic;
 
-namespace Standard.Licensing.Validation
+namespace Xenial.Licensing.Validation
 {
     /// <summary>
     /// Interface for the fluent validation syntax.

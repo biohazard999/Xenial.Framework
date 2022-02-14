@@ -27,6 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml.Linq;
+using Xenial.Licensing;
+using Xenial.Licensing.Security.Cryptography;
 using NUnit.Framework;
 
 namespace Standard.Licensing.Tests
@@ -42,7 +44,7 @@ namespace Standard.Licensing.Tests
         public void Init()
         {
             passPhrase = Guid.NewGuid().ToString();
-            var keyGenerator = Security.Cryptography.KeyGenerator.Create();
+            var keyGenerator = KeyGenerator.Create();
             var keyPair = keyGenerator.GenerateKeyPair();
             privateKey = keyPair.ToEncryptedPrivateKeyString(passPhrase);
             publicKey = keyPair.ToPublicKeyString();
