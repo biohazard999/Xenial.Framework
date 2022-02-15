@@ -38,6 +38,7 @@ public record XenialGenerator(bool AddSources = true) : ISourceGenerator
         new XenialModelBuilderGenerator(AddSources),
         new XenialLayoutBuilderGenerator(AddSources),
         new XenialColumnsBuilderGenerator(AddSources),
+        new XenialCollectControllersGenerator(AddSources),
     };
 
     public void Initialize(GeneratorInitializationContext context)
