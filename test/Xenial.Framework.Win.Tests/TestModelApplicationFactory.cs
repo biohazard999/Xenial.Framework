@@ -6,21 +6,28 @@ using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 
-using DXSystemModule = DevExpress.ExpressApp.SystemModule.SystemModule;
+using Xenial.Framework.Layouts;
+using Xenial.Framework.Layouts.Items.Base;
+using Xenial.Framework.ModelBuilders;
+using Xenial.Framework.Tests.Assertions;
+using Xenial.Framework.Tests.Layouts;
 
-namespace Xenial.Framework.Tests.Layouts
+using DXSystemModule = DevExpress.ExpressApp.SystemModule.SystemModule;
+using DXSystemWindowsFormsModule = DevExpress.ExpressApp.Win.SystemModule.SystemWindowsFormsModule;
+
+namespace Xenial.Framework.Win.Tests.Layouts
 {
-    internal record CreateApplicationOptions(Type[] BoModelTypes, Action<ITypesInfo>? CustomizeTypesInfo = null)
+    internal record CreateApplicationOptionsWin(Type[] BoModelTypes, Action<ITypesInfo>? CustomizeTypesInfo = null)
     {
         internal Action<ModelNodesGeneratorUpdaters>? CustomizeGeneratorUpdaters { get; set; }
     }
 
-    internal static partial class TestModelApplicationFactory
+    internal static partial class TestModelApplicationFactoryWin
     {
         internal static IModelApplication CreateApplication(Type[] boModelTypes, Action<ITypesInfo>? customizeTypesInfo = null)
             => CreateApplication(new(boModelTypes, customizeTypesInfo));
 
-        internal static IModelApplication CreateApplication(CreateApplicationOptions options)
+        internal static IModelApplication CreateApplication(CreateApplicationOptionsWin options)
         {
             XafTypesInfo.HardReset();
 
@@ -41,6 +48,7 @@ namespace Xenial.Framework.Tests.Layouts
             var modules = new ModuleBase[]
             {
                 new DXSystemModule(),
+                new DXSystemWindowsFormsModule(),
                 new TestModule(options.BoModelTypes, options.CustomizeTypesInfo)
                 {
                     CustomizeGeneratorUpdaters = options.CustomizeGeneratorUpdaters
@@ -64,6 +72,25 @@ namespace Xenial.Framework.Tests.Layouts
             );
 
             return (IModelApplication)modelManager.CreateModelApplication(Enumerable.Empty<ModelApplicationBase>());
+        }
+
+        internal static IModelDetailView? CreateComplexDetailViewWithLayout<T>(Func<LayoutBuilder<T>, Layout> layoutFunctor)
+            where T : class
+        {
+            var model = CreateApplication(new(new[]
+            {
+                typeof(T)
+            },
+            typesInfo =>
+            {
+                ModelBuilder.Create<T>(typesInfo)
+                    .RemoveAttribute(typeof(DetailViewLayoutBuilderAttribute))
+                    .WithDetailViewLayout(layoutFunctor)
+                .Build();
+            }));
+
+            var detailView = model.FindDetailView<T>();
+            return detailView;
         }
     }
 }

@@ -8,13 +8,30 @@ using Xenial.Framework.Model.GeneratorUpdaters;
 
 namespace Xenial.Framework.Win;
 
-internal static class XenialWindowsFormsModuleInitializer
+/// <summary>
+/// 
+/// </summary>
+
+#if NET5_0_OR_GREATER
+[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
+public static class XenialWindowsFormsModuleInitializer
 {
+    private static bool initialized;
 #if NET5_0_OR_GREATER
     [System.Runtime.CompilerServices.ModuleInitializer]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 #endif
-    internal static void Initialize()
+    /// <summary>
+    /// 
+    /// </summary>
+    public static void Initialize()
     {
+        if (initialized)
+        {
+            return;
+        }
+        initialized = true;
         MappingFactory
             .RegisterDetailOptionsMapper((options, model) =>
             {
@@ -24,7 +41,6 @@ internal static class XenialWindowsFormsModuleInitializer
                         .Map(winOptions, model);
                 }
             });
-
 
         XenialDetailViewLayoutNodesGeneratorUpdater.NodeFactory
             .Register<LayoutSplitterItem>((parent, node) => parent.AddNode<DevExpress.ExpressApp.Win.SystemModule.IModelSplitter>())

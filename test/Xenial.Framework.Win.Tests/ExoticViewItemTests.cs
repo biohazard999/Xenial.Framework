@@ -9,16 +9,20 @@ using VerifyXunit;
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.Items.Base;
 using Xenial.Framework.Tests.Assertions;
+using Xenial.Framework.Win;
 
 using Xunit;
 
-using static Xenial.Framework.Tests.Layouts.TestModelApplicationFactory;
+using static Xenial.Framework.Win.Tests.Layouts.TestModelApplicationFactoryWin;
 
 namespace Xenial.Framework.Tests.xUnit.Layouts;
 
 [UsesVerify]
 public class ExoticViewItemTests
 {
+    static ExoticViewItemTests()
+        => XenialWindowsFormsModuleInitializer.Initialize();
+
     [Fact]
     public async Task TestLayoutViewItem()
     {

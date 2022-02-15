@@ -14,11 +14,15 @@ using Xenial.Framework.DevTools.Win;
 using Xenial.Framework.StepProgressEditors.Win;
 using Xenial.Framework.TokenEditors.Win;
 using Xenial.Framework.WebView.Win;
+using Xenial.Framework.Win;
 
 namespace Xenial.FeatureCenter.Module.Win
 {
     public sealed class FeatureCenterWindowsFormsModule : XenialModuleBase
     {
+        static FeatureCenterWindowsFormsModule() =>
+            XenialWindowsFormsModuleInitializer.Initialize();
+
         public FeatureCenterWindowsFormsModule() => FeatureCenterModule.CurrentPlatform = AvailablePlatform.Win;
 
         protected override ModuleTypeList GetRequiredModuleTypesCore()
