@@ -1,6 +1,9 @@
 ﻿using System;
 
+using DevExpress.XtraLayout;
+
 using Xenial.Framework.Layouts;
+using Xenial.Framework.Layouts.Items.LeafNodes;
 using Xenial.Framework.Model.GeneratorUpdaters;
 
 namespace Xenial.Framework.Win;
@@ -11,7 +14,8 @@ internal static class XenialWindowsFormsModuleInitializer
     [System.Runtime.CompilerServices.ModuleInitializer]
 #endif
     internal static void Initialize()
-        => MappingFactory
+    {
+        MappingFactory
             .RegisterDetailOptionsMapper((options, model) =>
             {
                 if (options is DetailViewOptionsWin winOptions)
@@ -20,4 +24,12 @@ internal static class XenialWindowsFormsModuleInitializer
                         .Map(winOptions, model);
                 }
             });
+
+
+        XenialDetailViewLayoutNodesGeneratorUpdater.NodeFactory
+            .Register<LayoutSplitterItem>((parent, node) => parent.AddNode<DevExpress.ExpressApp.Win.SystemModule.IModelSplitter>())
+            .RegisterAutoId<LayoutSplitterItem>((node, index) => $"Splitter-{index}")
+            .Register<LayoutSeparatorItem>((parent, node) => parent.AddNode<DevExpress.ExpressApp.Win.SystemModule.IModelSeparator>())
+            .RegisterAutoId<LayoutSeparatorItem>((node, index) => $"Separator-{index}");
+    }
 }

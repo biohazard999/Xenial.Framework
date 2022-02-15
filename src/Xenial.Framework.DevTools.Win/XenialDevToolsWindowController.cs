@@ -366,8 +366,8 @@ public sealed class XenialDevToolsWindowController : WindowController
                                     (true, _, _) => typeof(LayoutViewItem),
                                     _ => typeof(LayoutEmptySpaceItem)
                                 },
-                            //{ Name: "SplitterItem" } => typeof(LayoutSplitterItem),
-                            //{ Name: "SeparatorItem" } => typeof(LayoutSeparatorItem),
+                            { Name: "SplitterItem" } => typeof(LayoutSplitterItem),
+                            { Name: "SeparatorItem" } => typeof(LayoutSeparatorItem),
                             _ => throw new ArgumentOutOfRangeException(nameof(node), node, $"Could not find node type: '{node.Name}'{Environment.NewLine}{node.OuterXml}")
                         };
 
@@ -416,6 +416,8 @@ public sealed class XenialDevToolsWindowController : WindowController
                                 Type t when t == typeof(VerticalLayoutGroupItem) => "VerticalGroup",
                                 Type t when t == typeof(LayoutTabbedGroupItem) => "TabbedGroup",
                                 Type t when typeof(LayoutTabGroupItem).IsAssignableFrom(t) => "Tab",
+                                Type t when typeof(LayoutSeparatorItem).IsAssignableFrom(t) => "Separator",
+                                Type t when typeof(LayoutSplitterItem).IsAssignableFrom(t) => "Splitter",
                                 _ => throw new ArgumentOutOfRangeException(nameof(item), item, "Could not find method for type")
                             };
 
@@ -463,6 +465,16 @@ public sealed class XenialDevToolsWindowController : WindowController
                         if (item.TargetNodeType == typeof(LayoutEmptySpaceItem))
                         {
                             sb.Write("EmptySpace()");
+                            return;
+                        }
+                        if (item.TargetNodeType == typeof(LayoutSplitterItem))
+                        {
+                            sb.Write("Splitter()");
+                            return;
+                        }
+                        if (item.TargetNodeType == typeof(LayoutSeparatorItem))
+                        {
+                            sb.Write("Separator()");
                             return;
                         }
                         if (typeof(LayoutViewItem).IsAssignableFrom(item.TargetNodeType))

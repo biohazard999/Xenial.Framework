@@ -43,6 +43,8 @@ namespace Xenial.FeatureCenter.Module.BusinessObjects.Editors
                 {
                     Children = new()
                     {
+                        l.Splitter(),
+                        l.Separator(),
                         l.PropertyEditor(m => m.NotSupportedHtml) with { ShowCaption = false, CaptionLocation = Locations.Top },
                         demoPage(l, l.LayoutGroup() with { Id = "DEMO_LAYOUT_GROUP" })
                     }

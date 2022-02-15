@@ -12,6 +12,7 @@
     <PackageReference Include="Xenial.Framework.TokenEditors" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.StepProgressEditors" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Badges" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.DevTools" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">
@@ -22,6 +23,7 @@
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors/Xenial.Framework.TokenEditors.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.StepProgressEditors/Xenial.Framework.StepProgressEditors.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Badges/Xenial.Framework.Badges.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.DevTools/Xenial.Framework.DevTools.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,7 +38,6 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="32.0.2" />
-    <PackageReference Include="Markdig" Version="0.22.1" />
     <PackageReference Include="DevExpress.ExpressApp.ConditionalAppearance" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
