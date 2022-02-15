@@ -57,12 +57,20 @@ namespace Xenial.Build
 
             var tagName = (await ReadAsync("git", "tag --points-at")).Trim();
             var isTagged = !string.IsNullOrWhiteSpace(tagName);
+            var githubEventName = Environment.GetEnvironmentVariable("GITHUB_EVENT_NAME");
+            var isPullRequest =
+                string.IsNullOrEmpty(githubEventName)
+                ? false
+                : githubEventName.StartsWith("pull_request", StringComparison.InvariantCultureIgnoreCase);
+
             var ncrunchPath = "";
 
             Console.WriteLine($"Is platform windows? {RuntimeInformation.IsOSPlatform(OSPlatform.Windows)}");
             Console.WriteLine($"Platform: {System.Environment.OSVersion.Platform}");
             Console.WriteLine($"SLN: {sln}");
             Console.WriteLine($"IsTagged: {isTagged}");
+            Console.WriteLine($"GithubEventName: {githubEventName}");
+            Console.WriteLine($"IsPullRequest: {isPullRequest}");
             if (isTagged)
             {
                 Console.WriteLine($"TagName: {tagName}");
@@ -301,7 +309,7 @@ namespace Xenial.Build
             Target("pack:zip", DependsOn("pack:nuget"),
                 () =>
                 {
-                    if (isTagged)
+                    if (isTagged && !isPullRequest)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"This is a tagged commit {tagName}, creating zip packages");
@@ -357,7 +365,7 @@ namespace Xenial.Build
             {
                 await RunAsync("dotnet", "--version");
 
-                if (isTagged)
+                if (isTagged && !isPullRequest)
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine($"This is a tagged commit {tagName}, installing dotnet zip install");
@@ -377,9 +385,9 @@ namespace Xenial.Build
                     //TODO: remove /p:ErrorOnDuplicatePublishOutputFiles=false
                     //TODO: and investigate https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/duplicate-files-in-output
 
-                    var r2r = isTagged ? "/p:PublishReadyToRun=true" : "";
+                    var r2r = isTagged && !isPullRequest ? "/p:PublishReadyToRun=true" : "";
 
-                    if (isTagged)
+                    if (isTagged && !isPullRequest)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"This is a tagged commit {tagName}, will increase performance by using R2R");
@@ -398,8 +406,7 @@ namespace Xenial.Build
 
                     await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj --framework {tfm} {ridP} {r2r} /p:ErrorOnDuplicatePublishOutputFiles=false {logOptions($"publish:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false");
 
-
-                    if (isTagged)
+                    if (isTagged && !isPullRequest)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"This is a tagged commit {tagName}, zipping up Xenial.FeatureCenter.Win");

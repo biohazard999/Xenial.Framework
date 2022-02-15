@@ -41,7 +41,7 @@ public record XenialActionAttributeGenerator(bool AddSources = true) : XenialAtt
         ["PaintStyle"] = "DevExpress.ExpressApp.Templates.ActionItemPaintStyle",
     };
 
-    protected override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
+    internal override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
     {
         _ = syntaxWriter ?? throw new ArgumentNullException(nameof(syntaxWriter));
 

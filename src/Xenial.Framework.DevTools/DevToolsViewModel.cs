@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 using DevExpress.ExpressApp.DC;
-using DevExpress.Xpo;
 
 using Xenial.Framework.Images;
 using Xenial.Framework.Layouts;

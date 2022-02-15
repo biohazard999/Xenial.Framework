@@ -10,7 +10,7 @@ public record SystemIsExternalInitAttributeGenerator(bool AddSources = true) : X
     public override string AttributeNamespace => "System.Runtime.CompilerServices";
     public override string AttributeName => "IsExternalInit";
 
-    protected override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
+    internal override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
     {
         _ = syntaxWriter ?? throw new ArgumentNullException(nameof(syntaxWriter));
 

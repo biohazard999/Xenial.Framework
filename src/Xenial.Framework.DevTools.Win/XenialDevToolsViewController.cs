@@ -16,7 +16,7 @@ namespace Xenial.Framework.DevTools.Win;
 /// <summary>
 /// 
 /// </summary>
-public class XenialDevToolsViewController : ViewController
+public sealed class XenialDevToolsViewController : ViewController
 {
     /// <summary>
     /// 

@@ -18,6 +18,7 @@ using Xenial.FeatureCenter.Module.Updaters;
 
 using Xenial.Framework;
 using Xenial.Framework.Badges;
+using Xenial.Framework.DevTools;
 using Xenial.Framework.StepProgressEditors;
 using Xenial.Framework.TokenEditors;
 using Xenial.Framework.WebView;
@@ -35,7 +36,8 @@ namespace Xenial.FeatureCenter.Module
                     typeof(XenialWebViewModule),
                     typeof(XenialTokenEditorsModule),
                     typeof(XenialStepProgressEditorsModule),
-                    typeof(XenialBadgesModule)
+                    typeof(XenialBadgesModule),
+                    typeof(XenialDevToolsModule)
                 );
 
         protected override IEnumerable<Type> GetDeclaredExportedTypes()

@@ -8,4 +8,18 @@
      <ProjectReference Include="..\..\src\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ExoticViewItemTests.TestLayoutViewItem.verified.xml">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>%(ParentFile).cs</DependentUpon>
+    </None>
+  </ItemGroup>
+
 </Project>

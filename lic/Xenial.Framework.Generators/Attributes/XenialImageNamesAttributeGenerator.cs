@@ -10,7 +10,7 @@ public record XenialImageNamesAttributeGenerator(bool AddSources = true) : Xenia
 {
     public override string AttributeName => "XenialImageNamesAttribute";
 
-    protected override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
+    internal override CurlyIndenter CreateAttribute(CurlyIndenter syntaxWriter, string visibility)
     {
         _ = syntaxWriter ?? throw new ArgumentNullException(nameof(syntaxWriter));
 
