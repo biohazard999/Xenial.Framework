@@ -1,0 +1,17 @@
+{
+  Diagnostics: [
+    {
+      Id: XENGEN0100,
+      Title: The class using the [XenialCollectControllersAttribute] needs to be partial,
+      Severity: Error,
+      WarningLevel: 0,
+      Location: ControllerTypeList.cs: (3,4)-(4,37),
+      Description: The class using the [XenialCollectControllersAttribute] needs to be partial,
+      HelpLink: ,
+      MessageFormat: The class using the [XenialCollectControllersAttribute] needs to be partial,
+      Message: The class using the [XenialCollectControllersAttribute] needs to be partial,
+      Category: Usage,
+      CustomTags: []
+    }
+  ]
+}

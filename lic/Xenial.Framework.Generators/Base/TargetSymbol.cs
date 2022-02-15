@@ -32,4 +32,7 @@ public record TargetSymbol(INamedTypeSymbol Symbol, TypeDeclarationSyntax TypeDe
         }
         return HasBase(symbol.BaseType, baseType);
     }
+
+    public bool IsAbstract
+        => Symbol.IsAbstract;
 }

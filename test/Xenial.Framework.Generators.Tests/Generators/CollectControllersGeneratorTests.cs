@@ -88,8 +88,25 @@ public partial class MyGlobalClass
     public class MyController : DevExpress.ExpressApp.ViewController
     { }
 
-    [Xenial.ControllerTypeList]
+    [Xenial.XenialCollectControllers]
     public partial class ControllerTypeList { }
 }");
 
+    [Fact]
+    public Task CollectsComplexControllerChain()
+    => RunSourceTest("ControllerTypeList.cs",
+@"namespace MyProject
+{
+    public abstract class MyBase : DevExpress.ExpressApp.ViewController
+    { }
+
+    public class MyController : MyBase { }
+
+    public class MyControllerGeneric : DevExpress.ExpressApp.ViewController<ControllerTypeList> { }
+
+    public abstract class MyControllerAbstract : DevExpress.ExpressApp.ViewController<ControllerTypeList> { }
+
+    [Xenial.XenialCollectControllers]
+    public partial class ControllerTypeList { }
+}");
 }
