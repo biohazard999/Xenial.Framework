@@ -19,4 +19,27 @@
     <ProjectReference Include="..\..\stubs\Xenial.Framework.Stubs\Xenial.Framework.Stubs.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Attributes\XenialXpoBuilderAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.Core3_1.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>XenialXpoBuilderAttributeTests.cs</DependentUpon>
+    </None>
+    <None Update="Attributes\XenialXpoBuilderAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet3_1.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>XenialXpoBuilderAttributeTests.cs</DependentUpon>
+    </None>
+    <None Update="Attributes\XenialXpoBuilderAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet4_6.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>XenialXpoBuilderAttributeTests.cs</DependentUpon>
+    </None>
+    <None Update="Attributes\XenialXpoBuilderAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet5_0.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>XenialXpoBuilderAttributeTests.cs</DependentUpon>
+    </None>
+    <None Update="Attributes\XenialXpoBuilderAttributeTests.DoesCreateDiagnosticIfEmitAttributeMSBuildVariableIsNotABool.DotNet6_0.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>XenialXpoBuilderAttributeTests.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+
 </Project>
