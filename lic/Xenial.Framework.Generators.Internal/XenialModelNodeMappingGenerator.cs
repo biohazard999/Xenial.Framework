@@ -545,7 +545,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
 
         compilation = compilation.AddSyntaxTrees(syntaxTree);
 
-        var attribute = compilation.GetTypeByMetadataName("Xenial.XenialModelOptionsAttribute");
+        var attribute = compilation.GetTypeByMetadataName("Xenial.XenialAutoMappedAttribute");
 
         return (compilation, attribute!);
     }
