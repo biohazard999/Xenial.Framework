@@ -10,6 +10,11 @@ using Xenial.Framework.WebView.Win;
 
 namespace Xenial.Framework.DevTools.Win;
 
+[Xenial.]
+internal partial static class DevToolsWindowsFormsTypeList
+{
+}
+
 /// <summary>
 /// Class XenialDevToolsWindowsFormsModule.
 /// Implements the <see cref="Xenial.Framework.XenialModuleBase" />
