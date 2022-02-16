@@ -5,9 +5,18 @@ using Xenial.Framework.Layouts.Items.Base;
 
 namespace Xenial.Framework.Model.GeneratorUpdaters;
 
-internal static class NodeVisitors
+/// <summary>
+/// 
+/// </summary>
+public static class NodeVisitors
 {
-    internal static IEnumerable<TItem> VisitNodes<TItem>(LayoutItemNode node)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TItem"></typeparam>
+    /// <param name="node"></param>
+    /// <returns></returns>
+    public static IEnumerable<TItem> VisitNodes<TItem>(LayoutItemNode node)
           where TItem : LayoutItemNode
     {
         if (node is TItem targetNode)

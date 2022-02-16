@@ -21,6 +21,7 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 )]
 public partial record LayoutStaticImageItem : LayoutViewItem
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "By Convention")]
     internal bool WasImageNameSet => true;
     /// <summary>   Gets the name of the image. </summary>
     ///

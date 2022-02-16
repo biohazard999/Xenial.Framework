@@ -244,6 +244,7 @@ public partial record LayoutGroupItem : LayoutItem
         Direction = flowDirection;
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "By Convention")]
     internal bool WasDirectionSet => true;
     /// <summary>
     /// Gets or sets the direction.

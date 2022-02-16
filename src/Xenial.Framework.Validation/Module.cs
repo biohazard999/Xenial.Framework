@@ -17,16 +17,29 @@ public sealed class XenialValidationModule : XenialModuleBase
 /// <summary>
 /// 
 /// </summary>
+#if NET5_0_OR_GREATER
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+#endif
 public static class XenialValidationModuleInitializer
 {
+    private static bool initialized;
     /// <summary>
     /// 
     /// </summary>
 #if NET5_0_OR_GREATER
-    [ModuleInitializer]
+    [System.Runtime.CompilerServices.ModuleInitializer]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 #endif
     public static void Initialize()
-        => MappingFactory
+    {
+        if (initialized)
+        {
+            return;
+        }
+
+        initialized = true;
+
+        MappingFactory
             .RegisterDetailOptionsMapper((options, model) =>
             {
                 if (options is ValidationDetailViewOptions validationOptions)
@@ -35,4 +48,5 @@ public static class XenialValidationModuleInitializer
                         .Map(validationOptions, model);
                 }
             });
+    }
 }

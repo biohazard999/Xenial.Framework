@@ -32,7 +32,7 @@ public class LayoutViewItemTests
 
 public class LayoutViewItemBusinessObject
 {
-    public string MyString { get; set; }
+    public string? MyString { get; set; }
 }
 
 public partial class LayoutViewItemBusinessObjectLayoutBuilder : LayoutBuilder<LayoutViewItemBusinessObject>

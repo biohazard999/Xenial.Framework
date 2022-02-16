@@ -19,6 +19,7 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 )]
 public partial record LayoutStaticTextItem : LayoutViewItem
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "By Convention")]
     internal bool WasTextSet => true;
     /// <summary>   Gets the text. </summary>
     ///

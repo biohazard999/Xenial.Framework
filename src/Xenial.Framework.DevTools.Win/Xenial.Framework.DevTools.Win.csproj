@@ -10,5 +10,12 @@
     <ProjectReference Include="..\Xenial.Framework.Images\Xenial.Framework.Images.csproj" />
     <ProjectReference Include="..\Xenial.Framework.WebView.Win\Xenial.Framework.WebView.Win.csproj" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
 </Project>

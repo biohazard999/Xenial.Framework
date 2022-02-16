@@ -5,10 +5,24 @@ using System.Linq;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Win.SystemModule;
 
-using Xenial.Framework.WebView;
 using Xenial.Framework.WebView.Win;
 
 namespace Xenial.Framework.DevTools.Win;
+
+/// <summary>
+/// 
+/// </summary>
+[XenialCollectControllers]
+public static partial class DevToolsWindowsFormsTypeList
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="types"></param>
+    /// <returns></returns>
+    public static IEnumerable<Type> UseXenialDevToolsWindowsFormsControllers(this IEnumerable<Type> types)
+        => types.Concat(ControllerTypes);
+}
 
 /// <summary>
 /// Class XenialDevToolsWindowsFormsModule.
@@ -40,10 +54,5 @@ public sealed partial class XenialDevToolsWindowsFormsModule : XenialModuleBase
     /// <returns></returns>
     protected override IEnumerable<Type> GetDeclaredControllerTypes()
         => base.GetDeclaredControllerTypes()
-            .Concat(new[]
-            {
-                typeof(XenialDevToolsWindowController),
-                typeof(XenialDevToolsViewController),
-                typeof(XenialDevToolsController)
-            });
+            .UseXenialDevToolsWindowsFormsControllers();
 }

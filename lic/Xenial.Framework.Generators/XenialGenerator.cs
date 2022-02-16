@@ -27,6 +27,7 @@ public record XenialGenerator(bool AddSources = true) : ISourceGenerator
         new XenialImageNamesAttributeGenerator(AddSources),
         new XenialViewIdsAttributeGenerator(AddSources),
         new XenialXpoBuilderAttributeGenerator(AddSources),
+        new XenialCollectControllersAttributeGenerator(AddSources),
 
         //Generators
         new XenialViewIdsGenerator(AddSources),
@@ -36,6 +37,7 @@ public record XenialGenerator(bool AddSources = true) : ISourceGenerator
         new XenialModelBuilderGenerator(AddSources),
         new XenialLayoutBuilderGenerator(AddSources),
         new XenialColumnsBuilderGenerator(AddSources),
+        new XenialCollectControllersGenerator(AddSources),
     };
 
     public void Initialize(GeneratorInitializationContext context)
