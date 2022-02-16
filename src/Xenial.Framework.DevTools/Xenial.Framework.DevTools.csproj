@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="$(MSBuildProjectName).Win, PublicKeyToken=$(XenialPublicSignKey)"/>
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Win, PublicKey=$(XenialPublicSignKey)"/>
   </ItemGroup>
 
   <ItemGroup>
