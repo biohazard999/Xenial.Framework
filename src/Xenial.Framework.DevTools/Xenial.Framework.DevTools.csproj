@@ -23,6 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Win, PublicKeyToken=$(XenialPublicSignKey)"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Markdig.Signed" Version="0.26.0" />
   </ItemGroup>
   
