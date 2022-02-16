@@ -25,7 +25,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
 
     public Compilation Execute(GeneratorExecutionContext context, Compilation compilation, IList<TypeDeclarationSyntax> types, IList<string> addedSourceFiles)
     {
-        (compilation, var autoMappedAttribute) = XenialAutoMappedAttributeGenerator.FindXenialAutoMappedAttribute(compilation);
+        (compilation, var autoMappedAttribute) = GenerateXenialAutoMappedAttribute(context, compilation, addedSourceFiles);
 
         (compilation, var modelOptionsAttribute) = GenerateXenialModelOptionsAttribute(context, compilation, addedSourceFiles);
         (compilation, var modelOptionsMapperAttribute) = GenerateXenialModelOptionsMapperAttribute(context, compilation, addedSourceFiles);
@@ -529,6 +529,27 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
         }
     }
 
+    private (Compilation, INamedTypeSymbol) GenerateXenialAutoMappedAttribute(GeneratorExecutionContext context, Compilation compilation, IList<string> addedSourceFiles)
+    {
+        var (source, syntaxTree) = GenerateXenialAutoMappedAttribute(
+            (CSharpParseOptions)context.ParseOptions,
+            cancellationToken: context.CancellationToken
+        );
+
+        if (AddSource)
+        {
+            var fileName = $"XenialAutoMappedAttribute.g.cs";
+            addedSourceFiles.Add(fileName);
+            context.AddSource(fileName, source);
+        }
+
+        compilation = compilation.AddSyntaxTrees(syntaxTree);
+
+        var attribute = compilation.GetTypeByMetadataName("Xenial.XenialModelOptionsAttribute");
+
+        return (compilation, attribute!);
+    }
+
     private (Compilation, INamedTypeSymbol) GenerateXenialModelOptionsAttribute(GeneratorExecutionContext context, Compilation compilation, IList<string> addedSourceFiles)
     {
         var (source, syntaxTree) = GenerateXenialModelOptionsAttribute(
@@ -548,6 +569,38 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
         var attribute = compilation.GetTypeByMetadataName("Xenial.XenialModelOptionsAttribute");
 
         return (compilation, attribute!);
+    }
+
+    public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialAutoMappedAttribute(
+        CSharpParseOptions? parseOptions = null,
+        string visibility = "internal",
+        CancellationToken cancellationToken = default)
+    {
+        parseOptions = parseOptions ?? CSharpParseOptions.Default;
+
+        var syntaxWriter = CurlyIndenter.Create();
+
+        syntaxWriter.WriteLine($"using System;");
+        syntaxWriter.WriteLine($"using System.ComponentModel;");
+        syntaxWriter.WriteLine();
+
+        using (syntaxWriter.OpenBrace($"namespace Xenial"))
+        {
+            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]");
+
+            using (syntaxWriter.OpenBrace($"{visibility} sealed class XenialAutoMappedAttribute : Attribute"))
+            {
+                syntaxWriter.WriteLine();
+                using (syntaxWriter.OpenBrace($"{visibility} XenialAutoMappedAttribute()"))
+                {
+                }
+            }
+        }
+
+        var syntax = syntaxWriter.ToString();
+        var source = SourceText.From(syntax, Encoding.UTF8);
+        var syntaxTree = CSharpSyntaxTree.ParseText(syntax, parseOptions, cancellationToken: cancellationToken);
+        return (source, syntaxTree);
     }
 
     public static (SourceText source, SyntaxTree syntaxTree) GenerateXenialModelOptionsAttribute(

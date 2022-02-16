@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xenial.Framework.Images\Xenial.Framework.Images.csproj" />
     <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.Images\Xenial.Framework.Images.csproj" />
   </ItemGroup>
   
 </Project>
