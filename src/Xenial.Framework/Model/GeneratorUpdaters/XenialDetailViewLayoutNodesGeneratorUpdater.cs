@@ -252,7 +252,12 @@ public sealed partial class XenialDetailViewLayoutNodesGeneratorUpdater : ModelN
         )
         ;
 
-    internal static BuildLayoutFunctor? FindFunctor(IModelDetailView modelDetailView)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="modelDetailView"></param>
+    /// <returns></returns>
+    public static BuildLayoutFunctor? FindFunctor(IModelDetailView modelDetailView)
     {
         var layoutBuilderAttributes = modelDetailView.ModelClass.TypeInfo.FindAttributes<DetailViewLayoutBuilderAttribute>();
         foreach (var attribute in layoutBuilderAttributes)
@@ -320,11 +325,22 @@ public sealed partial class XenialDetailViewLayoutNodesGeneratorUpdater : ModelN
         return null;
     }
 
-    internal static Layout InvokeBuilder(BuildLayoutFunctor builder, IModelDetailView modelDetailView)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="modelDetailView"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static Layout InvokeBuilder(BuildLayoutFunctor builder, IModelDetailView modelDetailView)
         => builder.Invoke()
            ?? throw new InvalidOperationException($"LayoutBuilder on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}' must return an object of Type '{typeof(Layout)}'");
 
-    internal static void MarkDuplicateNodes(Layout layout)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="layout"></param>
+    public static void MarkDuplicateNodes(Layout layout)
     {
         var duplicatedIds = VisitNodes<LayoutViewItem>(layout)
             .GroupBy(i => i.Id)

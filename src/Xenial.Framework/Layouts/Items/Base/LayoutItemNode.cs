@@ -57,8 +57,11 @@ public abstract partial record LayoutItemNode
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public string? Id { get; set; }
 
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    internal bool IsDuplicate { get; set; }
+    /// <summary>
+    /// For internal use only
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public bool IsDuplicate { get; set; }
 
     private int? index;
     internal bool WasIndexSet { get; set; }

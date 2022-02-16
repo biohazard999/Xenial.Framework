@@ -7,9 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Xenial.Framework.Win, PublicKey=$(XenialPublicSignKey)" />
-    <InternalsVisibleTo Include="Xenial.Framework.Blazor, PublicKey=$(XenialPublicSignKey)" />
-    <InternalsVisibleTo Include="Xenial.Framework.Validation, PublicKey=$(XenialPublicSignKey)" />
   </ItemGroup>
 
   <ItemGroup>
