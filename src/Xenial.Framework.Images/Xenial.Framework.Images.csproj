@@ -8,6 +8,7 @@
     <GenerateXenialActionAttribute>false</GenerateXenialActionAttribute>
     <GenerateXenialTypeForwardedTypes>false</GenerateXenialTypeForwardedTypes>
     <GenerateXenialViewIdsAttribute>false</GenerateXenialViewIdsAttribute>
+    <GenerateXenialCollectControllersAttribute>false</GenerateXenialCollectControllersAttribute>
     <NoWarn>CS1591;$(NoWarn)</NoWarn>
   </PropertyGroup>
 

@@ -31,7 +31,7 @@
     <ItemGroup>
       <CompilerVisibleProperty Include="GenerateXenialImageNamesAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialXpoBuilderAttribute" />
-      <CompilerVisibleProperty Include="XenialCollectControllersAttribute" />
+      <CompilerVisibleProperty Include="GenerateXenialCollectControllersAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialActionAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialViewIdsAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialLayoutBuilderAttribute" />

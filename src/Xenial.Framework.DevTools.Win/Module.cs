@@ -10,7 +10,7 @@ using Xenial.Framework.WebView.Win;
 
 namespace Xenial.Framework.DevTools.Win;
 
-[Xenial.]
+[Xenial.XenialCollectControllers]
 internal partial static class DevToolsWindowsFormsTypeList
 {
 }
