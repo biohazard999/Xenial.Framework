@@ -586,7 +586,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
 
         using (syntaxWriter.OpenBrace($"namespace Xenial"))
         {
-            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]");
+            syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]");
 
             using (syntaxWriter.OpenBrace($"{visibility} sealed class XenialAutoMappedAttribute : Attribute"))
             {
