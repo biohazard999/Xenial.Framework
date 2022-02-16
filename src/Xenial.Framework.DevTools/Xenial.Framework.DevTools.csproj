@@ -25,10 +25,6 @@
   <ItemGroup>
     <PackageReference Include="Markdig.Signed" Version="0.26.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="Xenial.Framework.DevTools.Win, PublicKey=$(XenialPublicSignKey)" />
-  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Framework.Images\Xenial.Framework.Images.csproj" />

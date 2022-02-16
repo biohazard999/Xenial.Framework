@@ -29,7 +29,10 @@ public abstract record XenialAttributeGenerator(bool AddSource = true) : XenialB
         var namedTypeSymbol = compilation.GetTypeByMetadataName(AttributeFullName);
         if (namedTypeSymbol is not null)
         {
-            return compilation;
+            if (namedTypeSymbol.GetResultantVisibility() == SymbolVisibility.Public)
+            {
+                return compilation;
+            }
         }
 
         if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{GenerateAttributeMSBuildProperty}", out var generateXenialAttrStr))

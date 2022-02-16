@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Xenial;
+
 namespace DevExpress.ExpressApp;
 
 /// <summary>
-/// Class XenialControllerTypeListExtensionWindowsForms.
+/// Class XenialWindowsFormsTypeList.
 /// </summary>
-[Xenial.XenialCollectControllers]
-public static partial class XenialControllerTypeListExtensionWindowsForms
+[XenialCollectControllers]
+public static partial class XenialWindowsFormsTypeList
 {
     /// <summary>   Uses all Controllers of the XenialSystemWindowsFormsModule. </summary>
     ///
@@ -19,6 +21,6 @@ public static partial class XenialControllerTypeListExtensionWindowsForms
     /// in this collection.
     /// </returns>
     public static IEnumerable<Type> UseXenialWindowsFormsControllers(this IEnumerable<Type> types)
-        => types.Concat(ControllerTypeList.ControllerTypes);
+        => types.Concat(ControllerTypes);
 }
 

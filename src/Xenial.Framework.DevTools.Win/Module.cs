@@ -12,7 +12,7 @@ namespace Xenial.Framework.DevTools.Win;
 /// <summary>
 /// 
 /// </summary>
-[Xenial.XenialCollectControllers]
+[XenialCollectControllers]
 public static partial class XenialDevToolsWindowsFormsTypeList
 {
     /// <summary>
