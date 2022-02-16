@@ -18,7 +18,6 @@ internal class CurlyIndenter
     /// Default constructor that maked a tidies creation of the line before the opening curly
     /// </summary>
     /// <param name="indentedTextWriter">The writer to use</param>
-    /// <param name="openingLine">any line to write before the curly</param>
     private CurlyIndenter(IndentedTextWriter indentedTextWriter)
         => this.indentedTextWriter = indentedTextWriter;
 

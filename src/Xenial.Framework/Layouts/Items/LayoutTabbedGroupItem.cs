@@ -74,6 +74,7 @@ public sealed partial record LayoutTabbedGroupItem : LayoutItem<LayoutTabGroupIt
     public LayoutTabbedGroupItem(string id)
         => Id = Slugifier.GenerateSlug(id);
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "By Convention")]
     internal bool WasDirectionSet => true;
     /// <summary>
     /// Gets or sets the direction.

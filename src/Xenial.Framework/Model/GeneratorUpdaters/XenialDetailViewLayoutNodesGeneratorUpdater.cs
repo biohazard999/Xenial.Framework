@@ -259,6 +259,8 @@ public sealed partial class XenialDetailViewLayoutNodesGeneratorUpdater : ModelN
     /// <returns></returns>
     public static BuildLayoutFunctor? FindFunctor(IModelDetailView modelDetailView)
     {
+        _ = modelDetailView ?? throw new ArgumentNullException(nameof(modelDetailView));
+
         var layoutBuilderAttributes = modelDetailView.ModelClass.TypeInfo.FindAttributes<DetailViewLayoutBuilderAttribute>();
         foreach (var attribute in layoutBuilderAttributes)
         {
@@ -333,8 +335,13 @@ public sealed partial class XenialDetailViewLayoutNodesGeneratorUpdater : ModelN
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
     public static Layout InvokeBuilder(BuildLayoutFunctor builder, IModelDetailView modelDetailView)
-        => builder.Invoke()
-           ?? throw new InvalidOperationException($"LayoutBuilder on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}' must return an object of Type '{typeof(Layout)}'");
+    {
+        _ = builder ?? throw new ArgumentNullException(nameof(builder));
+        _ = modelDetailView ?? throw new ArgumentNullException(nameof(modelDetailView));
+
+        return builder.Invoke()
+                  ?? throw new InvalidOperationException($"LayoutBuilder on Type '{modelDetailView.ModelClass.TypeInfo.Type}' for View '{modelDetailView.Id}' must return an object of Type '{typeof(Layout)}'");
+    }
 
     /// <summary>
     /// 

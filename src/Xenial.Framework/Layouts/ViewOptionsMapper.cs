@@ -14,6 +14,7 @@ namespace Xenial.Framework.Layouts;
 [XenialModelOptionsMapper(typeof(ListViewOptions))]
 internal partial class ViewOptionsMapper
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "By Convention")]
     partial void MapNodeCore(DetailViewOptions from, IModelDetailView to)
     {
         foreach (var option in from.ExtensionsCollection.AsEnumerable())
@@ -22,6 +23,7 @@ internal partial class ViewOptionsMapper
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "By Convention")]
     partial void MapNodeCore(ListViewOptions from, IModelListView to)
     {
         foreach (var option in from.ExtensionsCollection)

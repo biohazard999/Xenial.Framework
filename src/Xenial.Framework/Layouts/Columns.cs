@@ -132,6 +132,7 @@ public partial class ColumnsBuilder<TModelClass> : ColumnsBuilder
     /// <typeparam name="TProperty"></typeparam>
     /// <param name="expression"></param>
     /// <param name="caption"></param>
+    /// <param name="width"></param>
     /// <returns></returns>
     public Column Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression, string caption, int width)
         => ColumnItems.Column.Create(ExpressionHelper.Property(expression)) with
@@ -143,8 +144,9 @@ public partial class ColumnsBuilder<TModelClass> : ColumnsBuilder
     /// <summary>   Columns the specified expression. </summary>
     ///
     /// <typeparam name="TProperty">    The type of the t property. </typeparam>
-    /// <param name="expression">   The expression. </param>
-    /// <param name="configureAction"> An action to configure the column </param>
+    /// <param name="expression">       The expression. </param>
+    /// <param name="caption">          The caption. </param>
+    /// <param name="configureAction">  An action to configure the column </param>
     ///
     /// <returns>   Column&lt;TModelClass&gt;. </returns>
     public Column Column<TProperty>(Expression<Func<TModelClass, TProperty>> expression, string caption, Action<Column> configureAction)
@@ -159,6 +161,7 @@ public partial class ColumnsBuilder<TModelClass> : ColumnsBuilder
     ///
     /// <typeparam name="TProperty">    The type of the t property. </typeparam>
     /// <param name="expression">   The expression. </param>
+    /// <param name="width">   The column width. </param>
     /// <param name="configureAction"> An action to configure the column </param>
     ///
     /// <returns>   Column&lt;TModelClass&gt;. </returns>
@@ -174,6 +177,8 @@ public partial class ColumnsBuilder<TModelClass> : ColumnsBuilder
     ///
     /// <typeparam name="TProperty">    The type of the t property. </typeparam>
     /// <param name="expression">   The expression. </param>
+    /// <param name="caption">   The caption. </param>
+    /// <param name="width">   The column width. </param>
     /// <param name="configureAction"> An action to configure the column </param>
     ///
     /// <returns>   Column&lt;TModelClass&gt;. </returns>
@@ -222,6 +227,7 @@ public partial class ColumnsBuilder
     /// <summary>   Columns the specified property name. </summary>
     ///
     /// <param name="propertyName"> Name of the property. </param>
+    /// <param name="caption"> Name of the property. </param>
     ///
     /// <returns>   Column. </returns>
 
@@ -234,6 +240,7 @@ public partial class ColumnsBuilder
     /// <summary>   Columns the specified property name. </summary>
     ///
     /// <param name="propertyName"> Name of the property. </param>
+    /// <param name="width"> Name of the property. </param>
     ///
     /// <returns>   Column. </returns>
 
@@ -246,6 +253,8 @@ public partial class ColumnsBuilder
     /// <summary>   Columns the specified property name. </summary>
     ///
     /// <param name="propertyName"> Name of the property. </param>
+    /// <param name="caption"> The caption. </param>
+    /// <param name="width"> The column width. </param>
     ///
     /// <returns>   Column. </returns>
 
@@ -259,6 +268,7 @@ public partial class ColumnsBuilder
     /// <summary>   Columns the specified expression. </summary>
     ///
     /// <param name="propertyName">   The roperty name. </param>
+    /// <param name="caption"> An action to configure the column </param>
     /// <param name="configureAction"> An action to configure the column </param>
     ///
     /// <returns>   Column&lt;TModelClass&gt;. </returns>
@@ -272,7 +282,8 @@ public partial class ColumnsBuilder
 
     /// <summary>   Columns the specified expression. </summary>
     ///
-    /// <param name="propertyName">   The roperty name. </param>
+    /// <param name="propertyName">   The Property name. </param>
+    /// <param name="width">   The roperty name. </param>
     /// <param name="configureAction"> An action to configure the column </param>
     ///
     /// <returns>   Column&lt;TModelClass&gt;. </returns>
@@ -286,7 +297,9 @@ public partial class ColumnsBuilder
 
     /// <summary>   Columns the specified expression. </summary>
     ///
-    /// <param name="propertyName">   The roperty name. </param>
+    /// <param name="propertyName">   The Property name. </param>
+    /// <param name="caption">   The roperty name. </param>
+    /// <param name="width">   The roperty name. </param>
     /// <param name="configureAction"> An action to configure the column </param>
     ///
     /// <returns>   Column&lt;TModelClass&gt;. </returns>
