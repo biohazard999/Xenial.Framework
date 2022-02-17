@@ -25,10 +25,7 @@ public sealed partial class XenialDevToolsModule : XenialModuleBase
     /// <returns></returns>
     protected override IEnumerable<Type> GetDeclaredExportedTypes()
         => base.GetDeclaredExportedTypes()
-            .Concat(new[]
-            {
-                typeof(DevToolsViewModel)
-            });
+            .UseXenialDevToolsExportedTypes();
 
     /// <summary>
     /// Adds the DevExpress.ExpressApp.SystemModule.SystemModule to the collection.
