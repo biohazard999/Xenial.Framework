@@ -1,0 +1,17 @@
+{
+  Diagnostics: [
+    {
+      Id: XENGEN0100,
+      Title: The class using the [XenialCollectExportedTypesAttribute] needs to be partial,
+      Severity: Error,
+      WarningLevel: 0,
+      Location: TypeList.cs: (3,4)-(4,37),
+      Description: The class using the [XenialCollectExportedTypesAttribute] needs to be partial,
+      HelpLink: ,
+      MessageFormat: The class using the [XenialCollectExportedTypesAttribute] needs to be partial,
+      Message: The class using the [XenialCollectExportedTypesAttribute] needs to be partial,
+      Category: Usage,
+      CustomTags: []
+    }
+  ]
+}
