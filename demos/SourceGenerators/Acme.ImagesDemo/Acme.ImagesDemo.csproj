@@ -4,20 +4,8 @@
     <XenialImageNames Include="Images/*.png" />
   </ItemGroup>
 
-
   <!-- BEGIN: This is internal debug code, you don't need this in your project -->
   
-  <Import Condition="$(XenialDebug)" Project="$(SrcDirectory)Xenial.Framework.Generators\build\Xenial.Framework.Generators.props" />
-  <Import Condition="$(XenialDebug)" Project="$(SrcDirectory)Xenial.Framework.Generators\build\Xenial.Framework.Generators.targets" />
-  
-  <ItemGroup Condition="$(XenialDebug)">
-    <XenialImageNames Update="Images/*.png" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <XenialImageNames Remove="Images\industrial_robot_24x24.png" />
-  </ItemGroup>
-
   <ItemGroup>
     <None Include="obj/$(Configuration)/$(TargetFramework)/generated/Xenial.Framework.Generators/Xenial.Framework.Generators.XenialGenerator/ImageNames.g.cs"
           Link="ImageNames.g.cs"/>
@@ -25,5 +13,4 @@
 
   <!-- END: This is internal debug code, you don't need this in your project -->
 
-  
 </Project>
