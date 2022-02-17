@@ -16,17 +16,25 @@ using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.Generators.Partial;
 
-public record XenialCollectControllersGenerator(bool AddSource = true) : XenialPartialGenerator(AddSource)
+public record XenialCollectExportedTypesGenerator(bool AddSource = true) : XenialPartialGenerator(AddSource)
 {
-    public XenialCollectControllersAttributeGenerator AttributeGenerator { get; } = new XenialCollectControllersAttributeGenerator(false);
+    public XenialCollectExportedTypesAttributeGenerator AttributeGenerator { get; } = new(false);
 
     public override IEnumerable<XenialAttributeGenerator> DependsOnGenerators => new[] { AttributeGenerator };
 
-    private const string fullQualifiedBaseControllerType = "DevExpress.ExpressApp.Controller";
+    private const string fullQualifiedDomainComponentAttribute = "DevExpress.ExpressApp.DC.DomainComponentAttribute";
+    private const string fullQualifiedXpoPersistentAttribute = "DevExpress.Xpo.PersistentAttribute";
+    private const string fullQualifiedXpoNonPersistentAttribute = "DevExpress.Xpo.NonPersistentAttribute";
+
+    private static string[] FullQualifiedAttributesToLookFor => new[]
+    {
+        fullQualifiedDomainComponentAttribute,
+        fullQualifiedXpoPersistentAttribute,
+        fullQualifiedXpoNonPersistentAttribute
+    };
 
     public override bool Accepts(TypeDeclarationSyntax typeDeclarationSyntax)
-        => true; //TODO: Optimize by only looking at correct types
-
+        => false; //TODO: Optimize by only looking at correct types
     //{
     //    _ = typeDeclarationSyntax ?? throw new ArgumentNullException(nameof(typeDeclarationSyntax));
 
@@ -63,13 +71,11 @@ public record XenialCollectControllersGenerator(bool AddSource = true) : XenialP
 
         var attribute = GetAttributeFromGenerator(compilation, AttributeGenerator);
 
-        var baseTypesToCollect = new[]
-        {
-            compilation.GetTypeByMetadataName(fullQualifiedBaseControllerType)!
-        }.Where(baseType => baseType is not null)
-         .ToArray();
+        var attributesToLookFor = FullQualifiedAttributesToLookFor.Select(attribute => compilation.GetTypeByMetadataName(attribute))
+            .Where(attribute => attribute is not null)
+            .ToArray();
 
-        var collectedControllerTypes = new List<TargetSymbol>();
+        var collectedExportedTypes = new List<TargetSymbol>();
 
         foreach (var @class in types)
         {
@@ -77,9 +83,9 @@ public record XenialCollectControllersGenerator(bool AddSource = true) : XenialP
 
             if (TryGetTarget(context, compilation, @class, out var targetSymbol))
             {
-                if (!targetSymbol.IsAbstract && targetSymbol.HasBaseClasses(baseTypesToCollect))
+                if (!targetSymbol.IsAbstract && targetSymbol.HasAnyAttributes(attributesToLookFor))
                 {
-                    collectedControllerTypes.Add(targetSymbol);
+                    collectedExportedTypes.Add(targetSymbol);
                 }
             }
         }
@@ -107,7 +113,7 @@ public record XenialCollectControllersGenerator(bool AddSource = true) : XenialP
                     continue;
                 }
 
-                if (!collectedControllerTypes.Any())
+                if (!collectedExportedTypes.Any())
                 {
                     continue;
                 }
@@ -120,7 +126,6 @@ public record XenialCollectControllersGenerator(bool AddSource = true) : XenialP
                 builder.WriteLine("using System.Collections.Generic;");
                 builder.WriteLine("using System.Runtime.CompilerServices;");
                 builder.WriteLine();
-
 
                 var visibility = context.GetDefaultAttributeModifier();
                 using (builder.OpenBrace($"namespace {targetSymbol.Namespace}"))
@@ -136,13 +141,13 @@ public record XenialCollectControllersGenerator(bool AddSource = true) : XenialP
                     //We also don't need to specify the visibility for partial types
                     using (builder.OpenBrace($"partial {(targetSymbol.Symbol.IsRecord ? "record" : "class")} {targetSymbol.Symbol.Name}"))
                     {
-                        builder.Write($"{visibility} static readonly IEnumerable<Type> ControllerTypes = ");
+                        builder.Write($"{visibility} static readonly IEnumerable<Type> ExportedTypes = ");
 
                         using (builder.OpenBrace("new Type[]", closeBrace: "};"))
                         {
-                            foreach (var controller in collectedControllerTypes.Distinct())
+                            foreach (var exportedType in collectedExportedTypes.Distinct())
                             {
-                                builder.WriteLine($"typeof({controller.Symbol}),");
+                                builder.WriteLine($"typeof({exportedType.Symbol}),");
                             }
                         }
                     }

@@ -21,7 +21,7 @@
       ]
     },
     "thirdlicense": {
-      "version": "1.1.0",
+      "version": "1.2.0",
       "commands": [
         "thirdlicense"
       ]
@@ -39,7 +39,7 @@
       ]
     },
     "diffenginetray": {
-      "version": "8.5.2",
+      "version": "9.0.3",
       "commands": [
         "DiffEngineTray"
       ]

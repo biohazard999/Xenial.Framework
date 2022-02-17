@@ -33,6 +33,12 @@ public record TargetSymbol(INamedTypeSymbol Symbol, TypeDeclarationSyntax TypeDe
         return HasBase(symbol.BaseType, baseType);
     }
 
+    public bool HasAttribute(INamedTypeSymbol attribute)
+        => Symbol.IsAttributeDeclared(attribute);
+
+    public bool HasAnyAttributes(INamedTypeSymbol[] attributes)
+        => attributes.Any(a => HasAttribute(a));
+
     public bool IsAbstract
         => Symbol.IsAbstract;
 }
