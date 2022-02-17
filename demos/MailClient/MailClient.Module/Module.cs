@@ -9,6 +9,7 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Updating;
 using DevExpress.ExpressApp.Validation;
+using DevExpress.Persistent.Base;
 
 using MailClient.Module.BusinessObjects;
 using MailClient.Module.Updaters;
@@ -30,14 +31,14 @@ namespace MailClient.Module
         protected override IEnumerable<Type> GetRegularTypes() => base.GetRegularTypes()
             .UseXenialTokenStringEditorRegularTypes();
 
-        protected override IEnumerable<Type> GetDeclaredExportedTypes() => ModelTypeList.PersistentTypes;
+        protected override IEnumerable<Type> GetDeclaredExportedTypes()
+            => TypeList.ExportedTypes;
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
             => new[]
             {
                 typeof(Xenial.Framework.SystemModule.XenialSingletonViewController), //TODO: Extension method for feature slice
-                typeof(ReceiveMailsViewController)
-            };
+            }.UseBaseControllerTypes();
 
         public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB) => base.GetModuleUpdaters(objectSpace, versionFromDB).Concat(new ModuleUpdater[]
         {
@@ -86,17 +87,18 @@ namespace MailClient.Module
         {
             base.AddGeneratorUpdaters(updaters);
 
-            updaters.UseApplicationOptions(new Xenial.Framework.Model.GeneratorUpdaters.ApplicationOptions
+            updaters.UseApplicationOptions(new()
             {
                 Layout =
                 {
-                    CaptionLocation = DevExpress.Persistent.Base.Locations.Top
+                    CaptionLocation = Locations.Top
                 }
             });
 
             updaters.UseXenialImages();
             updaters.UseSingletonNavigationItems();
             updaters.UseNoViewsGeneratorUpdater();
+            updaters.UseDeclareViewsGeneratorUpdater();
             updaters.UseDetailViewLayoutBuilders();
             updaters.UseListViewColumnBuilders();
         }
