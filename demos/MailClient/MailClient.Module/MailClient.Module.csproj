@@ -46,4 +46,16 @@
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.LabelEditors/Xenial.Framework.LabelEditors.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="**\*.LayoutBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.LayoutBuilder', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.ModelBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ModelBuilder', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.ColumnsBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ColumnsBuilder', '.cs'))</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
 </Project>
