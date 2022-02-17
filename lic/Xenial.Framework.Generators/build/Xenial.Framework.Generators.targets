@@ -16,6 +16,7 @@
       <GenerateXenialDuckTypes Condition="'$(GenerateXenialDuckTypes)' == ''">true</GenerateXenialDuckTypes>
       <GenerateXenialXpoBuilderAttribute Condition="'$(GenerateXenialXpoBuilderAttribute)' == ''">true</GenerateXenialXpoBuilderAttribute>
       <GenerateXenialCollectControllersAttribute Condition="'$(GenerateXenialCollectControllersAttribute)' == ''">true</GenerateXenialCollectControllersAttribute>
+      <GenerateXenialCollectExportedTypesAttribute Condition="'$(GenerateXenialCollectExportedTypesAttribute)' == ''">true</GenerateXenialCollectExportedTypesAttribute>
       <GenerateXenialImageNamesAttribute Condition="'$(GenerateXenialImageNamesAttribute)' == ''">true</GenerateXenialImageNamesAttribute>
       <GenerateXenialActionAttribute Condition="'$(GenerateXenialActionAttribute)' == ''">true</GenerateXenialActionAttribute>
       <GenerateXenialViewIdsAttribute Condition="'$(GenerateXenialViewIdsAttribute)' == ''">true</GenerateXenialViewIdsAttribute>
@@ -32,6 +33,7 @@
       <CompilerVisibleProperty Include="GenerateXenialImageNamesAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialXpoBuilderAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialCollectControllersAttribute" />
+      <CompilerVisibleProperty Include="GenerateXenialCollectExportedTypesAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialActionAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialViewIdsAttribute" />
       <CompilerVisibleProperty Include="GenerateXenialLayoutBuilderAttribute" />

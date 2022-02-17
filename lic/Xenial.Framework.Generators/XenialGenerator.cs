@@ -28,6 +28,7 @@ public record XenialGenerator(bool AddSources = true) : ISourceGenerator
         new XenialViewIdsAttributeGenerator(AddSources),
         new XenialXpoBuilderAttributeGenerator(AddSources),
         new XenialCollectControllersAttributeGenerator(AddSources),
+        new XenialCollectExportedTypesAttributeGenerator(AddSources),
 
         //Generators
         new XenialViewIdsGenerator(AddSources),
