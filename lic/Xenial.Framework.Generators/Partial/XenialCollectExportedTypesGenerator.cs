@@ -157,7 +157,7 @@ public record XenialCollectExportedTypesGenerator(bool AddSource = true) : Xenia
                     context,
                     compilation,
                     addedSourceFiles,
-                    targetSymbol.TypeDeclarationSyntax,
+                    $"{Path.GetFileNameWithoutExtension(@class?.SyntaxTree.FilePath)}.ExportedTypes",
                     builder.ToString()
                 );
             }

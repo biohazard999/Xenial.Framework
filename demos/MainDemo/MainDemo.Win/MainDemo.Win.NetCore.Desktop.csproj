@@ -13,7 +13,6 @@
     <AssemblyName>MainDemo.Win</AssemblyName>
     <RootNamespace>MainDemo.Win</RootNamespace>
     <DefineConstants>DXCORE3</DefineConstants>
-    <!-- TODO: net462 app config -->
     <Configurations>Debug;Release;EasyTest</Configurations>
   </PropertyGroup>
 

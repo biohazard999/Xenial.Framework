@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Xenial;
 using DevExpress.ExpressApp.DC;
 
 using Xenial.Framework.ModelBuilders;
+using System.Linq;
 
 namespace MailClient.Module.BusinessObjects
 {
-    internal static class ModelTypeList
+    [XenialCollectExportedTypes]
+    [XenialCollectControllers]
+    internal static partial class TypeList
     {
-        internal static readonly Type[] PersistentTypes = new[]
-        {
-            typeof(MailBaseObject),
-            typeof(MailBaseObjectId),
-
-            typeof(MailSettings),
-            typeof(MailAccount),
-            typeof(Mail),
-        };
+        internal static IEnumerable<Type> UseBaseControllerTypes(this IEnumerable<Type> types)
+            => types.Concat(ControllerTypes);
     }
 
     public class MailClientBuilderManager : XafBuilderManager

@@ -152,7 +152,7 @@ public record XenialCollectControllersGenerator(bool AddSource = true) : XenialP
                     context,
                     compilation,
                     addedSourceFiles,
-                    targetSymbol.TypeDeclarationSyntax,
+                    $"{Path.GetFileNameWithoutExtension(@class?.SyntaxTree.FilePath)}.ControllerTypes",
                     builder.ToString()
                 );
             }

@@ -40,6 +40,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(XenialDemoPackageVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.3.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="4.6.0" />
@@ -50,10 +57,6 @@
     <PackageReference Include="Xenial.Framework.Images" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Validation" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.LabelEditors" Version="$(XenialDemoPackageVersion)" />
-    <PackageReference Include="Xenial.Framework.Generators" Version="$(XenialDemoPackageVersion)">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
   
   <ItemGroup Condition="$(XenialDebug)">
@@ -61,7 +64,6 @@
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Images/Xenial.Framework.Images.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Validation/Xenial.Framework.Validation.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.LabelEditors/Xenial.Framework.LabelEditors.csproj" />
-    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Generators/Xenial.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>
