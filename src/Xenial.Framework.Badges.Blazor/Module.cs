@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
+using DevExpress.ExpressApp;
 
 namespace Xenial.Framework.Badges.Blazor
 {
@@ -17,10 +17,8 @@ namespace Xenial.Framework.Badges.Blazor
         /// <summary>   returns empty types. </summary>
         ///
         /// <returns>   IEnumerable&lt;Type&gt;. </returns>
-
-        protected override IEnumerable<Type> GetDeclaredControllerTypes() => base.GetDeclaredControllerTypes().Concat(new[]
-        {
-            typeof(XenialBadgesBlazorNavigationWindowController)
-        });
+        protected override IEnumerable<Type> GetDeclaredControllerTypes()
+            => base.GetDeclaredControllerTypes()
+                .UseXenialBadgesBlazorControllers();
     }
 }

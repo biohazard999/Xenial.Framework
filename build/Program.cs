@@ -267,7 +267,7 @@ namespace Xenial.Build
             Target("lic", DependsOn("test"),
                 async () =>
                 {
-                    if (isTagged)
+                    if (isTagged && !isPullRequest)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"This is a tagged commit {tagName}, generating licenses");
