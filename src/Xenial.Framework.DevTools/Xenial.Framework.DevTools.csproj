@@ -10,20 +10,13 @@
     <GenerateXenialTypeForwardedTypes>false</GenerateXenialTypeForwardedTypes>
     <GenerateXenialViewIdsAttribute>false</GenerateXenialViewIdsAttribute>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
   
   <ItemGroup>
     <Compile Include="..\..\lic\Xenial.Framework.Generators\CurlyIndenter.cs" Link="Helpers\CurlyIndenter.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="$(MSBuildProjectName).Win, PublicKey=$(XenialPublicSignKey)"/>
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Win, PublicKey=$(XenialPublicSignKey)" />
   </ItemGroup>
 
   <ItemGroup>

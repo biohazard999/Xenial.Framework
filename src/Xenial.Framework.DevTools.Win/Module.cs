@@ -10,21 +10,6 @@ using Xenial.Framework.WebView.Win;
 namespace Xenial.Framework.DevTools.Win;
 
 /// <summary>
-/// 
-/// </summary>
-[XenialCollectControllers]
-public static partial class XenialDevToolsWindowsFormsTypeList
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="types"></param>
-    /// <returns></returns>
-    public static IEnumerable<Type> UseXenialDevToolsWindowsFormsControllers(this IEnumerable<Type> types)
-        => types.Concat(ControllerTypes);
-}
-
-/// <summary>
 /// Class XenialDevToolsWindowsFormsModule.
 /// Implements the <see cref="Xenial.Framework.XenialModuleBase" />
 /// </summary>
