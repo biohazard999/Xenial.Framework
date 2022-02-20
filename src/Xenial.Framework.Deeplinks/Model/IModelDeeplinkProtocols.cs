@@ -13,7 +13,7 @@ namespace Xenial.Framework.Deeplinks.Model;
 /// 
 /// </summary>
 [ImageName(XenialImages.Model_Protocols)]
-public interface IModelDeeplinkProtocols : IModelNode, IModelList<IModelDeeplinkProtocol>
+public interface IModelDeeplinkProtocols : IModelList<IModelDeeplinkProtocol>
 {
     /// <summary>
     /// Indicates if protocols are handled at all
@@ -35,7 +35,7 @@ public interface IModelDeeplinkProtocols : IModelNode, IModelList<IModelDeeplink
 /// </summary>
 [KeyProperty(nameof(ProtocolName))]
 [ImageName(XenialImages.Model_Protocols)]
-public interface IModelDeeplinkProtocol
+public interface IModelDeeplinkProtocol : IModelNode
 {
     /// <summary>
     /// The name of the protocol. Should be in a valid Uri-Prefix format and should not start with a number.
