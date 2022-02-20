@@ -13,7 +13,7 @@ namespace Xenial.Framework.Deeplinks.Model;
 /// 
 /// </summary>
 [ImageName(XenialImages.Model_Protocols)]
-public interface IModelDeeplinkProtocols : IModelList<IModelDeeplinkProtocol>
+public interface IModelDeeplinkProtocols : IModelNode, IModelList<IModelDeeplinkProtocol>
 {
     /// <summary>
     /// Indicates if protocols are handled at all
