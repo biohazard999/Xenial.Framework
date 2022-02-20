@@ -12,6 +12,14 @@ namespace Xenial.Framework.Deeplinks.Model;
 /// <summary>
 /// 
 /// </summary>
+public interface IModelOptionsDeeplinkProtocols
+{
+    IModelDeeplinkProtocols DeeplinkProtocols { get; }
+}
+
+/// <summary>
+/// 
+/// </summary>
 [ImageName(XenialImages.Model_Protocols)]
 public interface IModelDeeplinkProtocols : IModelNode
 {

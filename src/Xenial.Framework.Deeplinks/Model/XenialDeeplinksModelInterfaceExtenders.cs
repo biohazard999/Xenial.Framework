@@ -24,7 +24,7 @@ public static class XenialDeeplinksModelInterfaceExtenders
     {
         _ = extenders ?? throw new ArgumentNullException(nameof(extenders));
 
-        extenders.Add<IModelOptions, IModelDeeplinkProtocols>();
+        extenders.Add<IModelOptions, IModelOptionsDeeplinkProtocols>();
 
         return extenders;
     }
@@ -42,6 +42,7 @@ public static class XenialDeeplinksModelInterfaceExtenders
 
         return regularTypes.Concat(new[]
         {
+            typeof(IModelOptionsDeeplinkProtocols),
             typeof(IModelDeeplinkProtocols),
             typeof(IModelDeeplinkProtocol),
             typeof(ModelDeeplinkProtocolLogic),
