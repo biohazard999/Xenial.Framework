@@ -39,8 +39,9 @@ public static class XenialDeeplinksModelInterfaceExtenders
     public static IEnumerable<Type> UseXenialDeeplinksRegularTypes(this IEnumerable<Type> regularTypes)
     {
         _ = regularTypes ?? throw new ArgumentNullException(nameof(regularTypes));
+
         return regularTypes.Concat(new[]
-       
+        {
             typeof(IModelDeeplinkProtocols),
             typeof(IModelDeeplinkProtocol),
             typeof(ModelDeeplinkProtocolLogic),
