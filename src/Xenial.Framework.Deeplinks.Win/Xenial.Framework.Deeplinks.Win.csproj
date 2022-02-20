@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <PackageTags>$(PackageTags) LaunchUri Deeplinks Win</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.Win\Xenial.Framework.Win.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.Deeplinks\Xenial.Framework.Deeplinks.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+</Project>
