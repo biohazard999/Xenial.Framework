@@ -21,7 +21,7 @@ public interface IModelOptionsDeeplinkProtocols
 /// 
 /// </summary>
 [ImageName(XenialImages.Model_Protocols)]
-public interface IModelDeeplinkProtocols : IModelNode
+public interface IModelDeeplinkProtocols : IModelNode, IModelList<IModelDeeplinkProtocol>
 {
     /// <summary>
     /// Indicates if protocols are handled at all
