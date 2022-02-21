@@ -9,7 +9,7 @@ using DevExpress.ExpressApp;
 using Xenial.Framework.Deeplinks.Model;
 using Xenial.Framework.Deeplinks.Win.Helpers;
 
-namespace Xenial.Framework.Deeplinks.Win;
+namespace DevExpress.ExpressApp;
 
 /// <summary>
 /// 
@@ -36,8 +36,11 @@ public static class AutoProtocolInstaller
 
             if (application.Model.Options is IModelOptionsDeeplinkProtocols modelOptionsDeeplinkProtocols && modelOptionsDeeplinkProtocols.DeeplinkProtocols is not null)
             {
+#if NET6_0_OR_GREATER
+                var exePath = Environment.ProcessPath;
+#else
                 var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-
+#endif
                 foreach (var deepLinkProtocol in modelOptionsDeeplinkProtocols.DeeplinkProtocols)
                 {
                     var protocol = new Protocol(exePath, deepLinkProtocol.ProtocolName, deepLinkProtocol.ProtocolDescription);
