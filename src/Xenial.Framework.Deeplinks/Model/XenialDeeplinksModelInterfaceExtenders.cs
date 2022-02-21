@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Xenial.Framework.Deeplinks.Generators;
 using Xenial.Framework.Deeplinks.Model;
 
 namespace DevExpress.ExpressApp.Model;
@@ -43,6 +44,7 @@ public static class XenialDeeplinksModelInterfaceExtenders
             typeof(IModelDeeplinkProtocols),
             typeof(IModelDeeplinkProtocol),
             typeof(ModelDeeplinkProtocolLogic),
+            typeof(ModelDeeplinkProtocolsGenerator)
         });
     }
 }
