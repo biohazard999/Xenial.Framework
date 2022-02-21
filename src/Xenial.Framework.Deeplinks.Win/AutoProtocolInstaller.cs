@@ -18,7 +18,7 @@ namespace DevExpress.ExpressApp;
 /// </summary>
 /// <param name="Protocol"></param>
 /// <param name="ResolveExecutable"></param>
-public record ResolveExecutableFactory(string Protocol, Func<string> ResolveExecutable);
+public record ProtocolExecutableResolver(string Protocol, Func<string> ResolveExecutable);
 
 /// <summary>
 /// 
@@ -36,7 +36,7 @@ public static class AutoProtocolInstaller
     );
 
     private static List<Func<string>> DefaultExecutableResolvers { get; } = new();
-    private static List<ResolveExecutableFactory> ExecutableResolvers { get; } = new();
+    private static List<ProtocolExecutableResolver> ExecutableResolvers { get; } = new();
 
     /// <summary>
     /// 
@@ -63,6 +63,18 @@ public static class AutoProtocolInstaller
         _ = resolveExecutable ?? throw new ArgumentNullException(nameof(resolveExecutable));
 
         ExecutableResolvers.Insert(0, new(protocolName, resolveExecutable));
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="resolver"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void ResolveProtocolExecutable(ProtocolExecutableResolver resolver)
+    {
+        _ = resolver ?? throw new ArgumentNullException(nameof(resolver));
+
+        ExecutableResolvers.Insert(0, resolver);
     }
 
     /// <summary>
