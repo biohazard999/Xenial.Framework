@@ -44,4 +44,16 @@ public static class XenialDeeplinksGeneratorExtensions
         this ModelNodesGeneratorUpdaters updaters,
         params ModelDeeplinkProtocol[] protocols
     ) => updaters.UseXenialDeeplinks(null, protocols);
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="updaters"></param>
+    /// <param name="protocol"></param>
+    /// <returns></returns>
+    public static ModelNodesGeneratorUpdaters UseXenialDeeplinks(
+        this ModelNodesGeneratorUpdaters updaters,
+        ModelDeeplinkProtocol protocol
+    ) => updaters.UseXenialDeeplinks(null, new[] { protocol });
 }
