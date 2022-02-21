@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +12,59 @@ using Xenial.Framework.Deeplinks.Win.Helpers;
 
 namespace DevExpress.ExpressApp;
 
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="Protocol"></param>
+/// <param name="ResolveExecutable"></param>
+public record ResolveExecutableFactory(string Protocol, Func<string> ResolveExecutable);
+
 /// <summary>
 /// 
 /// </summary>
 public static class AutoProtocolInstaller
 {
+    static AutoProtocolInstaller() => ResolveDefaultExecutable(() =>
+#if NET6_0_OR_GREATER
+        Environment.ProcessPath!
+#elif NET5_0_OR_GREATER
+        System.Windows.Forms.Application.ExecutablePath
+#else
+        System.Reflection.Assembly.GetExecutingAssembly().Location
+#endif
+    );
+
+    private static List<Func<string>> DefaultExecutableResolvers { get; } = new();
+    private static List<ResolveExecutableFactory> ExecutableResolvers { get; } = new();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="resolveExecutable"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void ResolveDefaultExecutable(Func<string> resolveExecutable)
+    {
+        _ = resolveExecutable ?? throw new ArgumentNullException(nameof(resolveExecutable));
+        DefaultExecutableResolvers.Insert(0, resolveExecutable);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="protocolName"></param>
+    /// <param name="resolveExecutable"></param>
+    public static void ResolveProtocolExecutable(string protocolName, Func<string> resolveExecutable)
+    {
+        if (string.IsNullOrEmpty(protocolName))
+        {
+            throw new ArgumentNullException(nameof(protocolName));
+        }
+        _ = resolveExecutable ?? throw new ArgumentNullException(nameof(resolveExecutable));
+
+        ExecutableResolvers.Insert(0, new(protocolName, resolveExecutable));
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -30,30 +79,39 @@ public static class AutoProtocolInstaller
         application.Disposed -= Application_Disposed;
         application.Disposed += Application_Disposed;
 
-        void Application_SetupComplete(object sender, EventArgs e)
+        static void Application_SetupComplete(object? sender, EventArgs e)
         {
-            application.SetupComplete -= Application_SetupComplete;
-
-            if (application.Model.Options is IModelOptionsDeeplinkProtocols modelOptionsDeeplinkProtocols && modelOptionsDeeplinkProtocols.DeeplinkProtocols is not null)
+            if (sender is XafApplication app)
             {
-#if NET6_0_OR_GREATER
-                var exePath = Environment.ProcessPath;
-#else
-                var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-#endif
-                foreach (var deepLinkProtocol in modelOptionsDeeplinkProtocols.DeeplinkProtocols)
+                app.SetupComplete -= Application_SetupComplete;
+
+                if (app.Model.Options is IModelOptionsDeeplinkProtocols modelOptionsDeeplinkProtocols && modelOptionsDeeplinkProtocols.DeeplinkProtocols is not null)
                 {
-                    var protocol = new Protocol(exePath, deepLinkProtocol.ProtocolName, deepLinkProtocol.ProtocolDescription);
-                    ProtocolInstaller.UnRegisterProtocol(protocol);
-                    ProtocolInstaller.RegisterProtocol(protocol);
+                    var exePath = DefaultExecutableResolvers.First()();
+                    foreach (var deepLinkProtocol in modelOptionsDeeplinkProtocols.DeeplinkProtocols)
+                    {
+                        var protocolResolver = ExecutableResolvers.FirstOrDefault(m => m.Protocol == deepLinkProtocol.ProtocolName);
+
+                        if (protocolResolver is not null)
+                        {
+                            exePath = protocolResolver.ResolveExecutable();
+                        }
+
+                        var protocol = new Protocol(exePath, deepLinkProtocol.ProtocolName, deepLinkProtocol.ProtocolDescription);
+                        ProtocolInstaller.UnRegisterProtocol(protocol);
+                        ProtocolInstaller.RegisterProtocol(protocol);
+                    }
                 }
             }
         }
 
-        void Application_Disposed(object sender, EventArgs e)
+        static void Application_Disposed(object? sender, EventArgs e)
         {
-            application.Disposed -= Application_Disposed;
-            application.SetupComplete -= Application_SetupComplete;
+            if (sender is XafApplication app)
+            {
+                app.Disposed -= Application_Disposed;
+                app.SetupComplete -= Application_SetupComplete;
+            }
         }
     }
 
@@ -71,26 +129,32 @@ public static class AutoProtocolInstaller
         application.Disposed -= Application_Disposed;
         application.Disposed += Application_Disposed;
 
-        void Application_SetupComplete(object sender, EventArgs e)
+        static void Application_SetupComplete(object? sender, EventArgs e)
         {
-            application.SetupComplete -= Application_SetupComplete;
-
-            if (application.Model.Options is IModelOptionsDeeplinkProtocols modelOptionsDeeplinkProtocols && modelOptionsDeeplinkProtocols.DeeplinkProtocols is not null)
+            if (sender is XafApplication app)
             {
-                var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                app.SetupComplete -= Application_SetupComplete;
 
-                foreach (var deepLinkProtocol in modelOptionsDeeplinkProtocols.DeeplinkProtocols)
+                if (app.Model.Options is IModelOptionsDeeplinkProtocols modelOptionsDeeplinkProtocols && modelOptionsDeeplinkProtocols.DeeplinkProtocols is not null)
                 {
-                    var protocol = new Protocol(exePath, deepLinkProtocol.ProtocolName, deepLinkProtocol.ProtocolDescription);
-                    ProtocolInstaller.UnRegisterProtocol(protocol);
+                    var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+
+                    foreach (var deepLinkProtocol in modelOptionsDeeplinkProtocols.DeeplinkProtocols)
+                    {
+                        var protocol = new Protocol(exePath, deepLinkProtocol.ProtocolName, deepLinkProtocol.ProtocolDescription);
+                        ProtocolInstaller.UnRegisterProtocol(protocol);
+                    }
                 }
             }
         }
 
-        void Application_Disposed(object sender, EventArgs e)
+        static void Application_Disposed(object? sender, EventArgs e)
         {
-            application.Disposed -= Application_Disposed;
-            application.SetupComplete -= Application_SetupComplete;
+            if (sender is XafApplication app)
+            {
+                app.Disposed -= Application_Disposed;
+                app.SetupComplete -= Application_SetupComplete;
+            }
         }
     }
 }
