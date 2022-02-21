@@ -1,0 +1,356 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.IO.Pipes;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Xenial.Framework.Deeplinks;
+
+/// <summary>
+///     Holds a list of arguments given to an application at startup.
+/// </summary>
+public sealed class DeeplinkArgumentsReceivedEventArgs : EventArgs
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public IList<string> Arguments { get; } = new List<string>();
+}
+
+/// <summary>
+/// 
+/// </summary>
+public sealed class DeeplinkQueryArgumentsEventArgs : EventArgs
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="arguments"></param>
+    public DeeplinkQueryArgumentsEventArgs(IList<string> arguments)
+        => Arguments = arguments;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public IList<string> Arguments { get; } = new List<string>();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public bool Handled { get; set; }
+}
+
+/// <summary>
+///     Enforces single instance for an application.
+/// </summary>
+public class DeeplinkSingleInstance : IDisposable
+{
+    private readonly bool ownsMutex;
+    private readonly string identifier;
+    private readonly Mutex mutex;
+
+    /// <summary>
+    ///     Enforces single instance for an application.
+    /// </summary>
+    /// <param name="identifier">An identifier unique to this application.</param>
+    public DeeplinkSingleInstance(string identifier)
+    {
+        if (string.IsNullOrEmpty(identifier))
+        {
+            throw new ArgumentNullException(nameof(identifier));
+        }
+
+        this.identifier = identifier;
+
+        mutex = new Mutex(true, this.identifier.ToString(CultureInfo.InvariantCulture), out ownsMutex);
+    }
+
+    /// <summary>
+    ///     Indicates whether this is the first instance of this application.
+    /// </summary>
+    public bool IsFirstInstance => ownsMutex || OnQueryArguments().Length == 0;
+
+    /// <summary>
+    ///     Passes the given arguments to the first running instance of the application.
+    /// </summary>
+    /// <param name="arguments">The arguments to pass.</param>
+    /// <returns>Return true if the operation succeded, false otherwise.</returns>
+    private async Task<bool> PassArgumentsToFirstInstance(string[] arguments)
+    {
+        if (arguments is null)
+        {
+            return false;
+        }
+
+        if (!ownsMutex)
+        {
+            try
+            {
+                using (var client = new NamedPipeClientStream(identifier))
+                using (var writer = new StreamWriter(client))
+                {
+                    await client.ConnectAsync(200).ConfigureAwait(false);
+
+                    foreach (var argument in arguments)
+                    {
+                        if (!string.IsNullOrEmpty(argument))
+                        {
+                            await writer.WriteLineAsync(argument).ConfigureAwait(false);
+                        }
+                    }
+
+                }
+                return true;
+            }
+            catch (TimeoutException)
+            {
+            } //Couldn't connect to server
+            catch (IOException)
+            {
+            } //Pipe was broken
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    ///     Listens for arguments being passed from successive instances of the applicaiton.
+    /// </summary>
+    public void ListenForArgumentsFromSuccessiveInstances()
+    {
+        if (ownsMutex)
+        {
+            ThreadPool.QueueUserWorkItem(async (state) => await ListenForArguments(state).ConfigureAwait(false));
+        }
+    }
+
+    /// <summary>
+    ///     Listens for arguments on a named pipe.
+    /// </summary>
+    /// <param name="state">State object required by WaitCallback delegate.</param>
+    private async Task ListenForArguments(object? state)
+    {
+        if (ownsMutex)
+        {
+            try
+            {
+                using (var server = new NamedPipeServerStream(identifier))
+                using (var reader = new StreamReader(server))
+                {
+                    await server.WaitForConnectionAsync().ConfigureAwait(false);
+
+                    var arguments = new List<string>();
+                    while (server.IsConnected)
+                    {
+                        var result = await reader.ReadLineAsync().ConfigureAwait(false);
+
+                        if (!string.IsNullOrEmpty(result))
+                        {
+                            arguments.Add(result);
+                        }
+                    }
+
+                    ThreadPool.QueueUserWorkItem(CallOnArgumentsReceived, arguments.ToArray());
+                }
+            }
+            catch (IOException)
+            {
+            } //Pipe was broken
+            finally
+            {
+                await ListenForArguments(null).ConfigureAwait(false);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Calls the OnArgumentsReceived method casting the state Object to String[].
+    /// </summary>
+    /// <param name="state">The arguments to pass.</param>
+    private void CallOnArgumentsReceived(object state)
+        => OnArgumentsReceived((string[])state);
+
+    private static readonly object locker = new();
+    private EventHandler<DeeplinkArgumentsReceivedEventArgs>? argumentsReceived;
+
+    /// <summary>
+    ///     Event raised when arguments are received from successive instances.
+    /// </summary>
+    public event EventHandler<DeeplinkArgumentsReceivedEventArgs> ArgumentsReceived
+    {
+        add
+        {
+            lock (locker)
+            {
+                if (ownsMutex)
+                {
+                    argumentsReceived += value;
+                }
+            }
+
+        }
+        remove
+        {
+            lock (locker)
+            {
+                if (argumentsReceived is not null && value is not null)
+                {
+                    var args = argumentsReceived;
+                    args -= value;
+                    if (args is not null)
+                    {
+                        argumentsReceived = args;
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Fires the ArgumentsReceived event.
+    /// </summary>
+    /// <param name="arguments">The arguments to pass with the ArgumentsReceivedEventArgs.</param>
+    private void OnArgumentsReceived(string[] arguments)
+    {
+        var eventArgs = new DeeplinkArgumentsReceivedEventArgs();
+        foreach (var argument in arguments)
+        {
+            eventArgs.Arguments.Add(argument);
+        }
+
+        argumentsReceived?.Invoke(this, eventArgs);
+    }
+
+    #region IDisposable
+
+    private bool disposed;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="disposing"></param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposed)
+        {
+            if (mutex != null && ownsMutex)
+            {
+                mutex.ReleaseMutex();
+            }
+            disposed = true;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    ~DeeplinkSingleInstance()
+        => Dispose(false);
+
+    #endregion
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public Task PassArgumentsToFirstInstance()
+    {
+        var arguments = OnQueryArguments();
+        return PassArgumentsToFirstInstance(arguments);
+    }
+
+    private static string[] FilterAndAppendSlash(IEnumerable<string> args)
+    {
+        var listOfArgs = new List<string>();
+
+        if (args is null)
+        {
+            return listOfArgs.ToArray();
+        }
+
+        foreach (var argument in args)
+        {
+            if (!string.IsNullOrEmpty(argument))
+            {
+                if (Regex.IsMatch(argument, @"[\w-]{3,}://")) //Is Uri-Protocol
+                {
+                    listOfArgs.Add(argument);
+                }
+                else
+                {
+                    var arg = argument;
+                    if (!arg.StartsWith("/", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        arg = $"/{arg}";
+                    }
+                    listOfArgs.Add(arg);
+                }
+            }
+        }
+        return listOfArgs.ToArray();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static event EventHandler<DeeplinkQueryArgumentsEventArgs>? QueryArguments;
+
+    private string[] OnQueryArguments()
+    {
+        var environmentArgs = Environment.GetCommandLineArgs();
+
+        if (environmentArgs.Length >= 2)
+        {
+            environmentArgs = environmentArgs.Skip(1).ToArray();
+        }
+
+        var arguments = new DeeplinkQueryArgumentsEventArgs(environmentArgs);
+
+        QueryArguments?.Invoke(this, arguments);
+
+        if (arguments.Handled)
+        {
+            return arguments.Arguments.ToArray();
+        }
+
+        return environmentArgs;
+
+    }
+
+    //public static string[] Arguments
+    //{
+    //    get
+    //    {
+    //        if (ApplicationDeployment.IsNetworkDeployed && AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
+    //        {
+    //            var args = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
+
+    //            if (args != null && args.Length >= 1)
+    //                args = args.Except(new[] { ApplicationDeployment.CurrentDeployment.UpdateLocation.ToString() }).ToArray();
+
+    //            return FilterAndAppendSlash(args);
+    //        }
+
+    //        var environmentArgs = Environment.GetCommandLineArgs();
+
+    //        if (environmentArgs.Length >= 2)
+    //        {
+    //            return (environmentArgs.Skip(1));
+    //        }
+
+    //        return Array.Empty<string>();
+    //    }
+    //}
+}
