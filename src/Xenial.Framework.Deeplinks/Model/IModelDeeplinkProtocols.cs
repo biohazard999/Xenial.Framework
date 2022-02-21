@@ -50,6 +50,8 @@ public interface IModelDeeplinkProtocol : IModelNode
     /// </summary>
     [Required]
     [Description("The name of the protocol. Should be in a valid Uri-Prefix format and should not start with a number.")]
+    [Index(0)]
+    [Category("Behavior")]
     //TODO: RegEx for correct protocol
     string ProtocolName { get; set; }
 
