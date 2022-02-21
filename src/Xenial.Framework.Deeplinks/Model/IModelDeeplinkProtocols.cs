@@ -5,6 +5,7 @@ using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 
+using Xenial.Framework.Deeplinks.Generators;
 using Xenial.Framework.Images;
 
 namespace Xenial.Framework.Deeplinks.Model;
@@ -24,6 +25,7 @@ public interface IModelOptionsDeeplinkProtocols
 /// 
 /// </summary>
 [ImageName(XenialImages.Model_Protocols)]
+[ModelNodesGenerator(typeof(ModelDeeplinkProtocolsGenerator))]
 public interface IModelDeeplinkProtocols : IModelNode, IModelList<IModelDeeplinkProtocol>
 {
     /// <summary>
