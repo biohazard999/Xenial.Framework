@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
@@ -41,6 +42,13 @@ public interface IModelDeeplinkProtocols : IModelNode, IModelList<IModelDeeplink
     [DefaultValue(true)]
     [Description("Indicates if the protocols will be automatically installed at startup")]
     bool AutoInstallProtocols { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [Description("Defines the default protocol used to generate protocol links")]
+    [DataSourceProperty("this")]
+    IModelDeeplinkProtocol DefaultProtocol { get; set; }
 }
 
 /// <summary>
@@ -73,6 +81,28 @@ public interface IModelDeeplinkProtocol : IModelNode
     string ProtocolHandler { get; }
 }
 
+/// <summary>
+/// 
+/// </summary>
+[DomainLogic(typeof(IModelDeeplinkProtocols))]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>")]
+public static class ModelDeeplinksProtocolLogic
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="node"></param>
+    /// <returns></returns>
+    public static IModelDeeplinkProtocol? Get_DefaultProtocol(IModelDeeplinkProtocols node)
+    {
+        if (node is null)
+        {
+            return null;
+        }
+
+        return node.OrderBy(m => m.Index).FirstOrDefault();
+    }
+}
 /// <summary>
 /// 
 /// </summary>
