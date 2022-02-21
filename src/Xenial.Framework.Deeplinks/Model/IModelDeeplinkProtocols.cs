@@ -14,6 +14,9 @@ namespace Xenial.Framework.Deeplinks.Model;
 /// </summary>
 public interface IModelOptionsDeeplinkProtocols
 {
+    /// <summary>
+    /// 
+    /// </summary>
     IModelDeeplinkProtocols DeeplinkProtocols { get; }
 }
 
