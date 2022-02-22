@@ -273,7 +273,6 @@ public class DeeplinkSingleInstance : IDisposable
         argumentsReceived?.Invoke(this, eventArgs);
     }
 
-    #region IDisposable
 
     private bool disposed;
 
@@ -308,8 +307,6 @@ public class DeeplinkSingleInstance : IDisposable
     /// </summary>
     ~DeeplinkSingleInstance()
         => Dispose(false);
-
-    #endregion
 
     /// <summary>
     /// 
@@ -354,4 +351,10 @@ public class DeeplinkSingleInstance : IDisposable
 
         return environmentArgs;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public string[] GetArguments() => OnQueryArguments();
 }
