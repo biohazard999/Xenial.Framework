@@ -49,6 +49,8 @@ public sealed class DeeplinkQueryArgumentsEventArgs : EventArgs
 /// </summary>
 public class DeeplinkSingleInstance : IDisposable
 {
+    private const int timeout = 200;
+
     private readonly bool ownsMutex;
     private readonly string identifier;
     private readonly Mutex mutex;
@@ -79,7 +81,7 @@ public class DeeplinkSingleInstance : IDisposable
     /// </summary>
     /// <param name="arguments">The arguments to pass.</param>
     /// <returns>Return true if the operation succeded, false otherwise.</returns>
-    private async Task<bool> PassArgumentsToFirstInstance(string[] arguments)
+    private async Task<bool> PassArgumentsToFirstInstanceAsync(string[] arguments)
     {
         if (arguments is null)
         {
@@ -90,20 +92,63 @@ public class DeeplinkSingleInstance : IDisposable
         {
             try
             {
-                using (var client = new NamedPipeClientStream(identifier))
-                using (var writer = new StreamWriter(client))
+                using var client = new NamedPipeClientStream(identifier);
+                using var writer = new StreamWriter(client);
+
+                await client.ConnectAsync(timeout).ConfigureAwait(false);
+
+                foreach (var argument in arguments)
                 {
-                    await client.ConnectAsync(200).ConfigureAwait(false);
-
-                    foreach (var argument in arguments)
+                    if (!string.IsNullOrEmpty(argument))
                     {
-                        if (!string.IsNullOrEmpty(argument))
-                        {
-                            await writer.WriteLineAsync(argument).ConfigureAwait(false);
-                        }
+                        await writer.WriteLineAsync(argument).ConfigureAwait(false);
                     }
-
                 }
+
+                return true;
+            }
+            catch (TimeoutException)
+            {
+                return false;
+            } //Couldn't connect to server
+            catch (IOException)
+            {
+                return false;
+            } //Pipe was broken
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    ///     Passes the given arguments to the first running instance of the application.
+    /// </summary>
+    /// <param name="arguments">The arguments to pass.</param>
+    /// <returns>Return true if the operation succeded, false otherwise.</returns>
+    private bool PassArgumentsToFirstInstance(string[] arguments)
+    {
+        if (arguments is null)
+        {
+            return false;
+        }
+
+        if (!ownsMutex)
+        {
+            try
+            {
+                using var client = new NamedPipeClientStream(identifier);
+                using var writer = new StreamWriter(client);
+
+                client.Connect(timeout);
+
+                foreach (var argument in arguments)
+                {
+                    if (!string.IsNullOrEmpty(argument))
+                    {
+                        writer.WriteLine(argument);
+                    }
+                }
+
                 return true;
             }
             catch (TimeoutException)
@@ -126,44 +171,43 @@ public class DeeplinkSingleInstance : IDisposable
     {
         if (ownsMutex)
         {
-            ThreadPool.QueueUserWorkItem(async (_) => await ListenForArguments().ConfigureAwait(false));
+            ThreadPool.QueueUserWorkItem(async (_) => await ListenForArgumentsAsync().ConfigureAwait(false));
         }
     }
 
     /// <summary>
     ///     Listens for arguments on a named pipe.
     /// </summary>
-    private async Task ListenForArguments()
+    private async Task ListenForArgumentsAsync()
     {
         if (ownsMutex)
         {
             try
             {
-                using (var server = new NamedPipeServerStream(identifier))
-                using (var reader = new StreamReader(server))
+                using var server = new NamedPipeServerStream(identifier);
+                using var reader = new StreamReader(server);
+
+                await server.WaitForConnectionAsync().ConfigureAwait(false);
+
+                var arguments = new List<string>();
+                while (server.IsConnected)
                 {
-                    await server.WaitForConnectionAsync().ConfigureAwait(false);
+                    var result = await reader.ReadLineAsync().ConfigureAwait(false);
 
-                    var arguments = new List<string>();
-                    while (server.IsConnected)
+                    if (!string.IsNullOrEmpty(result))
                     {
-                        var result = await reader.ReadLineAsync().ConfigureAwait(false);
-
-                        if (!string.IsNullOrEmpty(result))
-                        {
-                            arguments.Add(result);
-                        }
+                        arguments.Add(result);
                     }
-
-                    ThreadPool.QueueUserWorkItem(CallOnArgumentsReceived, arguments.ToArray());
                 }
+
+                ThreadPool.QueueUserWorkItem(CallOnArgumentsReceived, arguments.ToArray());
             }
             catch (IOException)
             {
             } //Pipe was broken
             finally
             {
-                await ListenForArguments().ConfigureAwait(false);
+                await ListenForArgumentsAsync().ConfigureAwait(false);
             }
         }
     }
@@ -270,41 +314,19 @@ public class DeeplinkSingleInstance : IDisposable
     /// <summary>
     /// 
     /// </summary>
-    public Task PassArgumentsToFirstInstance()
+    public Task<bool> PassArgumentsToFirstInstanceAsync()
+    {
+        var arguments = OnQueryArguments();
+        return PassArgumentsToFirstInstanceAsync(arguments);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public bool PassArgumentsToFirstInstance()
     {
         var arguments = OnQueryArguments();
         return PassArgumentsToFirstInstance(arguments);
-    }
-
-    private static string[] FilterAndAppendSlash(IEnumerable<string> args)
-    {
-        var listOfArgs = new List<string>();
-
-        if (args is null)
-        {
-            return listOfArgs.ToArray();
-        }
-
-        foreach (var argument in args)
-        {
-            if (!string.IsNullOrEmpty(argument))
-            {
-                if (Regex.IsMatch(argument, @"[\w-]{3,}://")) //Is Uri-Protocol
-                {
-                    listOfArgs.Add(argument);
-                }
-                else
-                {
-                    var arg = argument;
-                    if (!arg.StartsWith("/", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        arg = $"/{arg}";
-                    }
-                    listOfArgs.Add(arg);
-                }
-            }
-        }
-        return listOfArgs.ToArray();
     }
 
     /// <summary>
@@ -331,31 +353,5 @@ public class DeeplinkSingleInstance : IDisposable
         }
 
         return environmentArgs;
-
     }
-
-    //public static string[] Arguments
-    //{
-    //    get
-    //    {
-    //        if (ApplicationDeployment.IsNetworkDeployed && AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
-    //        {
-    //            var args = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
-
-    //            if (args != null && args.Length >= 1)
-    //                args = args.Except(new[] { ApplicationDeployment.CurrentDeployment.UpdateLocation.ToString() }).ToArray();
-
-    //            return FilterAndAppendSlash(args);
-    //        }
-
-    //        var environmentArgs = Environment.GetCommandLineArgs();
-
-    //        if (environmentArgs.Length >= 2)
-    //        {
-    //            return (environmentArgs.Skip(1));
-    //        }
-
-    //        return Array.Empty<string>();
-    //    }
-    //}
 }
