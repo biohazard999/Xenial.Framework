@@ -49,6 +49,10 @@ public sealed class XafDeeplinkSingleInstance : DeeplinkSingleInstance
     protected override void OnArgumentsReceived(string[] arguments)
     {
         base.OnArgumentsReceived(arguments);
+        if (!Debugger.IsAttached)
+        {
+            Debugger.Launch();
+        }
         Debugger.Break();
     }
 
