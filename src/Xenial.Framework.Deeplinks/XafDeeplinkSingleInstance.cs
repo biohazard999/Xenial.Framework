@@ -42,20 +42,6 @@ public sealed class XafDeeplinkSingleInstance : DeeplinkSingleInstance
         Application = application;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="arguments"></param>
-    protected override void OnArgumentsReceived(string[] arguments)
-    {
-        base.OnArgumentsReceived(arguments);
-        if (!Debugger.IsAttached)
-        {
-            Debugger.Launch();
-        }
-        Debugger.Break();
-    }
-
     //public static void InstanceOnArgumentsReceived(object sender, ArgumentsReceivedEventArgs argumentsReceivedEventArgs)
     //{
     //    if (TaskbarApplication == null || !(TaskbarApplication.MainWindow is WinWindow))

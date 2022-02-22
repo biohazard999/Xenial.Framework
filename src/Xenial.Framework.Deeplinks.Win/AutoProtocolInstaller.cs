@@ -26,13 +26,7 @@ public record ProtocolExecutableResolver(string Protocol, Func<string> ResolveEx
 public static class AutoProtocolInstaller
 {
     static AutoProtocolInstaller() => ResolveDefaultExecutable(() =>
-#if NET6_0_OR_GREATER
-        Environment.ProcessPath!
-#elif NET5_0_OR_GREATER
         System.Windows.Forms.Application.ExecutablePath
-#else
-        System.Reflection.Assembly.GetExecutingAssembly().Location
-#endif
     );
 
     private static List<Func<string>> DefaultExecutableResolvers { get; } = new();
