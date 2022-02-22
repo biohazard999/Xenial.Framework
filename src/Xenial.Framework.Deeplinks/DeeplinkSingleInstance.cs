@@ -64,9 +64,9 @@ public class DeeplinkSingleInstance : IDisposable
             throw new ArgumentNullException(nameof(identifier));
         }
 
-        this.identifier = identifier;
+        this.identifier = identifier.ToString(CultureInfo.InvariantCulture);
 
-        mutex = new Mutex(true, this.identifier.ToString(CultureInfo.InvariantCulture), out ownsMutex);
+        mutex = new Mutex(true, this.identifier, out ownsMutex);
     }
 
     /// <summary>
@@ -108,9 +108,11 @@ public class DeeplinkSingleInstance : IDisposable
             }
             catch (TimeoutException)
             {
+                return false;
             } //Couldn't connect to server
             catch (IOException)
             {
+                return false;
             } //Pipe was broken
         }
 
@@ -124,15 +126,14 @@ public class DeeplinkSingleInstance : IDisposable
     {
         if (ownsMutex)
         {
-            ThreadPool.QueueUserWorkItem(async (state) => await ListenForArguments(state).ConfigureAwait(false));
+            ThreadPool.QueueUserWorkItem(async (_) => await ListenForArguments().ConfigureAwait(false));
         }
     }
 
     /// <summary>
     ///     Listens for arguments on a named pipe.
     /// </summary>
-    /// <param name="state">State object required by WaitCallback delegate.</param>
-    private async Task ListenForArguments(object? state)
+    private async Task ListenForArguments()
     {
         if (ownsMutex)
         {
@@ -162,7 +163,7 @@ public class DeeplinkSingleInstance : IDisposable
             } //Pipe was broken
             finally
             {
-                await ListenForArguments(null).ConfigureAwait(false);
+                await ListenForArguments().ConfigureAwait(false);
             }
         }
     }
@@ -173,6 +174,7 @@ public class DeeplinkSingleInstance : IDisposable
     /// <param name="state">The arguments to pass.</param>
     private void CallOnArgumentsReceived(object state)
         => OnArgumentsReceived((string[])state);
+
 
     private static readonly object locker = new();
     private EventHandler<DeeplinkArgumentsReceivedEventArgs>? argumentsReceived;
@@ -214,8 +216,10 @@ public class DeeplinkSingleInstance : IDisposable
     ///     Fires the ArgumentsReceived event.
     /// </summary>
     /// <param name="arguments">The arguments to pass with the ArgumentsReceivedEventArgs.</param>
-    private void OnArgumentsReceived(string[] arguments)
+    protected virtual void OnArgumentsReceived(string[] arguments)
     {
+        _ = arguments ?? throw new ArgumentNullException(nameof(arguments));
+
         var eventArgs = new DeeplinkArgumentsReceivedEventArgs();
         foreach (var argument in arguments)
         {
@@ -244,14 +248,15 @@ public class DeeplinkSingleInstance : IDisposable
     /// <param name="disposing"></param>
     protected virtual void Dispose(bool disposing)
     {
-        if (!disposed)
+        if (disposing && !disposed)
         {
-            if (mutex != null && ownsMutex)
+            if (mutex is not null && ownsMutex)
             {
                 mutex.ReleaseMutex();
             }
             disposed = true;
         }
+        mutex?.Dispose();
     }
 
     /// <summary>
