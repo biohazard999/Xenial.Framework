@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,7 +52,45 @@ public sealed class BringToFrontDeeplinkMainWindowController : WindowController
     {
         if (Window is WinWindow winWindow && winWindow.Form is System.Windows.Forms.Form form)
         {
+            if (form.WindowState == System.Windows.Forms.FormWindowState.Minimized)
+            {
+                RestoreFromMinimzied(form);
+            }
+
             form.BringToFront();
+        }
+    }
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "It's interopt")]
+    private struct WINDOWPLACEMENT
+    {
+        public int length;
+        public int flags;
+        public int showCmd;
+        public System.Drawing.Point ptMinPosition;
+        public System.Drawing.Point ptMaxPosition;
+        public System.Drawing.Rectangle rcNormalPosition;
+    }
+
+    private static void RestoreFromMinimzied(System.Windows.Forms.Form form)
+    {
+        const int WPF_RESTORETOMAXIMIZED = 0x2;
+        var placement = new WINDOWPLACEMENT();
+        placement.length = Marshal.SizeOf(placement);
+        GetWindowPlacement(form.Handle, ref placement);
+
+        if ((placement.flags & WPF_RESTORETOMAXIMIZED) == WPF_RESTORETOMAXIMIZED)
+        {
+            form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+        }
+        else
+        {
+            form.WindowState = System.Windows.Forms.FormWindowState.Normal;
         }
     }
 }
