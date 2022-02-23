@@ -4,45 +4,10 @@ using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Xenial.Framework.Deeplinks;
-
-/// <summary>
-///     Holds a list of arguments given to an application at startup.
-/// </summary>
-public sealed class DeeplinkArgumentsReceivedEventArgs : EventArgs
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    public IList<string> Arguments { get; } = new List<string>();
-}
-
-/// <summary>
-/// 
-/// </summary>
-public sealed class DeeplinkQueryArgumentsEventArgs : EventArgs
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="arguments"></param>
-    public DeeplinkQueryArgumentsEventArgs(IList<string> arguments)
-        => Arguments = arguments;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public IList<string> Arguments { get; } = new List<string>();
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public bool Handled { get; set; }
-}
 
 /// <summary>
 ///     Enforces single instance for an application.
@@ -66,15 +31,17 @@ public class DeeplinkSingleInstance : IDisposable
             throw new ArgumentNullException(nameof(identifier));
         }
 
-        this.identifier = identifier.ToString(CultureInfo.InvariantCulture);
+        //We only do a local mutex to support TerminalServer sessions correctly
+        this.identifier = $"Local\\{identifier.ToString(CultureInfo.InvariantCulture)}";
 
+        //TODO: Mutex Watcher -> After last mutext gets released, we are the last instance
         mutex = new Mutex(true, this.identifier, out ownsMutex);
     }
 
     /// <summary>
     ///     Indicates whether this is the first instance of this application.
     /// </summary>
-    public bool IsFirstInstance => ownsMutex || OnQueryArguments().Length == 0;
+    public bool IsFirstInstance => ownsMutex;
 
     /// <summary>
     ///     Passes the given arguments to the first running instance of the application.
@@ -112,6 +79,10 @@ public class DeeplinkSingleInstance : IDisposable
                 return false;
             } //Couldn't connect to server
             catch (IOException)
+            {
+                return false;
+            } //Pipe was broken
+            catch (InvalidOperationException)
             {
                 return false;
             } //Pipe was broken
@@ -159,6 +130,10 @@ public class DeeplinkSingleInstance : IDisposable
             {
                 return false;
             } //Pipe was broken
+            catch (InvalidOperationException)
+            {
+                return false;
+            } //Pipe was broken
         }
 
         return false;
@@ -171,7 +146,7 @@ public class DeeplinkSingleInstance : IDisposable
     {
         if (ownsMutex)
         {
-            ThreadPool.QueueUserWorkItem(async (_) => await ListenForArgumentsAsync().ConfigureAwait(false));
+            ThreadPool.QueueUserWorkItem(async _ => await ListenForArgumentsAsync().ConfigureAwait(false), null);
         }
     }
 
@@ -216,9 +191,13 @@ public class DeeplinkSingleInstance : IDisposable
     ///     Calls the OnArgumentsReceived method casting the state Object to String[].
     /// </summary>
     /// <param name="state">The arguments to pass.</param>
-    private void CallOnArgumentsReceived(object state)
-        => OnArgumentsReceived((string[])state);
-
+    private void CallOnArgumentsReceived(object? state)
+    {
+        if (state is string[] args)
+        {
+            OnArgumentsReceived(args);
+        }
+    }
 
     private static readonly object locker = new();
     private EventHandler<DeeplinkArgumentsReceivedEventArgs>? argumentsReceived;
@@ -335,7 +314,7 @@ public class DeeplinkSingleInstance : IDisposable
     {
         var environmentArgs = Environment.GetCommandLineArgs();
 
-        if (environmentArgs.Length >= 2)
+        if (environmentArgs.Length >= 2) //Normally the fist argument is the application name
         {
             environmentArgs = environmentArgs.Skip(1).ToArray();
         }
