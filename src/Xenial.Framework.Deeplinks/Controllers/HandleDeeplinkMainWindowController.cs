@@ -19,7 +19,11 @@ public sealed class HandleDeeplinkMainWindowController : WindowController
 
     private static bool HandleViewProtocol(DeeplinkUriInfo info)
     {
-        if (info.Route.Contains('/', StringComparison.Ordinal))
+        if (info.Route.Contains('/'
+#if NET5_0_OR_GREATER
+, StringComparison.Ordinal
+#endif
+        ))
         {
             var routeSegments = info.Route.Split("/");
             var viewId = routeSegments[0];
