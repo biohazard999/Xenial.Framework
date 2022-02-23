@@ -1,10 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
-namespace Xenial.Framework.Deeplinks;
+using Xenial;
 
+namespace DevExpress.ExpressApp;
+
+/// <summary>
+/// 
+/// </summary>
 [XenialCollectControllers]
-internal partial class TypeList
+public static partial class XenialDeeplinksTypeList
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="controllerTypes"></param>
+    /// <returns></returns>
+    public static IEnumerable<Type> UseXenialDeeplinksControllerTypes(this IEnumerable<Type> controllerTypes)
+        => controllerTypes.Concat(ControllerTypes);
 }
