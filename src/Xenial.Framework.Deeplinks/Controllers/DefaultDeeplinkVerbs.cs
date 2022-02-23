@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Xenial.Framework.Deeplinks.Controllers
+namespace Xenial.Framework.Deeplinks
 {
     /// <summary>
     /// 

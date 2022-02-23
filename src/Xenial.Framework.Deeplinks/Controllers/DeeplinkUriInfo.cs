@@ -5,7 +5,7 @@ using System.Linq;
 
 using Xenial.Framework.Deeplinks.Model;
 
-namespace Xenial.Framework.Deeplinks.Controllers
+namespace Xenial.Framework.Deeplinks
 {
     /// <summary>
     /// 

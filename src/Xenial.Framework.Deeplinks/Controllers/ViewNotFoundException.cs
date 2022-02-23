@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xenial.Framework.Deeplinks.Controllers;
+namespace Xenial.Framework.Deeplinks;
 
 /// <summary>
 /// 

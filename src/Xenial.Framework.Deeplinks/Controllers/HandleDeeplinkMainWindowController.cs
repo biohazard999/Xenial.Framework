@@ -7,13 +7,18 @@ using System.Linq;
 
 using Xenial.Framework.Deeplinks.Model;
 
-namespace Xenial.Framework.Deeplinks.Controllers;
+namespace Xenial.Framework.Deeplinks;
 
 /// <summary>
 /// 
 /// </summary>
 public sealed class HandleDeeplinkMainWindowController : WindowController
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public event EventHandler<EventArgs> ArgumentsHandled;
+
     static HandleDeeplinkMainWindowController() =>
         RegisterProtocolHandler(DefaultDeeplinkVerbs.View, HandleViewProtocol);
 
@@ -155,6 +160,7 @@ public sealed class HandleDeeplinkMainWindowController : WindowController
             {
                 if (HandleUri(parsedUri))
                 {
+                    OnArgumentsHandled();
                     return;
                 }
             }
@@ -184,4 +190,7 @@ public sealed class HandleDeeplinkMainWindowController : WindowController
         }
         return false;
     }
+
+    private void OnArgumentsHandled()
+        => ArgumentsHandled?.Invoke(this, EventArgs.Empty);
 }
