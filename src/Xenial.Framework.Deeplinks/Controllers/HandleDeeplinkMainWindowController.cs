@@ -21,11 +21,11 @@ public sealed class HandleDeeplinkMainWindowController : WindowController
     {
         if (info.Route.Contains('/'
 #if NET5_0_OR_GREATER
-, StringComparison.Ordinal
+            , StringComparison.Ordinal
 #endif
         ))
         {
-            var routeSegments = info.Route.Split("/");
+            var routeSegments = info.Route.Split('/');
             var viewId = routeSegments[0];
 
             var modelView = info.Application.FindModelView(viewId);
