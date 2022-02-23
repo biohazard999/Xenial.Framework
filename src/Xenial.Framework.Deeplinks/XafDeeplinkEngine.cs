@@ -69,7 +69,7 @@ public sealed class XafDeeplinkEngine : IDisposable
     /// </summary>
     /// <param name="singleInstance"></param>
     /// <param name="synchronizationContext"></param>
-    private XafDeeplinkEngine(XafDeeplinkSingleInstance singleInstance, SynchronizationContext? synchronizationContext)
+    public XafDeeplinkEngine(XafDeeplinkSingleInstance singleInstance, SynchronizationContext? synchronizationContext)
         => (SingleInstance, SynchronizationContext) = (singleInstance ?? throw new ArgumentNullException(nameof(singleInstance)), synchronizationContext ?? SynchronizationContext.Current);
 
     /// <summary>
