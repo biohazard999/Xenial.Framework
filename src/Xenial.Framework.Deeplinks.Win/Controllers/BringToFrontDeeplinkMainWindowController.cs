@@ -61,6 +61,8 @@ public sealed class BringToFrontDeeplinkMainWindowController : WindowController
         }
     }
 
+    #region https://stackoverflow.com/questions/4410717/c-sharp-programmatically-unminimize-form
+
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
@@ -93,4 +95,6 @@ public sealed class BringToFrontDeeplinkMainWindowController : WindowController
             form.WindowState = System.Windows.Forms.FormWindowState.Normal;
         }
     }
+
+    #endregion
 }
