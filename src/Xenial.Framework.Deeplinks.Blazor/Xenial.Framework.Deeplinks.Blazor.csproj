@@ -6,7 +6,7 @@
     <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
     <NoWarn>$(NoWarn);NU5118</NoWarn>
     <!-- Duplicate wwwroot files with netstandard2.1 and net5.0 -->
-    <PackageTags>$(PackageTags) LaunchUri Deeplinks Blazor</PackageTags>
+    <PackageTags>$(PackageTags) $(DeepLinkTags) Blazor</PackageTags>
   </PropertyGroup>
   
   <ItemGroup>

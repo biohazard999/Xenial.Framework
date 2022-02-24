@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageTags>$(PackageTags) LaunchUri Deeplinks Jumplist Agnostic</PackageTags>
+    <DeepLinkTags>LaunchUri Deeplinks Jumplist</DeepLinkTags>
+    <PackageTags>$(PackageTags) $(DeepLinkTags) Agnostic</PackageTags>
   </PropertyGroup>
   
   <ItemGroup>

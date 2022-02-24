@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
-    <PackageTags>$(PackageTags) LaunchUri Deeplinks Win</PackageTags>
+    <PackageTags>$(PackageTags) $(DeepLinkTags) Win WindowsForms</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
