@@ -11,6 +11,10 @@
     <ProjectReference Include="..\Xenial.Framework.Deeplinks\Xenial.Framework.Deeplinks.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.22000.196" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>

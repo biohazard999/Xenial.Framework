@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Win;
+
+using System;
+
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Xenial.Framework.Deeplinks.Win;
 
