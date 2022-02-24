@@ -17,7 +17,7 @@ public sealed class HandleDeeplinkMainWindowController : WindowController
     /// <summary>
     /// 
     /// </summary>
-    public event EventHandler<EventArgs> ArgumentsHandled;
+    public event EventHandler<EventArgs>? ArgumentsHandled;
 
     static HandleDeeplinkMainWindowController() =>
         RegisterProtocolHandler(DefaultDeeplinkVerbs.View, HandleViewProtocol);

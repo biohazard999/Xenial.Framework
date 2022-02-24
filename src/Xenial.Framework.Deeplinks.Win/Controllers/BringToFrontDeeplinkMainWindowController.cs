@@ -56,9 +56,18 @@ public sealed class BringToFrontDeeplinkMainWindowController : WindowController
                 RestoreFromMinimzied(form);
             }
 
+            form.Activate();
+            _ = SetForegroundWindow(form.Handle.ToInt32());
             form.BringToFront();
         }
     }
+
+    #region https://stackoverflow.com/questions/5282588/how-can-i-bring-my-application-window-to-the-front
+
+    [DllImport("User32.dll")]
+    private static extern Int32 SetForegroundWindow(int hWnd);
+
+    #endregion
 
     #region https://stackoverflow.com/questions/4410717/c-sharp-programmatically-unminimize-form
 

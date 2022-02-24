@@ -26,7 +26,7 @@ public sealed class XenialDeeplinksWindowsFormsModule : XenialModuleBase
     /// <returns></returns>
     protected override IEnumerable<Type> GetDeclaredControllerTypes()
         => base.GetDeclaredControllerTypes()
-        .UseXenialDeeplinksControllerTypesWin();
+            .UseXenialDeeplinksControllerTypesWin();
 
     /// <summary>
     /// 

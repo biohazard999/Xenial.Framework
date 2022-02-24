@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 
 using DevExpress.ExpressApp.Model;
@@ -48,15 +49,15 @@ namespace Xenial.Framework.LabelEditors.Win.Editors
                 AutoSizeMode = LabelAutoSizeMode.None,
             };
 
-            //control.HyperlinkClick += Control_HyperlinkClick;
+            control.HyperlinkClick += Control_HyperlinkClick;
 
             control.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
 
             return control;
         }
 
-        //private void Control_HyperlinkClick(object sender, HyperlinkClickEventArgs e)
-        //    => Process.Start(e.Link);
+        private void Control_HyperlinkClick(object sender, HyperlinkClickEventArgs e)
+            => Process.Start(e.Link);
 
         /// <summary>
         /// Unsubscribes from the control's events and, depending on the parameter, also disposes of the control and removes the link to the control.
@@ -66,7 +67,7 @@ namespace Xenial.Framework.LabelEditors.Win.Editors
         {
             if (Control != null)
             {
-                //Control.HyperlinkClick -= Control_HyperlinkClick;
+                Control.HyperlinkClick -= Control_HyperlinkClick;
             }
 
             base.BreakLinksToControl(unwireEventsOnly);
