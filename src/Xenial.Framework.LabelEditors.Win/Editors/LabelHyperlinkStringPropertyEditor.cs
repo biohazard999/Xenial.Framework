@@ -60,6 +60,14 @@ namespace Xenial.Framework.LabelEditors.Win.Editors
             {
                 var handler = BindingFactory.Cached.ResovleDelegate(attribute, CurrentObject);
                 handler(e.Link);
+                return;
+            }
+
+            var attributeComplex = MemberInfo.FindAttribute<HyperlinkHandlerComplexAttribute>();
+            if (attributeComplex is not null)
+            {
+                var handler = BindingFactory.Cached.ResovleDelegate(attributeComplex, CurrentObject);
+                handler(new(e.Link));
             }
         }
 
