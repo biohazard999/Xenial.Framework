@@ -55,10 +55,15 @@ public interface IBindingFactory
     /// <param name="provider"></param>
     /// <param name="targetType"></param>
     /// <returns></returns>
-    public TDelegate ResovleDelegate<TDelegate>(
+    TDelegate ResovleDelegate<TDelegate>(
         IBindableFunctorProvider<TDelegate> provider,
         Type targetType
     ) where TDelegate : Delegate;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    void Clear();
 }
 /// <summary>
 /// 
@@ -200,4 +205,6 @@ public sealed class BindingFactory : IBindingFactory
 
         throw new InvalidOperationException($"Can not find any bindable delegate for '{provider.GetType()}' and target type '{targetType}'");
     }
+
+    void IBindingFactory.Clear() { }
 }

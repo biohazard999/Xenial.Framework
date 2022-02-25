@@ -12,23 +12,30 @@ using Xunit;
 
 namespace Xenial.Framework.Tests.Binding;
 
-public abstract class BindingFactoryAttribute<TDelegate> : Attribute, IBindableFunctorProvider<TDelegate>
+public abstract class BindableFactoryAttribute<TDelegate> : Attribute, IBindableFunctorProvider<TDelegate>
     where TDelegate : Delegate
 {
     public string? TheMethod { get; set; }
     public TDelegate? TheDelegate { get; set; }
     public Type? TheType { get; set; }
 
-    string IBindableFunctorProvider<TDelegate>.ConventionMethodName => "Build";
-    string? IBindableFunctorProvider<TDelegate>.MethodName => TheMethod;
-    Type? IBindableFunctorProvider<TDelegate>.DelegatedType => TheType;
-    TDelegate? IBindableFunctorProvider<TDelegate>.Delegate => TheDelegate;
+    string IBindableFunctorProvider<TDelegate>.ConventionMethodName
+        => "Build";
+
+    string? IBindableFunctorProvider<TDelegate>.MethodName
+        => TheMethod;
+
+    Type? IBindableFunctorProvider<TDelegate>.DelegatedType
+        => TheType;
+
+    TDelegate? IBindableFunctorProvider<TDelegate>.Delegate
+        => TheDelegate;
 }
 
 public delegate void VoidBindable();
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-public sealed class VoidBindingFactoryAttribute : BindingFactoryAttribute<VoidBindable>
+public sealed class VoidBindingFactoryAttribute : BindableFactoryAttribute<VoidBindable>
 {
 
 }
@@ -36,7 +43,7 @@ public sealed class VoidBindingFactoryAttribute : BindingFactoryAttribute<VoidBi
 public delegate object InstanceBindable(object @object);
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-public sealed class InstanceBindingFactoryAttribute : BindingFactoryAttribute<InstanceBindable>
+public sealed class InstanceBindingFactoryAttribute : BindableFactoryAttribute<InstanceBindable>
 {
 
 }
@@ -44,7 +51,7 @@ public sealed class InstanceBindingFactoryAttribute : BindingFactoryAttribute<In
 public delegate int IntBindable();
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-public sealed class IntBindingFactoryAttribute : BindingFactoryAttribute<IntBindable>
+public sealed class IntBindingFactoryAttribute : BindableFactoryAttribute<IntBindable>
 {
 
 }
