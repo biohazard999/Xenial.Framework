@@ -23,8 +23,8 @@ public sealed partial class XenialLabelEditorsWindowsFormsModule : XenialModuleB
         => base.GetRequiredModuleTypesCore()
             .AndModuleTypes(new[]
             {
-                    typeof(SystemWindowsFormsModule),
-                    typeof(XenialLabelEditorsModule)
+                typeof(SystemWindowsFormsModule),
+                typeof(XenialLabelEditorsModule)
             });
 
     /// <summary>   Registers the editor descriptors. </summary>
@@ -37,6 +37,7 @@ public sealed partial class XenialLabelEditorsWindowsFormsModule : XenialModuleB
 
         editorDescriptorsFactory
             .UseLabelStringPropertyEditorsWin()
-            .UseLabelHyperlinkStringPropertyEditorsWin();
+            .UseLabelHyperlinkStringPropertyEditorsWin()
+            .UseXenialHtmlContentViewItemWin();
     }
 }
