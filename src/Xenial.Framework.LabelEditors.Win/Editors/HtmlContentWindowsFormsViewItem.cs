@@ -52,7 +52,12 @@ public sealed class HtmlContentWindowsFormsViewItem : ViewItem
         {
             foreach (var imageName in imageSource.GetImageNames())
             {
-                if (HtmlContentViewItem.LoadAllImages || HtmlContentViewItem.ImageNames.Contains(imageName))
+                if (
+                    HtmlContentViewItem.LoadAllImages
+                    || (
+                        HtmlContentViewItem.ImageNames is not null
+                        && HtmlContentViewItem.ImageNames.Contains(imageName))
+                    )
                 {
                     var imageInfo = imageSource.FindImageInfo(imageName, true);
                     if (imageInfo.IsSvgImage)
@@ -69,7 +74,12 @@ public sealed class HtmlContentWindowsFormsViewItem : ViewItem
                 {
                     foreach (var imageWrapper in imageGroup.Value)
                     {
-                        if (HtmlContentViewItem.LoadAllImages || HtmlContentViewItem.ImageNames.Contains(imageWrapper.ImageName))
+                        if (
+                            HtmlContentViewItem.LoadAllImages
+                            || (
+                                HtmlContentViewItem.ImageNames is not null
+                                && HtmlContentViewItem.ImageNames.Contains(imageWrapper.ImageName))
+                            )
                         {
                             var imageInfo = imageSource.FindImageInfo(imageWrapper.ImageName, true);
                             if (imageInfo.IsSvgImage)
