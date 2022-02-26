@@ -55,30 +55,30 @@ public sealed class HyperlinkHandlerComplexAttribute : Attribute, IBindableFunct
     /// Initializes a new instance of the <see cref="HyperlinkHandlerComplexAttribute"/> class.
     /// </summary>
     ///
-    /// <param name="handlerType">    Type of the handler. </param>
+    /// <param name="handleHyperlinkType">    Type of the handler. </param>
 
-    public HyperlinkHandlerComplexAttribute(Type handlerType!!)
-        => HandleHyperlinkType = handlerType;
+    public HyperlinkHandlerComplexAttribute(Type handleHyperlinkType!!)
+        => HandleHyperlinkType = handleHyperlinkType;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HyperlinkHandlerComplexAttribute" /> class.
     /// </summary>
     ///
-    /// <param name="handlerType">                  Type of the hanlder. </param>
+    /// <param name="handleHyperlinkType">                  Type of the hanlder. </param>
     /// <param name="handleHyperlinkMethodName">    Name of the hanlder method. </param>
-    public HyperlinkHandlerComplexAttribute(Type handlerType!!, string handleHyperlinkMethodName!!)
+    public HyperlinkHandlerComplexAttribute(Type handleHyperlinkType!!, string handleHyperlinkMethodName!!)
         => (HandleHyperlinkType, HandleHyperlinkMethodName)
-        = (handlerType, handleHyperlinkMethodName);
+        = (handleHyperlinkType, handleHyperlinkMethodName);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HyperlinkHandlerComplexAttribute" /> class.
     /// </summary>
     ///
-    /// <param name="hyperlinkHandler">  The handler delegate. </param>
+    /// <param name="handleHyperlinkDelegate">  The handler delegate. </param>
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public HyperlinkHandlerComplexAttribute(HandleHyperlinkComplex hyperlinkHandler)
-        => HandleHyperlinkDelegate = hyperlinkHandler;
+    public HyperlinkHandlerComplexAttribute(HandleHyperlinkComplex handleHyperlinkDelegate)
+        => HandleHyperlinkDelegate = handleHyperlinkDelegate;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HyperlinkHandlerComplexAttribute"/> class.
@@ -93,19 +93,19 @@ public sealed class HyperlinkHandlerComplexAttribute : Attribute, IBindableFunct
     ///
     /// <value> The type of the handler. </value>
 
-    public Type? HandleHyperlinkType { get; internal set; }
+    public Type? HandleHyperlinkType { get; }
 
     /// <summary>   Gets the build layout delegate. </summary>
     ///
     /// <value> The build layout delegate. </value>
 
-    public HandleHyperlinkComplex? HandleHyperlinkDelegate { get; internal set; }
+    public HandleHyperlinkComplex? HandleHyperlinkDelegate { get; }
 
     /// <summary>   Gets the name of the handler method. </summary>
     ///
     /// <value> The name of the handler method. </value>
 
-    public string? HandleHyperlinkMethodName { get; internal set; }
+    public string? HandleHyperlinkMethodName { get; }
 
     string IBindableFunctorProvider<HandleHyperlinkComplex>.ConventionMethodName
         => "HandleHyperlink";
