@@ -25,6 +25,7 @@ public interface IModelJumplistItemAction : IModelJumplistItemBase
     /// </summary>
     [DataSourceProperty("Application.ActionDesign.Actions")] //TODO: Filter only by Window Controllers and root?
     [Required]
+    [Category("Data")]
     IModelAction Action { get; set; }
 }
 
