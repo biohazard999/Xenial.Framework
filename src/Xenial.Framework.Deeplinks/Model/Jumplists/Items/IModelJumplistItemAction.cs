@@ -11,8 +11,15 @@ namespace Xenial.Framework.Deeplinks.Model;
 /// 
 /// </summary>
 [ImageName("ModelEditor_Actions")]
+[KeyProperty(nameof(ActionId))]
 public interface IModelJumplistItemAction : IModelJumplistItemBase
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    [Browsable(false)]
+    string ActionId { get; set; }
+
     /// <summary>
     /// 
     /// </summary>
@@ -29,6 +36,22 @@ public interface IModelJumplistItemAction : IModelJumplistItemBase
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "By Convention")]
 public static class ModelJumplistItemActionDomainLogic
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="modelAction"></param>
+    /// <returns></returns>
+    public static IModelAction Get_Action(IModelJumplistItemAction modelAction!!)
+        => modelAction.Application.ActionDesign.Actions[modelAction.ActionId];
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="modelAction"></param>
+    /// <param name="value"></param>
+    public static void Set_Action(IModelJumplistItemAction modelAction!!, IModelAction value)
+        => modelAction.ActionId = value?.Id ?? null!;
+
     /// <summary>
     /// 
     /// </summary>

@@ -10,7 +10,6 @@ namespace Xenial.Framework.Deeplinks.Model;
 /// <summary>
 /// 
 /// </summary>
-[ImageName(XenialImages.Model_Jumplists)]
 public interface IModelOptionsJumplists : IModelNode
 {
     /// <summary>
