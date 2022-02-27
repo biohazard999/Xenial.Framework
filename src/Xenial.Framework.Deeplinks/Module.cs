@@ -35,6 +35,9 @@ public sealed class XenialDeeplinksModule : XenialModuleBase
     public override void ExtendModelInterfaces(ModelInterfaceExtenders extenders)
     {
         base.ExtendModelInterfaces(extenders);
-        extenders.UseXenialDeeplinks();
+
+        extenders
+            .UseXenialDeeplinks()
+            .UseXenialJumplists();
     }
 }

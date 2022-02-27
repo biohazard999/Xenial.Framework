@@ -22,7 +22,21 @@ public static class XenialDeeplinksModelInterfaceExtenders
     {
         _ = extenders ?? throw new ArgumentNullException(nameof(extenders));
 
-        extenders.Add<IModelOptions, IModelOptionsDeeplinkProtocols>();
+        extenders.Add<IModelOptions, IModelOptionsJumplists>();
+
+        return extenders;
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="extenders"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static ModelInterfaceExtenders UseXenialJumplists(this ModelInterfaceExtenders extenders)
+    {
+        _ = extenders ?? throw new ArgumentNullException(nameof(extenders));
+
+        extenders.Add<IModelOptions, IModelOptionsJumplists>();
 
         return extenders;
     }
