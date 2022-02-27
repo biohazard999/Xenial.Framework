@@ -1,8 +1,13 @@
-﻿namespace Xenial.Framework.Deeplinks.Model;
+﻿using DevExpress.Persistent.Base;
+
+using Xenial.Framework.Images;
+
+namespace Xenial.Framework.Deeplinks.Model;
 
 /// <summary>
 /// 
 /// </summary>
+[ImageName(XenialImages.Model_Protocol_Launch)]
 public interface IModelJumplistItemLaunch : IModelJumplistItemBase
 {
     /// <summary>

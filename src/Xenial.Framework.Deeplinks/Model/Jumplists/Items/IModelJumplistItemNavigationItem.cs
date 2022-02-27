@@ -10,7 +10,7 @@ namespace Xenial.Framework.Deeplinks.Model;
 /// <summary>
 /// 
 /// </summary>
-public interface IModelJumplistItemNavigationItem : IModelJumplistItem
+public interface IModelJumplistItemNavigationItem : IModelJumplistItemBase
 {
     /// <summary>
     /// 

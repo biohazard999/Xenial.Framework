@@ -24,8 +24,8 @@ public sealed class XenialDeeplinksModule : XenialModuleBase
     /// 
     /// </summary>
     /// <returns></returns>
-    protected override IEnumerable<Type> GetDeclaredExportedTypes()
-        => base.GetDeclaredExportedTypes()
+    protected override IEnumerable<Type> GetRegularTypes()
+        => base.GetRegularTypes()
             .UseXenialDeeplinksRegularTypes();
 
     /// <summary>

@@ -11,7 +11,7 @@ namespace Xenial.Framework.Deeplinks.Model;
 /// 
 /// </summary>
 [ImageName("ModelEditor_Actions")]
-public interface IModelJumplistItemAction : IModelJumplistItem
+public interface IModelJumplistItemAction : IModelJumplistItemBase
 {
     /// <summary>
     /// 
