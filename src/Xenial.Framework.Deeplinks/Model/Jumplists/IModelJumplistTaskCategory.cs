@@ -8,7 +8,7 @@ namespace Xenial.Framework.Deeplinks.Model;
 /// <summary>
 /// 
 /// </summary>
-[ImageName(XenialImages.Model_Jumplists_CustomCategory)]
+[ImageName(XenialImages.Model_Jumplists_TaskCategory)]
 public interface IModelJumplistTaskCategory : IModelNode, IModelList<IModelJumplistItem>
 {
 
