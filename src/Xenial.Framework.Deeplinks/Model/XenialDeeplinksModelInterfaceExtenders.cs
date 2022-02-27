@@ -46,7 +46,28 @@ public static class XenialDeeplinksModelInterfaceExtenders
 
             typeof(ModelDeeplinksProtocolLogic),
             typeof(ModelDeeplinkProtocolLogic),
-            typeof(ModelDeeplinkProtocolsGenerator)
+            typeof(ModelDeeplinkProtocolsGenerator),
+
+            //JumpLists
+            typeof(IModelOptionsJumplists),
+            typeof(IModelJumplistTaskCategory),
+            typeof(IModelJumplists),
+            typeof(IModelJumplistCustomCategory),
+            typeof(IModelJumplistCustomCategories),
+
+            //Jumplist Items
+            typeof(IModelJumplistItem),
+            typeof(IModelJumplistItemBase),
+
+            typeof(IModelJumplistItemAction),
+            typeof(ModelJumplistItemActionDomainLogic),
+
+            typeof(IModelJumplistItemLaunch),
+
+            typeof(IModelJumplistItemNavigationItem),
+            typeof(ModelJumplistItemNavigationItemDomainLogic),
+
+            typeof(IModelJumplistItemSeperator)
         });
     }
 }
