@@ -22,7 +22,7 @@ public static class XenialDeeplinksModelInterfaceExtenders
     {
         _ = extenders ?? throw new ArgumentNullException(nameof(extenders));
 
-        extenders.Add<IModelOptions, IModelOptionsJumplists>();
+        extenders.Add<IModelOptions, IModelOptionsDeeplinkProtocols>();
 
         return extenders;
     }
