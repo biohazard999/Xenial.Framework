@@ -55,7 +55,7 @@ public interface IModelDeeplinkProtocols : IModelNode, IModelList<IModelDeeplink
 /// 
 /// </summary>
 [KeyProperty(nameof(ProtocolName))]
-[ImageName(XenialImages.Model_Protocols)]
+[ImageName(XenialImages.Model_Protocol)]
 public interface IModelDeeplinkProtocol : IModelNode
 {
     /// <summary>
