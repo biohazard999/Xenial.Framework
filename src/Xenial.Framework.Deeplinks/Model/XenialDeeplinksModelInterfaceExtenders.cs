@@ -85,6 +85,9 @@ public static class XenialDeeplinksModelInterfaceExtenders
 
             typeof(IModelJumplistItemProtocol),
             typeof(ModelJumplistItemProtocolDomainLogic),
+
+            typeof(IModelJumplistItemView),
+            typeof(ModelJumplistItemViewDomainLogic),
         });
     }
 }
