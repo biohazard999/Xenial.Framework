@@ -10,6 +10,7 @@ namespace Xenial.Framework.Deeplinks.Model;
 /// <summary>
 /// 
 /// </summary>
+[ImageName("ModelEditor_Navigation_Items")]
 public interface IModelJumplistItemNavigationItem : IModelJumplistItemBase
 {
     /// <summary>
