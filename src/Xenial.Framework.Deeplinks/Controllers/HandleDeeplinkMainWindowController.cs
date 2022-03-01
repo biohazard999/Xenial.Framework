@@ -24,85 +24,95 @@ public sealed class HandleDeeplinkMainWindowController : WindowController
 
     private static bool HandleViewProtocol(DeeplinkUriInfo info)
     {
-        if (info.Route.Contains('/'
+        static (string viewId, string? objectKey) ExtractViewInfo(DeeplinkUriInfo info)
+        {
+            if (info.Route.Contains('/'
 #if NET5_0_OR_GREATER
             , StringComparison.Ordinal
 #endif
         ))
-        {
-            var routeSegments = info.Route.Split('/');
-            var viewId = routeSegments[0];
-
-            var modelView = info.Application.FindModelView(viewId);
-
-            if (modelView is null)
             {
-                throw new UserFriendlyException(
-                    DevExpress.ExpressApp.Localization.UserVisibleExceptionId.TheFollowingErrorOccurred,
-                    new ViewNotFoundException(viewId)
-                );
-            }
-
-            if (modelView is IModelDetailView modelDetailView)
-            {
-                var objectSpace = info.Application.CreateObjectSpace(modelDetailView.ModelClass.TypeInfo.Type);
-
-                object? FindOrCreateObject()
+                var splittedRoute = info.Route.Split('/');
+                if (splittedRoute.Length > 1)
                 {
-                    if (routeSegments.Length > 1)
+                    return (splittedRoute[0], splittedRoute[1]);
+                }
+                return (splittedRoute[0], null);
+            }
+            return (info.Route, null);
+        }
+
+        var (viewId, objectKey) = ExtractViewInfo(info);
+
+
+        var modelView = info.Application.FindModelView(viewId);
+
+        if (modelView is null)
+        {
+            throw new UserFriendlyException(
+                DevExpress.ExpressApp.Localization.UserVisibleExceptionId.TheFollowingErrorOccurred,
+                new ViewNotFoundException(viewId)
+            );
+        }
+
+        if (modelView is IModelDetailView modelDetailView)
+        {
+            var objectSpace = info.Application.CreateObjectSpace(modelDetailView.ModelClass.TypeInfo.Type);
+
+            object? FindOrCreateObject()
+            {
+                if (objectKey is not null)
+                {
+                    var keyType = objectSpace.GetKeyPropertyType(modelDetailView.ModelClass.TypeInfo.Type);
+                    if (keyType == typeof(Guid))
                     {
-                        var keyAsString = routeSegments[1];
-                        var keyType = objectSpace.GetKeyPropertyType(modelDetailView.ModelClass.TypeInfo.Type);
-                        if (keyType == typeof(Guid))
+                        if (Guid.TryParse(objectKey, out var guidKey))
                         {
-                            if (Guid.TryParse(keyAsString, out var guidKey))
-                            {
-                                return objectSpace.GetObjectByKey(modelDetailView.ModelClass.TypeInfo.Type, guidKey);
-                            }
+                            return objectSpace.GetObjectByKey(modelDetailView.ModelClass.TypeInfo.Type, guidKey);
                         }
-
-                        if (keyType == typeof(int))
-                        {
-                            if (int.TryParse(keyAsString, out var intKey))
-                            {
-                                return objectSpace.GetObjectByKey(modelDetailView.ModelClass.TypeInfo.Type, intKey);
-                            }
-                        }
-
-                        var key = keyAsString;
-                        return objectSpace.GetObjectByKey(modelDetailView.ModelClass.TypeInfo.Type, key);
                     }
 
-                    return objectSpace.CreateObject(modelDetailView.ModelClass.TypeInfo.Type);
+                    if (keyType == typeof(int))
+                    {
+                        if (int.TryParse(objectKey, out var intKey))
+                        {
+                            return objectSpace.GetObjectByKey(modelDetailView.ModelClass.TypeInfo.Type, intKey);
+                        }
+                    }
+
+                    var key = objectKey;
+                    return objectSpace.GetObjectByKey(modelDetailView.ModelClass.TypeInfo.Type, key);
                 }
 
-                var obj = FindOrCreateObject();
-
-                var detailView = obj is null
-                    ? info.Application.CreateDetailView(objectSpace, modelDetailView, true)
-                    : info.Application.CreateDetailView(objectSpace, obj, true);
-
-                var svp = new ShowViewParameters(detailView);
-                info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
-                return true;
+                return objectSpace.CreateObject(modelDetailView.ModelClass.TypeInfo.Type);
             }
 
-            if (modelView is IModelListView modelListView)
-            {
-                var listView = info.Application.CreateListView(modelListView.ModelClass.TypeInfo.Type, true);
-                var svp = new ShowViewParameters(listView);
-                info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
-                return true;
-            }
+            var obj = FindOrCreateObject();
 
-            if (modelView is IModelDashboardView modelDashboardView)
-            {
-                var objectSpace = info.Application.CreateObjectSpace();
-                var listView = info.Application.CreateDashboardView(objectSpace, modelDashboardView.Id, true);
-                var svp = new ShowViewParameters(listView);
-                info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
-                return true;
-            }
+            var detailView = obj is null
+                ? info.Application.CreateDetailView(objectSpace, modelDetailView, true)
+                : info.Application.CreateDetailView(objectSpace, obj, true);
+
+            var svp = new ShowViewParameters(detailView);
+            info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
+            return true;
+        }
+
+        if (modelView is IModelListView modelListView)
+        {
+            var listView = info.Application.CreateListView(modelListView.ModelClass.TypeInfo.Type, true);
+            var svp = new ShowViewParameters(listView);
+            info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
+            return true;
+        }
+
+        if (modelView is IModelDashboardView modelDashboardView)
+        {
+            var objectSpace = info.Application.CreateObjectSpace();
+            var listView = info.Application.CreateDashboardView(objectSpace, modelDashboardView.Id, true);
+            var svp = new ShowViewParameters(listView);
+            info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
+            return true;
         }
 
         return false;
