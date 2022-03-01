@@ -18,5 +18,8 @@ public static partial class XenialDeeplinksTypeList
     /// <param name="controllerTypes"></param>
     /// <returns></returns>
     public static IEnumerable<Type> UseXenialDeeplinksControllerTypes(this IEnumerable<Type> controllerTypes)
-        => controllerTypes.Concat(ControllerTypes);
+        => controllerTypes.Concat(
+            Array.Empty<Type>()
+        //ControllerTypes
+        );
 }
