@@ -186,7 +186,7 @@ public sealed class XafDeeplinkEngine : IDisposable
         {
             if (application is not null)
             {
-                var deeplinkDispatcher = new DeeplinkDispatcher(application);
+                var deeplinkDispatcher = new XafDeeplinkDispatcher(application);
                 deeplinkDispatcher.HandleArguments(arguments);
             }
         }
