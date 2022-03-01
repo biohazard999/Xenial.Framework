@@ -42,6 +42,24 @@ public static class ModelJumplistItemViewDomainLogic
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="modelView"></param>
+    /// <returns></returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
+    public static string Get_LaunchUri(IModelJumplistItemView modelView!!) =>
+        $"{modelView.Protocol?.ProtocolName}://{DefaultDeeplinkVerbs.View}{PrefixString('/', modelView.View?.Id)}{PrefixString('/', modelView.ObjectKey)}";
+
+    private static string PrefixString(char prefix, string? str)
+    {
+        str = str?.Trim('/');
+
+        return string.IsNullOrEmpty(str)
+            ? ""
+            : $"{prefix}{str}";
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     /// <param name="node"></param>
     /// <returns></returns>
     public static string? Get_Caption(IModelNode node)
