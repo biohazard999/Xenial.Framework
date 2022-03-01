@@ -26,7 +26,14 @@ public sealed class IconFileWriter
     /// <summary>
     /// 
     /// </summary>
-    public IList<Image> Images => images.AsReadOnly();
+    public IReadOnlyList<Image> Images => images.AsReadOnly();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="image"></param>
+    public void AddImage(Image image!!)
+        => images.Add(image);
 
     /// <summary>
     /// 

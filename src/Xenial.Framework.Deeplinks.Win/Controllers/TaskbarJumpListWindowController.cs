@@ -75,7 +75,7 @@ public sealed class TaskbarJumpListWindowController : WindowController
     public TaskbarAssistant? CreateTaskbarAssistant()
     {
         var jumplistOptions = Jumplists;
-        if (jumplistOptions is null || jumplistOptions.EnableJumpList)
+        if (jumplistOptions is null || !jumplistOptions.EnableJumpList)
         {
             return null;
         }

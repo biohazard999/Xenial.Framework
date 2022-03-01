@@ -96,7 +96,7 @@ public sealed class RuntimeImageResourceManager
     {
         if (image is not null)
         {
-            writer.Images.Add(image);
+            writer.AddImage(image);
         }
     }
 }
