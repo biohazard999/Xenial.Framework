@@ -42,6 +42,34 @@ public static class ModelJumplistItemActionDomainLogic
     /// </summary>
     /// <param name="modelAction"></param>
     /// <returns></returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
+    public static string Get_LaunchUri(IModelJumplistItemAction modelAction!!) =>
+        $"{modelAction.Protocol?.ProtocolName}://{DefaultDeeplinkVerbs.Action}{PrefixString('/', modelAction.ActionId)}";
+
+    private static string PrefixString(char prefix, string? str)
+    {
+        str = str?.Trim('/');
+
+        return string.IsNullOrEmpty(str)
+            ? ""
+            : $"{prefix}{str}";
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="modelAction"></param>
+    /// <returns></returns>
+    public static string Get_Arguments(IModelJumplistItemAction modelAction!!)
+        => modelAction.Action is null
+        ? $"verb={DefaultDeeplinkVerbs.Action}"
+        : $"verb={DefaultDeeplinkVerbs.Action}&actionId={modelAction.ActionId}";
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="modelAction"></param>
+    /// <returns></returns>
     public static IModelAction Get_Action(IModelJumplistItemAction modelAction!!)
         => modelAction.Application.ActionDesign.Actions[modelAction.ActionId];
 
