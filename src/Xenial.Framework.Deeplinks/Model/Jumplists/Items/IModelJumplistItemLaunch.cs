@@ -14,12 +14,12 @@ public interface IModelJumplistItemLaunch : IModelJumplistItemBase
     /// 
     /// </summary>
     //TODO: Path picker
-    string PathToLaunch { get; set; }
+    string ProcessPath { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    string Arguments { get; set; }
+    string ProcessArguments { get; set; }
 
     /// <summary>
     /// 

@@ -155,7 +155,7 @@ public sealed class TaskbarJumpListWindowController : WindowController
                 return new JumpListItemTask(launcher.Caption)
                 {
                     Arguments = launcher.Arguments,
-                    Path = launcher.PathToLaunch,
+                    Path = launcher.ProcessPath,
                     WorkingDirectory = launcher.WorkingDirectory,
                     IconPath = icoPath,
                     IconIndex = iconIndex,
