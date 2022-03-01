@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.SystemModule;
@@ -29,6 +30,34 @@ public interface IModelJumplistItemNavigationItem : IModelJumplistItemBase
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "By Convention")]
 public static class ModelJumplistItemNavigationItemDomainLogic
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="modelView"></param>
+    /// <returns></returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
+    public static string Get_LaunchUri(IModelJumplistItemNavigationItem modelView!!) =>
+        $"{modelView.Protocol?.ProtocolName}://{DefaultDeeplinkVerbs.View}{PrefixString('/', modelView.NavigationItem?.View?.Id)}{PrefixString('/', modelView.NavigationItem?.ObjectKey)}";
+
+    private static string PrefixString(char prefix, string? str)
+    {
+        str = str?.Trim('/');
+
+        return string.IsNullOrEmpty(str)
+            ? ""
+            : $"{prefix}{str}";
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="modelView"></param>
+    /// <returns></returns>
+    public static string Get_Arguments(IModelJumplistItemNavigationItem modelView!!)
+        => modelView.NavigationItem?.View is null
+        ? $"verb={DefaultDeeplinkVerbs.View}"
+        : $"verb={DefaultDeeplinkVerbs.View}&{new ViewShortcut(modelView.NavigationItem.View.Id, modelView.NavigationItem.ObjectKey)}";
+
     /// <summary>
     /// 
     /// </summary>
