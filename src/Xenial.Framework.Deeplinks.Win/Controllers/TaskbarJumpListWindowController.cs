@@ -88,7 +88,7 @@ public sealed class TaskbarJumpListWindowController : WindowController
             jumplistOptions.Jumplists.TaskCategory
                 .OfType<IModelJumplistItemBase>()
                 .Select(m => m.ImageName)
-        ).ToList();
+        ).Distinct().ToList();
 
         var resourceManager = new RuntimeImageResourceManager(null);
         var icons = resourceManager.GenerateIcons(imageNames);
