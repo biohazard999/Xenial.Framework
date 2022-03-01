@@ -1,4 +1,5 @@
 ﻿using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Model;
 
 using System;
@@ -19,8 +20,11 @@ public sealed class HandleDeeplinkMainWindowController : WindowController
     /// </summary>
     public event EventHandler<EventArgs>? ArgumentsHandled;
 
-    static HandleDeeplinkMainWindowController() =>
+    static HandleDeeplinkMainWindowController()
+    {
         RegisterProtocolHandler(DefaultDeeplinkVerbs.View, HandleViewProtocol);
+        RegisterProtocolHandler(DefaultDeeplinkVerbs.Action, HandleActionProtocol);
+    }
 
     private static bool HandleViewProtocol(DeeplinkUriInfo info)
     {
@@ -112,6 +116,52 @@ public sealed class HandleDeeplinkMainWindowController : WindowController
             var listView = info.Application.CreateDashboardView(objectSpace, modelDashboardView.Id, true);
             var svp = new ShowViewParameters(listView);
             info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool HandleActionProtocol(DeeplinkUriInfo info)
+    {
+        static string ExtractActionInfo(DeeplinkUriInfo info)
+        {
+            if (info.Route.Contains('/'
+#if NET5_0_OR_GREATER
+            , StringComparison.Ordinal
+#endif
+        ))
+            {
+                return info.Route.Split('/')[0];
+            }
+            return info.Route;
+        }
+
+        var actionId = ExtractActionInfo(info);
+
+        static ActionBase? FindAction(string actionId, XafApplication application)
+        {
+            if (application.MainWindow is not null)
+            {
+                return application.MainWindow.Controllers.OfType<Controller>()
+                    .SelectMany(c => c.Actions)
+                    .FirstOrDefault(a => a.Id == actionId);
+            }
+
+            return null;
+        }
+
+        var action = FindAction(actionId, info.Application);
+
+        if (action is SimpleAction simpleAction)
+        {
+            simpleAction.DoExecute();
+            return true;
+        }
+
+        if (action is SingleChoiceAction singleChoiceAction)
+        {
+            singleChoiceAction.DoExecute(singleChoiceAction.Items.First());
             return true;
         }
 
