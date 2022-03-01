@@ -78,4 +78,12 @@ public abstract class HandleDeeplinkMainWindowController : WindowController
         return false;
     }
 
+    internal void OnArgumentsHandled()
+        => ArgumentsHandled?.Invoke(this, EventArgs.Empty);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public event EventHandler<EventArgs>? ArgumentsHandled;
+
 }

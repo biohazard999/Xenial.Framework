@@ -226,7 +226,8 @@ public sealed class XafDeeplinkDispatcher
             {
                 if (HandleUri(parsedUri))
                 {
-                    OnArgumentsHandled();
+                    var controller = Application.MainWindow?.GetController<HandleDeeplinkMainWindowController>();
+                    controller?.OnArgumentsHandled();
                     return;
                 }
             }
@@ -256,14 +257,6 @@ public sealed class XafDeeplinkDispatcher
         }
         return false;
     }
-
-    private void OnArgumentsHandled()
-        => ArgumentsHandled?.Invoke(this, EventArgs.Empty);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public event EventHandler<EventArgs>? ArgumentsHandled;
 
     private IModelDeeplinkProtocols Protocols => ((IModelOptionsDeeplinkProtocols)Application.Model.Options).DeeplinkProtocols;
 }
