@@ -47,65 +47,65 @@ public interface IModelJumplistItemBase : IModelJumplistItem
     string LaunchUri { get; set; }
 }
 
-/// <summary>
-/// 
-/// </summary>
-[EditorBrowsable(EditorBrowsableState.Never)]
-public class ProtocolRequiredCalculator : IModelIsRequired
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="node"></param>
-    /// <param name="propertyName"></param>
-    /// <returns></returns>
-    public bool IsRequired(IModelNode node, string propertyName)
-        => node is IModelJumplistItemProtocol;
-}
+///// <summary>
+///// 
+///// </summary>
+//[EditorBrowsable(EditorBrowsableState.Never)]
+//public class ProtocolRequiredCalculator : IModelIsRequired
+//{
+//    /// <summary>
+//    /// 
+//    /// </summary>
+//    /// <param name="node"></param>
+//    /// <param name="propertyName"></param>
+//    /// <returns></returns>
+//    public bool IsRequired(IModelNode node, string propertyName)
+//        => node is IModelJumplistItemProtocol;
+//}
 
-/// <summary>
-/// 
-/// </summary>
-[EditorBrowsable(EditorBrowsableState.Never)]
-public class ProtocolArgumentsVisibilityCalculator : IModelIsVisible
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="node"></param>
-    /// <param name="propertyName"></param>
-    /// <returns></returns>
-    public bool IsVisible(IModelNode node, string propertyName)
-    {
-        if (node is IModelJumplistItemBase jumplistItemBase)
-        {
-            return jumplistItemBase.Protocol is null;
-        }
-        return false;
-    }
-}
+///// <summary>
+///// 
+///// </summary>
+//[EditorBrowsable(EditorBrowsableState.Never)]
+//public class ProtocolArgumentsVisibilityCalculator : IModelIsVisible
+//{
+//    /// <summary>
+//    /// 
+//    /// </summary>
+//    /// <param name="node"></param>
+//    /// <param name="propertyName"></param>
+//    /// <returns></returns>
+//    public bool IsVisible(IModelNode node, string propertyName)
+//    {
+//        if (node is IModelJumplistItemBase jumplistItemBase)
+//        {
+//            return jumplistItemBase.Protocol is null;
+//        }
+//        return false;
+//    }
+//}
 
-/// <summary>
-/// 
-/// </summary>
-[EditorBrowsable(EditorBrowsableState.Never)]
-public class ProtocolLaunchUriVisibilityCalculator : IModelIsVisible
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="node"></param>
-    /// <param name="propertyName"></param>
-    /// <returns></returns>
-    public bool IsVisible(IModelNode node, string propertyName)
-    {
-        if (node is IModelJumplistItemBase jumplistItemBase)
-        {
-            return jumplistItemBase.Protocol is not null;
-        }
-        return false;
-    }
-}
+///// <summary>
+///// 
+///// </summary>
+//[EditorBrowsable(EditorBrowsableState.Never)]
+//public class ProtocolLaunchUriVisibilityCalculator : IModelIsVisible
+//{
+//    /// <summary>
+//    /// 
+//    /// </summary>
+//    /// <param name="node"></param>
+//    /// <param name="propertyName"></param>
+//    /// <returns></returns>
+//    public bool IsVisible(IModelNode node, string propertyName)
+//    {
+//        if (node is IModelJumplistItemBase jumplistItemBase)
+//        {
+//            return jumplistItemBase.Protocol is not null;
+//        }
+//        return false;
+//    }
+//}
 
 /// <summary>
 /// 
