@@ -110,22 +110,22 @@ public interface IModelJumplistItemBase : IModelJumplistItem
 /// <summary>
 /// 
 /// </summary>
-//[DomainLogic(typeof(IModelJumplistItemBase))]
-//[EditorBrowsable(EditorBrowsableState.Never)]
-//[System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "By Convention")]
-//public static class ModelJumplistItemBaseDomainLogic
-//{
-//    /// <summary>
-//    /// 
-//    /// </summary>
-//    /// <param name="modelProtocol"></param>
-//    /// <returns></returns>
-//    public static IModelDeeplinkProtocol Get_Protocol(IModelJumplistItemProtocol modelProtocol!!)
-//    {
-//        if (modelProtocol.Application.Options is IModelOptionsDeeplinkProtocols prot)
-//        {
-//            return prot.DeeplinkProtocols.DefaultProtocol;
-//        }
-//        return null!;
-//    }
-//}
+[DomainLogic(typeof(IModelJumplistItemBase))]
+[EditorBrowsable(EditorBrowsableState.Never)]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "By Convention")]
+public static class ModelJumplistItemBaseDomainLogic
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="modelProtocol"></param>
+    /// <returns></returns>
+    public static IModelDeeplinkProtocol Get_Protocol(IModelJumplistItemBase modelProtocol!!)
+    {
+        if (modelProtocol.Application.Options is IModelOptionsDeeplinkProtocols prot)
+        {
+            return prot.DeeplinkProtocols.DefaultProtocol;
+        }
+        return null!;
+    }
+}
