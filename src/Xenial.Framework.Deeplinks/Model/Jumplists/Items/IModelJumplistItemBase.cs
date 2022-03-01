@@ -26,27 +26,27 @@ public interface IModelJumplistItemBase : IModelJumplistItem
     /// 
     /// </summary>
     [Category("View")]
-    string Caption { get; set; }
+    string? Caption { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
     [Editor("DevExpress.ExpressApp.Win.Core.ModelEditor.ImageGalleryModelEditorControl, DevExpress.ExpressApp.Win" + XafAssemblyInfo.VersionSuffix + XafAssemblyInfo.AssemblyNamePostfix, DevExpress.Utils.ControlConstants.UITypeEditor)]
     [Category("View")]
-    string ImageName { get; set; }
+    string? ImageName { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
     [ModelBrowsable(typeof(ProtocolArgumentsVisibilityCalculator))]
-    string Arguments { get; }
+    string? Arguments { get; }
 
     /// <summary>
     /// 
     /// </summary>
     [ModelBrowsable(typeof(ProtocolLaunchUriVisibilityCalculator))]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI-like properties should not be strings")]
-    string LaunchUri { get; }
+    string? LaunchUri { get; }
 }
 
 /// <summary>

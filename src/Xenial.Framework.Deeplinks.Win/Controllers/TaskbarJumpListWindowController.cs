@@ -144,7 +144,7 @@ public sealed class TaskbarJumpListWindowController : WindowController
 
         if (item is IModelJumplistItemBase baseItem)
         {
-            var (icoPath, iconIndex) = icons.TryGetValue(baseItem.ImageName, out var iconPath) switch
+            var (icoPath, iconIndex) = icons.TryGetValue(baseItem.ImageName ?? "", out var iconPath) switch
             {
                 true => (iconPath, 0),
                 false => (null, -1)
