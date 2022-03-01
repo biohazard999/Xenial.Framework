@@ -17,7 +17,7 @@ public interface IModelJumplistItemBase : IModelJumplistItem
     /// 
     /// </summary>
     [DataSourceProperty("Application.Options.DeeplinkProtocols")]
-    [Required(typeof(ProtocolRequiredCalculator))]
+    //[Required(typeof(ProtocolRequiredCalculator))]
     [Category("Data")]
     [RefreshProperties(RefreshProperties.All)]
     IModelDeeplinkProtocol Protocol { get; set; }
