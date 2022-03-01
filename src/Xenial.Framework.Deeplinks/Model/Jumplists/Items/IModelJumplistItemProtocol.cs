@@ -40,12 +40,12 @@ public interface IModelJumplistItemProtocol : IModelJumplistItemBase
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "By Convention")]
 public static class ModelJumplistItemProtocolDomainLogic
 {
-    ///// <summary>
-    ///// 
-    ///// </summary>
-    ///// <param name="modelProtocol"></param>
-    ///// <returns></returns>
-    //[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
-    //public static string Get_LaunchUri(IModelJumplistItemProtocol modelProtocol!!) =>
-    //    $"{modelProtocol.Protocol?.ProtocolName}://{modelProtocol.Verb?.Trim('/')}/{modelProtocol.Route?.Trim('/')}";
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="modelProtocol"></param>
+    /// <returns></returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
+    public static string Get_LaunchUri(IModelJumplistItemProtocol modelProtocol!!) =>
+        $"{modelProtocol.Protocol?.ProtocolName}://{modelProtocol.Verb?.Trim('/')}/{modelProtocol.Route?.Trim('/')}";
 }
