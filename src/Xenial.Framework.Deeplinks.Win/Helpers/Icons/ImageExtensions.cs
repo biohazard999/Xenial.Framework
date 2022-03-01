@@ -37,7 +37,7 @@ public static class ImageExtensions
             return bitmap.Clone(new Rectangle(0, 0, image.Width, image.Height), format);
         }
 
-        using var result = new Bitmap(image.Width, image.Height, format);
+        var result = new Bitmap(image.Width, image.Height, format);
 
         using var graphics = Graphics.FromImage(result);
 
