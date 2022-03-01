@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.SystemModule;
@@ -56,6 +57,16 @@ public static class ModelJumplistItemViewDomainLogic
             ? ""
             : $"{prefix}{str}";
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="modelView"></param>
+    /// <returns></returns>
+    public static string Get_Arguments(IModelJumplistItemView modelView!!)
+        => modelView.View is null
+        ? ""
+        : new ViewShortcut(modelView.View.Id, modelView.ObjectKey).ToString();
 
     /// <summary>
     /// 
