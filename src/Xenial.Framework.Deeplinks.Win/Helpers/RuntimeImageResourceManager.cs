@@ -83,9 +83,20 @@ public sealed class RuntimeImageResourceManager
 
             if (writer.Images.Count > 0)
             {
-                writer.Save(iconPath);
 
-                images[imageName] = iconPath;
+#pragma warning disable CA1031 // Do not catch general exception types
+                try
+                {
+                    //If we fail, something might be fishy anyway
+                    writer.Save(iconPath);
+                }
+                catch { }
+#pragma warning restore CA1031 // Do not catch general exception types
+
+                if (File.Exists(iconPath))
+                {
+                    images[imageName] = iconPath;
+                }
             }
         }
 
