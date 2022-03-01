@@ -29,6 +29,9 @@ public interface IModelJumplistItemProtocol : IModelJumplistItemBase
     [Category("Data")]
     string Route { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [Category("Data")]
     string Query { get; set; }
 }
@@ -48,5 +51,5 @@ public static class ModelJumplistItemProtocolDomainLogic
     /// <returns></returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
     public static string Get_LaunchUri(IModelJumplistItemProtocol modelProtocol!!) =>
-        $"{modelProtocol.Protocol?.ProtocolName}://{modelProtocol.Verb?.Trim('/')}/{modelProtocol.Route?.Trim('/')}{(string.IsNullOrEmpty(modelProtocol.Query) ? "" : $"?{modelProtocol.Query}")}";
+        $"{modelProtocol.Protocol?.ProtocolName}://{modelProtocol.Verb?.Trim('/')}{(string.IsNullOrEmpty(modelProtocol.Route?.Trim('/')) ? "" : $"/{modelProtocol.Route?.Trim('/')}")}{(string.IsNullOrEmpty(modelProtocol.Query) ? "" : $"?{modelProtocol.Query}")}";
 }
