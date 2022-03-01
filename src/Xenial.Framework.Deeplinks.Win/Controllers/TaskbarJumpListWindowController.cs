@@ -177,22 +177,20 @@ public sealed class TaskbarJumpListWindowController : WindowController
 
             if (item is IModelJumplistItemBase view)
             {
-                return view switch
-                {
-                    var a when a.Protocol is not null => new JumpListItemTask(view.Caption)
-                    {
-                        Path = view.LaunchUri,
-                        IconPath = icoPath,
-                        IconIndex = iconIndex,
-                    },
-                    _ => new JumpListItemTask(view.Caption)
+                return view.Protocol is null
+                    ? new JumpListItemTask(view.Caption)
                     {
                         Path = System.Windows.Forms.Application.ExecutablePath,
                         Arguments = view.Arguments,
                         IconPath = icoPath,
                         IconIndex = iconIndex,
                     }
-                };
+                    : new JumpListItemTask(view.Caption)
+                    {
+                        Path = view.LaunchUri,
+                        IconPath = icoPath,
+                        IconIndex = iconIndex,
+                    };
             }
         }
 
