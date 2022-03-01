@@ -81,6 +81,7 @@ public sealed class TaskbarJumpListWindowController : WindowController
         }
 
         var imageNames = jumplistOptions.Jumplists.CustomCategories
+            .SelectMany(m => m)
             .OfType<IModelJumplistItemBase>()
             .Select(m => m.ImageName)
             .Concat(
