@@ -72,6 +72,7 @@ public static class XenialDeeplinksModelInterfaceExtenders
             //Jumplist Items
             typeof(IModelJumplistItem),
             typeof(IModelJumplistItemBase),
+            typeof(ModelJumplistItemBaseDomainLogic),
 
             typeof(IModelJumplistItemAction),
             typeof(ModelJumplistItemActionDomainLogic),

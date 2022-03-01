@@ -16,6 +16,7 @@ public interface IModelOptionsJumplists : IModelNode
     /// 
     /// </summary>
     [DefaultValue(true)]
+    [Category("Jumplists")]
     bool EnableJumpList { get; set; }
 
     /// <summary>

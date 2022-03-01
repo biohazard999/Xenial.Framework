@@ -18,14 +18,6 @@ public interface IModelJumplistItemProtocol : IModelJumplistItemBase
     /// <summary>
     /// 
     /// </summary>
-    [DataSourceProperty("Application.Options.DeeplinkProtocols")]
-    [Required]
-    [Category("Data")]
-    IModelDeeplinkProtocol Protocol { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Required]
     [Category("Data")]
     //TODO: Editor for default verbs
@@ -35,13 +27,9 @@ public interface IModelJumplistItemProtocol : IModelJumplistItemBase
     /// 
     /// </summary>
     [Category("Data")]
-    string Arguments { get; set; }
+    string Route { get; set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI-like properties should not be strings")]
-    string LaunchUri { get; }
+    //TODO: Query
 }
 
 /// <summary>
@@ -57,16 +45,7 @@ public static class ModelJumplistItemProtocolDomainLogic
     /// </summary>
     /// <param name="modelProtocol"></param>
     /// <returns></returns>
-    public static IModelDeeplinkProtocol Get_Protocol(IModelJumplistItemProtocol modelProtocol!!)
-    {
-        if (modelProtocol.Application.Options is IModelOptionsDeeplinkProtocols prot)
-        {
-            return prot.DeeplinkProtocols.DefaultProtocol;
-        }
-        return null!;
-    }
-
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
     public static string Get_LaunchUri(IModelJumplistItemProtocol modelProtocol!!) =>
-        //TODO: Cleanup extra slashes
-        $"{modelProtocol.Protocol.ProtocolName}://{modelProtocol.Verb}/{modelProtocol.Arguments}";
+        $"{modelProtocol.Protocol?.ProtocolName}://{modelProtocol.Verb?.Trim('/')}/{modelProtocol.Route?.Trim('/')}";
 }
