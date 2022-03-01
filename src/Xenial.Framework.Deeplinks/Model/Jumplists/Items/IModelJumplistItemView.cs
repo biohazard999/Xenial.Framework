@@ -65,8 +65,8 @@ public static class ModelJumplistItemViewDomainLogic
     /// <returns></returns>
     public static string Get_Arguments(IModelJumplistItemView modelView!!)
         => modelView.View is null
-        ? ""
-        : new ViewShortcut(modelView.View.Id, modelView.ObjectKey).ToString();
+        ? $"verb={DefaultDeeplinkVerbs.View}"
+        : $"verb={DefaultDeeplinkVerbs.View}&{new ViewShortcut(modelView.View.Id, modelView.ObjectKey)}";
 
     /// <summary>
     /// 
