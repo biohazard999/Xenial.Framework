@@ -88,10 +88,13 @@ public sealed class TaskbarJumpListWindowController : WindowController
             jumplistOptions.Jumplists.TaskCategory
                 .OfType<IModelJumplistItemBase>()
                 .Select(m => m.ImageName)
-        ).Distinct().ToList();
+        )
+            .Where(imageName => !string.IsNullOrEmpty(imageName))
+            .Distinct()
+            .ToList();
 
         var resourceManager = new RuntimeImageResourceManager(null);
-        var icons = resourceManager.GenerateIcons(imageNames);
+        var icons = resourceManager.GenerateIcons(imageNames!);
 
         var taskbarAssistant = new TaskbarAssistant();
 
@@ -172,15 +175,25 @@ public sealed class TaskbarJumpListWindowController : WindowController
                 };
             }
 
-            //if (item is IModelJumplistItemAction action)
-            //{
-            //    return new JumpListItemTask(action.Caption)
-            //    {
-            //        Path = action.LaunchUri,
-            //        IconPath = icoPath,
-            //        IconIndex = iconIndex,
-            //    };
-            //}
+            if (item is IModelJumplistItemBase view)
+            {
+                return view switch
+                {
+                    var a when a.Protocol is not null => new JumpListItemTask(view.Caption)
+                    {
+                        Path = view.LaunchUri,
+                        IconPath = icoPath,
+                        IconIndex = iconIndex,
+                    },
+                    _ => new JumpListItemTask(view.Caption)
+                    {
+                        Path = System.Windows.Forms.Application.ExecutablePath,
+                        Arguments = view.Arguments,
+                        IconPath = icoPath,
+                        IconIndex = iconIndex,
+                    }
+                };
+            }
         }
 
         throw new InvalidOperationException($"Can not create JumplistItem from type {item.GetType()} {item}");
