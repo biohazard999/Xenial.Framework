@@ -173,24 +173,21 @@ public sealed class XafDeeplinkEngine : IDisposable
                 if (state is Tuple<Window, IList<string>> tuple)
                 {
                     var (mainWindow, arguments) = tuple;
-                    HandleArguments(mainWindow, arguments);
+                    HandleArguments(mainWindow?.Application, arguments);
                 }
             }, Tuple.Create(SingleInstance.Application.MainWindow, e.Arguments));
         }
         else
         {
-            HandleArguments(SingleInstance.Application.MainWindow, e.Arguments);
+            HandleArguments(SingleInstance.Application, e.Arguments);
         }
 
-        static void HandleArguments(Window? mainWindow, IList<string> arguments)
+        static void HandleArguments(XafApplication? application, IList<string> arguments)
         {
-            if (mainWindow is not null)
+            if (application is not null)
             {
-                var controller = mainWindow.GetController<HandleDeeplinkMainWindowController>();
-                if (controller is not null)
-                {
-                    controller.HandleArguments(arguments);
-                }
+                var deeplinkDispatcher = new DeeplinkDispatcher(application);
+                deeplinkDispatcher.HandleArguments(arguments);
             }
         }
     }
