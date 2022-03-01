@@ -172,6 +172,12 @@ public sealed class HandleDeeplinkMainWindowController : WindowController
             return true;
         }
 
+        if (action is PopupWindowShowAction popupWindowShowAction)
+        {
+            popupWindowShowAction.DoExecute(info.Application.MainWindow);
+            return true;
+        }
+
         return false;
     }
 
