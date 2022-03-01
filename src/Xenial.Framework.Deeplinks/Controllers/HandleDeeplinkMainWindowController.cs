@@ -143,9 +143,16 @@ public sealed class HandleDeeplinkMainWindowController : WindowController
         {
             if (application.MainWindow is not null)
             {
-                return application.MainWindow.Controllers.OfType<Controller>()
-                    .SelectMany(c => c.Actions)
-                    .FirstOrDefault(a => a.Id == actionId);
+                foreach (var controller in application.MainWindow.Controllers)
+                {
+                    foreach (var action in controller.Actions)
+                    {
+                        if (action.Id == actionId)
+                        {
+                            return action;
+                        }
+                    }
+                }
             }
 
             return null;
