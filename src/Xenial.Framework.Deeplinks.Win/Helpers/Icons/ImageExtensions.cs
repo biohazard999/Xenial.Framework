@@ -92,6 +92,9 @@ public static class ImageExtensions
 
         using var img = image.CopyImage(PixelFormat.Format32bppArgb);
         img.Save(stream, ImageFormat.Png);
+
+        stream.Position = 0;
+
         return stream.ToArray();
     }
 }
