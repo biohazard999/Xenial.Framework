@@ -65,4 +65,8 @@ public static class ModelJumplistItemProtocolDomainLogic
         }
         return null!;
     }
+
+    public static string Get_LaunchUri(IModelJumplistItemProtocol modelProtocol!!) =>
+        //TODO: Cleanup extra slashes
+        $"{modelProtocol.Protocol.ProtocolName}://{modelProtocol.Verb}/{modelProtocol.Arguments}";
 }
