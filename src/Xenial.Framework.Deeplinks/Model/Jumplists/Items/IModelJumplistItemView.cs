@@ -24,8 +24,11 @@ public interface IModelJumplistItemView : IModelJumplistItemBase
     /// <summary>
     /// 
     /// </summary>
-    [Description("Specifies the key property value (Oid by default) of the object that is present in the navigation control."), Category("Data")]
+    [Description("Specifies the key property value (Oid by default) of the object that is present in the navigation control.")]
+    [Category("Data")]
     string ObjectKey { get; set; }
+
+
 }
 
 /// <summary>

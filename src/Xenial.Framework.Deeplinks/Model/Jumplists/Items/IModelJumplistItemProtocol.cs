@@ -18,10 +18,30 @@ public interface IModelJumplistItemProtocol : IModelJumplistItemBase
     /// <summary>
     /// 
     /// </summary>
-    [DataSourceProperty("Application.Options.DeeplinkProtocols")] //TODO: Filter only by Window Controllers and root?
+    [DataSourceProperty("Application.Options.DeeplinkProtocols")]
     [Required]
     [Category("Data")]
     IModelDeeplinkProtocol Protocol { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [Required]
+    [Category("Data")]
+    //TODO: Editor for default verbs
+    string Verb { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [Category("Data")]
+    string Arguments { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1056:URI-like properties should not be strings")]
+    string LaunchUri { get; }
 }
 
 /// <summary>

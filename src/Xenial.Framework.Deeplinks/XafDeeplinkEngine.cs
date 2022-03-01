@@ -143,7 +143,8 @@ public sealed class XafDeeplinkEngine : IDisposable
                     if (uri.Scheme == "file")
                     {
                         var processPath = GetProcessPath();
-                        if (executablePath.Equals(processPath, StringComparison.Ordinal))
+
+                        if (executablePath!.Equals(processPath, StringComparison.Ordinal))
                         {
                             return false;
                         }
@@ -152,7 +153,7 @@ public sealed class XafDeeplinkEngine : IDisposable
                 else
                 {
                     var processPath = GetProcessPath();
-                    if (executablePath.Equals(processPath, StringComparison.Ordinal))
+                    if (executablePath!.Equals(processPath, StringComparison.Ordinal))
                     {
                         return false;
                     }
