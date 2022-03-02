@@ -32,7 +32,29 @@ public static class XenialDeeplinkModuleInitializer
         initialized = true;
 
         XenialModelDetailViewItemsNodesGenerator.NodeFactory
-            .Register<HtmlContentLayoutViewItem>((parent, node) => parent.AddNode<IHtmlContentViewItem>())
+            .Register<HtmlContentLayoutViewItem>((parent, node) =>
+            {
+                var item = parent.AddNode<IHtmlContentViewItem>(node.Id);
+                //TODO: Move to ViewItemMapper
+                if (node.CssStyles is not null)
+                {
+                    item.CssStyles = node.CssStyles;
+                }
+                if (node.HtmlTemplate is not null)
+                {
+                    item.HtmlTemplate = node.HtmlTemplate;
+                }
+
+                if (node.ImageNames is not null && node.ImageNames.Count > 0)
+                {
+                    item.ImageNames = node.ImageNames.ToArray();
+                }
+                else
+                {
+                    item.LoadAllImages = node.LoadAllImages;
+                }
+                return item;
+            })
         ;
     }
 }
