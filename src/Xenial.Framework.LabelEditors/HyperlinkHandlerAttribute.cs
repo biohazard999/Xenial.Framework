@@ -14,7 +14,7 @@ public delegate void HandleHyperlink(string hyperlink);
 /// <summary>
 /// 
 /// </summary>
-[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public sealed class HyperlinkHandlerAttribute : Attribute, IBindableFunctorProvider<HandleHyperlink>
 {
     /// <summary>
@@ -49,30 +49,30 @@ public sealed class HyperlinkHandlerAttribute : Attribute, IBindableFunctorProvi
     /// Initializes a new instance of the <see cref="HyperlinkHandlerAttribute"/> class.
     /// </summary>
     ///
-    /// <param name="handlerType">    Type of the handler. </param>
+    /// <param name="handleHyperlinkType">    Type of the handler. </param>
 
-    public HyperlinkHandlerAttribute(Type handlerType!!)
-        => HandleHyperlinkType = handlerType;
+    public HyperlinkHandlerAttribute(Type handleHyperlinkType!!)
+        => HandleHyperlinkType = handleHyperlinkType;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HyperlinkHandlerAttribute" /> class.
     /// </summary>
     ///
-    /// <param name="handlerType">                  Type of the hanlder. </param>
+    /// <param name="handleHyperlinkType">                  Type of the hanlder. </param>
     /// <param name="handleHyperlinkMethodName">    Name of the hanlder method. </param>
-    public HyperlinkHandlerAttribute(Type handlerType!!, string handleHyperlinkMethodName!!)
+    public HyperlinkHandlerAttribute(Type handleHyperlinkType!!, string handleHyperlinkMethodName!!)
         => (HandleHyperlinkType, HandleHyperlinkMethodName)
-        = (handlerType, handleHyperlinkMethodName);
+        = (handleHyperlinkType, handleHyperlinkMethodName);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HyperlinkHandlerAttribute" /> class.
     /// </summary>
     ///
-    /// <param name="hyperlinkHandler">  The handler delegate. </param>
+    /// <param name="handleHyperlinkDelegate">  The handler delegate. </param>
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public HyperlinkHandlerAttribute(HandleHyperlink hyperlinkHandler)
-        => HandleHyperlinkDelegate = hyperlinkHandler;
+    public HyperlinkHandlerAttribute(HandleHyperlink handleHyperlinkDelegate)
+        => HandleHyperlinkDelegate = handleHyperlinkDelegate;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HyperlinkHandlerAttribute"/> class.

@@ -16,7 +16,7 @@ public static class LabelEditorFactory
     /// </summary>
     /// <param name="htmlTemplate"></param>
     /// <returns></returns>
-    public static HtmlContentLayoutViewItem HtmlContentLayoutViewItem(
+    public static HtmlContentLayoutViewItem HtmlContentViewItem(
         string htmlTemplate
     ) => new HtmlContentLayoutViewItem(htmlTemplate);
 
@@ -26,7 +26,7 @@ public static class LabelEditorFactory
     /// <param name="htmlTemplate"></param>
     /// <param name="cssStyles"></param>
     /// <returns></returns>
-    public static HtmlContentLayoutViewItem HtmlContentLayoutViewItem(
+    public static HtmlContentLayoutViewItem HtmlContentViewItem(
         string htmlTemplate, string cssStyles
     ) => new HtmlContentLayoutViewItem(htmlTemplate, cssStyles);
 
@@ -39,7 +39,7 @@ public static class LabelEditorFactory
     /// <param name="imageNames"></param>
     /// <returns></returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-    public static HtmlContentLayoutViewItem HtmlContentLayoutViewItem(
+    public static HtmlContentLayoutViewItem HtmlContentViewItem(
         string htmlTemplate, string cssStyles, List<string> imageNames
     ) => new HtmlContentLayoutViewItem(htmlTemplate, cssStyles, imageNames);
 
@@ -52,7 +52,7 @@ public static class LabelEditorFactory
     /// <param name="imageNames"></param>
     /// <returns></returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "<Pending>")]
-    public static HtmlContentLayoutViewItem HtmlContentLayoutViewItem(
+    public static HtmlContentLayoutViewItem HtmlContentViewItem(
         string id, string htmlTemplate, string cssStyles, List<string> imageNames
     ) => new HtmlContentLayoutViewItem(id, htmlTemplate, cssStyles, imageNames);
 }

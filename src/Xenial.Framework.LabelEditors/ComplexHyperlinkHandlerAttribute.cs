@@ -20,7 +20,7 @@ public delegate void HandleHyperlinkComplex(HyperlinkContext context);
 /// <summary>
 /// 
 /// </summary>
-[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public sealed class HyperlinkHandlerComplexAttribute : Attribute, IBindableFunctorProvider<HandleHyperlinkComplex>
 {
     /// <summary>

@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 
 using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Utils;
+using DevExpress.Persistent.Base;
 using DevExpress.Utils;
 using DevExpress.Utils.Svg;
 using DevExpress.XtraEditors;
 
+using Xenial.Framework.Binding;
 using Xenial.Framework.LabelEditors.Model;
 
 namespace Xenial.Framework.LabelEditors.Win.Editors;
@@ -111,10 +113,22 @@ public sealed class HtmlContentWindowsFormsViewItem : ViewItem
 
     private void HtmlContentControl_ElementMouseClick(object sender, DevExpress.Utils.Html.DxHtmlElementMouseEventArgs e)
     {
-        if (e.Element is not null && e.HitInfo.InLink)
+        if (e.Element is not null && e.HitInfo.InLink && ObjectTypeInfo is not null)
         {
-            //TODO: HandleLink
-            using var _ = Process.Start(new ProcessStartInfo { FileName = e.HitInfo.Href, UseShellExecute = true, CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden });
+            var attribute = ObjectTypeInfo.FindAttribute<HyperlinkHandlerAttribute>();
+            if (attribute is not null)
+            {
+                var handler = BindingFactory.Cached.ResovleDelegate(attribute, CurrentObject);
+                handler(e.HitInfo.Href);
+                return;
+            }
+
+            var attributeComplex = ObjectTypeInfo.FindAttribute<HyperlinkHandlerComplexAttribute>();
+            if (attributeComplex is not null)
+            {
+                var handler = BindingFactory.Cached.ResovleDelegate(attributeComplex, CurrentObject);
+                handler(new(e.HitInfo.Href));
+            }
         }
     }
 
