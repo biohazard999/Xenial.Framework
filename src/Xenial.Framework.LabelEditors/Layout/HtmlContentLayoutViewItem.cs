@@ -39,6 +39,7 @@ public partial record HtmlContentLayoutViewItem : LayoutViewItem
     public HtmlContentLayoutViewItem(string htmlTemplate, string cssStyles, List<string> imageNames)
         : this(htmlTemplate, htmlTemplate, cssStyles, imageNames) { }
 
+
     /// <summary>
     /// 
     /// </summary>
@@ -46,6 +47,7 @@ public partial record HtmlContentLayoutViewItem : LayoutViewItem
     /// <param name="htmlTemplate"></param>
     /// <param name="cssStyles"></param>
     /// <param name="imageNames"></param>
+    [SuppressMessage("Design", "CA1002:Do not expose generic lists")]
     public HtmlContentLayoutViewItem(string id, string htmlTemplate, string cssStyles, List<string> imageNames)
         : base(id)
         => (HtmlTemplate, CssStyles, ImageNames) = (htmlTemplate, cssStyles, imageNames);
