@@ -150,7 +150,7 @@ public sealed class UrlEncodingParser : NameValueCollection
     /// <returns></returns>
     public bool TryGetBoolean(string? key,
 #if NET5_0_OR_GREATER
-            [NotNullWhen(true)]
+        [System.Diagnostics.CodeAnalysis.NotNullWhen(true)]
 #endif
         out bool value
     )
@@ -179,7 +179,7 @@ public sealed class UrlEncodingParser : NameValueCollection
     /// <returns></returns>
     public bool TryGetString(string? key,
 #if NET5_0_OR_GREATER
-            [NotNullWhen(true)]
+        [System.Diagnostics.CodeAnalysis.NotNullWhen(true)]
 #endif
         out string value
     )
@@ -204,7 +204,7 @@ public sealed class UrlEncodingParser : NameValueCollection
     /// <returns></returns>
     public bool TryGetInt(string? key,
 #if NET5_0_OR_GREATER
-            [NotNullWhen(true)]
+        [System.Diagnostics.CodeAnalysis.NotNullWhen(true)]
 #endif
         out int value
     )
@@ -234,7 +234,7 @@ public sealed class UrlEncodingParser : NameValueCollection
     /// <returns></returns>
     public bool TryGetGuid(string? key,
 #if NET5_0_OR_GREATER
-            [NotNullWhen(true)]
+        [System.Diagnostics.CodeAnalysis.NotNullWhen(true)]
 #endif
         out Guid value
     )
