@@ -1,5 +1,6 @@
 ﻿using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
+using DevExpress.ExpressApp.Model;
 
 using System;
 using System.Linq;
@@ -32,6 +33,63 @@ public abstract class HandleDeeplinkMainWindowController : WindowController
         }
 
         Active[nameof(modelOptionsDeeplinkProtocols.DeeplinkProtocols.EnableProtocols)] = false;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="modelView"></param>
+    /// <param name="objectKey"></param>
+    /// <returns></returns>
+    public bool HandleView(DeeplinkUriInfo info, IModelView modelView, string? objectKey)
+    {
+        if (Active)
+        {
+            return HandleViewCore(info, modelView, objectKey);
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="modelView"></param>
+    /// <param name="objectKey"></param>
+    /// <returns></returns>
+    protected virtual bool HandleViewCore(DeeplinkUriInfo info!!, IModelView modelView, string? objectKey)
+    {
+        if (modelView is IModelObjectView modelObjectView)
+        {
+            var shortcut = new ViewShortcut(modelObjectView.ModelClass.TypeInfo.Type, objectKey, modelView.Id);
+
+            var objectView = info.Application.ProcessShortcut(shortcut);
+            if (objectView is not null)
+            {
+                var svp = new ShowViewParameters(objectView);
+                info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
+                return true;
+            }
+            return false;
+        }
+
+        if (modelView is IModelDashboardView modelDashboardView)
+        {
+            var shortcut = new ViewShortcut(null, null, modelDashboardView.Id);
+
+            var dashboardView = info.Application.ProcessShortcut(shortcut);
+            if (dashboardView is not null)
+            {
+                var svp = new ShowViewParameters(dashboardView);
+                info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
     }
 
     /// <summary>

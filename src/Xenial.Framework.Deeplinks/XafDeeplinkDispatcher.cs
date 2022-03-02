@@ -66,7 +66,6 @@ public sealed class XafDeeplinkDispatcher
 
         var (viewId, objectKey) = ExtractViewInfo(info);
 
-
         var modelView = info.Application.FindModelView(viewId);
 
         if (modelView is null)
@@ -77,64 +76,16 @@ public sealed class XafDeeplinkDispatcher
             );
         }
 
-        if (modelView is IModelDetailView modelDetailView)
+        if (info.Application.MainWindow is not null)
         {
-            var objectSpace = info.Application.CreateObjectSpace(modelDetailView.ModelClass.TypeInfo.Type);
-
-            object? FindOrCreateObject()
+            var controller = info.Application.MainWindow.GetController<HandleDeeplinkMainWindowController>();
+            if (controller is not null)
             {
-                if (objectKey is not null)
+                if (controller.HandleView(info, modelView, objectKey))
                 {
-                    var keyType = objectSpace.GetKeyPropertyType(modelDetailView.ModelClass.TypeInfo.Type);
-                    if (keyType == typeof(Guid))
-                    {
-                        if (Guid.TryParse(objectKey, out var guidKey))
-                        {
-                            return objectSpace.GetObjectByKey(modelDetailView.ModelClass.TypeInfo.Type, guidKey);
-                        }
-                    }
-
-                    if (keyType == typeof(int))
-                    {
-                        if (int.TryParse(objectKey, out var intKey))
-                        {
-                            return objectSpace.GetObjectByKey(modelDetailView.ModelClass.TypeInfo.Type, intKey);
-                        }
-                    }
-
-                    var key = objectKey;
-                    return objectSpace.GetObjectByKey(modelDetailView.ModelClass.TypeInfo.Type, key);
+                    return true;
                 }
-
-                return objectSpace.CreateObject(modelDetailView.ModelClass.TypeInfo.Type);
             }
-
-            var obj = FindOrCreateObject();
-
-            var detailView = obj is null
-                ? info.Application.CreateDetailView(objectSpace, modelDetailView, true)
-                : info.Application.CreateDetailView(objectSpace, obj, true);
-
-            var svp = new ShowViewParameters(detailView);
-            info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
-            return true;
-        }
-
-        if (modelView is IModelListView modelListView)
-        {
-            var listView = info.Application.CreateListView(modelListView.ModelClass.TypeInfo.Type, true);
-            var svp = new ShowViewParameters(listView);
-            info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
-            return true;
-        }
-
-        if (modelView is IModelDashboardView modelDashboardView)
-        {
-            var objectSpace = info.Application.CreateObjectSpace();
-            var listView = info.Application.CreateDashboardView(objectSpace, modelDashboardView.Id, true);
-            var svp = new ShowViewParameters(listView);
-            info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
-            return true;
         }
 
         return false;
