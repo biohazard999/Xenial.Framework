@@ -39,8 +39,8 @@ public sealed class TaskbarJumpListWindowController : WindowController
     {
         base.OnActivated();
 
-        Active[$"{nameof(IModelOptionsJumplists)}{nameof(IModelOptionsJumplists.EnableJumpList)}"] =
-            Jumplists?.EnableJumpList ?? false;
+        Active[$"{nameof(IModelJumplists)}{nameof(IModelJumplists.EnableJumpList)}"] =
+            Jumplists?.Jumplists?.EnableJumpList ?? false;
 
         if (Active)
         {
@@ -53,7 +53,7 @@ public sealed class TaskbarJumpListWindowController : WindowController
         }
     }
 
-    private void Window_TemplateChanged(object sender, EventArgs e)
+    private void Window_TemplateChanged(object? sender, EventArgs e)
         => SetTaskbarAssistant(CreateTaskbarAssistant());
 
     /// <summary>
@@ -75,7 +75,7 @@ public sealed class TaskbarJumpListWindowController : WindowController
     public TaskbarAssistant? CreateTaskbarAssistant()
     {
         var jumplistOptions = Jumplists;
-        if (jumplistOptions is null || !jumplistOptions.EnableJumpList)
+        if (jumplistOptions?.Jumplists is null || !jumplistOptions.Jumplists.EnableJumpList)
         {
             return null;
         }
