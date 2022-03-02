@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Xenial.Framework.LabelEditors.Model;
 
 namespace DevExpress.ExpressApp;
+
+using Xenial.Framework.LabelEditors.Layout;
+using Xenial.Framework.Model.GeneratorUpdaters;
 
 /// <summary>
 /// 
 /// </summary>
 public static partial class XenialLabelEditorsTypeList
 {
+    static XenialLabelEditorsTypeList() =>
+        XenialDeeplinkModuleInitializer.Initialize();
+
     internal static IEnumerable<Type> RegularTypes { get; } = new[]
     {
         typeof(IHtmlContentViewItem)

@@ -15,6 +15,9 @@ namespace Xenial.Framework.LabelEditors;
 [XenialCheckLicense]
 public sealed partial class XenialLabelEditorsModule : XenialModuleBase
 {
+    static XenialLabelEditorsModule() =>
+        XenialDeeplinkModuleInitializer.Initialize();
+
     /// <summary>
     /// 
     /// </summary>
