@@ -17,9 +17,10 @@ public interface IModelJumplistItemView : IModelJumplistItemBase
     /// <summary>
     /// 
     /// </summary>
-    [DataSourceProperty("Application.Views")] //TODO: Filter only by Window Controllers and root?
+    [DataSourceProperty("Application.Views")]
     [Required]
     [Category("Data")]
+    [RefreshProperties(RefreshProperties.All)]
     IModelView View { get; set; }
 
     /// <summary>
@@ -27,9 +28,41 @@ public interface IModelJumplistItemView : IModelJumplistItemBase
     /// </summary>
     [Description("Specifies the key property value (Oid by default) of the object that is present in the navigation control.")]
     [Category("Data")]
+    [RefreshProperties(RefreshProperties.All)]
     string ObjectKey { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    [Category("Data")]
+    [ModelBrowsable(typeof(ModelJumplistCreateObjectVisibilityCalculator))]
+    bool CreateObject { get; set; }
+}
 
+/// <summary>
+/// 
+/// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
+public sealed class ModelJumplistCreateObjectVisibilityCalculator : IModelIsVisible
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="propertyName"></param>
+    /// <returns></returns>
+    /// <exception cref="System.NotImplementedException"></exception>
+    public bool IsVisible(IModelNode node, string propertyName)
+    {
+        if (node is IModelJumplistItemView modelJumplistItemView)
+        {
+            if (modelJumplistItemView.View is IModelDetailView && string.IsNullOrEmpty(modelJumplistItemView.ObjectKey))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 /// <summary>
@@ -47,7 +80,12 @@ public static class ModelJumplistItemViewDomainLogic
     /// <returns></returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
     public static string Get_LaunchUri(IModelJumplistItemView modelView!!) =>
-        $"{modelView.Protocol?.ProtocolName}://{DefaultDeeplinkVerbs.View}{PrefixString('/', modelView.View?.Id)}{PrefixString('/', modelView.ObjectKey)}";
+        modelView.CreateObject
+        ? $"{GetLaunchUri(modelView)}?createObject=true"
+        : $"{GetLaunchUri(modelView)}{PrefixString('/', modelView.ObjectKey)}";
+
+    private static string GetLaunchUri(IModelJumplistItemView modelView!!) =>
+        $"{modelView.Protocol?.ProtocolName}://{DefaultDeeplinkVerbs.View}{PrefixString('/', modelView.View?.Id)}";
 
     private static string PrefixString(char prefix, string? str)
     {

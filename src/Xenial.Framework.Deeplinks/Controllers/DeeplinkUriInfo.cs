@@ -1,9 +1,11 @@
 ﻿using DevExpress.ExpressApp;
 
 using System;
+using System.Collections.Specialized;
 using System.Linq;
 
 using Xenial.Framework.Deeplinks.Model;
+using Xenial.Framework.Deeplinks.Utils;
 
 namespace Xenial.Framework.Deeplinks
 {
@@ -31,5 +33,10 @@ namespace Xenial.Framework.Deeplinks
         /// 
         /// </summary>
         public string Route => Uri.LocalPath.TrimStart('/');
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public UrlEncodingParser QueryCollection { get; } = new UrlEncodingParser(Uri.Query);
     }
 }

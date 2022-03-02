@@ -60,14 +60,23 @@ public abstract class HandleDeeplinkMainWindowController : WindowController
     /// <returns></returns>
     protected virtual bool HandleViewCore(DeeplinkUriInfo info!!, IModelView modelView, string? objectKey)
     {
+        if (modelView is IModelDetailView modelDetailView && string.IsNullOrEmpty(objectKey))
+        {
+            if (info.QueryCollection.TryGetBoolean("createObject", out var createObject) && createObject)
+            {
+                var type = modelDetailView.ModelClass.TypeInfo.Type;
+                var objectSpace = info.Application.CreateObjectSpace(type);
+                var newObject = objectSpace.CreateObject(type);
+                var detailView = info.Application.CreateDetailView(objectSpace, modelDetailView, true, newObject);
+                var svp = new ShowViewParameters(detailView);
+                info.Application.ShowViewStrategy.ShowView(svp, new(null, null));
+                return true;
+            }
+        }
+
         if (modelView is IModelObjectView modelObjectView)
         {
             var shortcut = new ViewShortcut(modelObjectView.ModelClass.TypeInfo.Type, objectKey, modelView.Id);
-
-            if (modelView is IModelDetailView && string.IsNullOrEmpty(objectKey))
-            {
-                shortcut.Add(ViewShortcut.IsNewObject, "True");
-            }
 
             var objectView = info.Application.ProcessShortcut(shortcut);
             if (objectView is not null)
