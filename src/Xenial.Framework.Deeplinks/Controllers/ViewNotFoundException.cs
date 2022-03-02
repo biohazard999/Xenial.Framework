@@ -5,6 +5,7 @@ namespace Xenial.Framework.Deeplinks;
 /// <summary>
 /// 
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2237:Mark ISerializable types with serializable")]
 public sealed class ViewNotFoundException : Exception
 {
     /// <summary>

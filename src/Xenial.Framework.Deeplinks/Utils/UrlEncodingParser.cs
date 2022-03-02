@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Text;
 
 namespace Xenial.Framework.Deeplinks.Utils;
 
@@ -19,6 +18,7 @@ namespace Xenial.Framework.Deeplinks.Utils;
 /// Supports multiple values per key
 /// </remarks>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1010:Generic interface should also be implemented")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2237:Mark ISerializable types with serializable")]
 public sealed class UrlEncodingParser : NameValueCollection
 {
 
