@@ -106,6 +106,25 @@ public static class ModelJumplistItemViewDomainLogic
         ? $"verb={DefaultDeeplinkVerbs.View}"
         : $"verb={DefaultDeeplinkVerbs.View}&{new ViewShortcut(modelView.View.Id, modelView.ObjectKey)}";
 
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="node"></param>
+    /// <returns></returns>
+    public static bool Get_CreateObject(IModelNode node)
+    {
+        if (node is IModelJumplistItemView modelNode)
+        {
+            if (string.IsNullOrEmpty(modelNode.ObjectKey))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /// <summary>
     /// 
     /// </summary>
