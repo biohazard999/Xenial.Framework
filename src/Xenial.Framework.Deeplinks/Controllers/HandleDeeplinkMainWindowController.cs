@@ -64,6 +64,11 @@ public abstract class HandleDeeplinkMainWindowController : WindowController
         {
             var shortcut = new ViewShortcut(modelObjectView.ModelClass.TypeInfo.Type, objectKey, modelView.Id);
 
+            if (modelView is IModelDetailView && string.IsNullOrEmpty(objectKey))
+            {
+                shortcut.Add(ViewShortcut.IsNewObject, "True");
+            }
+
             var objectView = info.Application.ProcessShortcut(shortcut);
             if (objectView is not null)
             {
