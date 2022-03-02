@@ -49,10 +49,9 @@ public static class XenialDeeplinkModuleInitializer
                 {
                     item.ImageNames = node.ImageNames.ToArray();
                 }
-                else
-                {
-                    item.LoadAllImages = node.LoadAllImages;
-                }
+
+                item.LoadAllImages = node.LoadAllImages;
+
                 return item;
             })
         ;
