@@ -65,27 +65,15 @@ public partial record HtmlContentLayoutViewItem : LayoutViewItem
     /// <summary>
     /// 
     /// </summary>
+    [Obsolete($"Use this property only for prototyping, it's expensive. Use {nameof(ImageNames)} instead.")]
     public bool LoadAllImages { get; set; }
-
-    private List<string> imageNames = new();
-
 
     /// <summary>
     /// 
     /// </summary>
     [SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "By Design")]
     [SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "By Design")]
-    public List<string> ImageNames
-    {
-        get => imageNames; set
-        {
-            imageNames = value;
-
-            LoadAllImages = imageNames is not null && imageNames.Count > 0
-                ? false
-                : true;
-        }
-    }
+    public List<string> ImageNames { get; set; } = new();
 
     /// <summary>
     /// 
