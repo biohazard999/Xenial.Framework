@@ -41,7 +41,8 @@ public static class XenialDeeplinksGeneratorExtensions
     /// <returns></returns>
     public static ModelNodesGeneratorUpdaters UseXenialDeeplinks(
         this ModelNodesGeneratorUpdaters updaters,
-        params ModelDeeplinkProtocol[] protocols) => updaters.UseXenialDeeplinks(null, protocols);
+        params ModelDeeplinkProtocol[] protocols
+    ) => updaters.UseXenialDeeplinks(null, protocols);
 
     /// <summary>
     ///
@@ -51,14 +52,18 @@ public static class XenialDeeplinksGeneratorExtensions
     /// <returns></returns>
     public static ModelNodesGeneratorUpdaters UseXenialDeeplinks(
         this ModelNodesGeneratorUpdaters updaters,
-        ModelDeeplinkProtocol protocol) => updaters.UseXenialDeeplinks(null, new[] { protocol });
+        ModelDeeplinkProtocol protocol
+    ) => updaters.UseXenialDeeplinks(null, new[] { protocol });
 
     /// <summary>
     ///
     /// </summary>
     /// <param name="updaters"></param>
     /// <returns></returns>
-    public static ModelNodesGeneratorUpdaters UseXenialDeeplinks(this ModelNodesGeneratorUpdaters updaters) => updaters.UseXenialDeeplinks(
+    public static ModelNodesGeneratorUpdaters UseXenialDeeplinks(
+        this ModelNodesGeneratorUpdaters updaters
+    )
+        => updaters.UseXenialDeeplinks(
         null,
         Array.Empty<ModelDeeplinkProtocol>());
 }
