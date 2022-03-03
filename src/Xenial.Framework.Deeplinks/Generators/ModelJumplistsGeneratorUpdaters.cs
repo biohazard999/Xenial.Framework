@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Model.NodeGenerators;
+using DevExpress.ExpressApp.SystemModule;
 
 using Xenial.Framework.Deeplinks.Model;
 
@@ -223,14 +225,42 @@ public sealed partial class ModelJumplistTasksCategoryGeneratorUpdater : ModelNo
         {
             foreach (var item in options.TaskCategory)
             {
-                var itemNode = FactorNode(item, taskCategoryNode);
-                Map(item, itemNode);
+                FactorNode(item, taskCategoryNode);
             }
         }
     }
 
-    internal static IModelJumplistItem FactorNode(ModelJumplistItem item, IModelNode node)
-        => item switch
+    static partial void MapNodeCore(ModelJumplistItemBase from, IModelJumplistItemBase to)
+    {
+        if (!string.IsNullOrEmpty(from.ProtocolId))
+        {
+            if (to.Application.Options is IModelOptionsDeeplinkProtocols modelOptionsDeeplinkProtocols)
+            {
+                to.Protocol = modelOptionsDeeplinkProtocols.DeeplinkProtocols[from.ProtocolId];
+            }
+        }
+    }
+
+
+    static partial void MapNodeCore(ModelJumplistNavigationItem from, IModelJumplistItemNavigationItem to)
+    {
+        if (to.Application is IModelApplicationNavigationItems navigationItems)
+        {
+            to.NavigationItem = navigationItems
+                .NavigationItems
+                .AllItems
+                .FirstOrDefault(m => m.Id == from.NavigationItemId);
+        }
+    }
+
+    static partial void MapNodeCore(ModelJumplistViewItem from, IModelJumplistItemView to)
+        => to.View = to.Application.Views[from.ViewId];
+
+    static partial void MapNodeCore(ModelJumplistActionItem from, IModelJumplistItemAction to)
+        => to.ActionId = from.ActionId;
+
+    internal static void FactorNode(ModelJumplistItem item, IModelNode node)
+        => Map(item, item switch
         {
             ModelJumplistActionItem actionItem => node.AddNode<IModelJumplistItemAction>(actionItem.ActionId),
             ModelJumplistLaunchItem => node.AddNode<IModelJumplistItemLaunch>(),
@@ -239,7 +269,7 @@ public sealed partial class ModelJumplistTasksCategoryGeneratorUpdater : ModelNo
             ModelJumplistNavigationItem navigationItem => node.AddNode<IModelJumplistItemNavigationItem>(navigationItem.NavigationItemId),
             ModelJumplistViewItem viewItem => node.AddNode<IModelJumplistItemView>(viewItem.ViewId),
             _ => throw new NotImplementedException($"No factory for {item}")
-        };
+        });
 }
 
 /// <summary>
@@ -270,6 +300,11 @@ public sealed partial class ModelJumplistCustomCategoriesGeneratorUpdater : Mode
                 var modelCategory = modelJumpListCollection.AddNode<IModelJumplistCustomCategory>(category.Caption);
                 modelCategory.Caption = category.Caption;
                 Map(category, modelCategory);
+
+                foreach (var item in category.Items)
+                {
+                    ModelJumplistTasksCategoryGeneratorUpdater.FactorNode(item, modelCategory);
+                }
             }
         }
     }
