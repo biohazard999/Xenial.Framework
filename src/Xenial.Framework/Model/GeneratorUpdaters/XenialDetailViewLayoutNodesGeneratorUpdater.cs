@@ -448,7 +448,7 @@ public sealed partial class XenialDetailViewLayoutNodesGeneratorUpdater : ModelN
                                 xIndex = cI + 1;
                             }
                         }
-                        new LayoutItemMapper().Map(layoutItemNode, node);
+                        LayoutItemMapper.Map(layoutItemNode, node);
                         return (node, node?.Index ?? 0, layoutItemNode);
                     }
                 }

@@ -37,7 +37,7 @@ public sealed partial class ModelAppOptionsNodesGeneratorUpdater : ModelNodesGen
     {
         if (node is IModelOptions options && options.Application is not null)
         {
-            new AppOptionsMapper().Map(Options, options.Application);
+            AppOptionsMapper.Map(Options, options.Application);
         }
     }
 }

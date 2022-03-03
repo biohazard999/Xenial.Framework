@@ -23,7 +23,7 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
 internal partial class ViewItemMapper
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "By Convention")]
-    partial void MapNodeCore(LayoutViewItem from, IModelViewItem to)
+    static partial void MapNodeCore(LayoutViewItem from, IModelViewItem to)
     {
         if (from.WasCaptionSet)
         {

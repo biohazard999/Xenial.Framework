@@ -112,7 +112,7 @@ public sealed partial class ModelColumnsBuilderNodesGeneratorUpdater : ModelNode
 
                             if (columns.Options is not null)
                             {
-                                new ViewOptionsMapper().Map(columns.Options, modelListView);
+                                ViewOptionsMapper.Map(columns.Options, modelListView);
                             }
 
                             if (columns.Options is null || !columns.Options.AutomaticColumns)
@@ -126,8 +126,7 @@ public sealed partial class ModelColumnsBuilderNodesGeneratorUpdater : ModelNode
                                 var columnNode = modelColumns.AddNode<IModelColumn>(column.Id);
                                 columnNode.Index = index;
 
-                                new ColumnMapper()
-                                    .Map(column, columnNode);
+                                ColumnMapper.Map(column, columnNode);
 
                                 if (column.WasIndexSet && column.Index.HasValue)
                                 {

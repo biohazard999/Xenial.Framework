@@ -160,8 +160,6 @@ public sealed partial class XenialModelDetailViewItemsNodesGenerator : ModelNode
                 return newViewItem;
             });
 
-    private static readonly ViewItemMapper itemMapper = new();
-
     /// <summary>
     /// 
     /// </summary>
@@ -182,8 +180,7 @@ public sealed partial class XenialModelDetailViewItemsNodesGenerator : ModelNode
 
                 if (layout.Options is not null)
                 {
-                    new ViewOptionsMapper()
-                        .Map(layout.Options, modelDetailView);
+                    ViewOptionsMapper.Map(layout.Options, modelDetailView);
                 }
 
                 XenialDetailViewLayoutNodesGeneratorUpdater.MarkDuplicateNodes(layout);
@@ -212,7 +209,7 @@ public sealed partial class XenialModelDetailViewItemsNodesGenerator : ModelNode
                         : layoutViewItemNode.ViewItemId)
                     );
 
-                    itemMapper.Map((LayoutItemNode)layoutViewItemNode, viewItem);
+                    ViewItemMapper.Map((LayoutItemNode)layoutViewItemNode, viewItem);
                 }
             }
         }
