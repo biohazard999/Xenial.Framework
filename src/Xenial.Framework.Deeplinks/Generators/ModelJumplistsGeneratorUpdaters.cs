@@ -4,6 +4,7 @@ using System.Text;
 
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
+using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Xenial.Framework.Deeplinks.Model;
 
@@ -16,7 +17,7 @@ namespace Xenial.Framework.Deeplinks.Generators;
 {
     nameof(IModelJumplists.Index),
 })]
-public partial record ModelJumplists
+public partial record ModelJumplistOptions
 {
     /// <summary>
     /// 
@@ -190,4 +191,113 @@ public sealed class ModelJumplistCustomCategoriesGenerator : ModelNodesGenerator
     protected override void GenerateNodesCore(ModelNode node) { }
 }
 
+/// <summary>
+/// 
+/// </summary>
+[XenialModelOptionsMapper(typeof(ModelJumplistActionItem))]
+[XenialModelOptionsMapper(typeof(ModelJumplistLaunchItem))]
+[XenialModelOptionsMapper(typeof(ModelJumplistProtocolItem))]
+[XenialModelOptionsMapper(typeof(ModelJumplistSeperatorItem))]
+[XenialModelOptionsMapper(typeof(ModelJumplistNavigationItem))]
+[XenialModelOptionsMapper(typeof(ModelJumplistViewItem))]
+[XenialModelOptionsRootMapper(typeof(ModelJumplistItem))]
+public sealed partial class ModelJumplistTasksCategoryGeneratorUpdater : ModelNodesGeneratorUpdater<ModelJumplistTasksCategoryGenerator>
+{
+    private readonly ModelJumplistOptions options;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="options"></param>
+    public ModelJumplistTasksCategoryGeneratorUpdater(ModelJumplistOptions options!!)
+        => this.options = options;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="node"></param>
+    public override void UpdateNode(ModelNode node!!)
+    {
+        if (node is IModelJumplistTaskCategory taskCategoryNode)
+        {
+            foreach (var item in options.TaskCategory)
+            {
+                var itemNode = FactorNode(item, taskCategoryNode);
+                Map(item, itemNode);
+            }
+        }
+    }
+
+    internal static IModelJumplistItem FactorNode(ModelJumplistItem item, IModelNode node)
+        => item switch
+        {
+            ModelJumplistActionItem actionItem => node.AddNode<IModelJumplistItemAction>(actionItem.ActionId),
+            ModelJumplistLaunchItem => node.AddNode<IModelJumplistItemLaunch>(),
+            ModelJumplistProtocolItem => node.AddNode<IModelJumplistItemLaunch>(),
+            ModelJumplistSeperatorItem => node.AddNode<IModelJumplistItemSeperator>(),
+            ModelJumplistNavigationItem navigationItem => node.AddNode<IModelJumplistItemNavigationItem>(navigationItem.NavigationItemId),
+            ModelJumplistViewItem viewItem => node.AddNode<IModelJumplistItemView>(viewItem.ViewId),
+            _ => throw new NotImplementedException($"No factory for {item}")
+        };
+}
+
+/// <summary>
+/// 
+/// </summary>
+[XenialModelOptionsMapper(typeof(ModelJumplistCustomCategory))]
+public sealed partial class ModelJumplistCustomCategoriesGeneratorUpdater : ModelNodesGeneratorUpdater<ModelJumplistCustomCategoriesGenerator>
+{
+    private readonly ModelJumplistOptions options;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="options"></param>
+    public ModelJumplistCustomCategoriesGeneratorUpdater(ModelJumplistOptions options!!)
+        => this.options = options;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="node"></param>
+    public override void UpdateNode(ModelNode node!!)
+    {
+        if (node is IModelJumplistCustomCategories modelJumpListCollection)
+        {
+            foreach (var category in options.CustomCategories)
+            {
+                var modelCategory = modelJumpListCollection.AddNode<IModelJumplistCustomCategory>(category.Caption);
+                modelCategory.Caption = category.Caption;
+                Map(category, modelCategory);
+            }
+        }
+    }
+}
+
+/// <summary>
+/// 
+/// </summary>
+[XenialModelOptionsMapper(typeof(ModelJumplistOptions))]
+public sealed partial class ModelJumplistOptionsGeneratorUpdaters : ModelNodesGeneratorUpdater<ModelOptionsNodesGenerator>
+{
+    private readonly ModelJumplistOptions options;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="options"></param>
+    public ModelJumplistOptionsGeneratorUpdaters(ModelJumplistOptions options!!)
+        => this.options = options;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="node"></param>
+    public override void UpdateNode(ModelNode node)
+    {
+        if (node is IModelOptions modelOptions && modelOptions is IModelOptionsJumplists modelOptionsJumplists)
+        {
+            MapNode(options, modelOptionsJumplists.Jumplists);
+        }
+    }
+}
