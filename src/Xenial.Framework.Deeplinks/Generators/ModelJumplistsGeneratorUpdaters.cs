@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,7 +45,7 @@ public partial record ModelJumplistOptions
     nameof(IModelJumplistCustomCategory.Index),
     nameof(IModelJumplistCustomCategory.Caption),
 })]
-public partial record ModelJumplistCustomCategory(string Caption!!)
+public sealed partial record ModelJumplistCustomCategory(string Caption!!) : IEnumerable<ModelJumplistItem>
 {
     /// <summary>
     /// 
@@ -58,6 +59,11 @@ public partial record ModelJumplistCustomCategory(string Caption!!)
     /// </summary>
     /// <param name="item"></param>
     public void Add(ModelJumplistItem item!!) => Items.Add(item);
+
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Items).GetEnumerator();
+
+    IEnumerator<ModelJumplistItem> IEnumerable<ModelJumplistItem>.GetEnumerator() =>
+        ((IEnumerable<ModelJumplistItem>)Items).GetEnumerator();
 }
 
 /// <summary>
