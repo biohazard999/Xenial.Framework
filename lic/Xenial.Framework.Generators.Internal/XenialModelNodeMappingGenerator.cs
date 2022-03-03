@@ -323,7 +323,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
                         builder.WriteLine("MapNodeCore(from, to);");
                     }
                     builder.WriteLine();
-                    builder.WriteLine("static partial void MapNodeCore(Xenial.Framework.Layouts.Items.Base.LayoutItemNode from, DevExpress.ExpressApp.Model.IModelNode to);");
+                    builder.WriteLine($"static partial void MapNodeCore({fromTypeSymbol} from, DevExpress.ExpressApp.Model.IModelNode to);");
 
                 }
             }

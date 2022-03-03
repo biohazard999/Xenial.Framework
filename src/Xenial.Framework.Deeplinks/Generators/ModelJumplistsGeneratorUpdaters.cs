@@ -194,6 +194,7 @@ public sealed class ModelJumplistCustomCategoriesGenerator : ModelNodesGenerator
 /// <summary>
 /// 
 /// </summary>
+[XenialModelOptionsMapper(typeof(ModelJumplistItemBase))]
 [XenialModelOptionsMapper(typeof(ModelJumplistActionItem))]
 [XenialModelOptionsMapper(typeof(ModelJumplistLaunchItem))]
 [XenialModelOptionsMapper(typeof(ModelJumplistProtocolItem))]
