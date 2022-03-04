@@ -53,7 +53,7 @@ public sealed class DeeplinkBringToFrontMainWindowController : WindowController
         {
             if (form.WindowState == System.Windows.Forms.FormWindowState.Minimized)
             {
-                RestoreFromMinimzied(form);
+                RestoreMinimziedForm(form);
             }
 
             form.Activate();
@@ -87,7 +87,7 @@ public sealed class DeeplinkBringToFrontMainWindowController : WindowController
         public System.Drawing.Rectangle rcNormalPosition;
     }
 
-    private static void RestoreFromMinimzied(System.Windows.Forms.Form form)
+    private static void RestoreMinimziedForm(System.Windows.Forms.Form form)
     {
         const int WPF_RESTORETOMAXIMIZED = 0x2;
         var placement = new WINDOWPLACEMENT();
