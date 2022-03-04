@@ -14,7 +14,7 @@ namespace Xenial.Framework.Deeplinks.Win;
 /// <summary>
 /// 
 /// </summary>
-public sealed class TaskbarJumpListWindowController : WindowController
+public sealed class JumplistMainWindowController : WindowController
 {
     private IModelOptionsJumplists? Jumplists
         => Application.Model.Options is IModelOptionsJumplists modelOptionsJumplists
@@ -29,7 +29,7 @@ public sealed class TaskbarJumpListWindowController : WindowController
     /// <summary>
     /// 
     /// </summary>
-    public TaskbarJumpListWindowController()
+    public JumplistMainWindowController()
         => TargetWindowType = WindowType.Main;
 
     /// <summary>

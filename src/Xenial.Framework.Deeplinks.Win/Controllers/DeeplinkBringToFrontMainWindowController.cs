@@ -12,12 +12,12 @@ namespace Xenial.Framework.Deeplinks.Win;
 /// <summary>
 /// 
 /// </summary>
-public sealed class BringToFrontDeeplinkMainWindowController : WindowController
+public sealed class DeeplinkBringToFrontMainWindowController : WindowController
 {
     /// <summary>
     /// 
     /// </summary>
-    public BringToFrontDeeplinkMainWindowController()
+    public DeeplinkBringToFrontMainWindowController()
         => TargetWindowType = WindowType.Main;
 
     /// <summary>
@@ -26,7 +26,7 @@ public sealed class BringToFrontDeeplinkMainWindowController : WindowController
     protected override void OnActivated()
     {
         base.OnActivated();
-        var controller = Frame.GetController<HandleDeeplinkMainWindowController>();
+        var controller = Frame.GetController<DeeplinkMainWindowController>();
         if (controller is not null)
         {
             controller.ArgumentsHandled -= Controller_ArgumentsHandled;
@@ -40,7 +40,7 @@ public sealed class BringToFrontDeeplinkMainWindowController : WindowController
     protected override void OnDeactivated()
     {
         base.OnDeactivated();
-        var controller = Frame.GetController<HandleDeeplinkMainWindowController>();
+        var controller = Frame.GetController<DeeplinkMainWindowController>();
         if (controller is not null)
         {
             controller.ArgumentsHandled -= Controller_ArgumentsHandled;

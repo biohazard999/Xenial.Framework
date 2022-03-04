@@ -78,7 +78,7 @@ public sealed class XafDeeplinkDispatcher
 
         if (info.Application.MainWindow is not null)
         {
-            var controller = info.Application.MainWindow.GetController<HandleDeeplinkMainWindowController>();
+            var controller = info.Application.MainWindow.GetController<DeeplinkMainWindowController>();
             if (controller is not null)
             {
                 if (controller.HandleView(info, modelView, objectKey))
@@ -131,7 +131,7 @@ public sealed class XafDeeplinkDispatcher
 
         if (info.Application.MainWindow is not null && action is not null)
         {
-            var controller = info.Application.MainWindow.GetController<HandleDeeplinkMainWindowController>();
+            var controller = info.Application.MainWindow.GetController<DeeplinkMainWindowController>();
             if (controller is not null)
             {
                 if (controller.HandleAction(info, action))
@@ -177,7 +177,7 @@ public sealed class XafDeeplinkDispatcher
             {
                 if (HandleUri(parsedUri))
                 {
-                    var controller = Application.MainWindow?.GetController<HandleDeeplinkMainWindowController>();
+                    var controller = Application.MainWindow?.GetController<DeeplinkMainWindowController>();
                     controller?.OnArgumentsHandled();
                     return;
                 }

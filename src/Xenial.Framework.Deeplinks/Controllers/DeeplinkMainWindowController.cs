@@ -74,7 +74,7 @@ public sealed class HandleDeeplinkActionEventArgs : EventArgs
 /// <summary>
 /// 
 /// </summary>
-public abstract class HandleDeeplinkMainWindowController : WindowController
+public abstract class DeeplinkMainWindowController : WindowController
 {
     /// <summary>
     /// 
@@ -94,7 +94,7 @@ public abstract class HandleDeeplinkMainWindowController : WindowController
     /// <summary>
     /// 
     /// </summary>
-    protected HandleDeeplinkMainWindowController()
+    protected DeeplinkMainWindowController()
         => TargetWindowType = WindowType.Main;
 
     /// <summary>
