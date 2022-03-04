@@ -143,7 +143,7 @@ public static class AutoProtocolInstaller
 
                 if (app.Model.Options is IModelOptionsDeeplinkProtocols modelOptionsDeeplinkProtocols && modelOptionsDeeplinkProtocols.DeeplinkProtocols is not null)
                 {
-                    var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    var exePath = DefaultExecutableResolvers.First()();
 
                     foreach (var deepLinkProtocol in modelOptionsDeeplinkProtocols.DeeplinkProtocols)
                     {
