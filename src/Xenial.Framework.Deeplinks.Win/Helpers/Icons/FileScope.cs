@@ -30,10 +30,7 @@ public sealed class FileScope : IDisposable
     {
         try
         {
-            if (File.Exists(FileName))
-            {
-                File.Delete(FileName);
-            }
+            File.Delete(FileName);
         }
         catch
         {
