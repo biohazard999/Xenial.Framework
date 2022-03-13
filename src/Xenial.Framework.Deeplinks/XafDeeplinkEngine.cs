@@ -125,7 +125,7 @@ public sealed class XafDeeplinkEngine : IDisposable
             {
                 var firstArgument = arguments[0];
 
-                if (firstArgument.Equals(executablePath, StringComparison.Ordinal))
+                if (firstArgument.Equals(executablePath, StringComparison.OrdinalIgnoreCase))
                 {
                     return false;
                 }
