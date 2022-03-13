@@ -190,7 +190,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
 
                         using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}{genericArguments}"))
                         {
-                            using (builder.OpenBrace($"private void MapNode({from} from, {to} to)"))
+                            using (builder.OpenBrace($"private static void MapNode({from} from, {to} to)"))
                             {
                                 foreach (var property in propertiesToGenerate)
                                 {
@@ -200,10 +200,10 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
                                     }
                                     builder.WriteLine();
                                 }
-                                builder.WriteLine($"this.MapNodeCore(from, to);");
+                                builder.WriteLine($"MapNodeCore(from, to);");
                             }
                             builder.WriteLine();
-                            builder.WriteLine($"partial void MapNodeCore({from} from, {to} to);");
+                            builder.WriteLine($"static partial void MapNodeCore({from} from, {to} to);");
                         }
                     }
 
@@ -249,7 +249,7 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
                 {
                     foreach (var members2 in members.GroupBy(m => m.from.ToString()))
                     {
-                        var methodSigniture = $"internal void Map({members2.Key} from, DevExpress.ExpressApp.Model.IModelNode to)";
+                        var methodSigniture = $"internal static void Map({members2.Key} from, DevExpress.ExpressApp.Model.IModelNode to)";
 
                         mapped.Add(compilation.GetTypeByMetadataName(members2.Key)!);
 
@@ -260,15 +260,15 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
                                 using (builder.OpenBrace($"if(to is {to})"))
                                 {
                                     builder.WriteLine($"{to} toCasted = ({to})to;");
-                                    builder.WriteLine($"this.MapNode(from, toCasted);");
+                                    builder.WriteLine($"MapNode(from, toCasted);");
                                 }
 
                                 builder.WriteLine();
                             }
-                            builder.WriteLine("this.MapNodeCore(from, to);");
+                            builder.WriteLine("MapNodeCore(from, to);");
                         }
                         builder.WriteLine();
-                        builder.WriteLine($"partial void MapNodeCore({members2.Key} from, DevExpress.ExpressApp.Model.IModelNode to);");
+                        builder.WriteLine($"static partial void MapNodeCore({members2.Key} from, DevExpress.ExpressApp.Model.IModelNode to);");
                         builder.WriteLine();
                     }
                 }
@@ -307,8 +307,8 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
             {
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
-                    var methodSigniture = $"internal void Map({fromTypeSymbol} from, DevExpress.ExpressApp.Model.IModelNode to)";
-                    using (builder.OpenBrace(methodSigniture))
+                    var methodSignature = $"internal static void Map({fromTypeSymbol} from, DevExpress.ExpressApp.Model.IModelNode to)";
+                    using (builder.OpenBrace(methodSignature))
                     {
                         foreach (var fromType in types)
                         {
@@ -316,14 +316,14 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
                             {
                                 builder.WriteLine($"{fromType} fromCasted = ({fromType})from;");
 
-                                builder.WriteLine($"this.Map(fromCasted, to);");
+                                builder.WriteLine($"Map(fromCasted, to);");
                             }
                             builder.WriteLine();
                         }
-                        builder.WriteLine("this.MapNodeCore(from, to);");
+                        builder.WriteLine("MapNodeCore(from, to);");
                     }
                     builder.WriteLine();
-                    builder.WriteLine("partial void MapNodeCore(Xenial.Framework.Layouts.Items.Base.LayoutItemNode from, DevExpress.ExpressApp.Model.IModelNode to);");
+                    builder.WriteLine($"static partial void MapNodeCore({fromTypeSymbol} from, DevExpress.ExpressApp.Model.IModelNode to);");
 
                 }
             }

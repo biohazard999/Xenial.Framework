@@ -1,0 +1,15 @@
+<svg x="0" y="0" width="1024" height="1024" version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>scroll bar horizontal icon</title>
+    <desc>scroll bar horizontal icon from the IconExperience.com O-Collection. Copyright by INCORS GmbH (www.incors.com).</desc>
+    <g fill="#4d82b8" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" stroke-dasharray="" stroke-dashoffset="0" font-family="serif" font-weight="400" font-size="16" text-anchor="start" mix-blend-mode="normal">
+        <g>
+            <g>
+                <g>
+                    <path d="M64,608l0,-192c0,-17.6 14.4,-32 32,-32l832,0c17.6,0 32,14.4 32,32l0,192c0,17.6 -14.4,32 -32,32l-832,0c-17.6,0 -32,-14.4 -32,-32z M806.7,577.3c0,6.2 3.3,11.5 8.8,14.3c5.6,2.8 11.8,2.2 16.8,-1.5l85.3,-64c4.2,-3.1 6.4,-7.6 6.4,-12.8c0,-5.2 -2.2,-9.7 -6.4,-12.8l-85.3,-64c-5,-3.7 -11.2,-4.3 -16.8,-1.5c-5.5,2.8 -8.8,8.1 -8.8,14.3z M218.5,576.8l0,-128.1c0,-6.2 -3.3,-11.5 -8.8,-14.3c-5.6,-2.7 -11.8,-2.2 -16.8,1.5l-85.3,64.1c-4.2,3.1 -6.4,7.5 -6.4,12.8c0,5.2 2.2,9.6 6.4,12.7l85.3,64.1c5,3.7 11.2,4.2 16.8,1.5c5.5,-2.8 8.8,-8.1 8.8,-14.3z M288,576l448,0l0,-128l-448,0z" id="curve0"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

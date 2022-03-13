@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Xenial.Framework.Deeplinks.Win\Xenial.Framework.Deeplinks.Win.csproj" />
+    <ProjectReference Include="..\..\src\Xenial.Framework.Deeplinks\Xenial.Framework.Deeplinks.csproj" />
+  </ItemGroup>
+
+</Project>

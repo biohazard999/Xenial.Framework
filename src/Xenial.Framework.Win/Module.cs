@@ -37,8 +37,7 @@ public static class XenialWindowsFormsModuleInitializer
             {
                 if (options is DetailViewOptionsWin winOptions)
                 {
-                    new ViewOptionsMapper()
-                        .Map(winOptions, model);
+                    ViewOptionsMapper.Map(winOptions, model);
                 }
             });
 

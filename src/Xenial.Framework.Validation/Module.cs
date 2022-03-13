@@ -44,8 +44,7 @@ public static class XenialValidationModuleInitializer
             {
                 if (options is ValidationDetailViewOptions validationOptions)
                 {
-                    new ValidationViewOptionsMapper()
-                        .Map(validationOptions, model);
+                    ValidationViewOptionsMapper.Map(validationOptions, model);
                 }
             });
     }

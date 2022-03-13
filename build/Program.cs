@@ -306,6 +306,10 @@ namespace Xenial.Build
                 () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {GetProperties()}")
             );
 
+            Target("pack:debug", DependsOn("build:debug"),
+                () => RunAsync("dotnet", $"pack {sln} --no-restore --no-build -c {ConfigurationDebug} {logOptions("pack.nuget.debug")} {GetProperties()}")
+            );
+
             Target("pack:zip", DependsOn("pack:nuget"),
                 () =>
                 {

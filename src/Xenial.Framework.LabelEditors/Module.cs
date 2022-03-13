@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Editors;
 
 namespace Xenial.Framework.LabelEditors;
@@ -13,10 +15,20 @@ namespace Xenial.Framework.LabelEditors;
 [XenialCheckLicense]
 public sealed partial class XenialLabelEditorsModule : XenialModuleBase
 {
+    static XenialLabelEditorsModule() =>
+        XenialDeeplinkModuleInitializer.Initialize();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    protected override IEnumerable<Type> GetRegularTypes()
+        => base.GetRegularTypes()
+            .UseXenialLabelEditorsRegularTypes();
+
     /// <summary>   Registers the editor descriptors. </summary>
     ///
     /// <param name="editorDescriptorsFactory"> The editor descriptors factory. </param>
-
     protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
     {
         base.RegisterEditorDescriptors(editorDescriptorsFactory);
