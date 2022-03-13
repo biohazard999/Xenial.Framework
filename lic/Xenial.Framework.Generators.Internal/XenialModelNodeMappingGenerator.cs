@@ -307,8 +307,8 @@ internal record XenialModelNodeMappingGenerator(bool AddSource = true) : IXenial
             {
                 using (builder.OpenBrace($"partial {(@classSymbol.IsRecord ? "record" : "class")} {@classSymbol.Name}"))
                 {
-                    var methodSigniture = $"internal static void Map({fromTypeSymbol} from, DevExpress.ExpressApp.Model.IModelNode to)";
-                    using (builder.OpenBrace(methodSigniture))
+                    var methodSignature = $"internal static void Map({fromTypeSymbol} from, DevExpress.ExpressApp.Model.IModelNode to)";
+                    using (builder.OpenBrace(methodSignature))
                     {
                         foreach (var fromType in types)
                         {
