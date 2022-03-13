@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using DevExpress.Persistent.Base;
+
 namespace Xenial.Framework.Deeplinks;
 
 /// <summary>
@@ -14,6 +16,22 @@ namespace Xenial.Framework.Deeplinks;
 /// </summary>
 public class DeeplinkSingleInstance : IDisposable
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly Guid ErrorReasonTimeout = new Guid("BA2220D2-44C9-4F18-9806-4983DBCCBFF3");
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly Guid ErrorReasonIo = new Guid("7C250CEC-4F69-4E89-A485-C5407FC7555A");
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly Guid ErrorReasonInvalidOperation = new Guid("C06EF84C-003F-4D36-ABBA-9C49A7F5FC12");
+
+
     private const int timeout = 200;
 
     private readonly bool ownsMutex;
@@ -74,16 +92,19 @@ public class DeeplinkSingleInstance : IDisposable
 
                 return true;
             }
-            catch (TimeoutException)
+            catch (TimeoutException ex)
             {
+                Tracing.LogError(ErrorReasonTimeout, ex);
                 return false;
             } //Couldn't connect to server
-            catch (IOException)
+            catch (IOException ex)
             {
+                Tracing.LogError(ErrorReasonIo, ex);
                 return false;
             } //Pipe was broken
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
+                Tracing.LogError(ErrorReasonInvalidOperation, ex);
                 return false;
             } //Pipe was broken
         }
@@ -122,16 +143,19 @@ public class DeeplinkSingleInstance : IDisposable
 
                 return true;
             }
-            catch (TimeoutException)
+            catch (TimeoutException ex)
             {
+                Tracing.LogError(ErrorReasonTimeout, ex);
                 return false;
             } //Couldn't connect to server
-            catch (IOException)
+            catch (IOException ex)
             {
+                Tracing.LogError(ErrorReasonIo, ex);
                 return false;
             } //Pipe was broken
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
+                Tracing.LogError(ErrorReasonInvalidOperation, ex);
                 return false;
             } //Pipe was broken
         }
@@ -177,8 +201,9 @@ public class DeeplinkSingleInstance : IDisposable
 
                 ThreadPool.QueueUserWorkItem(CallOnArgumentsReceived, arguments.ToArray());
             }
-            catch (IOException)
+            catch (IOException ex)
             {
+                Tracing.LogError(ErrorReasonIo, ex);
             } //Pipe was broken
             finally
             {
