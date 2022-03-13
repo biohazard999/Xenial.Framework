@@ -4,7 +4,6 @@ using DevExpress.ExpressApp.Win;
 
 using System;
 
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Xenial.Framework.Deeplinks.Win;
@@ -39,12 +38,12 @@ public sealed class DeeplinkBringToFrontMainWindowController : WindowController
     /// </summary>
     protected override void OnDeactivated()
     {
-        base.OnDeactivated();
         var controller = Frame.GetController<DeeplinkMainWindowController>();
         if (controller is not null)
         {
             controller.ArgumentsHandled -= Controller_ArgumentsHandled;
         }
+        base.OnDeactivated();
     }
 
     private void Controller_ArgumentsHandled(object? sender, EventArgs e)
@@ -89,12 +88,12 @@ public sealed class DeeplinkBringToFrontMainWindowController : WindowController
 
     private static void RestoreMinimziedForm(System.Windows.Forms.Form form)
     {
-        const int WPF_RESTORETOMAXIMIZED = 0x2;
+        const int RESTORETOMAXIMIZED = 0x2;
         var placement = new WINDOWPLACEMENT();
         placement.length = Marshal.SizeOf(placement);
         GetWindowPlacement(form.Handle, ref placement);
 
-        if ((placement.flags & WPF_RESTORETOMAXIMIZED) == WPF_RESTORETOMAXIMIZED)
+        if ((placement.flags & RESTORETOMAXIMIZED) == RESTORETOMAXIMIZED)
         {
             form.WindowState = System.Windows.Forms.FormWindowState.Maximized;
         }
