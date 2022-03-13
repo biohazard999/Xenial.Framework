@@ -118,7 +118,7 @@ public sealed class HtmlContentWindowsFormsViewItem : ViewItem
             var attribute = ObjectTypeInfo.FindAttribute<HyperlinkHandlerAttribute>();
             if (attribute is not null)
             {
-                var handler = BindingFactory.Cached.ResovleDelegate(attribute, CurrentObject);
+                var handler = BindingFactory.Cached.ResolveDelegate(attribute, CurrentObject);
                 handler(e.HitInfo.Href);
                 return;
             }
@@ -126,7 +126,7 @@ public sealed class HtmlContentWindowsFormsViewItem : ViewItem
             var attributeComplex = ObjectTypeInfo.FindAttribute<HyperlinkHandlerComplexAttribute>();
             if (attributeComplex is not null)
             {
-                var handler = BindingFactory.Cached.ResovleDelegate(attributeComplex, CurrentObject);
+                var handler = BindingFactory.Cached.ResolveDelegate(attributeComplex, CurrentObject);
                 handler(new(e.HitInfo.Href));
             }
         }

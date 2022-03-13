@@ -43,7 +43,7 @@ public interface IBindingFactory
     /// <param name="provider"></param>
     /// <param name="targetInstance"></param>
     /// <returns></returns>
-    TDelegate ResovleDelegate<TDelegate>(
+    TDelegate ResolveDelegate<TDelegate>(
         IBindableFunctorProvider<TDelegate> provider,
         object targetInstance
     ) where TDelegate : Delegate;
@@ -55,7 +55,7 @@ public interface IBindingFactory
     /// <param name="provider"></param>
     /// <param name="targetType"></param>
     /// <returns></returns>
-    TDelegate ResovleDelegate<TDelegate>(
+    TDelegate ResolveDelegate<TDelegate>(
         IBindableFunctorProvider<TDelegate> provider,
         Type targetType
     ) where TDelegate : Delegate;
@@ -87,7 +87,7 @@ public sealed class BindingFactory : IBindingFactory
         private Dictionary<InstanceDelegate, Delegate> InstanceDelegateCache { get; } = new();
         private Dictionary<TypedDelegate, Delegate> TypedDelegateCache { get; } = new();
 
-        TDelegate IBindingFactory.ResovleDelegate<TDelegate>(
+        TDelegate IBindingFactory.ResolveDelegate<TDelegate>(
             IBindableFunctorProvider<TDelegate> provider,
             object targetInstance
         )
@@ -98,12 +98,12 @@ public sealed class BindingFactory : IBindingFactory
                 return (TDelegate)cachedDelegate;
             }
 
-            var newDelegate = bindingFactory.ResovleDelegate(provider, targetInstance);
+            var newDelegate = bindingFactory.ResolveDelegate(provider, targetInstance);
             InstanceDelegateCache[instanceDelegateKey] = newDelegate;
             return newDelegate;
         }
 
-        TDelegate IBindingFactory.ResovleDelegate<TDelegate>(
+        TDelegate IBindingFactory.ResolveDelegate<TDelegate>(
             IBindableFunctorProvider<TDelegate> provider,
             Type targetType)
         {
@@ -113,7 +113,7 @@ public sealed class BindingFactory : IBindingFactory
                 return (TDelegate)cachedDelegate;
             }
 
-            var newDelegate = bindingFactory.ResovleDelegate(provider, targetType);
+            var newDelegate = bindingFactory.ResolveDelegate(provider, targetType);
             TypedDelegateCache[typedDelegateKey] = newDelegate;
             return newDelegate;
         }
@@ -137,7 +137,7 @@ public sealed class BindingFactory : IBindingFactory
     /// <param name="provider"></param>
     /// <param name="targetInstance"></param>
     /// <returns></returns>
-    public TDelegate ResovleDelegate<TDelegate>(
+    public TDelegate ResolveDelegate<TDelegate>(
         IBindableFunctorProvider<TDelegate> provider!!,
         object targetInstance!!
     ) where TDelegate : Delegate
@@ -150,7 +150,7 @@ public sealed class BindingFactory : IBindingFactory
     /// <param name="provider"></param>
     /// <param name="targetType"></param>
     /// <returns></returns>
-    public TDelegate ResovleDelegate<TDelegate>(
+    public TDelegate ResolveDelegate<TDelegate>(
         IBindableFunctorProvider<TDelegate> provider!!,
         Type targetType!!
     ) where TDelegate : Delegate
@@ -167,7 +167,7 @@ public sealed class BindingFactory : IBindingFactory
         if (provider.Delegate is null)
         {
             var delegatedType = provider.DelegatedType is null
-                ? targetType // modelDetailView.ModelClass.TypeInfo.Type;
+                ? targetType
                 : provider.DelegatedType;
 
             var methodName = string.IsNullOrEmpty(provider.MethodName)

@@ -58,7 +58,7 @@ namespace Xenial.Framework.LabelEditors.Win.Editors
             var attribute = MemberInfo.FindAttribute<HyperlinkHandlerAttribute>();
             if (attribute is not null)
             {
-                var handler = BindingFactory.Cached.ResovleDelegate(attribute, CurrentObject);
+                var handler = BindingFactory.Cached.ResolveDelegate(attribute, CurrentObject);
                 handler(e.Link);
                 return;
             }
@@ -66,7 +66,7 @@ namespace Xenial.Framework.LabelEditors.Win.Editors
             var attributeComplex = MemberInfo.FindAttribute<HyperlinkHandlerComplexAttribute>();
             if (attributeComplex is not null)
             {
-                var handler = BindingFactory.Cached.ResovleDelegate(attributeComplex, CurrentObject);
+                var handler = BindingFactory.Cached.ResolveDelegate(attributeComplex, CurrentObject);
                 handler(new(e.Link));
             }
         }

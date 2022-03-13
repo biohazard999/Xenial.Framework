@@ -68,7 +68,7 @@ public class BindingFactoryTests
             TheDelegate = PublicStaticVoid
         };
 
-        var @delegate = Factory.ResovleDelegate(attr, GetType());
+        var @delegate = Factory.ResolveDelegate(attr, GetType());
         @delegate.ShouldNotBeNull();
         Should.NotThrow(() => @delegate());
     }
@@ -81,7 +81,7 @@ public class BindingFactoryTests
             TheMethod = nameof(PublicStaticVoid)
         };
 
-        var @delegate = Factory.ResovleDelegate(attr, GetType());
+        var @delegate = Factory.ResolveDelegate(attr, GetType());
         @delegate.ShouldNotBeNull();
         Should.NotThrow(() => @delegate());
     }
@@ -93,7 +93,7 @@ public class BindingFactoryTests
         {
         };
 
-        var @delegate = Factory.ResovleDelegate(attr, GetType());
+        var @delegate = Factory.ResolveDelegate(attr, GetType());
         @delegate.ShouldNotBeNull();
         Should.NotThrow(() => @delegate());
     }
@@ -106,7 +106,7 @@ public class BindingFactoryTests
             TheMethod = nameof(PublicInstanceVoid)
         };
 
-        var @delegate = Factory.ResovleDelegate(attr, GetType());
+        var @delegate = Factory.ResolveDelegate(attr, GetType());
         @delegate.ShouldNotBeNull();
         Should.NotThrow(() => @delegate());
     }
@@ -124,7 +124,7 @@ public class BindingFactoryTests
             TheMethod = nameof(InstanceBindable)
         };
 
-        var @delegate = Factory.ResovleDelegate(attr, this);
+        var @delegate = Factory.ResolveDelegate(attr, this);
         @delegate.ShouldNotBeNull();
         @delegate(this).ShouldBe(this);
     }
@@ -140,7 +140,7 @@ public class BindingFactoryTests
             TheMethod = nameof(IntBindable)
         };
 
-        var @delegate = Factory.ResovleDelegate(attr, this);
+        var @delegate = Factory.ResolveDelegate(attr, this);
         @delegate.ShouldNotBeNull();
 
         @delegate();
@@ -163,7 +163,7 @@ public class BindingFactoryTests
             TheType = typeof(ExternalType),
         };
 
-        var @delegate = Factory.ResovleDelegate(attr, GetType());
+        var @delegate = Factory.ResolveDelegate(attr, GetType());
         @delegate.ShouldNotBeNull();
         Should.NotThrow(() => @delegate());
     }
@@ -184,18 +184,18 @@ public class BindingFactoryTests
             TheType = typeof(ExternalType),
         };
 
-        var @delegate1 = BindingFactory.Cached.ResovleDelegate(attr, GetType());
+        var @delegate1 = BindingFactory.Cached.ResolveDelegate(attr, GetType());
         @delegate1.ShouldNotBeNull();
 
-        var @delegate2 = BindingFactory.Cached.ResovleDelegate(attr, GetType());
+        var @delegate2 = BindingFactory.Cached.ResolveDelegate(attr, GetType());
         @delegate2.ShouldNotBeNull();
 
         @delegate1.ShouldBe(@delegate2);
 
-        var @delegate3 = Factory.ResovleDelegate(attr, GetType());
+        var @delegate3 = Factory.ResolveDelegate(attr, GetType());
         @delegate3.ShouldNotBeNull();
 
-        var @delegate4 = Factory.ResovleDelegate(attr, GetType());
+        var @delegate4 = Factory.ResolveDelegate(attr, GetType());
         @delegate4.ShouldNotBeNull();
 
         @delegate3.GetHashCode().ShouldBe(@delegate4.GetHashCode());
