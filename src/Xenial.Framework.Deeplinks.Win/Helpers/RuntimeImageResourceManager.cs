@@ -45,7 +45,7 @@ public sealed class RuntimeImageResourceManager
 
     private static Dictionary<string, string> GenerateIcons(IEnumerable<string> imageNames, string basePath)
     {
-        var images = new Dictionary<string, string>();
+        var images = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var imageName in imageNames)
         {

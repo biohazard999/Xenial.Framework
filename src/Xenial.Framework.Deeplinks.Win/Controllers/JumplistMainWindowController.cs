@@ -77,12 +77,12 @@ public sealed class JumplistMainWindowController : WindowController
     /// </summary>
     protected override void OnDeactivated()
     {
-        base.OnDeactivated();
         if (Window is not null)
         {
             Window.TemplateChanged -= Window_TemplateChanged;
         }
         SetTaskbarAssistant(null);
+        base.OnDeactivated();
     }
 
     /// <summary>
