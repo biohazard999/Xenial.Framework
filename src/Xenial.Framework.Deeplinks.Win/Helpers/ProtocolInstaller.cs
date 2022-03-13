@@ -1,7 +1,10 @@
 ﻿
+using DevExpress.Persistent.Base;
+
 using Microsoft.Win32;
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 using System.Security;
@@ -24,6 +27,11 @@ public static class ProtocolInstaller
     /// <summary>
     /// 
     /// </summary>
+    public static readonly Guid ErrorReasonSecurity = new Guid("00D18896-7EB3-4E57-B50D-D1E9C1AF89E3");
+
+    /// <summary>
+    /// 
+    /// </summary>
     /// <param name="protocol"></param>
     /// <returns></returns>
     public static bool UnRegisterProtocol(Protocol protocol)
@@ -42,8 +50,9 @@ public static class ProtocolInstaller
 
             return true;
         }
-        catch (SecurityException)
+        catch (SecurityException ex)
         {
+            Tracing.LogError(ErrorReasonSecurity, ex);
             return false;
         }
     }
@@ -129,8 +138,9 @@ public static class ProtocolInstaller
 
             return true;
         }
-        catch (SecurityException)
+        catch (SecurityException ex)
         {
+            Tracing.LogError(ErrorReasonSecurity, ex);
             return false;
         }
     }
