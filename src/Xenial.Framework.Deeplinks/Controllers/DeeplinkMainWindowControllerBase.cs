@@ -240,7 +240,10 @@ public abstract class DeeplinkMainWindowControllerBase : WindowController
 
         if (action is SingleChoiceAction singleChoiceAction)
         {
-            singleChoiceAction.DoExecute(singleChoiceAction.Items.First());
+            var selectedItem = singleChoiceAction.SelectedItem
+                ?? singleChoiceAction.Items.FirstOrDefault();
+
+            singleChoiceAction.DoExecute(selectedItem);
             return true;
         }
 
