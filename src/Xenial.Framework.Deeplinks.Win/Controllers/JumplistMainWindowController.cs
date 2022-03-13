@@ -14,8 +14,24 @@ namespace Xenial.Framework.Deeplinks.Win;
 /// <summary>
 /// 
 /// </summary>
+public sealed class QueryJumplistIconFolderEventArgs : EventArgs
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public string? IconFolder { get; set; }
+}
+
+/// <summary>
+/// 
+/// </summary>
 public sealed class JumplistMainWindowController : WindowController
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public event EventHandler<QueryJumplistIconFolderEventArgs>? QueryJumplistIconFolder;
+
     private IModelOptionsJumplists? Jumplists
         => Application.Model.Options is IModelOptionsJumplists modelOptionsJumplists
             ? modelOptionsJumplists
@@ -93,26 +109,37 @@ public sealed class JumplistMainWindowController : WindowController
             .Distinct()
             .ToList();
 
-        var resourceManager = new RuntimeImageResourceManager(null);
+        var args = new QueryJumplistIconFolderEventArgs();
+        QueryJumplistIconFolder?.Invoke(this, args);
+        var resourceManager = new RuntimeImageResourceManager(args.IconFolder);
+
         var icons = resourceManager.GenerateIcons(imageNames!);
 
         var taskbarAssistant = new TaskbarAssistant();
-
-        foreach (var item in jumplistOptions.Jumplists.TaskCategory.OrderBy(m => m.Index))
+        taskbarAssistant.BeginUpdate();
+        try
         {
-            InitJumpList(taskbarAssistant.JumpListTasksCategory, item, icons);
-        }
-
-        foreach (var itemCategory in jumplistOptions.Jumplists.CustomCategories.OrderBy(m => m.Index))
-        {
-            var category = new JumpListCategory(itemCategory.Caption);
-
-            foreach (var item in itemCategory)
+            foreach (var item in jumplistOptions.Jumplists.TaskCategory.OrderBy(m => m.Index))
             {
-                InitJumpList(category.JumpItems, item, icons);
+                InitJumpList(taskbarAssistant.JumpListTasksCategory, item, icons);
             }
 
-            taskbarAssistant.JumpListCustomCategories.Add(category);
+            foreach (var itemCategory in jumplistOptions.Jumplists.CustomCategories.OrderBy(m => m.Index))
+            {
+                var category = new JumpListCategory(itemCategory.Caption);
+
+                foreach (var item in itemCategory)
+                {
+                    InitJumpList(category.JumpItems, item, icons);
+                }
+
+                taskbarAssistant.JumpListCustomCategories.Add(category);
+            }
+
+        }
+        finally
+        {
+            taskbarAssistant.EndUpdate();
         }
 
         return taskbarAssistant;
