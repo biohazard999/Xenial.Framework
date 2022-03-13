@@ -26,9 +26,9 @@ namespace Xenial.Framework.LabelEditors.Win.Model.Core
             var htmlText = (string)context.PropertyDescriptor.GetValue(context.Instance);
 
             using XenialCssEditorForm form = new();
-            if (provider is ISupportLookAndFeel)
+            if (provider is ISupportLookAndFeel providerSupportLookAndFeel)
             {
-                form.LookAndFeel.Assign(((ISupportLookAndFeel)provider).LookAndFeel);
+                form.LookAndFeel.Assign(providerSupportLookAndFeel.LookAndFeel);
             }
             using XenialCssEditorController controller = new(form);
             return controller.ShowEditor(htmlText);
