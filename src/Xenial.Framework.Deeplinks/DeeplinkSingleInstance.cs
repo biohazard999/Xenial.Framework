@@ -38,6 +38,11 @@ public class DeeplinkSingleInstance : IDisposable
 
         //TODO: Mutex Watcher -> After last mutext gets released, we are the last instance
         mutex = new Mutex(true, this.identifier, out ownsMutex);
+
+        if (Tracing.IsTracerInitialized)
+        {
+            Tracing.Tracer.LogText($"Created Mutex {this.identifier} (IsMutexOwner: {ownsMutex})");
+        }
     }
 
     /// <summary>
@@ -78,26 +83,17 @@ public class DeeplinkSingleInstance : IDisposable
             }
             catch (TimeoutException ex)
             {
-                if (Tracing.IsTracerInitialized)
-                {
-                    Tracing.Tracer.LogError(ex);
-                }
+                LogError(ex, arguments);
                 return false;
             } //Couldn't connect to server
             catch (IOException ex)
             {
-                if (Tracing.IsTracerInitialized)
-                {
-                    Tracing.Tracer.LogError(ex);
-                }
+                LogError(ex, arguments);
                 return false;
             } //Pipe was broken
             catch (InvalidOperationException ex)
             {
-                if (Tracing.IsTracerInitialized)
-                {
-                    Tracing.Tracer.LogError(ex);
-                }
+                LogError(ex, arguments);
                 return false;
             } //Pipe was broken
         }
@@ -121,11 +117,24 @@ public class DeeplinkSingleInstance : IDisposable
         {
             try
             {
+                if (Tracing.IsTracerInitialized)
+                {
+                    Tracing.Tracer.LogText($"Try to open named pipe {identifier} for writing arguments {string.Join(" ", arguments)}");
+                }
+
                 using var client = new NamedPipeClientStream(identifier);
                 using var writer = new StreamWriter(client);
 
+                if (Tracing.IsTracerInitialized)
+                {
+                    Tracing.Tracer.LogText($"Try connect to named pipe {identifier} for writing arguments {string.Join(" ", arguments)}");
+                }
                 client.Connect(timeout);
 
+                if (Tracing.IsTracerInitialized)
+                {
+                    Tracing.Tracer.LogText($"Connected to named pipe {identifier} for writing arguments {string.Join(" ", arguments)}");
+                }
                 foreach (var argument in arguments)
                 {
                     if (!string.IsNullOrEmpty(argument))
@@ -133,36 +142,40 @@ public class DeeplinkSingleInstance : IDisposable
                         writer.WriteLine(argument);
                     }
                 }
-
+                if (Tracing.IsTracerInitialized)
+                {
+                    Tracing.Tracer.LogText($"Written arguments to named pipe {identifier} {string.Join(" ", arguments)}");
+                }
                 return true;
+
             }
             catch (TimeoutException ex)
             {
-                if (Tracing.IsTracerInitialized)
-                {
-                    Tracing.Tracer.LogError(ex);
-                }
+                LogError(ex, arguments);
                 return false;
             } //Couldn't connect to server
             catch (IOException ex)
             {
-                if (Tracing.IsTracerInitialized)
-                {
-                    Tracing.Tracer.LogError(ex);
-                }
+                LogError(ex, arguments);
                 return false;
             } //Pipe was broken
             catch (InvalidOperationException ex)
             {
-                if (Tracing.IsTracerInitialized)
-                {
-                    Tracing.Tracer.LogError(ex);
-                }
+                LogError(ex, arguments);
                 return false;
             } //Pipe was broken
         }
 
         return false;
+    }
+
+    private void LogError(Exception ex, IEnumerable<string> arguments)
+    {
+        if (Tracing.IsTracerInitialized)
+        {
+            Tracing.Tracer.LogError($"Failed on named pipe {identifier} arguments: {string.Join(" ", arguments)}");
+            Tracing.Tracer.LogError(ex);
+        }
     }
 
     /// <summary>
@@ -304,6 +317,12 @@ public class DeeplinkSingleInstance : IDisposable
         {
             if (mutex is not null && ownsMutex)
             {
+
+                if (Tracing.IsTracerInitialized)
+                {
+                    Tracing.Tracer.LogText($"Release and disposal of mutex {identifier} (IsMutexOwner: {ownsMutex})");
+                }
+
                 mutex.ReleaseMutex();
             }
             disposed = true;
