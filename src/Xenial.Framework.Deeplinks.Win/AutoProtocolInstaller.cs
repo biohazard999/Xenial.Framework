@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using DevExpress.ExpressApp;
 
 using Xenial.Framework.Deeplinks.Model;
 using Xenial.Framework.Deeplinks.Win.Helpers;
@@ -96,7 +91,7 @@ public static class AutoProtocolInstaller
                     var exePath = DefaultExecutableResolvers.First()();
                     foreach (var deepLinkProtocol in modelOptionsDeeplinkProtocols.DeeplinkProtocols)
                     {
-                        var protocolResolver = ExecutableResolvers.FirstOrDefault(m => m.Protocol == deepLinkProtocol.ProtocolName);
+                        var protocolResolver = ExecutableResolvers.FirstOrDefault(m => m.Protocol.Equals(deepLinkProtocol.ProtocolName, StringComparison.OrdinalIgnoreCase));
 
                         if (protocolResolver is not null)
                         {
