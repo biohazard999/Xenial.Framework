@@ -25,7 +25,7 @@ public sealed class DeeplinkBringToFrontMainWindowController : WindowController
     protected override void OnActivated()
     {
         base.OnActivated();
-        var controller = Frame.GetController<DeeplinkMainWindowController>();
+        var controller = Frame.GetController<DeeplinkMainWindowControllerBase>();
         if (controller is not null)
         {
             controller.ArgumentsHandled -= Controller_ArgumentsHandled;
@@ -38,7 +38,7 @@ public sealed class DeeplinkBringToFrontMainWindowController : WindowController
     /// </summary>
     protected override void OnDeactivated()
     {
-        var controller = Frame.GetController<DeeplinkMainWindowController>();
+        var controller = Frame.GetController<DeeplinkMainWindowControllerBase>();
         if (controller is not null)
         {
             controller.ArgumentsHandled -= Controller_ArgumentsHandled;

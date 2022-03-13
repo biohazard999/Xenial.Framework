@@ -10,7 +10,7 @@ namespace Xenial.Framework.Deeplinks.Win;
 /// <summary>
 /// 
 /// </summary>
-public sealed class DeeplinkMainWindowControllerWin : DeeplinkMainWindowController
+public sealed class DeeplinkMainWindowControllerWin : DeeplinkMainWindowControllerBase
 {
     /// <summary>
     /// 
