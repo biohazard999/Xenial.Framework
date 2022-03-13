@@ -58,7 +58,7 @@ public static class XenialDeeplinksModelInterfaceExtenders
             typeof(IModelDeeplinkProtocols),
             typeof(IModelDeeplinkProtocol),
 
-            typeof(ModelDeeplinksProtocolLogic),
+            typeof(ModelDeeplinkProtocolsLogic),
             typeof(ModelDeeplinkProtocolLogic),
             typeof(ModelDeeplinkProtocolsGenerator),
 

@@ -86,7 +86,7 @@ public interface IModelDeeplinkProtocol : IModelNode
 /// </summary>
 [DomainLogic(typeof(IModelDeeplinkProtocols))]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>")]
-public static class ModelDeeplinksProtocolLogic
+public static class ModelDeeplinkProtocolsLogic
 {
     /// <summary>
     /// 
