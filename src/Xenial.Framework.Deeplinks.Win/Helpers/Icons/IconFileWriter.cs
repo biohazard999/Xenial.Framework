@@ -102,9 +102,9 @@ public sealed class IconFileWriter
 
     private void ValidateImages()
     {
-        var contained = new List<int>();
+        var contained = new HashSet<int>();
 
-        var validatedImages = new List<Image>();
+        var validatedImages = new HashSet<Image>();
 
         // Make sure there are not multiple images of the same resolution
         for (var i = 0; i < images.Count; i++)
