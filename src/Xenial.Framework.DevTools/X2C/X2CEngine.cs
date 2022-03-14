@@ -8,6 +8,9 @@ using DevExpress.ExpressApp.Model;
 
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.ColumnItems;
+using Xenial.Framework.Layouts.Items;
+using Xenial.Framework.Layouts.Items.Base;
+using Xenial.Framework.Layouts.Items.LeafNodes;
 using Xenial.Framework.MsBuild;
 
 namespace Xenial.Framework.DevTools.X2C;
@@ -23,7 +26,17 @@ public sealed class X2CEngine
     /// <param name="xml"></param>
     /// <returns></returns>
     public string ConvertToCode(string xml)
-        => ListViewBuilderCodeClass(xml);
+    {
+        var doc = new System.Xml.XmlDocument();
+        doc.LoadXml(xml);
+        var root = doc.FirstChild;
+        return root.Name switch
+        {
+            "ListView" => ListViewBuilderCodeClass(xml),
+            "DetailView" => DetailViewBuilderCodeClass(xml),
+            _ => throw new ArgumentOutOfRangeException(nameof(xml), root.Name, "Code builder is not handled")
+        };
+    }
 
     /// <summary>
     /// 
@@ -152,6 +165,279 @@ public sealed class X2CEngine
 
         return ListViewBuildersCode(root, sb);
     }
+
+    public string DetailViewBuilderCodeClass(string xml)
+    {
+        var doc = new System.Xml.XmlDocument();
+        doc.LoadXml(xml);
+        var root = doc.FirstChild;
+        var className = GetAttribute(root, "ClassName");
+
+        var (@namespace, @class) = className switch
+        {
+            string c when c.Contains('.') => (string.Join(".", c.Split('.').SkipLast()), c.Split('.').Last()),
+            _ => throw new ArgumentOutOfRangeException(nameof(className), className, "Given name cannot be split into namespace and classname")
+        };
+
+        var sb = CurlyIndenter.Create();
+
+        sb.WriteLine("using System;");
+        sb.WriteLine("using System.Linq;");
+        sb.WriteLine();
+        sb.WriteLine("using Xenial.Framework.Layouts;");
+        sb.WriteLine("using Xenial.Framework.Layouts.ColumnItems;");
+        sb.WriteLine();
+        using (sb.OpenBrace($"namespace {@namespace}"))
+        using (sb.OpenBrace($"public sealed partial class {@class}LayoutBuilder : LayoutBuilder<{@class}>"))
+        {
+            DetailViewBuilderCodeMethod(xml, sb);
+        }
+
+        return sb.ToString();
+    }
+
+
+    static string DetailViewBuilderCodeMethod(string xml, CurlyIndenter sb)
+    {
+        var doc = new System.Xml.XmlDocument();
+        doc.LoadXml(xml);
+        var root = doc.FirstChild;
+
+        static string DetailViewOptionsCode(XmlNode node, CurlyIndenter sb)
+        {
+            var ignoredAttributes = new[] { "Id", "ClassName" };
+
+            using (sb.OpenBrace($"new {nameof(DetailViewOptions)}", closeBrace: "})"))
+            {
+                var mappedItems = MapAttributes(typeof(DetailViewOptions), node, ignoredAttributes);
+
+                foreach (var attribute in mappedItems)
+                {
+                    sb.WriteLine($"{attribute.Key} = {attribute.Value},");
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        static string LayoutBuildersCode(XmlNode node, CurlyIndenter sb)
+        {
+            var itemsNode = node.ChildNodes.OfType<XmlNode>().First(m => m.Name == "Items");
+            var layoutNode = node.ChildNodes.OfType<XmlNode>().First(m => m.Name == "Layout");
+
+            //We ignore the Main Node
+            var rootLayoutNode = layoutNode.ChildNodes.Count == 1
+                ? layoutNode.ChildNodes[0]
+                : layoutNode;
+
+            static (bool hasAttribute, string attributeName, string? attributeValue) GetAttributeInfo(XmlNode node, string attributeName)
+            {
+                if (node == null)
+                {
+                    return (false, attributeName, null);
+                }
+
+                var attribute = node.Attributes.GetNamedItem(attributeName);
+
+                return (attribute != null, attributeName, attribute?.Value);
+            }
+
+            static Type GetTargetType(XmlNode node)
+                => node switch
+                {
+                    { Name: "LayoutGroup", ParentNode.Name: "TabbedGroup" } =>
+                        GetAttributeInfo(node, "Direction") switch
+                        {
+                            (true, _, "Horizontal") => typeof(HorizontalLayoutTabGroupItem),
+                            //Default is Vertical
+                            _ => typeof(VerticalLayoutTabGroupItem),
+                        },
+                    { Name: "LayoutGroup" } =>
+                        GetAttributeInfo(node, "Direction") switch
+                        {
+                            (true, _, "Horizontal") => typeof(HorizontalLayoutGroupItem),
+                            //Default is Vertical
+                            _ => typeof(VerticalLayoutGroupItem),
+                        },
+                    { Name: "TabbedGroup" } => typeof(LayoutTabbedGroupItem),
+                    { Name: "LayoutItem" } =>
+                        GetAttributeInfo(node, "ViewItem") switch
+                        {
+                            (true, _, _) => typeof(LayoutViewItem),
+                            _ => typeof(LayoutEmptySpaceItem)
+                        },
+                    { Name: "SplitterItem" } => typeof(LayoutSplitterItem),
+                    { Name: "SeparatorItem" } => typeof(LayoutSeparatorItem),
+                    _ => throw new ArgumentOutOfRangeException(nameof(node), node, $"Could not find node type: '{node.Name}'{Environment.NewLine}{node.OuterXml}")
+                };
+
+            var items = new List<LayoutGeneratorInfo>();
+
+            static void CollectNodeTree(XmlNode node, IList<LayoutGeneratorInfo> children)
+            {
+                var targetType = GetTargetType(node);
+                var item = new LayoutGeneratorInfo(targetType, node);
+                children.Add(item);
+                foreach (var childNode in node.ChildNodes.OfType<XmlNode>())
+                {
+                    CollectNodeTree(childNode, item.Children);
+                }
+            }
+
+            foreach (var childNode in rootLayoutNode.ChildNodes.OfType<XmlNode>())
+            {
+                CollectNodeTree(childNode, items);
+            }
+
+
+
+            sb.Write("public Layout BuildLayout() => new Layout(");
+            DetailViewOptionsCode(node, sb);
+            sb.WriteLine("{");
+            sb.Indent();
+
+            foreach (var item in items)
+            {
+                PrintNode(sb, item, itemsNode);
+
+                if (items.LastOrDefault() != item)
+                {
+                    sb.WriteLine(",");
+                }
+                else
+                {
+                    sb.WriteLine();
+                }
+            }
+
+            sb.UnIndent();
+            sb.WriteLine("};");
+
+
+            static void PrintNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode)
+            {
+                if (!item.IsLeaf)
+                {
+                    var methodName = item.TargetNodeType switch
+                    {
+                        Type t when t == typeof(HorizontalLayoutGroupItem) => "HorizontalGroup",
+                        Type t when t == typeof(VerticalLayoutGroupItem) => "VerticalGroup",
+                        Type t when t == typeof(LayoutTabbedGroupItem) => "TabbedGroup",
+                        Type t when typeof(LayoutTabGroupItem).IsAssignableFrom(t) => "Tab",
+                        Type t when typeof(LayoutSeparatorItem).IsAssignableFrom(t) => "Separator",
+                        Type t when typeof(LayoutSplitterItem).IsAssignableFrom(t) => "Splitter",
+                        _ => throw new ArgumentOutOfRangeException(nameof(item), item, "Could not find method for type")
+                    };
+
+                    using (sb.OpenBrace($"{methodName}(", openBrace: "", closeBrace: ")", writeLine: false))
+                    {
+                        foreach (var child in item.Children)
+                        {
+                            PrintNode(sb, child, itemsNode);
+                            if (item.Children.LastOrDefault() != child)
+                            {
+                                sb.WriteLine(",");
+                            }
+                            else
+                            {
+                                sb.WriteLine();
+                            }
+                        }
+                    }
+
+                    (var indexOffset, var propertiesToWrite) = MapAttributes(item.TargetNodeType, 0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList());
+
+                    if (propertiesToWrite.Count > 0)
+                    {
+                        sb.WriteLine(" with ");
+                        sb.WriteLine("{");
+                        sb.Indent();
+
+                        foreach (var property in propertiesToWrite)
+                        {
+                            sb.WriteLine($"{property.Key} = {property.Value},");
+                        }
+
+                        sb.UnIndent();
+                        sb.Write("}");
+                    }
+                }
+                else
+                {
+                    PrintLeafNode(sb, item, itemsNode);
+                }
+            }
+
+            static void PrintLeafNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode)
+            {
+                if (item.TargetNodeType == typeof(LayoutEmptySpaceItem))
+                {
+                    sb.Write("EmptySpace()");
+                    return;
+                }
+                if (item.TargetNodeType == typeof(LayoutSplitterItem))
+                {
+                    sb.Write("Splitter()");
+                    return;
+                }
+                if (item.TargetNodeType == typeof(LayoutSeparatorItem))
+                {
+                    sb.Write("Separator()");
+                    return;
+                }
+                if (typeof(LayoutViewItem).IsAssignableFrom(item.TargetNodeType))
+                {
+                    var (hasViewItem, _, viewItemId) = GetAttributeInfo(item.Node, "ViewItem");
+                    if (hasViewItem && viewItemId is not null)
+                    {
+                        var xmlViewItemNode = itemsNode.ChildNodes
+                            .OfType<XmlNode>()
+                            .FirstOrDefault(m =>
+                                m.Attributes
+                                .OfType<XmlAttribute>()
+                                .Any(m => m.Name == "Id" && m.Value == viewItemId)
+                            );
+
+                        if (xmlViewItemNode is not null)
+                        {
+                            //TODO: ExpandMemberAttribute
+                            //We replace dots with underscore because how
+                            //SourceGenerators define property trains
+                            sb.Write($"Editor.{viewItemId.Replace(".", "._")}");
+
+                            (var indexOffset, var propertiesToWrite) = MapAttributes<LayoutPropertyEditorItem>(0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList());
+                            (_, var propertiesToWrite2) = MapAttributes<LayoutPropertyEditorItem>(0, xmlViewItemNode, xmlViewItemNode.ParentNode.ChildNodes.OfType<XmlNode>().ToList());
+
+                            foreach (var pair in propertiesToWrite2)
+                            {
+                                propertiesToWrite.Add(pair.Key, pair.Value);
+                            }
+
+                            if (propertiesToWrite.Count > 0)
+                            {
+                                sb.WriteLine(" with ");
+                                sb.WriteLine("{");
+                                sb.Indent();
+
+                                foreach (var property in propertiesToWrite)
+                                {
+                                    sb.WriteLine($"{property.Key} = {property.Value},");
+                                }
+
+                                sb.UnIndent();
+                                sb.Write("}");
+                            }
+                        }
+                    }
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        return LayoutBuildersCode(root, sb);
+    }
+
 
     private static (int indexOffset, Dictionary<string, string> propertiesToWrite) MapAttributes<TTargetObject>(int indexOffset, XmlNode node, IList<XmlNode> neighborNodes)
         => MapAttributes(typeof(TTargetObject), indexOffset, node, neighborNodes);
@@ -286,4 +572,11 @@ public sealed class X2CEngine
         return null;
     }
 
+}
+
+internal record LayoutGeneratorInfo(Type TargetNodeType, XmlNode Node)
+{
+    public IList<LayoutGeneratorInfo> Children { get; } = new List<LayoutGeneratorInfo>();
+
+    public bool IsLeaf => typeof(LayoutItemLeaf).IsAssignableFrom(TargetNodeType);
 }

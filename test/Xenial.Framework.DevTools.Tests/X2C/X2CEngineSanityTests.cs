@@ -37,4 +37,30 @@ public class X2CEngineSanityTests
 
         await Verifier.Verify(code).UseExtension("cs");
     }
+
+    internal const string DetailViewXml = @"<DetailView Id=""FooBarPersistent_DetailView""
+            ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"">
+  <Items>
+    <PropertyEditor Id=""Label""
+                    PropertyName=""Label"" />
+    <PropertyEditor Id=""Oid""
+                    PropertyName=""Oid"" />
+  </Items>
+  <Layout>
+    <LayoutGroup Id=""Main"">
+      <LayoutItem Id=""Label""
+                  ViewItem=""Label""
+                  Index=""0"" />
+    </LayoutGroup>
+  </Layout>
+</DetailView>
+";
+
+    [Fact]
+    public async Task ConvertBasicDetailView()
+    {
+        var code = X2C.ConvertToCode(DetailViewXml);
+
+        await Verifier.Verify(code).UseExtension("cs");
+    }
 }
