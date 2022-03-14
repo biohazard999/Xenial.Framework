@@ -5,8 +5,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Xenial.Framework.DevTools.Win\Xenial.Framework.DevTools.Win.csproj" />
-    <ProjectReference Include="..\..\src\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
+    <Compile Remove="**\*.verified.cs" />
+    <None Include="**\*.verified.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
+    <ProjectReference Include="..\..\src\Xenial.Framework.DevTools.Win\Xenial.Framework.DevTools.Win.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ImportGroup>
+    
+  </ImportGroup>
 </Project>
