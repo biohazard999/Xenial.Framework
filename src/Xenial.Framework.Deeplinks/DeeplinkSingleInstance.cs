@@ -41,7 +41,7 @@ public class DeeplinkSingleInstance : IDisposable
 
         if (Tracing.IsTracerInitialized)
         {
-            Tracing.Tracer.LogText($"Created Mutex {this.identifier} (IsMutexOwner: {ownsMutex})");
+            Tracing.Tracer.LogText("Created Mutex {0} (IsMutexOwner: {1})", this.identifier, ownsMutex);
         }
     }
 
@@ -119,7 +119,7 @@ public class DeeplinkSingleInstance : IDisposable
             {
                 if (Tracing.IsTracerInitialized)
                 {
-                    Tracing.Tracer.LogText($"Try to open named pipe {identifier} for writing arguments {string.Join(" ", arguments)}");
+                    Tracing.Tracer.LogText("Try to open named pipe {0} for writing arguments {1}", identifier, arguments);
                 }
 
                 using var client = new NamedPipeClientStream(identifier);
@@ -127,13 +127,13 @@ public class DeeplinkSingleInstance : IDisposable
 
                 if (Tracing.IsTracerInitialized)
                 {
-                    Tracing.Tracer.LogText($"Try connect to named pipe {identifier} for writing arguments {string.Join(" ", arguments)}");
+                    Tracing.Tracer.LogText("Try connect to named pipe {0} for writing arguments {1}", identifier, arguments);
                 }
                 client.Connect(timeout);
 
                 if (Tracing.IsTracerInitialized)
                 {
-                    Tracing.Tracer.LogText($"Connected to named pipe {identifier} for writing arguments {string.Join(" ", arguments)}");
+                    Tracing.Tracer.LogText("Connected to named pipe {0} for writing arguments {1}", identifier, arguments);
                 }
                 foreach (var argument in arguments)
                 {
@@ -144,7 +144,7 @@ public class DeeplinkSingleInstance : IDisposable
                 }
                 if (Tracing.IsTracerInitialized)
                 {
-                    Tracing.Tracer.LogText($"Written arguments to named pipe {identifier} {string.Join(" ", arguments)}");
+                    Tracing.Tracer.LogText("Written arguments to named pipe {0} {1}", identifier, arguments);
                 }
                 return true;
 
@@ -173,13 +173,13 @@ public class DeeplinkSingleInstance : IDisposable
     {
         if (Tracing.IsTracerInitialized)
         {
-            Tracing.Tracer.LogError($"Failed on named pipe {identifier} arguments: {string.Join(" ", arguments)}");
+            Tracing.Tracer.LogError("Failed on named pipe {0} arguments: {1}", identifier, arguments);
             Tracing.Tracer.LogError(ex);
         }
     }
 
     /// <summary>
-    ///     Listens for arguments being passed from successive instances of the applicaiton.
+    ///     Listens for arguments being passed from successive instances of the application.
     /// </summary>
     public void ListenForArgumentsFromSuccessiveInstances()
     {
@@ -320,7 +320,7 @@ public class DeeplinkSingleInstance : IDisposable
 
                 if (Tracing.IsTracerInitialized)
                 {
-                    Tracing.Tracer.LogText($"Release and disposal of mutex {identifier} (IsMutexOwner: {ownsMutex})");
+                    Tracing.Tracer.LogText("Release and disposal of mutex {0} (IsMutexOwner: {1})", identifier, ownsMutex);
                 }
 
                 mutex.ReleaseMutex();
