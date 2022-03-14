@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="**\*.verified.cs" />
     <None Include="**\*.verified.cs" />
+    <Compile Remove="**\*.received.cs" />
+    <None Include="**\*.received.cs" />
   </ItemGroup>
 
   <ItemGroup>
