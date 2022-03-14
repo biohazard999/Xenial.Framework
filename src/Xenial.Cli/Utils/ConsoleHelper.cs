@@ -12,14 +12,14 @@ namespace Xenial.Cli.Utils;
 
 public static class ConsoleHelper
 {
-    public static void Success(this Stopwatch sw, string caption)
+    public static void Success(this Stopwatch sw!!, string caption)
     {
         sw.Stop();
         AnsiConsole.MarkupLine($"[green][[SUCCESS]]        [/][grey]: [/][silver]{caption}[/] [grey][[{sw.Elapsed}]][/]");
         sw.Restart();
     }
 
-    public static void Fail(this Stopwatch sw, string caption)
+    public static void Fail(this Stopwatch sw!!, string caption)
     {
         sw.Stop();
         AnsiConsole.MarkupLine($"[red][[FAILURE]]        [/][grey]: [/][red]{caption}[/] [silver][[{sw.Elapsed}]][/]");
@@ -51,7 +51,7 @@ public static class ConsoleHelper
         );
     }
 
-    public static string EllipsisPath(this string rawString, int maxLength = 80, char delimiter = '\\')
+    public static string EllipsisPath(this string rawString!!, int maxLength = 80, char delimiter = '\\')
     {
         maxLength -= 3; //account for delimiter spacing
 
@@ -60,10 +60,9 @@ public static class ConsoleHelper
             return rawString;
         }
 
-        string final = rawString;
         List<string> parts;
 
-        int loops = 0;
+        var loops = 0;
         while (loops++ < 100)
         {
             parts = rawString.Split(delimiter).ToList();
@@ -74,7 +73,7 @@ public static class ConsoleHelper
             }
 
             parts.Insert(parts.Count - 1, "...");
-            final = string.Join(delimiter.ToString(), parts);
+            var final = string.Join(delimiter.ToString(), parts);
             if (final.Length < maxLength)
             {
                 return final;

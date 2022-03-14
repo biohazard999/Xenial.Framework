@@ -11,10 +11,8 @@ namespace Xenial.Cli.Utils;
 public static class BrandHelper
 {
     public static void PrintBrandInfo()
-    {
-        AnsiConsole.Write(
+        => AnsiConsole.Write(
             new FigletText("xenial.io")
             .Centered()
             .Color(new Color(red: 56, green: 188, blue: 216)));
-    }
 }

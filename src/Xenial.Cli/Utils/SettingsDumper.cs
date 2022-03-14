@@ -8,7 +8,7 @@ namespace Xenial.Cli.Utils;
 
 public static class SettingsDumper
 {
-    public static void Dump(CommandSettings settings)
+    public static void Dump(CommandSettings settings!!)
     {
         var table = new Table().RoundedBorder();
         table.AddColumn("[grey]Name[/]");
@@ -19,7 +19,7 @@ public static class SettingsDumper
         {
             var value = property.GetValue(settings)
                 ?.ToString()
-                ?.Replace("[", "[[");
+                ?.Replace("[", "[[", StringComparison.OrdinalIgnoreCase);
 
             table.AddRow(
                 property.Name,

@@ -88,19 +88,18 @@ public static class CommandLineHelper
 
         return (r1, r2, r3, r4);
     }
+}
 
+public class NullConsole : IConsole
+{
+    public IStandardStreamWriter Out { get; } = new NullStandardStreamWriter();
+    public bool IsOutputRedirected { get; }
+    public IStandardStreamWriter Error { get; } = new NullStandardStreamWriter();
+    public bool IsErrorRedirected { get; }
+    public bool IsInputRedirected { get; }
+}
 
-    public class NullConsole : IConsole
-    {
-        public IStandardStreamWriter Out { get; } = new NullStandardStreamWriter();
-        public bool IsOutputRedirected { get; }
-        public IStandardStreamWriter Error { get; } = new NullStandardStreamWriter();
-        public bool IsErrorRedirected { get; }
-        public bool IsInputRedirected { get; }
-    }
-
-    public class NullStandardStreamWriter : IStandardStreamWriter
-    {
-        public void Write(string? value) { }
-    }
+public class NullStandardStreamWriter : IStandardStreamWriter
+{
+    public void Write(string? value) { }
 }

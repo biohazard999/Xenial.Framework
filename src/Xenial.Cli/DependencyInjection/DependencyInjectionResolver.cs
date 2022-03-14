@@ -14,12 +14,15 @@ internal class DependencyInjectionResolver : ITypeResolver, IDisposable
 {
     private ServiceProvider ServiceProvider { get; }
 
-    internal DependencyInjectionResolver(ServiceProvider serviceProvider) 
+    internal DependencyInjectionResolver(ServiceProvider serviceProvider)
         => ServiceProvider = serviceProvider;
 
-    public void Dispose() => 
+    public void Dispose() =>
         ServiceProvider.Dispose();
 
-    public object? Resolve(Type? type) 
-        => ServiceProvider.GetService(type) ?? Activator.CreateInstance(type);
+    public object? Resolve(Type? type)
+    {
+        _ = type ?? throw new ArgumentNullException(nameof(type));
+        return ServiceProvider.GetService(type) ?? Activator.CreateInstance(type);
+    }
 }
