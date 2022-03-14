@@ -29,6 +29,7 @@ public sealed class XenialDevToolsViewController : ViewController
     {
         OpenDevToolsSimpleAction = new SimpleAction(this, nameof(OpenDevToolsSimpleAction), "Diagnostic")
         {
+            Caption = "Open Dev Tools",
             ImageName = XenialImages.Action_Xenial_DevTools,
             PaintStyle = ActionItemPaintStyle.Image,
             ToolTip = "Opens the Xenial-DevTools",
