@@ -38,6 +38,7 @@ public sealed class XenialDevToolsController : DialogController
     {
         AlwaysOnTopSimpleAction = new SimpleAction(this, nameof(AlwaysOnTopSimpleAction), DevExpress.Persistent.Base.PredefinedCategory.ObjectsCreation)
         {
+            Caption = "Always on Top",
             ImageName = XenialImages.Action_Xenial_AlwaysOnTop,
             PaintStyle = ActionItemPaintStyle.Image,
             ToolTip = "Controls if the Xenial-DevTools window is displayed over the current application"
@@ -45,6 +46,7 @@ public sealed class XenialDevToolsController : DialogController
 
         OpacitySimpleAction = new SimpleAction(this, nameof(OpacitySimpleAction), DevExpress.Persistent.Base.PredefinedCategory.ObjectsCreation)
         {
+            Caption = "Opacity",
             ImageName = XenialImages.Action_Xenial_Opacity,
             PaintStyle = ActionItemPaintStyle.Image,
             ToolTip = "Controls if the Xenial-DevTools window is displayed opaque"
@@ -52,6 +54,7 @@ public sealed class XenialDevToolsController : DialogController
 
         PrettyPrintXmlSimpleAction = new SimpleAction(this, nameof(PrettyPrintXmlSimpleAction), DevExpress.Persistent.Base.PredefinedCategory.ObjectsCreation)
         {
+            Caption = "Pretty Print",
             ImageName = XenialImages.Action_Xenial_Xml,
             PaintStyle = ActionItemPaintStyle.Image,
             ToolTip = "Pretty print Xafml XML output"
