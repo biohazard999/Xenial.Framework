@@ -20,12 +20,17 @@ public sealed class X2CEngine
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="listViewXml"></param>
+    /// <param name="xml"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public string ConvertToCode(string xml)
         => ListViewBuilderCodeClass(xml);
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="xml"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public string ListViewBuilderCodeClass(string xml)
     {
         var doc = new System.Xml.XmlDocument();

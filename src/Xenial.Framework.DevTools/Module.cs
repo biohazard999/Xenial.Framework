@@ -42,18 +42,6 @@ public sealed partial class XenialDevToolsModule : XenialModuleBase
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="updaters"></param>
-    public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
-    {
-        base.AddGeneratorUpdaters(updaters);
-
-        updaters
-            .UseDetailViewLayoutBuilders();
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="typesInfo"></param>
     public override void CustomizeTypesInfo(ITypesInfo typesInfo)
     {
