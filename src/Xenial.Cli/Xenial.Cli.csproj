@@ -4,10 +4,11 @@
     <TargetFrameworks>$(Net6Version);$(Net5Version)</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>xenial</ToolCommandName>
+    <NoWarn>CA2007;$(NoWarn)</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
