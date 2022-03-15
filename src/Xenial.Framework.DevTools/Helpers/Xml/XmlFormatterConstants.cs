@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Acme.Module.Helpers.Xml
+namespace Xenial.Framework.DevTools.Helpers.Xml
 {
     /// <summary>   An XML formatter constants. </summary>
     public static class XmlFormatterConstants

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Acme.Module.Helpers.Xml
+namespace Xenial.Framework.DevTools.Helpers.Xml
 {
     /// <summary>   A string writer with encoding. This class cannot be inherited. </summary>
     ///

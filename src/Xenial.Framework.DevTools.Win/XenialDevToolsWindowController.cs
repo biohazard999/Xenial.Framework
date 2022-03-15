@@ -6,8 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-using Acme.Module.Helpers;
-
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Model;

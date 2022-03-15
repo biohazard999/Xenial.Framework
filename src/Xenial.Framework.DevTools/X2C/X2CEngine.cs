@@ -5,7 +5,9 @@ using System.Text;
 using System.Xml;
 
 using DevExpress.ExpressApp.Model;
+using DevExpress.ExpressApp.Model.Core;
 
+using Xenial.Framework.DevTools.Helpers;
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.ColumnItems;
 using Xenial.Framework.Layouts.Items;
@@ -20,6 +22,63 @@ namespace Xenial.Framework.DevTools.X2C;
 /// </summary>
 public sealed class X2CEngine
 {
+    public string ConvertToCode(IModelView view)
+    {
+        var id = $"{view.Id}_{Guid.NewGuid()}";
+        var modelViews = view.Application.Views;
+        var copy = ((ModelNode)modelViews).AddClonedNode((ModelNode)view, id);
+
+        if (copy is not null)
+        {
+            foreach (var property in copy.GetType().GetProperties())
+            {
+                var info = copy.GetValueInfo(property.Name);
+                if (info is not null)
+                {
+                    var attributes = property
+                        .GetCustomAttributes(typeof(System.ComponentModel.DefaultValueAttribute), false)
+                        .OfType<System.ComponentModel.DefaultValueAttribute>();
+
+                    foreach (var attribute in attributes)
+                    {
+                        var value = copy.GetValue(property.Name);
+                        if (attribute.Value.Equals(value))
+                        {
+                            copy.ClearValue(property.Name);
+                        }
+                        else
+                        {
+                            value = ((ModelNode)view).GetValue(property.Name);
+                            if (attribute.Value.Equals(value))
+                            {
+                                copy.ClearValue(property.Name);
+                            }
+                            else
+                            {
+                                var viewValue = property.GetValue(view);
+                                var copyValue = property.GetValue(copy);
+                                if (viewValue is not null)
+                                {
+                                    if (viewValue.Equals(copyValue))
+                                    {
+                                        copy.ClearValue(property.Name);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var node = VisualizeNodeHelper.PrintModelNode(copy);
+
+        //TODO: use xml to replace id
+        node = node.Replace(id, view.Id); //Patch ViewId
+
+        return ConvertToCode(node);
+    }
+
     /// <summary>
     /// 
     /// </summary>
