@@ -247,6 +247,7 @@ internal class AccordionAdornerAdapter : AdornerAdapterBase
                                 {
                                     using var graphics = accordionControl.CreateGraphics();
                                     using var cache = new GraphicsCache(new DXPaintEventArgs(graphics));
+                                    badgeViewInfo.EnsureProperties();
                                     badgeViewInfo.Calc(cache, popupRect);
                                 }
 
