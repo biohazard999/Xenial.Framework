@@ -27,28 +27,33 @@ public sealed class X2CEngine
     /// <returns></returns>
     public string ConvertToCode(string xml)
     {
-        var doc = new System.Xml.XmlDocument();
-        doc.LoadXml(xml);
-        var root = doc.FirstChild;
+        var root = LoadXml(xml);
+
         return root.Name switch
         {
-            "ListView" => ListViewBuilderCodeClass(xml),
-            "DetailView" => DetailViewBuilderCodeClass(xml),
+            "ListView" => ListViewBuilderCodeClass(root),
+            "DetailView" => DetailViewBuilderCodeClass(root),
             _ => throw new ArgumentOutOfRangeException(nameof(xml), root.Name, "Code builder is not handled")
         };
+    }
+
+    private static XmlNode LoadXml(string xml)
+    {
+        var doc = new XmlDocument() { XmlResolver = null };
+        var sreader = new System.IO.StringReader(xml);
+        using var reader = XmlReader.Create(sreader, new XmlReaderSettings() { XmlResolver = null });
+        doc.Load(reader);
+        return doc.FirstChild;
     }
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="xml"></param>
+    /// <param name="root"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public string ListViewBuilderCodeClass(string xml)
+    public string ListViewBuilderCodeClass(XmlNode root)
     {
-        var doc = new System.Xml.XmlDocument();
-        doc.LoadXml(xml);
-        var root = doc.FirstChild;
         var className = GetAttribute(root, "ClassName");
 
         var (@namespace, @class) = className switch
@@ -68,17 +73,14 @@ public sealed class X2CEngine
         using (sb.OpenBrace($"namespace {@namespace}"))
         using (sb.OpenBrace($"public sealed partial class {@class}ColumnsBuilder : ColumnsBuilder<{@class}>"))
         {
-            ListViewBuilderCodeMethod(xml, sb);
+            ListViewBuilderCodeMethod(root, sb);
         }
 
         return sb.ToString();
     }
 
-    private static string ListViewBuilderCodeMethod(string xml, CurlyIndenter sb)
+    private static string ListViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb)
     {
-        var doc = new System.Xml.XmlDocument();
-        doc.LoadXml(xml);
-        var root = doc.FirstChild;
         static string ListViewOptionsCode(XmlNode node, CurlyIndenter sb)
         {
             var ignoredAttributes = new[] { "Id", "ClassName" };
@@ -166,11 +168,8 @@ public sealed class X2CEngine
         return ListViewBuildersCode(root, sb);
     }
 
-    public string DetailViewBuilderCodeClass(string xml)
+    public string DetailViewBuilderCodeClass(XmlNode root)
     {
-        var doc = new System.Xml.XmlDocument();
-        doc.LoadXml(xml);
-        var root = doc.FirstChild;
         var className = GetAttribute(root, "ClassName");
 
         var (@namespace, @class) = className switch
@@ -190,19 +189,15 @@ public sealed class X2CEngine
         using (sb.OpenBrace($"namespace {@namespace}"))
         using (sb.OpenBrace($"public sealed partial class {@class}LayoutBuilder : LayoutBuilder<{@class}>"))
         {
-            DetailViewBuilderCodeMethod(xml, sb);
+            DetailViewBuilderCodeMethod(root, sb);
         }
 
         return sb.ToString();
     }
 
 
-    static string DetailViewBuilderCodeMethod(string xml, CurlyIndenter sb)
+    static string DetailViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb)
     {
-        var doc = new System.Xml.XmlDocument();
-        doc.LoadXml(xml);
-        var root = doc.FirstChild;
-
         static string DetailViewOptionsCode(XmlNode node, CurlyIndenter sb)
         {
             var ignoredAttributes = new[] { "Id", "ClassName" };
@@ -288,8 +283,6 @@ public sealed class X2CEngine
             {
                 CollectNodeTree(childNode, items);
             }
-
-
 
             sb.Write("public Layout BuildLayout() => new Layout(");
             DetailViewOptionsCode(node, sb);
