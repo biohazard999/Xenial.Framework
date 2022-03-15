@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Linq;
 
 using Xenial.Framework.Layouts;
 using Xenial.Framework.Layouts.ColumnItems;
+using Xenial.Framework.Layouts.Items.Base;
 
 namespace HtmlDemoXAFApplication.Module.BusinessObjects
 {

@@ -271,6 +271,7 @@ public sealed class X2CEngine
         sb.WriteLine();
         sb.WriteLine("using Xenial.Framework.Layouts;");
         sb.WriteLine("using Xenial.Framework.Layouts.ColumnItems;");
+        sb.WriteLine("using Xenial.Framework.Layouts.Items.Base;");
         sb.WriteLine();
         using (sb.OpenBrace($"namespace {@namespace}"))
         using (sb.OpenBrace($"public sealed partial class {@class}LayoutBuilder : LayoutBuilder<{@class}>"))

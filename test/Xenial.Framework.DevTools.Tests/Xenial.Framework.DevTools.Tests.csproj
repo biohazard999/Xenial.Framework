@@ -12,18 +12,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\Xenial.Framework.Generators.Tests\TestReferenceAssemblies.cs" Link="TestReferenceAssemblies.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\lic\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" />
     <ProjectReference Include="..\..\src\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
     <ProjectReference Include="..\..\src\Xenial.Framework.DevTools.Win\Xenial.Framework.DevTools.Win.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
-      <PrivateAssets>all</PrivateAssets>
+      <PrivateAssets>none</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
-  <ImportGroup>
-    
-  </ImportGroup>
+  <ItemGroup>
+    <PackageReference Include="Basic.Reference.Assemblies" Version="1.2.4" />
+    <PackageReference Include="Basic.Reference.Assemblies.NetStandard20" Version="1.2.4" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0" />
+  </ItemGroup>
+
 </Project>
