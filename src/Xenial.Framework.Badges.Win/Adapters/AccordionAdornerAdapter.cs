@@ -117,9 +117,16 @@ internal class AccordionAdornerAdapter : AdornerAdapterBase
                                     badgeViewInfo.Calc(cache, rect);
                                 }
 
-                                var height = badgeViewInfo.Bounds.Height;
                                 var width = badgeViewInfo.Bounds.Width;
-                                badge.Properties.Offset = new Point(rect.Right + width / 2, rect.Top + rect.Height / 2);
+                                var center = new Point(rect.Right + width / 2, rect.Top + rect.Height / 2);
+                                if (accordionControlViewInfo.Bounds.Contains(center))
+                                {
+                                    badge.Properties.Offset = center;
+                                }
+                                else
+                                {
+                                    badge.Visible = false;
+                                }
                             }
                         }
                     }
