@@ -24,6 +24,53 @@ public sealed class X2CEngine
 {
     public string ConvertToCode(IModelView view)
     {
+        var node = LoadXml(view);
+        return ConvertToCode(node);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="xml"></param>
+    /// <returns></returns>
+    public static string ConvertToCode(string xml)
+    {
+        var root = LoadXml(xml);
+
+        CleanNodes(root);
+
+        return root.Name switch
+        {
+            "ListView" => ListViewBuilderCodeClass(root),
+            "DetailView" => DetailViewBuilderCodeClass(root),
+            _ => throw new ArgumentOutOfRangeException(nameof(xml), root.Name, "Code builder is not handled")
+        };
+    }
+    public static string ConvertToCode(XmlNode root)
+    {
+        CleanNodes(root);
+
+        return root.Name switch
+        {
+            "ListView" => ListViewBuilderCodeClass(root),
+            "DetailView" => DetailViewBuilderCodeClass(root),
+            _ => throw new ArgumentOutOfRangeException(nameof(root), root.Name, "Code builder is not handled")
+        };
+    }
+
+    public static XmlNode LoadXml(string xml)
+    {
+        var doc = new XmlDocument() { XmlResolver = null };
+        var sreader = new System.IO.StringReader(xml);
+        using var reader = XmlReader.Create(sreader, new XmlReaderSettings() { XmlResolver = null });
+        doc.Load(reader);
+
+
+        return doc.FirstChild;
+    }
+
+    public static XmlNode LoadXml(IModelView view)
+    {
         var id = $"{view.Id}_{Guid.NewGuid()}";
         var modelViews = view.Application.Views;
         var copy = ((ModelNode)modelViews).AddClonedNode((ModelNode)view, id);
@@ -76,33 +123,13 @@ public sealed class X2CEngine
         //TODO: use xml to replace id
         node = node.Replace(id, view.Id); //Patch ViewId
 
-        return ConvertToCode(node);
-    }
+        var xml = LoadXml(node);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <returns></returns>
-    public string ConvertToCode(string xml)
-    {
-        var root = LoadXml(xml);
+        CleanNodes(xml);
 
-        return root.Name switch
-        {
-            "ListView" => ListViewBuilderCodeClass(root),
-            "DetailView" => DetailViewBuilderCodeClass(root),
-            _ => throw new ArgumentOutOfRangeException(nameof(xml), root.Name, "Code builder is not handled")
-        };
-    }
+        ((IModelView)copy).Remove();
 
-    private static XmlNode LoadXml(string xml)
-    {
-        var doc = new XmlDocument() { XmlResolver = null };
-        var sreader = new System.IO.StringReader(xml);
-        using var reader = XmlReader.Create(sreader, new XmlReaderSettings() { XmlResolver = null });
-        doc.Load(reader);
-        return doc.FirstChild;
+        return xml;
     }
 
     /// <summary>
@@ -111,7 +138,7 @@ public sealed class X2CEngine
     /// <param name="root"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public string ListViewBuilderCodeClass(XmlNode root)
+    private static string ListViewBuilderCodeClass(XmlNode root)
     {
         var className = GetAttribute(root, "ClassName");
 
@@ -227,7 +254,7 @@ public sealed class X2CEngine
         return ListViewBuildersCode(root, sb);
     }
 
-    public string DetailViewBuilderCodeClass(XmlNode root)
+    private static string DetailViewBuilderCodeClass(XmlNode root)
     {
         var className = GetAttribute(root, "ClassName");
 
@@ -254,8 +281,7 @@ public sealed class X2CEngine
         return sb.ToString();
     }
 
-
-    static string DetailViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb)
+    private static string DetailViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb)
     {
         static string DetailViewOptionsCode(XmlNode node, CurlyIndenter sb)
         {
@@ -490,6 +516,27 @@ public sealed class X2CEngine
         return LayoutBuildersCode(root, sb);
     }
 
+    private static void CleanNodes(XmlNode node)
+    {
+        if (node.Attributes["IsNewNode"] is not null)
+        {
+            node.Attributes.Remove(node.Attributes["IsNewNode"]);
+        }
+
+        if (node.Attributes["ShowCaption"] is not null)
+        {
+            var value = node.Attributes["ShowCaption"].Value;
+            if (string.IsNullOrEmpty(value)) //Empty boolean should be ignored
+            {
+                node.Attributes.Remove(node.Attributes["ShowCaption"]);
+            }
+        }
+
+        foreach (System.Xml.XmlNode child in node.ChildNodes)
+        {
+            CleanNodes(child);
+        }
+    }
 
     private static (int indexOffset, Dictionary<string, string> propertiesToWrite) MapAttributes<TTargetObject>(int indexOffset, XmlNode node, IList<XmlNode> neighborNodes)
         => MapAttributes(typeof(TTargetObject), indexOffset, node, neighborNodes);

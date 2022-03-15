@@ -15,8 +15,6 @@ namespace Xenial.Framework.DevTools.Tests.X2C;
 [UsesVerify]
 public class X2CEngineSanityTests
 {
-    private X2CEngine X2C { get; } = new();
-
     internal const string ListViewXml = @"<ListView Id=""FooBar_ListView""
           ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBar"">
   <Columns>
@@ -33,7 +31,7 @@ public class X2CEngineSanityTests
     [Fact]
     public async Task ConvertBasicListView()
     {
-        var code = X2C.ConvertToCode(ListViewXml);
+        var code = X2CEngine.ConvertToCode(ListViewXml);
 
         await Verifier.Verify(code).UseExtension("cs");
     }
@@ -59,7 +57,7 @@ public class X2CEngineSanityTests
     [Fact]
     public async Task ConvertBasicDetailView()
     {
-        var code = X2C.ConvertToCode(DetailViewXml);
+        var code = X2CEngine.ConvertToCode(DetailViewXml);
 
         await Verifier.Verify(code).UseExtension("cs");
     }
