@@ -6,7 +6,7 @@ using Xenial.Framework.Layouts.ColumnItems;
 
 namespace HtmlDemoXAFApplication.Module.BusinessObjects
 {
-    public sealed partial class FooBarColumnsBuilder : ColumnsBuilder<FooBar>
+    public sealed partial class FooBarPersistentColumnsBuilder : ColumnsBuilder<FooBarPersistent>
     {
         public Columns BuildColumns() => new Columns(new ListViewOptions
         {

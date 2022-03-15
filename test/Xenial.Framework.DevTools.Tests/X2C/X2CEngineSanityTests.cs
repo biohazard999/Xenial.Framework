@@ -31,9 +31,18 @@ public class X2CEngineSanityTests
     public X2CEngineSanityTests(ITestOutputHelper output)
         => this.output = output;
 
+    internal const string ClassCode = @"namespace HtmlDemoXAFApplication.Module.BusinessObjects
+{
+    public class FooBarPersistent
+    {
+        public int Oid { get; set; }
+        public string Label { get; set; }
+    }
+}";
+
 
     internal const string ListViewXml = @"<ListView Id=""FooBar_ListView""
-          ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBar"">
+          ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"">
   <Columns>
     <ColumnInfo Id=""Oid""
                 PropertyName=""Oid""
@@ -51,6 +60,13 @@ public class X2CEngineSanityTests
         var code = X2CEngine.ConvertToCode(ListViewXml);
 
         await Verifier.Verify(code).UseExtension("cs");
+    }
+
+    [Fact]
+    public void CompileBasicListView()
+    {
+        var code = X2CEngine.ConvertToCode(ListViewXml);
+        CompileCode(code);
     }
 
     internal const string DetailViewXml = @"<DetailView Id=""FooBarPersistent_DetailView""
@@ -83,7 +99,11 @@ public class X2CEngineSanityTests
     public void CompileBasicDetailView()
     {
         var code = X2CEngine.ConvertToCode(DetailViewXml);
+        CompileCode(code);
+    }
 
+    private void CompileCode(string code)
+    {
         var references = TestReferenceAssemblies.DefaultReferenceAssemblies
             .Concat(new[]
             {
@@ -94,14 +114,7 @@ public class X2CEngineSanityTests
 
         var trees = new[]
         {
-            CSharpSyntaxTree.ParseText(@"namespace HtmlDemoXAFApplication.Module.BusinessObjects
-{
-    public class FooBarPersistent
-    {
-        public int Oid { get; set; }
-        public string Label { get; set; }
-    }
-}"),
+            CSharpSyntaxTree.ParseText(ClassCode),
             CSharpSyntaxTree.ParseText(code)
         };
 
@@ -115,7 +128,6 @@ public class X2CEngineSanityTests
 
         generatorDriver.RunGeneratorsAndUpdateCompilation(compilation, out var c, out var diagnostics);
         compilation = (CSharpCompilation)c;
-
         using var dllStream = new MemoryStream();
         var result = compilation.Emit(dllStream);
 
