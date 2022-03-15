@@ -192,16 +192,25 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
                 }
             }
         })
-        .Use((ctx, next) =>
+        .Use(async (ctx, next) =>
         {
-            return AnsiConsole.Status().Start("Analyzing project...", async statusContext =>
+            await AnsiConsole.Status().Start("Analyzing project...", async statusContext =>
             {
                 statusContext.Spinner(Spinner.Known.Star);
                 ctx.StatusContext = statusContext;
-                await next();
+
+                var pipeline = CreatePipeline();
+
+                ConfigureStatusPipeline(pipeline);
+
+                await pipeline.Execute(ctx);
             });
-        })
-        .Use(async (ctx, next) =>
+
+            await next();
+        });
+
+    protected virtual void ConfigureStatusPipeline(TPipeline pipeline!!)
+        => pipeline.Use(async (ctx, next) =>
         {
             var options = new AnalyzerManagerOptions
             {
@@ -315,6 +324,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             ctx.StatusContext!.Status("Completed!");
             await next();
         });
+
 
     public override async Task<int> ExecuteAsync(CommandContext context, TSettings settings)
     {

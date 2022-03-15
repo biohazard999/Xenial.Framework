@@ -22,7 +22,7 @@ namespace Xenial.Framework.DevTools.X2C;
 /// </summary>
 public sealed class X2CEngine
 {
-    public string ConvertToCode(IModelView view)
+    public static string ConvertToCode(IModelView view)
     {
         var node = LoadXml(view);
         return ConvertToCode(node);
@@ -303,8 +303,13 @@ public sealed class X2CEngine
 
         static string LayoutBuildersCode(XmlNode node, CurlyIndenter sb)
         {
-            var itemsNode = node.ChildNodes.OfType<XmlNode>().First(m => m.Name == "Items");
-            var layoutNode = node.ChildNodes.OfType<XmlNode>().First(m => m.Name == "Layout");
+            var itemsNode = node.ChildNodes.OfType<XmlNode>().FirstOrDefault(m => m.Name == "Items");
+            var layoutNode = node.ChildNodes.OfType<XmlNode>().FirstOrDefault(m => m.Name == "Layout");
+
+            if (itemsNode is null || layoutNode is null)
+            {
+                return "/* ERROR: could not find a node named 'Items' or 'Layout' */";
+            }
 
             //We ignore the Main Node
             var rootLayoutNode = layoutNode.ChildNodes.Count == 1

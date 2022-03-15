@@ -1,0 +1,12 @@
+﻿{
+  "profiles": {
+    "build": {
+      "commandName": "Project",
+      "commandLineArgs": "build C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module\\Xenial.FeatureCenter.Module.csproj"
+    },
+    "model": {
+      "commandName": "Project",
+      "commandLineArgs": "model C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module\\Xenial.FeatureCenter.Module.csproj --no-restore -f=net6.0"
+    }
+  }
+}

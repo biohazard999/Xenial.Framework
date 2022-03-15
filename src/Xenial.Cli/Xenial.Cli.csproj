@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
     <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
   </ItemGroup>
 
