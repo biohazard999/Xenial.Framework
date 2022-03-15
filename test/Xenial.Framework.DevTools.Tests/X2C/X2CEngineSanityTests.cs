@@ -142,10 +142,21 @@ public class X2CEngineSanityTests
             output.WriteLine(new string('=', 10));
         }
 
+        if (diagnostics.Length > 0)
+        {
+            output.WriteLine($"Compilation failed: {diagnostics.Length}");
+            output.WriteLine(new string('=', 10));
+            foreach (var diagnostic in diagnostics)
+            {
+                output.WriteLine(diagnostic.ToString());
+            }
+        }
+
         result.ShouldSatisfyAllConditions(
             () => result.Success.ShouldBe(true, "Compilation failed"),
             //Unused references
-            () => result.Diagnostics.Where(m => m.WarningLevel == 0).Count().ShouldBe(0)
+            () => result.Diagnostics.Where(m => m.WarningLevel == 0).Count().ShouldBe(0),
+            () => diagnostics.Length.ShouldBe(0, "Generators failed")
         );
     }
 }
