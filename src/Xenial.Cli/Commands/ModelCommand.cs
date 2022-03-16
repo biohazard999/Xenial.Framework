@@ -121,7 +121,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                return;
            }
            await next();
-       })       
+       })
        .Use(async (ctx, next) =>
        {
            ctx.StatusContext!.Status = "Loading Application Model...";
@@ -204,10 +204,13 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
     internal static AdhocWorkspace CreateWorkspace(IAnalyzerManager manager)
     {
-        ILogger logger = manager.LoggerFactory?.CreateLogger<AdhocWorkspace>();
         var workspace = new AdhocWorkspace();
-        workspace.WorkspaceChanged += (sender, args) => logger?.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
-        workspace.WorkspaceFailed += (sender, args) => logger?.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
+        ILogger? logger = manager.LoggerFactory?.CreateLogger<AdhocWorkspace>();
+        if (logger is not null)
+        {
+            workspace.WorkspaceChanged += (sender, args) => logger.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
+            workspace.WorkspaceFailed += (sender, args) => logger.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
+        }
         return workspace;
     }
 
