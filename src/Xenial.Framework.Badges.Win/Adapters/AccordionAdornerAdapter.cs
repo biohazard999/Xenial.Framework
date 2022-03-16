@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.SystemModule;
 using DevExpress.Utils.Drawing;
+using DevExpress.Utils.Extensions;
 using DevExpress.Utils.VisualEffects;
 using DevExpress.XtraBars.Navigation;
 
@@ -117,11 +118,20 @@ internal class AccordionAdornerAdapter : AdornerAdapterBase
                                     badgeViewInfo.Calc(cache, rect);
                                 }
 
-                                var width = badgeViewInfo.Bounds.Width;
-                                var center = new Point(rect.Right + width / 2, rect.Top + rect.Height / 2);
-                                if (accordionControlViewInfo.Bounds.Contains(center))
+                                if (!rect.IsEmpty && accordionControlViewInfo.Bounds.Contains(rect.GetCenterPoint()))
                                 {
-                                    badge.Properties.Offset = center;
+                                    Rectangle boundsForHeight;
+                                    if (accordionElementBaseViewInfo.ImageBounds.IsEmpty)
+                                    {
+                                        boundsForHeight = rect;
+                                    }
+                                    else
+                                    {
+                                        boundsForHeight = accordionElementBaseViewInfo.ImageBounds;
+                                    }
+
+                                    var width = badgeViewInfo.Bounds.Width;
+                                    badge.Properties.Offset = new Point(rect.Right + width / 2, boundsForHeight.Top + boundsForHeight.Height / 2);
                                 }
                                 else
                                 {
