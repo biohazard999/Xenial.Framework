@@ -123,11 +123,11 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
     where TPipeline : Pipeline<TPipelineContext>
     where TPipelineContext : BuildContext<TSettings>
 {
-    readonly ILoggerFactory loggerFactory;
-    readonly ILogger<BuildCommand<TSettings, TPipeline, TPipelineContext>> logger;
+    protected readonly ILoggerFactory LoggerFactory;
+    protected readonly ILogger<BuildCommand<TSettings, TPipeline, TPipelineContext>> Logger;
 
     protected BuildCommand(ILoggerFactory loggerFactory, ILogger<BuildCommand<TSettings, TPipeline, TPipelineContext>> logger)
-        => (this.loggerFactory, this.logger) = (loggerFactory, logger);
+        => (LoggerFactory, Logger) = (loggerFactory, logger);
 
     protected abstract TPipeline CreatePipeline();
 
@@ -143,7 +143,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
     protected virtual void ConfigurePipeline(TPipeline pipeline!!)
         => pipeline.Use((ctx, next) =>
         {
-            using var _ = logger.LogInformationTick($"Command `{CommandName}`");
+            using var _ = Logger.LogInformationTick($"Command `{CommandName}`");
             return next();
         })
         .Use(async (ctx, next) =>
@@ -177,7 +177,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             catch (Exception ex)
             {
                 AnsiConsole.WriteException(ex);
-                logger.LogError(ex, "Fatal error in build");
+                Logger.LogError(ex, "Fatal error in build");
                 ctx.ExitCode = 1;
                 ctx.Exception = ex;
             }
@@ -222,12 +222,35 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             }
         });
 
+    protected static void PatchOptions(TPipelineContext ctx!!, EnvironmentOptions environmentOptions!!)
+        => PatchOptions(ctx, environmentOptions.GlobalProperties);
+
+    protected static void PatchOptions(TPipelineContext ctx!!, IProjectAnalyzer projectAnalyzer!!)
+    {
+        var dic = new Dictionary<string, string>();
+        PatchOptions(ctx, dic);
+        foreach (var pair in dic)
+        {
+            projectAnalyzer.SetGlobalProperty(pair.Key, pair.Value);
+        }
+    }
+
+    protected static void PatchOptions(TPipelineContext ctx!!, IDictionary<string, string> globalProperties!!)
+    {
+        if (!ctx.Settings.Fast)
+        {
+            globalProperties[MsBuildProperties.SkipCompilerExecution] = "false";
+            globalProperties[MsBuildProperties.BuildingProject] = "true";
+            globalProperties[MsBuildProperties.AutoGenerateBindingRedirects] = "true";
+        }
+    }
+
     protected virtual void ConfigureStatusPipeline(TPipeline pipeline!!)
         => pipeline.Use(async (ctx, next) =>
         {
             var options = new AnalyzerManagerOptions
             {
-                LoggerFactory = loggerFactory
+                LoggerFactory = LoggerFactory
             };
 
             ctx.AnalyzerManager = new AnalyzerManager(options);
@@ -260,15 +283,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
                 DesignTime = true
             };
 
-            if (!ctx.Settings.Fast)
-            {
-                //environmentOptions.GlobalProperties[MsBuildProperties.SkipCopyBuildProduct] = "false";
-                //environmentOptions.GlobalProperties[MsBuildProperties.CopyBuildOutputToOutputDirectory] = "true";
-                //environmentOptions.GlobalProperties[MsBuildProperties.ComputeNETCoreBuildOutputFiles] = "true";
-                environmentOptions.GlobalProperties[MsBuildProperties.SkipCompilerExecution] = "false";
-                environmentOptions.GlobalProperties[MsBuildProperties.BuildingProject] = "true";
-                environmentOptions.GlobalProperties[MsBuildProperties.AutoGenerateBindingRedirects] = "true";
-            }
+            PatchOptions(ctx, environmentOptions);
 
             if (ctx.Settings.NoBuild)
             {
@@ -329,9 +344,12 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
                 DesignTime = false,
                 GlobalProperties =
                 {
-                    ["CopyLocalLockFileAssemblies"] = "true"
+                    ["CopyLocalLockFileAssemblies"] = "true",
+                    [MsBuildProperties.CopyBuildOutputToOutputDirectory] = "true"
                 },
             };
+
+            PatchOptions(ctx, environmentOptions);
 
             //We don't want to clean, Design Time Build should be fine
             environmentOptions.TargetsToBuild.Clear();

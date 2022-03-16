@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Color = Spectre.Console.Color;
+
 namespace Xenial.Cli.Utils;
 
 public static class BrandHelper

@@ -26,6 +26,7 @@ using Xenial.Framework.DevTools.X2C;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Formatting;
+using Buildalyzer.Environment;
 
 namespace Xenial.Cli.Commands;
 
@@ -120,7 +121,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                return;
            }
            await next();
-       })
+       })       
        .Use(async (ctx, next) =>
        {
            ctx.StatusContext!.Status = "Loading Application Model...";
@@ -165,6 +166,11 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            var sw = Stopwatch.StartNew();
            try
            {
+               PatchOptions(ctx, ctx.ProjectAnalyzer);
+
+               ctx.ProjectAnalyzer.SetGlobalProperty("CopyLocalLockFileAssemblies", "true");
+               ctx.ProjectAnalyzer.SetGlobalProperty(MsBuildProperties.CopyBuildOutputToOutputDirectory, "true");
+
                ctx.Workspace = ctx.ProjectAnalyzer.GetWorkspace(false);
                foreach (var project in ctx.Workspace.CurrentSolution.Projects)
                {
@@ -173,14 +179,25 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                    ctx.StatusContext!.Status = "Preparing Workspace...";
                }
                sw.Success("Load Workspace");
+               await next();
            }
-           catch
+           catch (Exception ex)
            {
-               sw.Fail("Load Workspace");
-               throw;
+               AnsiConsole.WriteException(ex);
+               Logger.LogError(ex, "Fatal error in load workspace");
+               if (ctx.Settings.Strict)
+               {
+                   ctx.ExitCode = 1;
+                   sw.Fail("Load Workspace");
+               }
+               else
+               {
+                   sw.Warn("Load Workspace");
+                   await next();
+               }
            }
-           await next();
-       });
+       })
+       ;
     }
 
     protected override void ConfigurePipeline(TPipeline pipeline!!)

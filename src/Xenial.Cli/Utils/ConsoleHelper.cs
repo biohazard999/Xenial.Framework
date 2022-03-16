@@ -13,6 +13,9 @@ using TextMateSharp.Grammars;
 using TextMateSharp.Registry;
 using TextMateSharp.Themes;
 
+using Color = Spectre.Console.Color;
+using FontStyle = TextMateSharp.Themes.FontStyle;
+
 namespace Xenial.Cli.Utils;
 
 public static class ConsoleHelper
