@@ -242,6 +242,11 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             globalProperties[MsBuildProperties.SkipCompilerExecution] = "false";
             globalProperties[MsBuildProperties.BuildingProject] = "true";
             globalProperties[MsBuildProperties.AutoGenerateBindingRedirects] = "true";
+
+            globalProperties[MsBuildProperties.ComputeNETCoreBuildOutputFiles] = "true";
+            globalProperties[MsBuildProperties.CopyBuildOutputToOutputDirectory] = "true";
+            globalProperties[MsBuildProperties.BuildProjectReferences] = "true";
+            globalProperties[MsBuildProperties.SkipCopyBuildProduct] = "false";
         }
     }
 

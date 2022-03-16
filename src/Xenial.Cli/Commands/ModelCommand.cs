@@ -171,7 +171,9 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                ctx.ProjectAnalyzer.SetGlobalProperty("CopyLocalLockFileAssemblies", "true");
                ctx.ProjectAnalyzer.SetGlobalProperty(MsBuildProperties.CopyBuildOutputToOutputDirectory, "true");
 
-               ctx.Workspace = ctx.ProjectAnalyzer.GetWorkspace(false);
+               ctx.Workspace = CreateWorkspace(ctx.AnalyzerManager);
+               ctx.BuildResult.AddToWorkspace(ctx.Workspace, false);
+
                foreach (var project in ctx.Workspace.CurrentSolution.Projects)
                {
                    ctx.StatusContext!.Status = "Preparing Workspace...";
@@ -198,6 +200,15 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            }
        })
        ;
+    }
+
+    internal static AdhocWorkspace CreateWorkspace(IAnalyzerManager manager)
+    {
+        ILogger logger = manager.LoggerFactory?.CreateLogger<AdhocWorkspace>();
+        var workspace = new AdhocWorkspace();
+        workspace.WorkspaceChanged += (sender, args) => logger?.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
+        workspace.WorkspaceFailed += (sender, args) => logger?.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
+        return workspace;
     }
 
     protected override void ConfigurePipeline(TPipeline pipeline!!)
