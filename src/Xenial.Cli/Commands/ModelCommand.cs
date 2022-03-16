@@ -153,28 +153,23 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
        .Use(async (ctx, next) =>
        {
            ctx.StatusContext!.Status = "Loading Workspace...";
-           ctx.Workspace = ctx.ProjectAnalyzer.GetWorkspace(false);
-           foreach (var project in ctx.Workspace.CurrentSolution.Projects)
+           var sw = Stopwatch.StartNew();
+           try
            {
-               ctx.StatusContext!.Status = "Preparing Workspace...";
-               ctx.Compilation = await project.GetCompilationAsync();
-
-               var type = ctx.Compilation!.GetTypeByMetadataName("Xenial.FeatureCenter.Module.Model.GeneratorUpdaters.FeatureCenterNavigationItemNodesUpdater");
-               if (type is not null)
+               ctx.Workspace = ctx.ProjectAnalyzer.GetWorkspace(false);
+               foreach (var project in ctx.Workspace.CurrentSolution.Projects)
                {
-                   foreach (var location in type.Locations)
-                   {
-                       if (location.SourceTree is not null)
-                       {
-                           var filePath = location.SourceTree.FilePath;
-                       }
-                   }
+                   ctx.StatusContext!.Status = "Preparing Workspace...";
+                   ctx.Compilation = await project.GetCompilationAsync();
+                   ctx.StatusContext!.Status = "Preparing Workspace...";
                }
-
-               ctx.StatusContext!.Status = "Preparing Workspace...";
-               //SymbolFinder.so()
+               sw.Success("Load Workspace");
            }
-
+           catch
+           {
+               sw.Fail("Load Workspace");
+               throw;
+           }
            await next();
        });
     }
@@ -240,8 +235,24 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                         if (view is IModelObjectView modelObjectView)
                         {
                             var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
+
                             if (symbol is not null)
                             {
+                                var typeInfo = modelObjectView.ModelClass.TypeInfo;
+
+                                var symbolAttributes = symbol.GetAttributes();
+
+                                foreach (var attribtue in typeInfo.Attributes)
+                                {
+
+                                }
+
+
+                                foreach (var attribtue in symbolAttributes)
+                                {
+
+                                }
+
                                 //We parse again, because it may have changed in between
                                 var root = await CSharpSyntaxTree.ParseText(source).GetRootAsync();
                                 if (root is not null)
