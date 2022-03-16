@@ -22,7 +22,7 @@ namespace Xenial.Framework.DevTools.X2C;
 /// </summary>
 public sealed class X2CEngine
 {
-    public static string ConvertToCode(IModelView view)
+    public static (string className, string code) ConvertToCode(IModelView view)
     {
         var node = LoadXml(view);
         return ConvertToCode(node);
@@ -39,7 +39,7 @@ public sealed class X2CEngine
     /// </summary>
     /// <param name="xml"></param>
     /// <returns></returns>
-    public static string ConvertToCode(string xml)
+    public static (string className, string code) ConvertToCode(string xml)
     {
         var root = LoadXml(xml);
 
@@ -52,7 +52,7 @@ public sealed class X2CEngine
             _ => throw new ArgumentOutOfRangeException(nameof(xml), root.Name, "Code builder is not handled")
         };
     }
-    public static string ConvertToCode(XmlNode root)
+    public static (string className, string code) ConvertToCode(XmlNode root)
     {
         CleanNodes(root);
 
@@ -144,7 +144,7 @@ public sealed class X2CEngine
     /// <param name="root"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    private static string ListViewBuilderCodeClass(XmlNode root)
+    private static (string className, string code) ListViewBuilderCodeClass(XmlNode root)
     {
         var className = GetAttribute(root, "ClassName");
 
@@ -153,6 +153,8 @@ public sealed class X2CEngine
             string c when c.Contains('.') => (string.Join(".", c.Split('.').SkipLast()), c.Split('.').Last()),
             _ => throw new ArgumentOutOfRangeException(nameof(className), className, "Given name cannot be split into namespace and classname")
         };
+
+        var resultClassName = $"{@class}ColumnsBuilder";
 
         var sb = CurlyIndenter.Create();
 
@@ -163,12 +165,12 @@ public sealed class X2CEngine
         sb.WriteLine("using Xenial.Framework.Layouts.ColumnItems;");
         sb.WriteLine();
         using (sb.OpenBrace($"namespace {@namespace}"))
-        using (sb.OpenBrace($"public sealed partial class {@class}ColumnsBuilder : ColumnsBuilder<{@class}>"))
+        using (sb.OpenBrace($"public sealed partial class {resultClassName} : ColumnsBuilder<{@class}>"))
         {
             ListViewBuilderCodeMethod(root, sb);
         }
 
-        return sb.ToString();
+        return (resultClassName, sb.ToString());
     }
 
     private static string ListViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb)
@@ -260,7 +262,7 @@ public sealed class X2CEngine
         return ListViewBuildersCode(root, sb);
     }
 
-    private static string DetailViewBuilderCodeClass(XmlNode root)
+    private static (string className, string code) DetailViewBuilderCodeClass(XmlNode root)
     {
         var className = GetAttribute(root, "ClassName");
 
@@ -269,6 +271,8 @@ public sealed class X2CEngine
             string c when c.Contains('.') => (string.Join(".", c.Split('.').SkipLast()), c.Split('.').Last()),
             _ => throw new ArgumentOutOfRangeException(nameof(className), className, "Given name cannot be split into namespace and classname")
         };
+
+        var resultClassName = $"{@class}LayoutBuilder";
 
         var sb = CurlyIndenter.Create();
 
@@ -280,12 +284,12 @@ public sealed class X2CEngine
         sb.WriteLine("using Xenial.Framework.Layouts.Items.Base;");
         sb.WriteLine();
         using (sb.OpenBrace($"namespace {@namespace}"))
-        using (sb.OpenBrace($"public sealed partial class {@class}LayoutBuilder : LayoutBuilder<{@class}>"))
+        using (sb.OpenBrace($"public sealed partial class {resultClassName} : LayoutBuilder<{@class}>"))
         {
             DetailViewBuilderCodeMethod(root, sb);
         }
 
-        return sb.ToString();
+        return (resultClassName, sb.ToString());
     }
 
     private static string DetailViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb)

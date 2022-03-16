@@ -120,7 +120,7 @@ public sealed class XenialDevToolsWindowController : WindowController
             controller.PrettyPrintXmlSimpleAction.Executed -= PrettyPrint;
             controller.PrettyPrintXmlSimpleAction.Executed += PrettyPrint;
 
-            devToolsViewModel.Code = HtmlBuilder.BuildHtml("Code", $"{new HtmlBuilder.CodeBlock("csharp", X2C.X2CEngine.ConvertToCode(xml))}");
+            devToolsViewModel.Code = HtmlBuilder.BuildHtml("Code", $"{new HtmlBuilder.CodeBlock("csharp", X2C.X2CEngine.ConvertToCode(xml).code)}");
         }
 
         DevToolsWindow.SetView(detailView, true, null, true);

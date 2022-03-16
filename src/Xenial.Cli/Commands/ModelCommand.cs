@@ -23,6 +23,9 @@ using TextMateSharp.Registry;
 using TextMateSharp.Themes;
 using System.Globalization;
 using Xenial.Framework.DevTools.X2C;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Formatting;
 
 namespace Xenial.Cli.Commands;
 
@@ -46,6 +49,7 @@ public record ModelContext<TSettings> : BuildContext<TSettings>
     public IModelApplication? Application { get; set; }
     public FileModelStore? ModelStore { get; set; }
     public Compilation? Compilation { get; set; }
+    public AdhocWorkspace? Workspace { get; set; }
 }
 
 public abstract record ModelPipeline<TContext, TSettings> : BuildPipeline<TContext, TSettings>
@@ -149,8 +153,8 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
        .Use(async (ctx, next) =>
        {
            ctx.StatusContext!.Status = "Loading Workspace...";
-           var workspace = ctx.ProjectAnalyzer.GetWorkspace(false);
-           foreach (var project in workspace.CurrentSolution.Projects)
+           ctx.Workspace = ctx.ProjectAnalyzer.GetWorkspace(false);
+           foreach (var project in ctx.Workspace.CurrentSolution.Projects)
            {
                ctx.StatusContext!.Status = "Preparing Workspace...";
                ctx.Compilation = await project.GetCompilationAsync();
@@ -184,7 +188,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
             foreach (var view in ctx.Application!.Views)
             {
                 var xml = X2CEngine.ConvertToXml(view);
-                var code = X2CEngine.ConvertToCode(view);
+                var (className, code) = X2CEngine.ConvertToCode(view);
 
                 static Location? FindFile(TPipelineContext ctx, IModelView modelView)
                 {
@@ -231,6 +235,58 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                         var source = await File.ReadAllTextAsync(location.SourceTree.FilePath);
                         PrintSource(source);
                         AnsiConsole.WriteLine();
+
+
+                        if (view is IModelObjectView modelObjectView)
+                        {
+                            var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
+                            if (symbol is not null)
+                            {
+                                //We parse again, because it may have changed in between
+                                var root = await CSharpSyntaxTree.ParseText(source).GetRootAsync();
+                                if (root is not null)
+                                {
+                                    var @class = root.DescendantNodes()
+                                            .OfType<ClassDeclarationSyntax>()
+                                            .FirstOrDefault(m => m.Identifier.Text == symbol.Name);
+
+                                    if (@class is not null)
+                                    {
+                                        var attributeName = view switch
+                                        {
+                                            IModelDetailView _ => "DetailViewLayoutBuilder",
+                                            IModelListView _ => "ListViewColumnsBuilder",
+                                            _ => null
+                                        };
+
+                                        if (attributeName is not null)
+                                        {
+                                            var attributeTypeArgument = className;
+                                            var attributes = @class.AttributeLists.Add(
+                                                 SyntaxFactory.AttributeList(
+                                                    SyntaxFactory.SingletonSeparatedList(
+                                                        SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(attributeName))
+                                                            .WithArgumentList(SyntaxFactory.AttributeArgumentList(
+                                                                SyntaxFactory.SingletonSeparatedList(
+                                                                    SyntaxFactory.AttributeArgument(
+                                                                        SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(attributeTypeArgument))
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                ).NormalizeWhitespace());
+
+
+                                            root = root.ReplaceNode(@class, @class.WithAttributeLists(attributes));
+                                            root = Formatter.Format(root, ctx.Workspace!);
+                                            PrintSource(root.ToFullString());
+                                            AnsiConsole.WriteLine();
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 

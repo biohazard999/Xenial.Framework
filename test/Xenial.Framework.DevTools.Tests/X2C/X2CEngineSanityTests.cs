@@ -57,7 +57,7 @@ public class X2CEngineSanityTests
     [Fact]
     public async Task ConvertBasicListView()
     {
-        var code = X2CEngine.ConvertToCode(ListViewXml);
+        var (_, code) = X2CEngine.ConvertToCode(ListViewXml);
 
         await Verifier.Verify(code).UseExtension("cs");
     }
@@ -65,7 +65,7 @@ public class X2CEngineSanityTests
     [Fact]
     public void CompileBasicListView()
     {
-        var code = X2CEngine.ConvertToCode(ListViewXml);
+        var (_, code) = X2CEngine.ConvertToCode(ListViewXml);
         CompileCode(code);
     }
 
@@ -90,7 +90,7 @@ public class X2CEngineSanityTests
     [Fact]
     public async Task ConvertBasicDetailView()
     {
-        var code = X2CEngine.ConvertToCode(DetailViewXml);
+        var (_, code) = X2CEngine.ConvertToCode(DetailViewXml);
 
         await Verifier.Verify(code).UseExtension("cs");
     }
@@ -98,7 +98,7 @@ public class X2CEngineSanityTests
     [Fact]
     public void CompileBasicDetailView()
     {
-        var code = X2CEngine.ConvertToCode(DetailViewXml);
+        var (_, code) = X2CEngine.ConvertToCode(DetailViewXml);
         CompileCode(code);
     }
 
