@@ -28,6 +28,12 @@ public sealed class X2CEngine
         return ConvertToCode(node);
     }
 
+    public static string ConvertToXml(IModelView view)
+    {
+        var node = LoadXml(view);
+        return VisualizeNodeHelper.PrettyPrint(node.OuterXml);
+    }
+
     /// <summary>
     /// 
     /// </summary>

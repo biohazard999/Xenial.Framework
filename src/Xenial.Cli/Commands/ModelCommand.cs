@@ -22,6 +22,7 @@ using TextMateSharp.Grammars;
 using TextMateSharp.Registry;
 using TextMateSharp.Themes;
 using System.Globalization;
+using Xenial.Framework.DevTools.X2C;
 
 namespace Xenial.Cli.Commands;
 
@@ -182,162 +183,65 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
         {
             foreach (var view in ctx.Application!.Views)
             {
-                var code = Xenial.Framework.DevTools.X2C.X2CEngine.ConvertToCode(view);
+                var xml = X2CEngine.ConvertToXml(view);
+                var code = X2CEngine.ConvertToCode(view);
 
+                static Location? FindFile(TPipelineContext ctx, IModelView modelView)
+                {
+                    if (modelView is IModelObjectView modelObjectView)
+                    {
+                        var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
+                        if (symbol is null)
+                        {
+                            return null;
+                        }
+
+                        if (symbol.Locations.Any())
+                        {
+                            foreach (var location in symbol.Locations.Where(m => m.IsInSource))
+                            {
+                                return location;
+                            }
+                        }
+                    }
+                    return null;
+                }
+
+                var location = FindFile(ctx, view);
+
+                HorizontalRule(view.Id);
+                if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
+                {
+                    var ext = Path.GetExtension(location.SourceTree.FilePath);
+                    var fileName = Path.GetFileNameWithoutExtension(location.SourceTree.FilePath);
+                    var dirName = Path.GetDirectoryName(location.SourceTree.FilePath);
+
+                    var part = view switch
+                    {
+                        IModelDetailView _ => ".LayoutBuilder",
+                        IModelListView _ => ".ColumnsBuilder",
+                        _ => ""
+                    };
+                    var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
+                    HorizontalDashed(location.SourceTree.FilePath);
+                    HorizontalDashed(newFilePath);
+
+                    if (File.Exists(location.SourceTree.FilePath))
+                    {
+                        var source = await File.ReadAllTextAsync(location.SourceTree.FilePath);
+                        PrintSource(source);
+                        AnsiConsole.WriteLine();
+                    }
+                }
+
+                PrintSource(xml, "xml");
+                AnsiConsole.WriteLine();
                 PrintSource(code);
+                AnsiConsole.WriteLine();
             }
 
             await next();
         });
     }
 
-
-
-    private static void PrintSource(string code)
-    {
-        using var sr = new StringReader(code);
-        PrintSource(sr);
-    }
-
-    private static Lazy<(IGrammar grammar, Theme theme)> TextMateContextCSharp { get; } = new Lazy<(IGrammar grammer, Theme theme)>(() =>
-    {
-        var options = new RegistryOptions(ThemeName.DarkPlus);
-
-        var registry = new Registry(options);
-
-        var theme = registry.GetTheme();
-
-        var grammar = registry.LoadGrammar(options.GetScopeByExtension(".cs"));
-        return (grammar, theme);
-    });
-
-    private static void PrintSource(StringReader sr)
-    {
-        var (grammar, theme) = TextMateContextCSharp.Value;
-
-        StackElement? ruleStack = null;
-
-        var line = sr.ReadLine();
-
-        while (line is not null)
-        {
-            var result = grammar.TokenizeLine(line, ruleStack);
-
-            ruleStack = result.RuleStack;
-
-            foreach (var token in result.Tokens)
-            {
-                var startIndex = (token.StartIndex > line.Length) ?
-                    line.Length : token.StartIndex;
-                var endIndex = (token.EndIndex > line.Length) ?
-                    line.Length : token.EndIndex;
-
-                var foreground = -1;
-                var background = -1;
-                var fontStyle = -1;
-
-                foreach (var themeRule in theme.Match(token.Scopes))
-                {
-                    if (foreground == -1 && themeRule.foreground > 0)
-                    {
-                        foreground = themeRule.foreground;
-                    }
-
-                    if (background == -1 && themeRule.background > 0)
-                    {
-                        background = themeRule.background;
-                    }
-
-                    if (fontStyle == -1 && themeRule.fontStyle > 0)
-                    {
-                        fontStyle = themeRule.fontStyle;
-                    }
-                }
-
-                WriteToken(line.SubstringAtIndexes(startIndex, endIndex), foreground, background, fontStyle, theme);
-            }
-
-            AnsiConsole.WriteLine();
-            line = sr.ReadLine();
-        }
-    }
-
-    private static void WriteToken(string text, int foreground, int background, int fontStyle, Theme theme)
-    {
-        if (foreground == -1)
-        {
-            Console.Write(text);
-            return;
-        }
-
-        var decoration = GetDecoration(fontStyle);
-
-        var backgroundColor = GetColor(background, theme);
-        var foregroundColor = GetColor(foreground, theme);
-
-        var style = new Style(foregroundColor, backgroundColor, decoration);
-        var markup = new Markup(text.Replace("[", "[[").Replace("]", "]]"), style);
-
-        AnsiConsole.Write(markup);
-    }
-
-    private static Color GetColor(int colorId, Theme theme)
-    {
-        if (colorId == -1)
-        {
-            return Color.Default;
-        }
-
-        return HexToColor(theme.GetColor(colorId));
-    }
-
-    private static Decoration GetDecoration(int fontStyle)
-    {
-        var result = Decoration.None;
-
-        if (fontStyle == FontStyle.NotSet)
-        {
-            return result;
-        }
-
-        if ((fontStyle & FontStyle.Italic) != 0)
-        {
-            result |= Decoration.Italic;
-        }
-
-        if ((fontStyle & FontStyle.Underline) != 0)
-        {
-            result |= Decoration.Underline;
-        }
-
-        if ((fontStyle & FontStyle.Bold) != 0)
-        {
-            result |= Decoration.Bold;
-        }
-
-        return result;
-    }
-
-    private static Color HexToColor(string hexString)
-    {
-        //replace # occurences
-        if (hexString.IndexOf('#') != -1)
-        {
-            hexString = hexString.Replace("#", "");
-        }
-
-        byte r, g, b = 0;
-
-        r = byte.Parse(hexString.Substring(0, 2), NumberStyles.AllowHexSpecifier);
-        g = byte.Parse(hexString.Substring(2, 2), NumberStyles.AllowHexSpecifier);
-        b = byte.Parse(hexString.Substring(4, 2), NumberStyles.AllowHexSpecifier);
-
-        return new Color(r, g, b);
-    }
-}
-
-internal static class StringExtensions
-{
-    internal static string SubstringAtIndexes(this string str, int startIndex, int endIndex)
-        => str.Substring(startIndex, endIndex - startIndex);
 }
