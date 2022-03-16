@@ -50,6 +50,16 @@ public class BuildCommandSettings : BaseCommandSettings
     [DefaultValue("*")]
     public string Tfms { get; set; } = "*";
 
+    [Description("Specifies if error behavior should be strict. When set to false, it continues even if build errors are present")]
+    [CommandOption("-s|--strict")]
+    [DefaultValue(true)]
+    public bool Strict { get; set; }
+
+    [Description("Tries to do as little effort when building as possible. When set to false, it relaxes some conditions, but will be slower")]
+    [CommandOption("--fast")]
+    [DefaultValue(true)]
+    public bool Fast { get; set; }
+
     public override ValidationResult Validate()
     {
         if (!RunAsWizard)
@@ -206,7 +216,10 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
                 await pipeline.Execute(ctx);
             });
 
-            await next();
+            if ((ctx.ExitCode ?? 0) == 0)
+            {
+                await next();
+            }
         });
 
     protected virtual void ConfigureStatusPipeline(TPipeline pipeline!!)
@@ -247,6 +260,16 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
                 DesignTime = true
             };
 
+            if (!ctx.Settings.Fast)
+            {
+                //environmentOptions.GlobalProperties[MsBuildProperties.SkipCopyBuildProduct] = "false";
+                //environmentOptions.GlobalProperties[MsBuildProperties.CopyBuildOutputToOutputDirectory] = "true";
+                //environmentOptions.GlobalProperties[MsBuildProperties.ComputeNETCoreBuildOutputFiles] = "true";
+                environmentOptions.GlobalProperties[MsBuildProperties.SkipCompilerExecution] = "false";
+                environmentOptions.GlobalProperties[MsBuildProperties.BuildingProject] = "true";
+                environmentOptions.GlobalProperties[MsBuildProperties.AutoGenerateBindingRedirects] = "true";
+            }
+
             if (ctx.Settings.NoBuild)
             {
                 //We don't want to clean if we don't build
@@ -263,9 +286,17 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             }
             else
             {
-                sw.Fail("Designtime-Build");
-                ctx.ExitCode = 1;
-                return;
+                if (ctx.Settings.Strict)
+                {
+                    sw.Fail("Designtime-Build");
+                    ctx.ExitCode = 1;
+                    return;
+                }
+                else
+                {
+                    sw.Warn("Designtime-Build");
+                    await next();
+                }
             }
         })
         .Use(async (ctx, next) =>
@@ -315,8 +346,16 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             }
             else
             {
-                sw.Fail("Build");
-                ctx.ExitCode = 1;
+                if (ctx.Settings.Strict)
+                {
+                    sw.Fail("Build");
+                    ctx.ExitCode = 1;
+                }
+                else
+                {
+                    sw.Warn("Build");
+                    await next();
+                }
             }
         })
         .Use(async (ctx, next) =>

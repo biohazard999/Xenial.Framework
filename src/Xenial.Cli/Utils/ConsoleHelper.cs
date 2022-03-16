@@ -24,6 +24,13 @@ public static class ConsoleHelper
         sw.Restart();
     }
 
+    public static void Warn(this Stopwatch sw!!, string caption)
+    {
+        sw.Stop();
+        AnsiConsole.MarkupLine($"[red][[WARNING]]        [/][grey]: [/][red]{caption}[/] [silver][[{sw.Elapsed}]][/]");
+        sw.Restart();
+    }
+
     public static void Fail(this Stopwatch sw!!, string caption)
     {
         sw.Stop();

@@ -142,13 +142,22 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                ctx.Application = loader.ModelApplication;
                ctx.ModelStore = loader.FileModelStore;
                sw.Success("Load Model");
+               await next();
            }
            catch
            {
-               sw.Fail("Load Model");
-               throw;
+               if (ctx.Settings.Strict)
+               {
+                   sw.Fail("Load Model");
+                   ctx.ExitCode = 1;
+                   throw;
+               }
+               else
+               {
+                   sw.Warn("Load Model");
+                   await next();
+               }
            }
-           await next();
        })
        .Use(async (ctx, next) =>
        {
