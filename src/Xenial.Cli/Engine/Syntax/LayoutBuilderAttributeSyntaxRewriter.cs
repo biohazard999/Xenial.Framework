@@ -10,16 +10,24 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 
+using Xenial.Framework.Layouts;
+
 namespace Xenial.Cli.Engine.Syntax;
 
 public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
 {
     private class LayoutBuilderAttributeSyntaxWalker : CSharpSyntaxWalker
     {
+        readonly SemanticModel model;
+        readonly string builderName;
+        public LayoutBuilderAttributeSyntaxWalker(SemanticModel model!!, string builderName!!)
+            => (this.model, this.builderName) = (model, builderName);
+
         public bool HasLayoutsUsing { get; private set; }
         public bool HasClass { get; private set; }
 
         public bool ShouldAddUsing => HasLayoutsUsing && HasClass;
+        public bool ShouldAddAttribute { get; private set; }
 
         public override void VisitCompilationUnit(CompilationUnitSyntax node)
         {
@@ -32,22 +40,62 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
             base.VisitCompilationUnit(node);
         }
 
+        //[DetailViewLayoutBuilder()]
         public override void VisitClassDeclaration(ClassDeclarationSyntax node)
         {
             HasClass = true;
+
+            var classSymbol = model.GetDeclaredSymbol(node);
+            var attributeSymbol = model.Compilation.GetTypeByMetadataName("Xenial.Framework.Layouts.DetailViewLayoutBuilderAttribute");
+
+            if (classSymbol is not null && attributeSymbol is not null)
+            {
+                if (HasAttribute(classSymbol, attributeSymbol))
+                {
+                    var attribute = GetAttribute(classSymbol, attributeSymbol);
+                    if (attribute.ConstructorArguments.Length == 1)
+                    {
+                        var argument = attribute.ConstructorArguments[0];
+                        if (argument.Kind == TypedConstantKind.Type)
+                        {
+                            if (builderName.Equals(argument.Value?.ToString(), StringComparison.OrdinalIgnoreCase))
+                            {
+                                ShouldAddAttribute = false;
+                                return;
+                            }
+                        }
+                    }
+                }
+                ShouldAddAttribute = true;
+            }
+
             base.VisitClassDeclaration(node);
         }
+
+        private static bool HasAttribute(
+            ISymbol symbol,
+            ISymbol attributeSymbol)
+            => symbol.GetAttributes()
+                       .Any(m => m.AttributeClass?.ToString() == attributeSymbol.ToString());
+
+        private static AttributeData GetAttribute(
+            ISymbol property,
+            ISymbol attributeSymbol)
+            => property.GetAttributes()
+               .First(m => m.AttributeClass?.ToString() == attributeSymbol.ToString());
+
+
     }
 
     private readonly SemanticModel model;
     private readonly string builderName;
-    private readonly LayoutBuilderAttributeSyntaxWalker walker = new();
+    private readonly LayoutBuilderAttributeSyntaxWalker walker;
 
     public string AttributeName { get; set; } = "DetailViewLayoutBuilder";
 
 
     public LayoutBuilderAttributeSyntaxRewriter(SemanticModel model!!, string builderName!!)
-        => (this.model, this.builderName) = (model, builderName);
+        => (this.model, this.builderName, walker) = (model, builderName, new(model, builderName));
 
     [return: NotNullIfNotNull("node")]
     public override SyntaxNode? Visit(SyntaxNode? node)
@@ -72,22 +120,26 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
 
     public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node!!)
     {
-        var attributes = node.AttributeLists.Add(
-            SyntaxFactory.AttributeList(
-                SyntaxFactory.SingletonSeparatedList(
-                    SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(AttributeName))
-                        .WithArgumentList(SyntaxFactory.AttributeArgumentList(
-                            SyntaxFactory.SingletonSeparatedList(
-                                SyntaxFactory.AttributeArgument(
-                                    SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(builderName))
+        if (walker.ShouldAddAttribute)
+        {
+            var attributes = node.AttributeLists.Add(
+                SyntaxFactory.AttributeList(
+                    SyntaxFactory.SingletonSeparatedList(
+                        SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(AttributeName))
+                            .WithArgumentList(SyntaxFactory.AttributeArgumentList(
+                                SyntaxFactory.SingletonSeparatedList(
+                                    SyntaxFactory.AttributeArgument(
+                                        SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(builderName))
+                                    )
                                 )
                             )
                         )
                     )
-                )
-            ).NormalizeWhitespace());
+                ).NormalizeWhitespace());
+            return node.WithAttributeLists(attributes);
+        }
 
-        return node.WithAttributeLists(attributes);
+        return base.VisitClassDeclaration(node);
     }
 
 }
