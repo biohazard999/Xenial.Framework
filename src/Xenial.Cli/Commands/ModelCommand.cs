@@ -1,8 +1,17 @@
 ﻿using Buildalyzer;
+using Buildalyzer.Environment;
+
 using Buildalyzer.Workspaces;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Model;
+
+using Microsoft.CodeAnalysis;
+
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.Extensions.Logging;
 
 using ModelToCodeConverter.Engine;
@@ -14,19 +23,12 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using static Xenial.Cli.Utils.ConsoleHelper;
-using Xenial.Cli.Utils;
+
 using Xenial.Cli.Engine;
-using Microsoft.CodeAnalysis;
-using TextMateSharp.Grammars;
-using TextMateSharp.Registry;
-using TextMateSharp.Themes;
-using System.Globalization;
+using Xenial.Cli.Utils;
 using Xenial.Framework.DevTools.X2C;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Formatting;
-using Buildalyzer.Environment;
+
+using static Xenial.Cli.Utils.ConsoleHelper;
 
 namespace Xenial.Cli.Commands;
 
@@ -124,6 +126,45 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
        })
        .Use(async (ctx, next) =>
        {
+           ctx.StatusContext!.Status = "Loading Workspace...";
+           var sw = Stopwatch.StartNew();
+           try
+           {
+               PatchOptions(ctx, ctx.ProjectAnalyzer);
+
+               ctx.ProjectAnalyzer.SetGlobalProperty("CopyLocalLockFileAssemblies", "true");
+               ctx.ProjectAnalyzer.SetGlobalProperty(MsBuildProperties.CopyBuildOutputToOutputDirectory, "true");
+
+               ctx.StatusContext!.Status = "Preparing Workspace...";
+               ctx.Workspace = CreateWorkspace(ctx.AnalyzerManager);
+               ctx.BuildResult.AddToWorkspace(ctx.Workspace, false);
+
+               foreach (var project in ctx.Workspace.CurrentSolution.Projects)
+               {
+                   ctx.StatusContext!.Status = "Compiling Workspace...";
+                   ctx.Compilation = await project.GetCompilationAsync();
+               }
+               sw.Success("Load Workspace");
+               await next();
+           }
+           catch (Exception ex)
+           {
+               AnsiConsole.WriteException(ex);
+               Logger.LogError(ex, "Fatal error in load workspace");
+               if (ctx.Settings.Strict)
+               {
+                   ctx.ExitCode = 1;
+                   sw.Fail("Load Workspace");
+               }
+               else
+               {
+                   sw.Warn("Load Workspace");
+                   await next();
+               }
+           }
+       })
+       .Use(async (ctx, next) =>
+       {
            ctx.StatusContext!.Status = "Loading Application Model...";
 
            var assemblyPath = ctx.BuildResult!.Properties["TargetPath"];
@@ -156,45 +197,6 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                else
                {
                    sw.Warn("Load Model");
-                   await next();
-               }
-           }
-       })
-       .Use(async (ctx, next) =>
-       {
-           ctx.StatusContext!.Status = "Loading Workspace...";
-           var sw = Stopwatch.StartNew();
-           try
-           {
-               PatchOptions(ctx, ctx.ProjectAnalyzer);
-
-               ctx.ProjectAnalyzer.SetGlobalProperty("CopyLocalLockFileAssemblies", "true");
-               ctx.ProjectAnalyzer.SetGlobalProperty(MsBuildProperties.CopyBuildOutputToOutputDirectory, "true");
-
-               ctx.Workspace = CreateWorkspace(ctx.AnalyzerManager);
-               ctx.BuildResult.AddToWorkspace(ctx.Workspace, false);
-
-               foreach (var project in ctx.Workspace.CurrentSolution.Projects)
-               {
-                   ctx.StatusContext!.Status = "Preparing Workspace...";
-                   ctx.Compilation = await project.GetCompilationAsync();
-                   ctx.StatusContext!.Status = "Preparing Workspace...";
-               }
-               sw.Success("Load Workspace");
-               await next();
-           }
-           catch (Exception ex)
-           {
-               AnsiConsole.WriteException(ex);
-               Logger.LogError(ex, "Fatal error in load workspace");
-               if (ctx.Settings.Strict)
-               {
-                   ctx.ExitCode = 1;
-                   sw.Fail("Load Workspace");
-               }
-               else
-               {
-                   sw.Warn("Load Workspace");
                    await next();
                }
            }

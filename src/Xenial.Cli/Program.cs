@@ -1,24 +1,50 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Karambolo.Extensions.Logging.File;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using Spectre.Console.Cli;
 
 using System.CommandLine;
+using System.Diagnostics;
 
 using Xenial.Cli.Commands;
 using Xenial.Cli.Utils;
 
-var option = new Option<LogLevel?>(new[] { "-v", "--verbosity" });
+var logVerbosityOption = new Option<LogLevel?>(new[] { "-v", "--verbosity" });
+var logFileOption = new Option<bool?>(new[] { "--log-file" });
+var workingDirectoryOption = new Option<string?>(new[] { "-w", "--working-directory" });
 
-var logLvl = Xenial.Cli.Utils.CommandLineHelper.GetGlobalOptions(args, option) ?? LogLevel.Error;
+var logLvl = Xenial.Cli.Utils.CommandLineHelper.GetGlobalOptions(args, logVerbosityOption) ?? LogLevel.Error;
+var logFile = Xenial.Cli.Utils.CommandLineHelper.GetGlobalOptions(args, logFileOption) ?? false;
+var workingDirectory = Xenial.Cli.Utils.CommandLineHelper.GetGlobalOptions(args, workingDirectoryOption);
 
 var services = new ServiceCollection();
 
-services.AddLogging(configure =>
+services.AddLogging(builder =>
 {
-    configure.AddConsole();
+    builder.AddConsole();
+    if (logFile)
+    {
+        builder.AddFile(c =>
+        {
+            c.RootPath = workingDirectory ?? AppContext.BaseDirectory;
+            c.MaxFileSize = 10_000_000;
+            c.FileAccessMode = Karambolo.Extensions.Logging.File.LogFileAccessMode.KeepOpenAndAutoFlush;
+            c.Files = new[]
+            {
+                new Karambolo.Extensions.Logging.File.LogFileOptions { Path = "Xenial.Cli.log" }
+            };
+        });
+    }
 }).Configure<LoggerFilterOptions>(options => options.MinLevel = logLvl);
+
+FileLoggerContext.Default.DiagnosticEvent += e =>
+{
+    // examine the diagnostic event here:
+    // print it to the debug window, set a breakpoint and inspect internal state on break, etc.
+    Debug.WriteLine(e);
+};
 
 using var registrar = new Xenial.Cli.DependencyInjection.DependencyInjectionRegistrar(services);
 
@@ -35,142 +61,3 @@ app.Configure(c =>
 });
 
 return app.Run(args);
-
-public class CommandInterceptor : ICommandInterceptor
-{
-    readonly LogLevel logLevel;
-
-    public CommandInterceptor(LogLevel logLevel)
-        => this.logLevel = logLevel;
-
-    public void Intercept(CommandContext context, CommandSettings settings)
-    {
-        if (settings is IBaseSettings baseSettings)
-        {
-            baseSettings.Verbosity = logLevel;
-            if (!baseSettings.NoLogo)
-            {
-                BrandHelper.PrintBrandInfo();
-            }
-        }
-    }
-}
-
-
-/// <summary>
-/// https://stackoverflow.com/questions/42862739/how-to-copy-files-to-output-directory-from-a-referenced-nuget-package-in-net-co
-/// </summary>
-/// 
-
-//var sw = new Stopwatch();
-//sw.Start();
-
-//var workingDirectory = @"C:\f\git\Xenial.Framework\demos\FeatureCenter\Xenial.FeatureCenter.Module";
-
-//var csProjects = Directory.GetFiles(workingDirectory, "*.csproj");
-
-//if (csProjects.Length > 1)
-//{
-//    Console.WriteLine($"More than once csproj in the specific location: {workingDirectory}");
-//    return 0;
-//}
-
-//var csProj = csProjects.First();
-
-//AnalyzerManager manager = new AnalyzerManager();
-//var analyzer = manager.GetProject(csProj);
-
-//if (analyzer.ProjectFile.IsMultiTargeted) //TODO: Multitargetig
-//{
-//    var tfm = analyzer.ProjectFile.TargetFrameworks.First();
-
-//}
-
-//var result = analyzer.Build(new EnvironmentOptions
-//{
-//    Restore = true,
-//    DesignTime = true
-//});
-
-
-//if (result.OverallSuccess)
-//{
-//    var tfm = "net462";
-//    var net6Result = result.First(m => m.TargetFramework == tfm); //TODO: find correct result
-
-//    result = analyzer.Build(net6Result.TargetFramework, new EnvironmentOptions
-//    {
-//        Restore = true,
-//        DesignTime = false,
-//        GlobalProperties =
-//        {
-//            ["CopyLocalLockFileAssemblies"] = "true"
-//        },
-//    });
-
-//    net6Result = result.First(m => m.TargetFramework == tfm); //TODO: find correct result
-
-//    var assemblyPath = net6Result.Properties["TargetPath"];
-//    var targetDir = Path.GetDirectoryName(assemblyPath);
-//    var loader = new StandaloneModelEditorModelLoader();
-
-//    loader.LoadModel(
-//        assemblyPath,
-//        workingDirectory,
-//        "",
-//        targetDir
-//    );
-
-//    sw.Stop();
-
-//    Console.WriteLine($"Loaded Model: {loader.ModelApplication.Views.Count}");
-//    Console.WriteLine($"Time: {sw.Elapsed}");
-
-//    var view = loader.ModelApplication.Views[0] as IModelView;
-
-//    var id = $"{view.Id}_{Guid.NewGuid()}";
-//    var modelViews = loader.ModelApplication.Views;
-//    var copy = ((ModelNode)modelViews).AddClonedNode((ModelNode)view, id);
-
-//    var xml = UserDifferencesHelper.GetUserDifferences(copy)[""];
-
-//    xml = xml.Replace(id, view.Id); //Patch ViewId
-
-//    var doc = new System.Xml.XmlDocument();
-//    doc.LoadXml(xml);
-//    var root = doc.FirstChild;
-
-//    CleanNodes(root);
-
-//    static void CleanNodes(System.Xml.XmlNode node)
-//    {
-//        if (node.Attributes["IsNewNode"] != null)
-//        {
-//            node.Attributes.Remove(node.Attributes["IsNewNode"]);
-//        }
-
-//        if (node.Attributes["ShowCaption"] != null)
-//        {
-//            var value = node.Attributes["ShowCaption"].Value;
-//            if (string.IsNullOrEmpty(value)) //Empty boolean should be ignored
-//            {
-//                node.Attributes.Remove(node.Attributes["ShowCaption"]);
-//            }
-//        }
-
-//        foreach (System.Xml.XmlNode child in node.ChildNodes)
-//        {
-//            CleanNodes(child);
-//        }
-//    }
-
-//    xml = doc.OuterXml;
-//    xml = VisualizeNodeHelper.PrettyPrint(xml, true);
-
-//    ((IModelView)copy).Remove();
-
-//    Console.WriteLine(xml);
-
-//    Console.ReadLine();
-//}
-//return 0;

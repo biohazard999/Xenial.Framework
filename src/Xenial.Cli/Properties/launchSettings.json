@@ -10,7 +10,7 @@
     },
     "model": {
       "commandName": "Project",
-      "commandLineArgs": "model C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module\\Xenial.FeatureCenter.Module.csproj --no-restore -f=net462"
+      "commandLineArgs": "model C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module\\Xenial.FeatureCenter.Module.csproj --no-restore -f=net462 -v=debug --log-file=true"
     },
     "model.win": {
       "commandName": "Project",

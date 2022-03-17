@@ -26,21 +26,17 @@ public interface IBaseSettings
 public class BaseCommandSettings : CommandSettings, IBaseSettings
 {
     public BaseCommandSettings(string? workingDirectory)
-    {
-        WorkingDirectory = workingDirectory
+        => WorkingDirectory = workingDirectory
             ?? Environment.CurrentDirectory;
-    }
 
     [Description("The working directory")]
     [CommandOption("-w|--working-directory")]
     public string WorkingDirectory { get; }
 
     public override ValidationResult Validate()
-    {
-        return Directory.Exists(WorkingDirectory)
+        => Directory.Exists(WorkingDirectory)
             ? ValidationResult.Error($"{nameof(WorkingDirectory)} must exist: {WorkingDirectory}")
             : ValidationResult.Success();
-    }
 
     [DefaultValue(LogLevel.Warning)]
     [CommandOption("-v|--verbosity")]
