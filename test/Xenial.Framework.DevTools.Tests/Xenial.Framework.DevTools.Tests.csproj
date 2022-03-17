@@ -5,13 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="**\*.verified.cs" />
-    <None Include="**\*.verified.cs" />
-    <Compile Remove="**\*.received.cs" />
-    <None Include="**\*.received.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="..\Xenial.Framework.Generators.Tests\TestReferenceAssemblies.cs" Link="TestReferenceAssemblies.cs" />
   </ItemGroup>
 
@@ -32,6 +25,13 @@
     <PackageReference Include="Basic.Reference.Assemblies" Version="1.2.4" />
     <PackageReference Include="Basic.Reference.Assemblies.NetStandard20" Version="1.2.4" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="**\*.verified.cs" />
+    <None Include="**\*.verified.cs" />
+    <Compile Remove="**\*.received.cs" />
+    <None Include="**\*.received.cs" />
   </ItemGroup>
 
 </Project>

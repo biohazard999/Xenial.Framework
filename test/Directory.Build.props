@@ -17,7 +17,7 @@
     <_XenialLicGenVersion Condition="$(XenialLicGenVersion) == '*-*'">*-*</_XenialLicGenVersion>
     
   </PropertyGroup>
-	
+
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
     <TargetFrameworks>$(NetCoreVersion);$(Net5Version)</TargetFrameworks>
   </PropertyGroup>

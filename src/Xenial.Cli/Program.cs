@@ -9,7 +9,6 @@ using System.CommandLine;
 using System.Diagnostics;
 
 using Xenial.Cli.Commands;
-using Xenial.Cli.Utils;
 
 var logVerbosityOption = new Option<LogLevel?>(new[] { "-v", "--verbosity" });
 var logFileOption = new Option<bool?>(new[] { "--log-file" });
@@ -28,7 +27,7 @@ services.AddLogging(builder =>
     {
         builder.AddFile(c =>
         {
-            c.RootPath = workingDirectory ?? AppContext.BaseDirectory;
+            c.RootPath = workingDirectory ?? Environment.CurrentDirectory;
             c.MaxFileSize = 10_000_000;
             c.FileAccessMode = Karambolo.Extensions.Logging.File.LogFileAccessMode.KeepOpenAndAutoFlush;
             c.Files = new[]
@@ -38,13 +37,6 @@ services.AddLogging(builder =>
         });
     }
 }).Configure<LoggerFilterOptions>(options => options.MinLevel = logLvl);
-
-FileLoggerContext.Default.DiagnosticEvent += e =>
-{
-    // examine the diagnostic event here:
-    // print it to the debug window, set a breakpoint and inspect internal state on break, etc.
-    Debug.WriteLine(e);
-};
 
 using var registrar = new Xenial.Cli.DependencyInjection.DependencyInjectionRegistrar(services);
 
