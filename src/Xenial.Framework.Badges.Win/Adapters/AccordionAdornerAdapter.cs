@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.SystemModule;
 using DevExpress.Utils.Drawing;
+using DevExpress.Utils.Extensions;
 using DevExpress.Utils.VisualEffects;
 using DevExpress.XtraBars.Navigation;
 
@@ -117,9 +118,25 @@ internal class AccordionAdornerAdapter : AdornerAdapterBase
                                     badgeViewInfo.Calc(cache, rect);
                                 }
 
-                                var height = badgeViewInfo.Bounds.Height;
-                                var width = badgeViewInfo.Bounds.Width;
-                                badge.Properties.Offset = new Point(rect.Right + width / 2, rect.Top + rect.Height / 2);
+                                if (!rect.IsEmpty && accordionControlViewInfo.Bounds.Contains(rect.GetCenterPoint()))
+                                {
+                                    Rectangle boundsForHeight;
+                                    if (accordionElementBaseViewInfo.ImageBounds.IsEmpty)
+                                    {
+                                        boundsForHeight = rect;
+                                    }
+                                    else
+                                    {
+                                        boundsForHeight = accordionElementBaseViewInfo.ImageBounds;
+                                    }
+
+                                    var width = badgeViewInfo.Bounds.Width;
+                                    badge.Properties.Offset = new Point(rect.Right + width / 2, boundsForHeight.Top + boundsForHeight.Height / 2);
+                                }
+                                else
+                                {
+                                    badge.Visible = false;
+                                }
                             }
                         }
                     }
@@ -247,6 +264,7 @@ internal class AccordionAdornerAdapter : AdornerAdapterBase
                                 {
                                     using var graphics = accordionControl.CreateGraphics();
                                     using var cache = new GraphicsCache(new DXPaintEventArgs(graphics));
+                                    badgeViewInfo.EnsureProperties();
                                     badgeViewInfo.Calc(cache, popupRect);
                                 }
 
