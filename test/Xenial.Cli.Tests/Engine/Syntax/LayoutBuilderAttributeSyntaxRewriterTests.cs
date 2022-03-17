@@ -22,17 +22,7 @@ namespace Xenial.Cli.Tests.Engine.Syntax;
 [UsesVerify]
 public class LayoutBuilderAttributeSyntaxRewriterTests
 {
-    [Fact]
-    public async Task EmptyCode()
-    {
-        var root = await RewriteCode(@"", "");
-        await Verifier.Verify(root.ToFullString()).UseExtension("cs");
-    }
-
-    [Fact]
-    public async Task AddsAttribute()
-    {
-        var root = await RewriteCode("PositionLayoutBuilder", @"using System;
+    internal const string ClassWithoutAttribute = @"using System;
 using System.Collections.Generic;
 
 using DevExpress.Xpo;
@@ -73,14 +63,25 @@ namespace MainDemo.Module.BusinessObjects {
     }
 }
 }
-");
+";
+    [Fact]
+    public async Task EmptyCode()
+    {
+        var root = await RewriteCode(new(), "");
+        await Verifier.Verify(root.ToFullString()).UseExtension("cs");
+    }
+
+    [Fact]
+    public async Task AddsAttribute()
+    {
+        var root = await RewriteCode(new() { LayoutBuilderClass = "PositionLayoutBuilder" }, ClassWithoutAttribute);
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
     [Fact]
     public async Task AddsAttributeAndNamespace()
     {
-        var root = await RewriteCode("PositionLayoutBuilder", @"using System;
+        var root = await RewriteCode(new() { LayoutBuilderClass = "PositionLayoutBuilder" }, @"using System;
 using System.Collections.Generic;
 
 using DevExpress.Xpo;
@@ -126,7 +127,7 @@ namespace MainDemo.Module.BusinessObjects {
     [Fact]
     public async Task OnlyAddsAttributeWhenNotPresent()
     {
-        var root = await RewriteCode("PositionLayoutBuilder", @"using System;
+        var root = await RewriteCode(new() { LayoutBuilderClass = "PositionLayoutBuilder" }, @"using System;
 using System.Collections.Generic;
 
 using DevExpress.Xpo;
@@ -172,7 +173,14 @@ namespace MainDemo.Module.BusinessObjects {
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
-    private static async Task<SyntaxNode> RewriteCode(string builderName, string classCode)
+    //[Fact]
+    //public async Task AddsAttributeWithMethodName()
+    //{
+    //    var root = await RewriteCode("PositionLayoutBuilder", "BuildTheLayout", ClassWithoutAttribute);
+    //    await Verifier.Verify(root.ToFullString()).UseExtension("cs");
+    //}
+
+    private static async Task<SyntaxNode> RewriteCode(LayoutAttributeInfo builderInfo, string classCode)
     {
         var references = TestReferenceAssemblies.DefaultReferenceAssemblies
             .Concat(new[]
@@ -193,7 +201,7 @@ namespace MainDemo.Module.BusinessObjects {
         );
 
         var semanticModel = compilation.GetSemanticModel(code);
-        var rewriter = new LayoutBuilderAttributeSyntaxRewriter(semanticModel, builderName);
+        var rewriter = new LayoutBuilderAttributeSyntaxRewriter(semanticModel, builderInfo);
 
         root = rewriter.Visit(root)!;
 
@@ -201,5 +209,4 @@ namespace MainDemo.Module.BusinessObjects {
 
         return Formatter.Format(root, ws);
     }
-
 }

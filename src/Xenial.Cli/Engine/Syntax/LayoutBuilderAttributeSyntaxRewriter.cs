@@ -14,14 +14,21 @@ using Xenial.Framework.Layouts;
 
 namespace Xenial.Cli.Engine.Syntax;
 
+public record LayoutAttributeInfo(string? ViewId = null)
+{
+    public string? LayoutBuilderClass { get; set; }
+    public string? LayoutBuilderMethod { get; set; }
+}
+
+
 public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
 {
     private class LayoutBuilderAttributeSyntaxWalker : CSharpSyntaxWalker
     {
         readonly SemanticModel model;
-        readonly string builderName;
-        public LayoutBuilderAttributeSyntaxWalker(SemanticModel model!!, string builderName!!)
-            => (this.model, this.builderName) = (model, builderName);
+        readonly LayoutAttributeInfo builderInfo;
+        public LayoutBuilderAttributeSyntaxWalker(SemanticModel model!!, LayoutAttributeInfo builderInfo!!)
+            => (this.model, this.builderInfo) = (model, builderInfo);
 
         public bool HasLayoutsUsing { get; private set; }
         public bool HasClass { get; private set; }
@@ -56,9 +63,9 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                     if (attribute.ConstructorArguments.Length == 1)
                     {
                         var argument = attribute.ConstructorArguments[0];
-                        if (argument.Kind == TypedConstantKind.Type)
+                        if (argument.Kind == TypedConstantKind.Type && !string.IsNullOrEmpty(builderInfo.LayoutBuilderClass))
                         {
-                            if (builderName.Equals(argument.Value?.ToString(), StringComparison.OrdinalIgnoreCase))
+                            if (builderInfo.LayoutBuilderClass.Equals(argument.Value?.ToString(), StringComparison.OrdinalIgnoreCase))
                             {
                                 ShouldAddAttribute = false;
                                 return;
@@ -88,14 +95,14 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
     }
 
     private readonly SemanticModel model;
-    private readonly string builderName;
+    private readonly LayoutAttributeInfo builderInfo;
     private readonly LayoutBuilderAttributeSyntaxWalker walker;
 
     public string AttributeName { get; set; } = "DetailViewLayoutBuilder";
 
 
-    public LayoutBuilderAttributeSyntaxRewriter(SemanticModel model!!, string builderName!!)
-        => (this.model, this.builderName, walker) = (model, builderName, new(model, builderName));
+    public LayoutBuilderAttributeSyntaxRewriter(SemanticModel model!!, LayoutAttributeInfo builderInfo!!)
+        => (this.model, this.builderInfo, walker) = (model, builderInfo, new(model, builderInfo));
 
     [return: NotNullIfNotNull("node")]
     public override SyntaxNode? Visit(SyntaxNode? node)
@@ -129,7 +136,7 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                             .WithArgumentList(SyntaxFactory.AttributeArgumentList(
                                 SyntaxFactory.SingletonSeparatedList(
                                     SyntaxFactory.AttributeArgument(
-                                        SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(builderName))
+                                        SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(builderInfo.LayoutBuilderClass))
                                     )
                                 )
                             )
