@@ -12,7 +12,7 @@ namespace MainDemo.Module.BusinessObjects
 {
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
-    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder))]
+    [ListViewColumnsBuilder(typeof(PositionColumnsBuilder))]
     public class Position : BaseObject
     {
     }

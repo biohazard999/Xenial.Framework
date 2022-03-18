@@ -5,6 +5,7 @@ using Buildalyzer.Workspaces;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Model;
+using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Microsoft.CodeAnalysis;
 
@@ -25,6 +26,7 @@ using System.Diagnostics;
 using System.Linq;
 
 using Xenial.Cli.Engine;
+using Xenial.Cli.Engine.Syntax;
 using Xenial.Cli.Utils;
 using Xenial.Framework.DevTools.X2C;
 
@@ -273,7 +275,6 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                         PrintSource(source);
                         AnsiConsole.WriteLine();
 
-
                         if (view is IModelObjectView modelObjectView)
                         {
                             var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
@@ -295,47 +296,63 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                                 }
 
-                                //We parse again, because it may have changed in between
-                                var root = await CSharpSyntaxTree.ParseText(source).GetRootAsync();
+                                var root = await location.SourceTree.GetRootAsync();
+                                var semanticModel = ctx.Compilation.GetSemanticModel(location.SourceTree);
+
                                 if (root is not null)
                                 {
-                                    var @class = root.DescendantNodes()
-                                            .OfType<ClassDeclarationSyntax>()
-                                            .FirstOrDefault(m => m.Identifier.Text == symbol.Name);
-
-                                    if (@class is not null)
+                                    var attributeName = view switch
                                     {
-                                        var attributeName = view switch
+                                        IModelDetailView _ => "DetailViewLayoutBuilder",
+                                        IModelListView _ => "ListViewColumnsBuilder",
+                                        _ => null
+                                    };
+
+                                    if (attributeName is not null)
+                                    {
+                                        if (view is IModelDetailView detailView)
                                         {
-                                            IModelDetailView _ => "DetailViewLayoutBuilder",
-                                            IModelListView _ => "ListViewColumnsBuilder",
-                                            _ => null
-                                        };
+                                            var viewId = ModelNodeIdHelper.GetDetailViewId(detailView.ModelClass.TypeInfo.Type);
 
-                                        if (attributeName is not null)
-                                        {
-                                            var attributeTypeArgument = className;
-                                            var attributes = @class.AttributeLists.Add(
-                                                 SyntaxFactory.AttributeList(
-                                                    SyntaxFactory.SingletonSeparatedList(
-                                                        SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(attributeName))
-                                                            .WithArgumentList(SyntaxFactory.AttributeArgumentList(
-                                                                SyntaxFactory.SingletonSeparatedList(
-                                                                    SyntaxFactory.AttributeArgument(
-                                                                        SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(attributeTypeArgument))
-                                                                    )
-                                                                )
-                                                            )
-                                                        )
-                                                    )
-                                                ).NormalizeWhitespace());
+                                            viewId = view.Id == viewId
+                                                ? null
+                                                : viewId;
 
+                                            var methodName = viewId is null
+                                                ? null
+                                                : "BuildXXXLayout"; //TODO: figure out nice way for other build method names
 
-                                            root = root.ReplaceNode(@class, @class.WithAttributeLists(attributes));
-                                            root = Formatter.Format(root, ctx.Workspace!);
-                                            PrintSource(root.ToFullString());
-                                            AnsiConsole.WriteLine();
+                                            var rewriter = new LayoutBuilderAttributeSyntaxRewriter(semanticModel, new LayoutAttributeInfo(className)
+                                            {
+                                                ViewId = viewId,
+                                                LayoutBuilderMethod = methodName,
+                                            });
+
+                                            root = rewriter.Visit(root);
                                         }
+                                        else
+                                        {
+                                            //var attributeTypeArgument = className;
+                                            //var attributes = @class.AttributeLists.Add(
+                                            //     SyntaxFactory.AttributeList(
+                                            //        SyntaxFactory.SingletonSeparatedList(
+                                            //            SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(attributeName))
+                                            //                .WithArgumentList(SyntaxFactory.AttributeArgumentList(
+                                            //                    SyntaxFactory.SingletonSeparatedList(
+                                            //                        SyntaxFactory.AttributeArgument(
+                                            //                            SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(attributeTypeArgument))
+                                            //                        )
+                                            //                    )
+                                            //                )
+                                            //            )
+                                            //        )
+                                            //    ).NormalizeWhitespace());
+
+                                            //root = root.ReplaceNode(@class, @class.WithAttributeLists(attributes));
+                                        }
+                                        root = Formatter.Format(root, ctx.Workspace!);
+                                        PrintSource(root.ToFullString());
+                                        AnsiConsole.WriteLine();
                                     }
                                 }
                             }

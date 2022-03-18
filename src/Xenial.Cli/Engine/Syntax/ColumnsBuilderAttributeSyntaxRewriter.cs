@@ -14,20 +14,20 @@ using Xenial.Framework.Layouts;
 
 namespace Xenial.Cli.Engine.Syntax;
 
-public record LayoutAttributeInfo(string LayoutBuilderClass!!)
+public record ColumnsAttributeInfo(string ColumnsBuilderClass!!)
 {
-    public string? LayoutBuilderMethod { get; set; }
+    public string? ColumnsBuilderMethod { get; set; }
     public string? ViewId { get; set; }
 }
 
 
-public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
+public class ColumnsBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
 {
-    private class LayoutBuilderAttributeSyntaxWalker : CSharpSyntaxWalker
+    private class ColumnsBuilderAttributeSyntaxWalker : CSharpSyntaxWalker
     {
         private readonly SemanticModel model;
-        private readonly LayoutAttributeInfo builderInfo;
-        public LayoutBuilderAttributeSyntaxWalker(SemanticModel model!!, LayoutAttributeInfo builderInfo!!)
+        private readonly ColumnsAttributeInfo builderInfo;
+        public ColumnsBuilderAttributeSyntaxWalker(SemanticModel model!!, ColumnsAttributeInfo builderInfo!!)
             => (this.model, this.builderInfo) = (model, builderInfo);
 
         public bool HasLayoutsUsing { get; private set; }
@@ -52,7 +52,8 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
             HasClass = true;
 
             var classSymbol = model.GetDeclaredSymbol(node);
-            var attributeSymbol = model.Compilation.GetTypeByMetadataName("Xenial.Framework.Layouts.DetailViewLayoutBuilderAttribute");
+
+            var attributeSymbol = model.Compilation.GetTypeByMetadataName(typeof(ListViewColumnsBuilderAttribute).FullName!);
 
             if (classSymbol is not null && attributeSymbol is not null)
             {
@@ -60,7 +61,7 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                 {
                     var attributes = GetAttributes(classSymbol, attributeSymbol);
 
-                    static bool IsAttributeEquivalent(LayoutAttributeInfo builderInfo, AttributeData data)
+                    static bool IsAttributeEquivalent(ColumnsAttributeInfo builderInfo, AttributeData data)
                     {
                         static TypedConstant? GetAttribute(
                             AttributeData attribute,
@@ -76,9 +77,9 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                             return null;
                         }
 
-                        var viewId = GetAttribute(data, nameof(DetailViewLayoutBuilderAttribute.ViewId));
+                        var viewId = GetAttribute(data, nameof(ColumnsBuilderAttribute.ViewId));
 
-                        if (string.IsNullOrEmpty(builderInfo.LayoutBuilderMethod) && !string.IsNullOrEmpty(builderInfo.ViewId))
+                        if (string.IsNullOrEmpty(builderInfo.ColumnsBuilderMethod) && !string.IsNullOrEmpty(builderInfo.ViewId))
                         {
                             if (viewId is null || !viewId.HasValue)
                             {
@@ -89,14 +90,14 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                             {
                                 { Length: 2 } => (data.ConstructorArguments[0], data.ConstructorArguments[1]) switch
                                 {
-                                    var (classArgument, methodArgument) => builderInfo.LayoutBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                                    var (classArgument, methodArgument) => builderInfo.ColumnsBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
                                         && builderInfo.ViewId.Equals(viewId.Value.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
                                 },
                                 _ => false
                             };
                         }
 
-                        if (!string.IsNullOrEmpty(builderInfo.LayoutBuilderMethod) && !string.IsNullOrEmpty(builderInfo.ViewId))
+                        if (!string.IsNullOrEmpty(builderInfo.ColumnsBuilderMethod) && !string.IsNullOrEmpty(builderInfo.ViewId))
                         {
                             if (viewId is null || !viewId.HasValue)
                             {
@@ -107,15 +108,15 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                             {
                                 { Length: 2 } => (data.ConstructorArguments[0], data.ConstructorArguments[1]) switch
                                 {
-                                    var (classArgument, methodArgument) => builderInfo.LayoutBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
-                                        && builderInfo.LayoutBuilderMethod.Equals(methodArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                                    var (classArgument, methodArgument) => builderInfo.ColumnsBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                                        && builderInfo.ColumnsBuilderMethod.Equals(methodArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
                                         && builderInfo.ViewId.Equals(viewId.Value.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
                                 },
                                 _ => false
                             };
                         }
 
-                        if (!string.IsNullOrEmpty(builderInfo.LayoutBuilderMethod))
+                        if (!string.IsNullOrEmpty(builderInfo.ColumnsBuilderMethod))
                         {
                             if (viewId.HasValue)
                             {
@@ -126,8 +127,8 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                             {
                                 { Length: 2 } => (data.ConstructorArguments[0], data.ConstructorArguments[1]) switch
                                 {
-                                    var (classArgument, methodArgument) => builderInfo.LayoutBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
-                                        && builderInfo.LayoutBuilderMethod.Equals(methodArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
+                                    var (classArgument, methodArgument) => builderInfo.ColumnsBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                                        && builderInfo.ColumnsBuilderMethod.Equals(methodArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
                                 },
                                 _ => false
                             };
@@ -142,7 +143,7 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                         {
                             { Length: 1 } => data.ConstructorArguments[0] switch
                             {
-                                var classArgument => builderInfo.LayoutBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
+                                var classArgument => builderInfo.ColumnsBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
                             },
                             _ => false
                         };
@@ -177,13 +178,12 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
     }
 
     private readonly SemanticModel model;
-    private readonly LayoutAttributeInfo builderInfo;
-    private readonly LayoutBuilderAttributeSyntaxWalker walker;
+    private readonly ColumnsAttributeInfo builderInfo;
+    private readonly ColumnsBuilderAttributeSyntaxWalker walker;
 
-    public string AttributeName { get; set; } = "DetailViewLayoutBuilder";
+    public string AttributeName { get; set; } = "ListViewColumnsBuilder";
 
-
-    public LayoutBuilderAttributeSyntaxRewriter(SemanticModel model!!, LayoutAttributeInfo builderInfo!!)
+    public ColumnsBuilderAttributeSyntaxRewriter(SemanticModel model!!, ColumnsAttributeInfo builderInfo!!)
         => (this.model, this.builderInfo, walker) = (model, builderInfo, new(model, builderInfo));
 
     public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node!!)
@@ -207,10 +207,10 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
         if (walker.ShouldAddAttribute)
         {
             var arguments = new SeparatedSyntaxList<AttributeArgumentSyntax>().Add(SyntaxFactory.AttributeArgument(
-                SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(builderInfo.LayoutBuilderClass))
+                SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(builderInfo.ColumnsBuilderClass))
             ));
 
-            arguments = builderInfo.LayoutBuilderMethod switch
+            arguments = builderInfo.ColumnsBuilderMethod switch
             {
                 string _ => arguments.Add(SyntaxFactory.AttributeArgument(
                     SyntaxFactory.InvocationExpression(
@@ -223,12 +223,12 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                                 SyntaxFactory.TriviaList())))
                     .WithArgumentList(
                         SyntaxFactory.ArgumentList(
-                            SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>(
+                            SyntaxFactory.SingletonSeparatedList(
                                 SyntaxFactory.Argument(
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName(builderInfo.LayoutBuilderClass),
-                                        SyntaxFactory.IdentifierName(builderInfo.LayoutBuilderMethod)))))))
+                                        SyntaxFactory.IdentifierName(builderInfo.ColumnsBuilderClass),
+                                        SyntaxFactory.IdentifierName(builderInfo.ColumnsBuilderMethod)))))))
                 ),
                 _ => arguments
             };
@@ -241,7 +241,7 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                         SyntaxFactory.Literal(builderInfo.ViewId)))
                     .WithNameEquals(
                         SyntaxFactory.NameEquals(
-                            SyntaxFactory.IdentifierName(nameof(DetailViewLayoutBuilderAttribute.ViewId))))
+                            SyntaxFactory.IdentifierName(nameof(ColumnsBuilderAttribute.ViewId))))
                 ),
                 _ => arguments
             };

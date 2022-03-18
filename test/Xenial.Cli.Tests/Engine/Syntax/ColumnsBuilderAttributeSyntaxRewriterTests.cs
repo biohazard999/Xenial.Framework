@@ -21,7 +21,7 @@ using Xunit;
 namespace Xenial.Cli.Tests.Engine.Syntax;
 
 [UsesVerify]
-public class LayoutBuilderAttributeSyntaxRewriterTests
+public class ColumnsBuilderAttributeSyntaxRewriterTests
 {
     internal const string ClassWithoutAttribute = @"using System;
 using System.Collections.Generic;
@@ -58,7 +58,7 @@ namespace MainDemo.Module.BusinessObjects
 {
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
-    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder))]
+    [ListViewColumnsBuilder(typeof(PositionColumnsBuilder))]
     public class Position : BaseObject
     {
     }
@@ -74,14 +74,14 @@ namespace MainDemo.Module.BusinessObjects
     [Fact]
     public async Task AddsAttribute()
     {
-        var root = await RewriteCode(new("PositionLayoutBuilder"), ClassWithoutAttribute);
+        var root = await RewriteCode(new("PositionColumnsBuilder"), ClassWithoutAttribute);
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
     [Fact]
     public async Task AddsAttributeAndNamespace()
     {
-        var root = await RewriteCode(new("PositionLayoutBuilder"), @"using System;
+        var root = await RewriteCode(new("PositionColumnsBuilder"), @"using System;
 using System.Collections.Generic;
 
 using DevExpress.Xpo;
@@ -105,7 +105,7 @@ namespace MainDemo.Module.BusinessObjects
     [Fact]
     public async Task OnlyAddsAttributeWhenNotPresent()
     {
-        var root = await RewriteCode(new("PositionLayoutBuilder"), @"using System;
+        var root = await RewriteCode(new("PositionColumnsBuilder"), @"using System;
 using System.Collections.Generic;
 
 using DevExpress.Xpo;
@@ -120,7 +120,7 @@ namespace MainDemo.Module.BusinessObjects
 {
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
-    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder))]
+    [ListViewColumnsBuilder(typeof(PositionColumnsBuilder))]
     public class Position : BaseObject
     {
     }
@@ -132,21 +132,21 @@ namespace MainDemo.Module.BusinessObjects
     [Fact]
     public async Task AddsAttributeWithMethodName()
     {
-        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout" }, ClassWithoutAttribute);
+        var root = await RewriteCode(new("PositionColumnsBuilder") { ColumnsBuilderMethod = "BuildCompactColumns" }, ClassWithoutAttribute);
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
     [Fact]
     public async Task AddsAttributeWithMethodNameAndViewId()
     {
-        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout", ViewId = "Position_Compact_DetailView" }, ClassWithoutAttribute);
+        var root = await RewriteCode(new("PositionColumnsBuilder") { ColumnsBuilderMethod = "BuildCompactColumns", ViewId = "Position_Compact_ListView" }, ClassWithoutAttribute);
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
     [Fact]
     public async Task OnlyAddsAttributeWhenNotPresentWithMethodName()
     {
-        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout" }, @"using System;
+        var root = await RewriteCode(new("PositionColumnsBuilder") { ColumnsBuilderMethod = "BuildCompactColumns" }, @"using System;
 using System.Collections.Generic;
 
 using DevExpress.Xpo;
@@ -161,7 +161,7 @@ namespace MainDemo.Module.BusinessObjects
 {
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
-    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder), nameof(PositionLayoutBuilder.BuildCompactLayout))]
+    [ListViewColumnsBuilder(typeof(PositionColumnsBuilder), nameof(PositionColumnsBuilder.BuildCompactColumns))]
     public class Position : BaseObject
     {
     }
@@ -173,21 +173,21 @@ namespace MainDemo.Module.BusinessObjects
     [Fact]
     public async Task AddsAttributeWhenNotPresentWithMethodName()
     {
-        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout" }, ClassWithAttribute);
+        var root = await RewriteCode(new("PositionColumnsBuilder") { ColumnsBuilderMethod = "BuildCompactColumns" }, ClassWithAttribute);
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
     [Fact]
     public async Task AddsAttributeWhenNotPresentWithMethodNameAndViewId()
     {
-        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout", ViewId = "Position_Compact_DetailView" }, ClassWithAttribute);
+        var root = await RewriteCode(new("PositionColumnsBuilder") { ColumnsBuilderMethod = "BuildCompactColumns", ViewId = "Position_Compact_ListView" }, ClassWithAttribute);
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
     [Fact]
     public async Task OnlyAddsAttributeWhenNotPresentWithMethodNameAndViewId()
     {
-        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout", ViewId = "Position_Compact_DetailView" }, @"using System;
+        var root = await RewriteCode(new("PositionColumnsBuilder") { ColumnsBuilderMethod = "BuildCompactColumns", ViewId = "Position_Compact_ListView" }, @"using System;
 using System.Collections.Generic;
 
 using DevExpress.Xpo;
@@ -202,7 +202,7 @@ namespace MainDemo.Module.BusinessObjects
 {
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
-    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder), nameof(PositionLayoutBuilder.BuildCompactLayout), ViewId = ""Position_Compact_DetailView"")]
+    [ListViewColumnsBuilder(typeof(PositionColumnsBuilder), nameof(PositionColumnsBuilder.BuildCompactColumns), ViewId = ""Position_Compact_ListView"")]
     public class Position : BaseObject
     {
     }
@@ -214,7 +214,7 @@ namespace MainDemo.Module.BusinessObjects
     [Fact]
     public async Task AddsAttributeWhenNotPresentWithMethodNameAndDifferentViewId()
     {
-        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout", ViewId = "Position_Compact_DetailView" }, @"using System;
+        var root = await RewriteCode(new("PositionColumnsBuilder") { ColumnsBuilderMethod = "BuildCompactColumns", ViewId = "Position_Compact_ListView" }, @"using System;
 using System.Collections.Generic;
 
 using DevExpress.Xpo;
@@ -223,13 +223,13 @@ using DevExpress.Persistent.Base;
 using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
 
-using Xenial.Framework.Layouts;
+using Xenial.Framework.Columnss;
 
 namespace MainDemo.Module.BusinessObjects
 {
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
-    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder), nameof(PositionLayoutBuilder.BuildCompactLayout), ViewId = ""Position_Complex_DetailView"")]
+    [ListViewColumnsBuilder(typeof(PositionColumnsBuilder), nameof(PositionColumnsBuilder.BuildCompactColumns), ViewId = ""Position_Complex_ListView"")]
     public class Position : BaseObject
     {
     }
@@ -241,7 +241,7 @@ namespace MainDemo.Module.BusinessObjects
     [Fact]
     public async Task AddsAttributeWhenDifferentViewId()
     {
-        var root = await RewriteCode(new("PositionLayoutBuilder"), @"using System;
+        var root = await RewriteCode(new("PositionColumnsBuilder"), @"using System;
 using System.Collections.Generic;
 
 using DevExpress.Xpo;
@@ -256,7 +256,7 @@ namespace MainDemo.Module.BusinessObjects
 {
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
-    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder), ViewId = ""Position_Complex_DetailView"")]
+    [ListViewColumnsBuilder(typeof(PositionColumnsBuilder), ViewId = ""Position_Complex_ListView"")]
     public class Position : BaseObject
     {
     }
@@ -265,7 +265,7 @@ namespace MainDemo.Module.BusinessObjects
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
-    private static async Task<SyntaxNode> RewriteCode(LayoutAttributeInfo builderInfo, string classCode)
+    private static async Task<SyntaxNode> RewriteCode(ColumnsAttributeInfo builderInfo, string classCode)
     {
         var references = TestReferenceAssemblies.DefaultReferenceAssemblies
             .Concat(new[]
@@ -286,7 +286,7 @@ namespace MainDemo.Module.BusinessObjects
         );
 
         var semanticModel = compilation.GetSemanticModel(code);
-        var rewriter = new LayoutBuilderAttributeSyntaxRewriter(semanticModel, builderInfo);
+        var rewriter = new ColumnsBuilderAttributeSyntaxRewriter(semanticModel, builderInfo);
 
         root = rewriter.Visit(root)!;
 
