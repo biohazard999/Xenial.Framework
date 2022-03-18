@@ -14,30 +14,5 @@ namespace MainDemo.Module.BusinessObjects
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
     public class Position : BaseObject
     {
-        public Position(Session session)
-            : base(session)
-        {
-        }
-        private string title;
-        [RuleRequiredField("RuleRequiredField for Position.Title", DefaultContexts.Save)]
-        public string Title
-        {
-            get
-            {
-                return title;
-            }
-            set
-            {
-                SetPropertyValue(nameof(Title), ref title, value);
-            }
-        }
-        [Association("Departments-Positions")]
-        public XPCollection<Department> Departments
-        {
-            get
-            {
-                return GetCollection<Department>(nameof(Departments));
-            }
-        }
     }
 }

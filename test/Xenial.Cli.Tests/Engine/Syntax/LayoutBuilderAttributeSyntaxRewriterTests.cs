@@ -33,55 +33,33 @@ using DevExpress.Persistent.Validation;
 
 using Xenial.Framework.Layouts;
 
-namespace MainDemo.Module.BusinessObjects {
+namespace MainDemo.Module.BusinessObjects
+{
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
-    public class Position : BaseObject {
-        public Position(Session session)
-            : base(session) {
-        }
-        private string title;
-        [RuleRequiredField(""RuleRequiredField for Position.Title"", DefaultContexts.Save)]
-        public string Title
+    public class Position : BaseObject
     {
-        get
-        {
-            return title;
-        }
-        set
-        {
-            SetPropertyValue(nameof(Title), ref title, value);
-        }
     }
-    [Association(""Departments-Positions"")]
-    public XPCollection<Department> Departments
-    {
-        get
-        {
-            return GetCollection<Department>(nameof(Departments));
-        }
-    }
-}
 }
 ";
     [Fact]
     public async Task EmptyCode()
     {
-        var root = await RewriteCode(new(), "");
+        var root = await RewriteCode(new(""), "");
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
     [Fact]
     public async Task AddsAttribute()
     {
-        var root = await RewriteCode(new() { LayoutBuilderClass = "PositionLayoutBuilder" }, ClassWithoutAttribute);
+        var root = await RewriteCode(new("PositionLayoutBuilder"), ClassWithoutAttribute);
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
     [Fact]
     public async Task AddsAttributeAndNamespace()
     {
-        var root = await RewriteCode(new() { LayoutBuilderClass = "PositionLayoutBuilder" }, @"using System;
+        var root = await RewriteCode(new("PositionLayoutBuilder"), @"using System;
 using System.Collections.Generic;
 
 using DevExpress.Xpo;
@@ -90,35 +68,13 @@ using DevExpress.Persistent.Base;
 using DevExpress.Persistent.BaseImpl;
 using DevExpress.Persistent.Validation;
 
-namespace MainDemo.Module.BusinessObjects {
+namespace MainDemo.Module.BusinessObjects
+{
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
-    public class Position : BaseObject {
-        public Position(Session session)
-            : base(session) {
-        }
-        private string title;
-        [RuleRequiredField(""RuleRequiredField for Position.Title"", DefaultContexts.Save)]
-        public string Title
+    public class Position : BaseObject
     {
-        get
-        {
-            return title;
-        }
-        set
-        {
-            SetPropertyValue(nameof(Title), ref title, value);
-        }
     }
-    [Association(""Departments-Positions"")]
-    public XPCollection<Department> Departments
-    {
-        get
-        {
-            return GetCollection<Department>(nameof(Departments));
-        }
-    }
-}
 }
 ");
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
@@ -127,7 +83,7 @@ namespace MainDemo.Module.BusinessObjects {
     [Fact]
     public async Task OnlyAddsAttributeWhenNotPresent()
     {
-        var root = await RewriteCode(new() { LayoutBuilderClass = "PositionLayoutBuilder" }, @"using System;
+        var root = await RewriteCode(new("PositionLayoutBuilder"), @"using System;
 using System.Collections.Generic;
 
 using DevExpress.Xpo;
@@ -138,47 +94,32 @@ using DevExpress.Persistent.Validation;
 
 using Xenial.Framework.Layouts;
 
-namespace MainDemo.Module.BusinessObjects {
+namespace MainDemo.Module.BusinessObjects
+{
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
     [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder))]
-    public class Position : BaseObject {
-        public Position(Session session)
-            : base(session) {
-        }
-        private string title;
-        [RuleRequiredField(""RuleRequiredField for Position.Title"", DefaultContexts.Save)]
-        public string Title
+    public class Position : BaseObject
     {
-        get
-        {
-            return title;
-        }
-        set
-        {
-            SetPropertyValue(nameof(Title), ref title, value);
-        }
     }
-    [Association(""Departments-Positions"")]
-    public XPCollection<Department> Departments
-    {
-        get
-        {
-            return GetCollection<Department>(nameof(Departments));
-        }
-    }
-}
 }
 ");
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
-    //[Fact]
-    //public async Task AddsAttributeWithMethodName()
-    //{
-    //    var root = await RewriteCode("PositionLayoutBuilder", "BuildTheLayout", ClassWithoutAttribute);
-    //    await Verifier.Verify(root.ToFullString()).UseExtension("cs");
-    //}
+    [Fact]
+    public async Task AddsAttributeWithMethodName()
+    {
+        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout" }, ClassWithoutAttribute);
+        await Verifier.Verify(root.ToFullString()).UseExtension("cs");
+    }
+
+    [Fact]
+    public async Task AddsAttributeWithMethodNameAndViewId()
+    {
+        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout", ViewId = "Position_Compact_DetailView" }, ClassWithoutAttribute);
+        await Verifier.Verify(root.ToFullString()).UseExtension("cs");
+    }
 
     private static async Task<SyntaxNode> RewriteCode(LayoutAttributeInfo builderInfo, string classCode)
     {

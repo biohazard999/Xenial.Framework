@@ -14,10 +14,10 @@ using Xenial.Framework.Layouts;
 
 namespace Xenial.Cli.Engine.Syntax;
 
-public record LayoutAttributeInfo(string? ViewId = null)
+public record LayoutAttributeInfo(string LayoutBuilderClass!!)
 {
-    public string? LayoutBuilderClass { get; set; }
     public string? LayoutBuilderMethod { get; set; }
+    public string? ViewId { get; set; }
 }
 
 
@@ -25,8 +25,8 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
 {
     private class LayoutBuilderAttributeSyntaxWalker : CSharpSyntaxWalker
     {
-        readonly SemanticModel model;
-        readonly LayoutAttributeInfo builderInfo;
+        private readonly SemanticModel model;
+        private readonly LayoutAttributeInfo builderInfo;
         public LayoutBuilderAttributeSyntaxWalker(SemanticModel model!!, LayoutAttributeInfo builderInfo!!)
             => (this.model, this.builderInfo) = (model, builderInfo);
 
@@ -129,16 +129,52 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
     {
         if (walker.ShouldAddAttribute)
         {
+            var arguments = new SeparatedSyntaxList<AttributeArgumentSyntax>().Add(SyntaxFactory.AttributeArgument(
+                SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(builderInfo.LayoutBuilderClass))
+            ));
+
+            arguments = builderInfo.LayoutBuilderMethod switch
+            {
+                string _ => arguments.Add(SyntaxFactory.AttributeArgument(
+                    SyntaxFactory.InvocationExpression(
+                        SyntaxFactory.IdentifierName(
+                            SyntaxFactory.Identifier(
+                                SyntaxFactory.TriviaList(),
+                                SyntaxKind.NameOfKeyword,
+                                "nameof",
+                                "nameof",
+                                SyntaxFactory.TriviaList())))
+                    .WithArgumentList(
+                        SyntaxFactory.ArgumentList(
+                            SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>(
+                                SyntaxFactory.Argument(
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        SyntaxFactory.IdentifierName(builderInfo.LayoutBuilderClass),
+                                        SyntaxFactory.IdentifierName(builderInfo.LayoutBuilderMethod)))))))
+                ),
+                _ => arguments
+            };
+
+            arguments = builderInfo.ViewId switch
+            {
+                string _ => arguments.Add(SyntaxFactory.AttributeArgument(
+                    SyntaxFactory.LiteralExpression(
+                        SyntaxKind.StringLiteralExpression,
+                        SyntaxFactory.Literal(builderInfo.ViewId)))
+                    .WithNameEquals(
+                        SyntaxFactory.NameEquals(
+                            SyntaxFactory.IdentifierName(nameof(DetailViewLayoutBuilderAttribute.ViewId))))
+                ),
+                _ => arguments
+            };
+
             var attributes = node.AttributeLists.Add(
                 SyntaxFactory.AttributeList(
                     SyntaxFactory.SingletonSeparatedList(
                         SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(AttributeName))
                             .WithArgumentList(SyntaxFactory.AttributeArgumentList(
-                                SyntaxFactory.SingletonSeparatedList(
-                                    SyntaxFactory.AttributeArgument(
-                                        SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(builderInfo.LayoutBuilderClass))
-                                    )
-                                )
+                                arguments
                             )
                         )
                     )
