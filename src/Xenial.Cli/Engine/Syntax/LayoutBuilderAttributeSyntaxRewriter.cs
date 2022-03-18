@@ -59,21 +59,33 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
             {
                 if (HasAttribute(classSymbol, attributeSymbol))
                 {
-                    var attribute = GetAttribute(classSymbol, attributeSymbol);
-                    if (attribute.ConstructorArguments.Length == 1)
-                    {
-                        var argument = attribute.ConstructorArguments[0];
-                        if (argument.Kind == TypedConstantKind.Type && !string.IsNullOrEmpty(builderInfo.LayoutBuilderClass))
+                    var attributes = GetAttributes(classSymbol, attributeSymbol);
+
+                    static bool shouldAddAttribute(AttributeData attribute, LayoutAttributeInfo builderInfo)
+                        => attribute.ConstructorArguments.Length switch
                         {
-                            if (builderInfo.LayoutBuilderClass.Equals(argument.Value?.ToString(), StringComparison.OrdinalIgnoreCase))
+                            1 => attribute.ConstructorArguments[0] switch
                             {
-                                ShouldAddAttribute = false;
-                                return;
-                            }
-                        }
-                    }
+                                var argument and { Kind: TypedConstantKind.Type }
+                                    => !builderInfo.LayoutBuilderClass.Equals(argument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
+                                _ => true
+                            },
+                            2 => (attribute.ConstructorArguments[0], attribute.ConstructorArguments[1]) switch
+                            {
+                                var (classArgument, methodArgument)
+                                    => !builderInfo.LayoutBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                                        && builderInfo.LayoutBuilderMethod is not null
+                                        && !builderInfo.LayoutBuilderMethod.Equals(methodArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
+                            },
+                            _ => true
+                        };
+
+                    ShouldAddAttribute = attributes.Any(attribute => shouldAddAttribute(attribute, builderInfo));
                 }
-                ShouldAddAttribute = true;
+                else
+                {
+                    ShouldAddAttribute = true;
+                }
             }
 
             base.VisitClassDeclaration(node);
@@ -85,11 +97,11 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
             => symbol.GetAttributes()
                        .Any(m => m.AttributeClass?.ToString() == attributeSymbol.ToString());
 
-        private static AttributeData GetAttribute(
+        private static IEnumerable<AttributeData> GetAttributes(
             ISymbol property,
             ISymbol attributeSymbol)
             => property.GetAttributes()
-               .First(m => m.AttributeClass?.ToString() == attributeSymbol.ToString());
+               .Where(m => m.AttributeClass?.ToString() == attributeSymbol.ToString());
 
 
     }

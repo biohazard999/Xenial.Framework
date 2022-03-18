@@ -121,6 +121,33 @@ namespace MainDemo.Module.BusinessObjects
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
+    [Fact]
+    public async Task OnlyAddsAttributeWhenNotPresentWithMethodName()
+    {
+        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout" }, @"using System;
+using System.Collections.Generic;
+
+using DevExpress.Xpo;
+
+using DevExpress.Persistent.Base;
+using DevExpress.Persistent.BaseImpl;
+using DevExpress.Persistent.Validation;
+
+using Xenial.Framework.Layouts;
+
+namespace MainDemo.Module.BusinessObjects
+{
+    [DefaultClassOptions]
+    [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
+    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder), nameof(PositionLayoutBuilder.BuildCompactLayout))]
+    public class Position : BaseObject
+    {
+    }
+}
+");
+        await Verifier.Verify(root.ToFullString()).UseExtension("cs");
+    }
+
     private static async Task<SyntaxNode> RewriteCode(LayoutAttributeInfo builderInfo, string classCode)
     {
         var references = TestReferenceAssemblies.DefaultReferenceAssemblies
