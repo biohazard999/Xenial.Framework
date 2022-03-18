@@ -42,6 +42,27 @@ namespace MainDemo.Module.BusinessObjects
     }
 }
 ";
+    internal const string ClassWithAttribute = @"using System;
+using System.Collections.Generic;
+
+using DevExpress.Xpo;
+
+using DevExpress.Persistent.Base;
+using DevExpress.Persistent.BaseImpl;
+using DevExpress.Persistent.Validation;
+
+using Xenial.Framework.Layouts;
+
+namespace MainDemo.Module.BusinessObjects
+{
+    [DefaultClassOptions]
+    [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
+    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder))]
+    public class Position : BaseObject
+    {
+    }
+}
+";
     [Fact]
     public async Task EmptyCode()
     {
@@ -140,6 +161,101 @@ namespace MainDemo.Module.BusinessObjects
     [DefaultClassOptions]
     [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
     [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder), nameof(PositionLayoutBuilder.BuildCompactLayout))]
+    public class Position : BaseObject
+    {
+    }
+}
+");
+        await Verifier.Verify(root.ToFullString()).UseExtension("cs");
+    }
+
+    [Fact]
+    public async Task AddsAttributeWhenNotPresentWithMethodName()
+    {
+        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout" }, ClassWithAttribute);
+        await Verifier.Verify(root.ToFullString()).UseExtension("cs");
+    }
+
+    [Fact]
+    public async Task AddsAttributeWhenNotPresentWithMethodNameAndViewId()
+    {
+        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout", ViewId = "Position_Compact_DetailView" }, ClassWithAttribute);
+        await Verifier.Verify(root.ToFullString()).UseExtension("cs");
+    }
+
+    [Fact]
+    public async Task OnlyAddsAttributeWhenNotPresentWithMethodNameAndViewId()
+    {
+        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout", ViewId = "Position_Compact_DetailView" }, @"using System;
+using System.Collections.Generic;
+
+using DevExpress.Xpo;
+
+using DevExpress.Persistent.Base;
+using DevExpress.Persistent.BaseImpl;
+using DevExpress.Persistent.Validation;
+
+using Xenial.Framework.Layouts;
+
+namespace MainDemo.Module.BusinessObjects
+{
+    [DefaultClassOptions]
+    [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
+    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder), nameof(PositionLayoutBuilder.BuildCompactLayout), ViewId = ""Position_Compact_DetailView"")]
+    public class Position : BaseObject
+    {
+    }
+}
+");
+        await Verifier.Verify(root.ToFullString()).UseExtension("cs");
+    }
+
+    [Fact]
+    public async Task AddsAttributeWhenNotPresentWithMethodNameAndDifferentViewId()
+    {
+        var root = await RewriteCode(new("PositionLayoutBuilder") { LayoutBuilderMethod = "BuildCompactLayout", ViewId = "Position_Compact_DetailView" }, @"using System;
+using System.Collections.Generic;
+
+using DevExpress.Xpo;
+
+using DevExpress.Persistent.Base;
+using DevExpress.Persistent.BaseImpl;
+using DevExpress.Persistent.Validation;
+
+using Xenial.Framework.Layouts;
+
+namespace MainDemo.Module.BusinessObjects
+{
+    [DefaultClassOptions]
+    [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
+    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder), nameof(PositionLayoutBuilder.BuildCompactLayout), ViewId = ""Position_Complex_DetailView"")]
+    public class Position : BaseObject
+    {
+    }
+}
+");
+        await Verifier.Verify(root.ToFullString()).UseExtension("cs");
+    }
+
+    [Fact]
+    public async Task AddsAttributeWhenDifferentViewId()
+    {
+        var root = await RewriteCode(new("PositionLayoutBuilder"), @"using System;
+using System.Collections.Generic;
+
+using DevExpress.Xpo;
+
+using DevExpress.Persistent.Base;
+using DevExpress.Persistent.BaseImpl;
+using DevExpress.Persistent.Validation;
+
+using Xenial.Framework.Layouts;
+
+namespace MainDemo.Module.BusinessObjects
+{
+    [DefaultClassOptions]
+    [System.ComponentModel.DefaultProperty(nameof(Position.Title))]
+    [DetailViewLayoutBuilder(typeof(PositionLayoutBuilder), ViewId = ""Position_Complex_DetailView"")]
     public class Position : BaseObject
     {
     }

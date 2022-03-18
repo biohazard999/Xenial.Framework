@@ -61,26 +61,97 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                 {
                     var attributes = GetAttributes(classSymbol, attributeSymbol);
 
-                    static bool shouldAddAttribute(AttributeData attribute, LayoutAttributeInfo builderInfo)
-                        => attribute.ConstructorArguments.Length switch
+                    static bool IsAttributeEquivalent(LayoutAttributeInfo builderInfo, AttributeData data)
+                    {
+                        static TypedConstant? GetAttribute(
+                            AttributeData attribute,
+                            string attributeName)
                         {
-                            1 => attribute.ConstructorArguments[0] switch
-                            {
-                                var argument and { Kind: TypedConstantKind.Type }
-                                    => !builderInfo.LayoutBuilderClass.Equals(argument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
-                                _ => true
-                            },
-                            2 => (attribute.ConstructorArguments[0], attribute.ConstructorArguments[1]) switch
-                            {
-                                var (classArgument, methodArgument)
-                                    => !builderInfo.LayoutBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
-                                        && builderInfo.LayoutBuilderMethod is not null
-                                        && !builderInfo.LayoutBuilderMethod.Equals(methodArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
-                            },
-                            _ => true
-                        };
+                            var namedArgument = attribute.NamedArguments.FirstOrDefault(argument => argument.Key == attributeName);
 
-                    ShouldAddAttribute = attributes.Any(attribute => shouldAddAttribute(attribute, builderInfo));
+                            if (namedArgument.Key == attributeName)
+                            {
+                                return namedArgument.Value;
+                            }
+
+                            return null;
+                        }
+
+                        var viewId = GetAttribute(data, nameof(DetailViewLayoutBuilderAttribute.ViewId));
+
+                        if (string.IsNullOrEmpty(builderInfo.LayoutBuilderMethod) && !string.IsNullOrEmpty(builderInfo.ViewId))
+                        {
+                            if (viewId is null || !viewId.HasValue)
+                            {
+                                return false;
+                            }
+
+                            return data.ConstructorArguments switch
+                            {
+                                { Length: 2 } => (data.ConstructorArguments[0], data.ConstructorArguments[1]) switch
+                                {
+                                    var (classArgument, methodArgument) => builderInfo.LayoutBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                                        && builderInfo.ViewId.Equals(viewId.Value.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
+                                },
+                                _ => false
+                            };
+                        }
+
+                        if (!string.IsNullOrEmpty(builderInfo.LayoutBuilderMethod) && !string.IsNullOrEmpty(builderInfo.ViewId))
+                        {
+                            if (viewId is null || !viewId.HasValue)
+                            {
+                                return false;
+                            }
+
+                            return data.ConstructorArguments switch
+                            {
+                                { Length: 2 } => (data.ConstructorArguments[0], data.ConstructorArguments[1]) switch
+                                {
+                                    var (classArgument, methodArgument) => builderInfo.LayoutBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                                        && builderInfo.LayoutBuilderMethod.Equals(methodArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                                        && builderInfo.ViewId.Equals(viewId.Value.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
+                                },
+                                _ => false
+                            };
+                        }
+
+                        if (!string.IsNullOrEmpty(builderInfo.LayoutBuilderMethod))
+                        {
+                            if (viewId.HasValue)
+                            {
+                                return false;
+                            }
+
+                            return data.ConstructorArguments switch
+                            {
+                                { Length: 2 } => (data.ConstructorArguments[0], data.ConstructorArguments[1]) switch
+                                {
+                                    var (classArgument, methodArgument) => builderInfo.LayoutBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                                        && builderInfo.LayoutBuilderMethod.Equals(methodArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
+                                },
+                                _ => false
+                            };
+                        }
+
+                        if (viewId.HasValue)
+                        {
+                            return false;
+                        }
+
+                        return data.ConstructorArguments switch
+                        {
+                            { Length: 1 } => data.ConstructorArguments[0] switch
+                            {
+                                var classArgument => builderInfo.LayoutBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
+                            },
+                            _ => false
+                        };
+                    }
+
+                    var count = attributes.Count(a => IsAttributeEquivalent(builderInfo, a));
+
+                    ShouldAddAttribute = count <= 0;
                 }
                 else
                 {
