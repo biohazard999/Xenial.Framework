@@ -281,21 +281,6 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                             if (symbol is not null)
                             {
-                                var typeInfo = modelObjectView.ModelClass.TypeInfo;
-
-                                var symbolAttributes = symbol.GetAttributes();
-
-                                foreach (var attribtue in typeInfo.Attributes)
-                                {
-
-                                }
-
-
-                                foreach (var attribtue in symbolAttributes)
-                                {
-
-                                }
-
                                 var root = await location.SourceTree.GetRootAsync();
                                 var semanticModel = ctx.Compilation.GetSemanticModel(location.SourceTree);
 
@@ -310,48 +295,14 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                                     if (attributeName is not null)
                                     {
-                                        if (view is IModelDetailView detailView)
-                                        {
-                                            var viewId = ModelNodeIdHelper.GetDetailViewId(detailView.ModelClass.TypeInfo.Type);
+                                        var newRoot = RewriteSyntaxTree(ctx, view, className, root, semanticModel);
 
-                                            viewId = view.Id == viewId
-                                                ? null
-                                                : viewId;
+                                        PrintSource(newRoot.ToFullString());
 
-                                            var methodName = viewId is null
-                                                ? null
-                                                : "BuildXXXLayout"; //TODO: figure out nice way for other build method names
+                                        var newSyntaxTree = location.SourceTree.WithRootAndOptions(newRoot, location.SourceTree.Options);
 
-                                            var rewriter = new LayoutBuilderAttributeSyntaxRewriter(semanticModel, new LayoutAttributeInfo(className)
-                                            {
-                                                ViewId = viewId,
-                                                LayoutBuilderMethod = methodName,
-                                            });
+                                        ctx.Compilation = ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree);
 
-                                            root = rewriter.Visit(root);
-                                        }
-                                        else
-                                        {
-                                            //var attributeTypeArgument = className;
-                                            //var attributes = @class.AttributeLists.Add(
-                                            //     SyntaxFactory.AttributeList(
-                                            //        SyntaxFactory.SingletonSeparatedList(
-                                            //            SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(attributeName))
-                                            //                .WithArgumentList(SyntaxFactory.AttributeArgumentList(
-                                            //                    SyntaxFactory.SingletonSeparatedList(
-                                            //                        SyntaxFactory.AttributeArgument(
-                                            //                            SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(attributeTypeArgument))
-                                            //                        )
-                                            //                    )
-                                            //                )
-                                            //            )
-                                            //        )
-                                            //    ).NormalizeWhitespace());
-
-                                            //root = root.ReplaceNode(@class, @class.WithAttributeLists(attributes));
-                                        }
-                                        root = Formatter.Format(root, ctx.Workspace!);
-                                        PrintSource(root.ToFullString());
                                         AnsiConsole.WriteLine();
                                     }
                                 }
@@ -368,6 +319,52 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
             await next();
         });
+
+        static SyntaxNode RewriteSyntaxTree(TPipelineContext ctx, IModelView? view, string? className, SyntaxNode? root, SemanticModel semanticModel)
+        {
+            if (view is IModelDetailView detailView)
+            {
+                var viewId = ModelNodeIdHelper.GetDetailViewId(detailView.ModelClass.TypeInfo.Type);
+
+                viewId = view.Id == viewId
+                    ? null
+                    : viewId;
+
+                var methodName = viewId is null
+                    ? null
+                    : "BuildXXXLayout"; //TODO: figure out nice way for other build method names
+
+                var rewriter = new LayoutBuilderAttributeSyntaxRewriter(semanticModel, new LayoutAttributeInfo(className)
+                {
+                    ViewId = viewId,
+                    LayoutBuilderMethod = methodName,
+                });
+
+                root = rewriter.Visit(root);
+            }
+            if (view is IModelListView listView)
+            {
+                var viewId = ModelNodeIdHelper.GetListViewId(listView.ModelClass.TypeInfo.Type);
+
+                viewId = view.Id == viewId
+                    ? null
+                    : viewId;
+
+                var methodName = viewId is null
+                    ? null
+                    : "BuildXXXColumns"; //TODO: figure out nice way for other build method names
+
+                var rewriter = new ColumnsBuilderAttributeSyntaxRewriter(semanticModel, new ColumnsAttributeInfo(className)
+                {
+                    ViewId = viewId,
+                    ColumnsBuilderMethod = methodName,
+                });
+
+                root = rewriter.Visit(root);
+            }
+            root = Formatter.Format(root, ctx.Workspace!);
+            return root;
+        }
     }
 
 }

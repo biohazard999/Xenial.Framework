@@ -79,74 +79,23 @@ public class ColumnsBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
 
                         var viewId = GetAttribute(data, nameof(ColumnsBuilderAttribute.ViewId));
 
-                        if (string.IsNullOrEmpty(builderInfo.ColumnsBuilderMethod) && !string.IsNullOrEmpty(builderInfo.ViewId))
+                        if (data.ConstructorArguments.Length > 0)
                         {
-                            if (viewId is null || !viewId.HasValue)
-                            {
-                                return false;
-                            }
+                            var className = data.ConstructorArguments[0].Value?.ToString();
+                            var methodName = data.ConstructorArguments.Length > 1 ?
+                                data.ConstructorArguments[1].Value?.ToString()
+                                : null;
 
-                            return data.ConstructorArguments switch
+                            var attributeInfo = new ColumnsAttributeInfo(className!)
                             {
-                                { Length: 2 } => (data.ConstructorArguments[0], data.ConstructorArguments[1]) switch
-                                {
-                                    var (classArgument, methodArgument) => builderInfo.ColumnsBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
-                                        && builderInfo.ViewId.Equals(viewId.Value.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
-                                },
-                                _ => false
+                                ColumnsBuilderMethod = methodName,
+                                ViewId = viewId?.Value?.ToString(),
                             };
+
+                            return builderInfo.Equals(attributeInfo);
                         }
 
-                        if (!string.IsNullOrEmpty(builderInfo.ColumnsBuilderMethod) && !string.IsNullOrEmpty(builderInfo.ViewId))
-                        {
-                            if (viewId is null || !viewId.HasValue)
-                            {
-                                return false;
-                            }
-
-                            return data.ConstructorArguments switch
-                            {
-                                { Length: 2 } => (data.ConstructorArguments[0], data.ConstructorArguments[1]) switch
-                                {
-                                    var (classArgument, methodArgument) => builderInfo.ColumnsBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
-                                        && builderInfo.ColumnsBuilderMethod.Equals(methodArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
-                                        && builderInfo.ViewId.Equals(viewId.Value.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
-                                },
-                                _ => false
-                            };
-                        }
-
-                        if (!string.IsNullOrEmpty(builderInfo.ColumnsBuilderMethod))
-                        {
-                            if (viewId.HasValue)
-                            {
-                                return false;
-                            }
-
-                            return data.ConstructorArguments switch
-                            {
-                                { Length: 2 } => (data.ConstructorArguments[0], data.ConstructorArguments[1]) switch
-                                {
-                                    var (classArgument, methodArgument) => builderInfo.ColumnsBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase)
-                                        && builderInfo.ColumnsBuilderMethod.Equals(methodArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
-                                },
-                                _ => false
-                            };
-                        }
-
-                        if (viewId.HasValue)
-                        {
-                            return false;
-                        }
-
-                        return data.ConstructorArguments switch
-                        {
-                            { Length: 1 } => data.ConstructorArguments[0] switch
-                            {
-                                var classArgument => builderInfo.ColumnsBuilderClass.Equals(classArgument.Value?.ToString(), StringComparison.OrdinalIgnoreCase),
-                            },
-                            _ => false
-                        };
+                        return false;
                     }
 
                     var count = attributes.Count(a => IsAttributeEquivalent(builderInfo, a));
