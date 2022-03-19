@@ -57,16 +57,16 @@ public class X2CEngineSanityTests
     [Fact]
     public async Task ConvertBasicListView()
     {
-        var (_, code) = X2CEngine.ConvertToCode(ListViewXml);
+        var result = X2CEngine.ConvertToCode(ListViewXml);
 
-        await Verifier.Verify(code).UseExtension("cs");
+        await Verifier.Verify(result.Code).UseExtension("cs");
     }
 
     [Fact]
     public void CompileBasicListView()
     {
-        var (_, code) = X2CEngine.ConvertToCode(ListViewXml);
-        CompileCode(code);
+        var result = X2CEngine.ConvertToCode(ListViewXml);
+        CompileCode(result.Code);
     }
 
     internal const string DetailViewXml = @"<DetailView Id=""FooBarPersistent_DetailView""
@@ -90,16 +90,16 @@ public class X2CEngineSanityTests
     [Fact]
     public async Task ConvertBasicDetailView()
     {
-        var (_, code) = X2CEngine.ConvertToCode(DetailViewXml);
+        var result = X2CEngine.ConvertToCode(DetailViewXml);
 
-        await Verifier.Verify(code).UseExtension("cs");
+        await Verifier.Verify(result.Code).UseExtension("cs");
     }
 
     [Fact]
     public void CompileBasicDetailView()
     {
-        var (_, code) = X2CEngine.ConvertToCode(DetailViewXml);
-        CompileCode(code);
+        var result = X2CEngine.ConvertToCode(DetailViewXml);
+        CompileCode(result.Code);
     }
 
     private void CompileCode(string code)

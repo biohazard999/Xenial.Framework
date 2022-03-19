@@ -286,7 +286,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                         AnsiConsole.MarkupLine($"[grey]Analyzing: [silver][/]{view.Id}[/]");
 
                         var xml = X2CEngine.ConvertToXml(view);
-                        var (className, code) = X2CEngine.ConvertToCode(view);
+                        var codeResult = X2CEngine.ConvertToCode(view);
 
                         static Location? FindFile(TPipelineContext ctx, IModelView modelView)
                         {
@@ -357,7 +357,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                                     if (attributeName is not null)
                                     {
-                                        var newRoot = RewriteSyntaxTree(ctx, view, className, root, semanticModel);
+                                        var newRoot = RewriteSyntaxTree(ctx, view, codeResult.TargetClassName, root, semanticModel);
 
                                         var newSyntaxTree = location.SourceTree.WithRootAndOptions(newRoot, location.SourceTree.Options);
 
@@ -375,7 +375,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 #if DEBUG
                         PrintSource(xml, "xml");
                         AnsiConsole.WriteLine();
-                        PrintSource(code);
+                        PrintSource(codeResult.Code);
                         AnsiConsole.WriteLine();
 #endif
                     }
@@ -385,7 +385,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
             if (modifications.Count > 0)
             {
                 AnsiConsole.WriteLine();
-                AnsiConsole.MarkupLine($"[grey]There are [yellow]{modifications.Count}[/] pending for project [silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/][/]");
+                AnsiConsole.MarkupLine($"[grey]There are [yellow]{modifications.Count}[/] pending modifications for project [silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/][/]");
                 AnsiConsole.WriteLine();
 
                 HorizontalDashed("Changed Files");

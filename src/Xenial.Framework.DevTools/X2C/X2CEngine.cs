@@ -21,6 +21,29 @@ namespace Xenial.Framework.DevTools.X2C;
 /// <summary>
 /// 
 /// </summary>
+/// <param name="TargetNameSpace"></param>
+/// <param name="TargetClassName"></param>
+/// <param name="Namespace"></param>
+/// <param name="ClassName"></param>
+/// <param name="MethodName"></param>
+/// <param name="ViewId"></param>
+/// <param name="Code"></param>
+public record X2CCodeResult(string TargetNameSpace, string TargetClassName, string Namespace, string ClassName, string MethodName, string ViewId, string Code)
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public string TargetFullName => $"{TargetNameSpace}.{TargetClassName}";
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string FullName => $"{Namespace}.{ClassName}";
+}
+
+/// <summary>
+/// 
+/// </summary>
 public sealed class X2CEngine
 {
     /// <summary>
@@ -28,7 +51,7 @@ public sealed class X2CEngine
     /// </summary>
     /// <param name="view"></param>
     /// <returns></returns>
-    public static (string className, string code) ConvertToCode(IModelView view!!)
+    public static X2CCodeResult ConvertToCode(IModelView view!!)
     {
         var node = LoadXml(view);
         return ConvertToCode(node);
@@ -50,7 +73,7 @@ public sealed class X2CEngine
     /// </summary>
     /// <param name="xml"></param>
     /// <returns></returns>
-    public static (string className, string code) ConvertToCode(string xml!!)
+    public static X2CCodeResult ConvertToCode(string xml!!)
     {
         var root = LoadXml(xml);
 
@@ -70,7 +93,7 @@ public sealed class X2CEngine
     /// <param name="root"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public static (string className, string code) ConvertToCode(XmlNode root!!)
+    public static X2CCodeResult ConvertToCode(XmlNode root!!)
     {
         CleanNodes(root);
 
@@ -93,7 +116,6 @@ public sealed class X2CEngine
         var sreader = new System.IO.StringReader(xml);
         using var reader = XmlReader.Create(sreader, new XmlReaderSettings() { XmlResolver = null });
         doc.Load(reader);
-
 
         return doc.FirstChild;
     }
@@ -166,9 +188,10 @@ public sealed class X2CEngine
         return xml;
     }
 
-    private static (string className, string code) ListViewBuilderCodeClass(XmlNode root)
+    private static X2CCodeResult ListViewBuilderCodeClass(XmlNode root)
     {
         var className = GetAttribute(root, "ClassName");
+        var viewId = GetAttribute(root, "Id");
 
         var (@namespace, @class) = className switch
         {
@@ -192,7 +215,9 @@ public sealed class X2CEngine
             ListViewBuilderCodeMethod(root, sb);
         }
 
-        return (resultClassName, sb.ToString());
+        var result = new X2CCodeResult(@namespace, @class, @namespace, resultClassName, null, viewId, sb.ToString());
+
+        return result;
     }
 
     private static string ListViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb)
@@ -284,9 +309,10 @@ public sealed class X2CEngine
         return ListViewBuildersCode(root, sb);
     }
 
-    private static (string className, string code) DetailViewBuilderCodeClass(XmlNode root)
+    private static X2CCodeResult DetailViewBuilderCodeClass(XmlNode root)
     {
         var className = GetAttribute(root, "ClassName");
+        var viewId = GetAttribute(root, "Id");
 
         var (@namespace, @class) = className switch
         {
@@ -311,7 +337,9 @@ public sealed class X2CEngine
             DetailViewBuilderCodeMethod(root, sb);
         }
 
-        return (resultClassName, sb.ToString());
+        var result = new X2CCodeResult(@namespace, @class, @namespace, resultClassName, null, viewId, sb.ToString());
+
+        return result;
     }
 
     private static string DetailViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb)
