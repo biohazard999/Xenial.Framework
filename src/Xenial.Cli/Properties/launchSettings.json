@@ -18,7 +18,7 @@
     },
     "model.maindemo.core": {
       "commandName": "Project",
-      "commandLineArgs": "model \"C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\MainDemo\\CS\\MainDemo.Module\\MainDemo.Module.NetCore.Desktop.csproj\" -v=debug --fast=false"
+      "commandLineArgs": "model \"C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\MainDemo\\CS\\MainDemo.Module\\MainDemo.Module.NetCore.Desktop.csproj\" -v=debug --fast=false -n=MainDemo.Module"
     },
     "model.maindemo.net46": {
       "commandName": "Project",

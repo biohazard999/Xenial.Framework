@@ -43,6 +43,11 @@ public class ModelCommandSettings : BuildCommandSettings
     [Description("Specifies the target framework to load the model from. Is required when the project is multi-targeted.")]
     [CommandOption("-f|--tfm")]
     public string? Tfm { get; set; }
+
+
+    [Description("Specifies which namespaces to inspect. You can specify multiple by separation by semicolon.")]
+    [CommandOption("-n|--namespaces")]
+    public string? Namespaces { get; set; }
 }
 
 public record ModelContext : ModelContext<ModelCommandSettings>
@@ -254,63 +259,85 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
             Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications = new();
 
-            foreach (var view in ctx.Application!.Views)
+            await AnsiConsole.Status().Start("Analyzing views...", async statusContext =>
             {
-                if (view is IModelObjectView modelObjectView
-                    && modelObjectView
-                        .ModelClass.TypeInfo.Type
-                        //TODO: Filtering
-                        .Namespace?.StartsWith("MainDemo.Module.BusinessObjects", StringComparison.OrdinalIgnoreCase) == true)
+                statusContext.Spinner(Spinner.Known.Star);
+                ctx.StatusContext = statusContext;
+
+                foreach (var view in ctx.Application!.Views)
                 {
-                    var xml = X2CEngine.ConvertToXml(view);
-                    var (className, code) = X2CEngine.ConvertToCode(view);
+                    var namespaces = ctx.Settings.Namespaces?.Split(';') ?? Array.Empty<string>();
 
-                    static Location? FindFile(TPipelineContext ctx, IModelView modelView)
+                    static bool AcceptsModelView(IModelObjectView modelObjectView, string[] namespaces)
                     {
-                        if (modelView is IModelObjectView modelObjectView)
+                        if (namespaces.Length == 0)
                         {
-                            var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
-                            if (symbol is null)
-                            {
-                                return null;
-                            }
-
-                            if (symbol.Locations.Any())
-                            {
-                                foreach (var location in symbol.Locations.Where(m => m.IsInSource))
-                                {
-                                    return location;
-                                }
-                            }
+                            return true;
                         }
-                        return null;
+                        var @namespace = modelObjectView.ModelClass.TypeInfo.Type.Namespace ?? "";
+
+                        return namespaces.Any(ns => @namespace.StartsWith(ns, StringComparison.OrdinalIgnoreCase));
                     }
 
-                    var location = FindFile(ctx, view);
-
-                    HorizontalRule(view.Id);
-
-                    if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
+                    if (view is IModelObjectView modelObjectView
+                        && AcceptsModelView(modelObjectView, namespaces)
+                        )
                     {
-                        var ext = Path.GetExtension(location.SourceTree.FilePath);
-                        var fileName = Path.GetFileNameWithoutExtension(location.SourceTree.FilePath);
-                        var dirName = Path.GetDirectoryName(location.SourceTree.FilePath);
+                        AnsiConsole.MarkupLine($"[grey]Analyzing: [silver][/]{view.Id}[/]");
 
-                        var part = view switch
-                        {
-                            IModelDetailView _ => ".LayoutBuilder",
-                            IModelListView _ => ".ColumnsBuilder",
-                            _ => ""
-                        };
-                        var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
-                        HorizontalDashed(location.SourceTree.FilePath);
-                        HorizontalDashed(newFilePath);
+                        var xml = X2CEngine.ConvertToXml(view);
+                        var (className, code) = X2CEngine.ConvertToCode(view);
 
-                        if (File.Exists(location.SourceTree.FilePath))
+                        static Location? FindFile(TPipelineContext ctx, IModelView modelView)
                         {
-                            var source = await File.ReadAllTextAsync(location.SourceTree.FilePath);
-                            PrintSource(source);
-                            AnsiConsole.WriteLine();
+                            if (modelView is IModelObjectView modelObjectView)
+                            {
+                                var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
+                                if (symbol is null)
+                                {
+                                    return null;
+                                }
+
+                                if (symbol.Locations.Any())
+                                {
+                                    foreach (var location in symbol.Locations.Where(m => m.IsInSource))
+                                    {
+                                        return location;
+                                    }
+                                }
+                            }
+                            return null;
+                        }
+
+                        var location = FindFile(ctx, view);
+#if DEBUG
+                        HorizontalRule(view.Id);
+#endif
+                        if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
+                        {
+                            var ext = Path.GetExtension(location.SourceTree.FilePath);
+                            var fileName = Path.GetFileNameWithoutExtension(location.SourceTree.FilePath);
+                            var dirName = Path.GetDirectoryName(location.SourceTree.FilePath);
+
+                            var part = view switch
+                            {
+                                IModelDetailView _ => ".LayoutBuilder",
+                                IModelListView _ => ".ColumnsBuilder",
+                                _ => ""
+                            };
+
+                            var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
+#if DEBUG
+                            HorizontalDashed(location.SourceTree.FilePath);
+                            HorizontalDashed(newFilePath);
+
+                            if (File.Exists(location.SourceTree.FilePath))
+                            {
+                                var source = await File.ReadAllTextAsync(location.SourceTree.FilePath);
+                                PrintSource(source);
+                                AnsiConsole.WriteLine();
+                            }
+#endif
 
                             var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
 
@@ -337,22 +364,65 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                                         modifications[location.SourceTree.FilePath] = (FileState.Modified, newSyntaxTree);
 
                                         ctx.Compilation = ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree);
-
+#if DEBUG
                                         PrintSource(newRoot.ToFullString());
                                         AnsiConsole.WriteLine();
+#endif
                                     }
                                 }
                             }
                         }
+#if DEBUG
+                        PrintSource(xml, "xml");
+                        AnsiConsole.WriteLine();
+                        PrintSource(code);
+                        AnsiConsole.WriteLine();
+#endif
                     }
+                }
+            });
 
-                    PrintSource(xml, "xml");
-                    AnsiConsole.WriteLine();
-                    PrintSource(code);
-                    AnsiConsole.WriteLine();
+            if (modifications.Count > 0)
+            {
+                AnsiConsole.WriteLine();
+                AnsiConsole.MarkupLine($"[grey]There are [yellow]{modifications.Count}[/] pending for project [silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/][/]");
+                AnsiConsole.WriteLine();
+
+                HorizontalDashed("Changed Files");
+
+                foreach (var modification in modifications.Where(m => m.Value.state != FileState.Unchanged))
+                {
+                    var (state, syntaxTree) = modification.Value;
+                    var path = modification.Key;
+
+                    var stateString = state switch
+                    {
+                        FileState.Modified => "[[Modified]]",
+                        FileState.Added => "[[Added]]",
+                        _ => "Unknown"
+                    };
+
+                    var stateColor = state switch
+                    {
+                        FileState.Modified => "yellow",
+                        FileState.Added => "green",
+                        _ => "white"
+                    };
+
+                    path = ConsoleHelper.EllipsisPath(path);
+
+                    AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{path}[/][/]");
+                }
+
+                var adds = modifications.Where(m => m.Value.state == FileState.Added).Count();
+                var modified = modifications.Where(m => m.Value.state == FileState.Modified).Count();
+
+                AnsiConsole.WriteLine();
+                if (AnsiConsole.Confirm($"[silver]Do you want to proceed? [yellow][[Modified]] {modified}[/] [green][[Added]] {adds}[/][/]"))
+                {
+
                 }
             }
-
             await next();
         });
 
