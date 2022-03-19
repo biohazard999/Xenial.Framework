@@ -6,6 +6,7 @@ using System.Xml;
 
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
+using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Xenial.Framework.DevTools.Helpers;
 using Xenial.Framework.Layouts;
@@ -22,13 +23,23 @@ namespace Xenial.Framework.DevTools.X2C;
 /// </summary>
 public sealed class X2CEngine
 {
-    public static (string className, string code) ConvertToCode(IModelView view)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="view"></param>
+    /// <returns></returns>
+    public static (string className, string code) ConvertToCode(IModelView view!!)
     {
         var node = LoadXml(view);
         return ConvertToCode(node);
     }
 
-    public static string ConvertToXml(IModelView view)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="view"></param>
+    /// <returns></returns>
+    public static string ConvertToXml(IModelView view!!)
     {
         var node = LoadXml(view);
         return VisualizeNodeHelper.PrettyPrint(node.OuterXml);
@@ -39,7 +50,7 @@ public sealed class X2CEngine
     /// </summary>
     /// <param name="xml"></param>
     /// <returns></returns>
-    public static (string className, string code) ConvertToCode(string xml)
+    public static (string className, string code) ConvertToCode(string xml!!)
     {
         var root = LoadXml(xml);
 
@@ -52,7 +63,14 @@ public sealed class X2CEngine
             _ => throw new ArgumentOutOfRangeException(nameof(xml), root.Name, "Code builder is not handled")
         };
     }
-    public static (string className, string code) ConvertToCode(XmlNode root)
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="root"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public static (string className, string code) ConvertToCode(XmlNode root!!)
     {
         CleanNodes(root);
 
@@ -64,7 +82,12 @@ public sealed class X2CEngine
         };
     }
 
-    public static XmlNode LoadXml(string xml)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="xml"></param>
+    /// <returns></returns>
+    public static XmlNode LoadXml(string xml!!)
     {
         var doc = new XmlDocument() { XmlResolver = null };
         var sreader = new System.IO.StringReader(xml);
@@ -75,7 +98,12 @@ public sealed class X2CEngine
         return doc.FirstChild;
     }
 
-    public static XmlNode LoadXml(IModelView view)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="view"></param>
+    /// <returns></returns>
+    public static XmlNode LoadXml(IModelView view!!)
     {
         var id = $"{view.Id}_{Guid.NewGuid()}";
         var modelViews = view.Application.Views;
@@ -138,12 +166,6 @@ public sealed class X2CEngine
         return xml;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="root"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
     private static (string className, string code) ListViewBuilderCodeClass(XmlNode root)
     {
         var className = GetAttribute(root, "ClassName");

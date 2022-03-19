@@ -24,6 +24,8 @@
   <ItemGroup>
     <PackageReference Include="Buildalyzer" Version="4.1.2" />
     <PackageReference Include="Buildalyzer.Workspaces" Version="4.1.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.1.0" />
+    <PackageReference Include="SimpleExec" Version="9.1.0" />
     <PackageReference Include="Karambolo.Extensions.Logging.File" Version="3.2.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="6.0.0" />

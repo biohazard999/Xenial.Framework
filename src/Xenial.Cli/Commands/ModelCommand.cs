@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Microsoft.CodeAnalysis.Formatting;
+using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.Extensions.Logging;
 
 using ModelToCodeConverter.Engine;
@@ -31,6 +32,7 @@ using Xenial.Cli.Utils;
 using Xenial.Framework.DevTools.X2C;
 
 using static Xenial.Cli.Utils.ConsoleHelper;
+using static SimpleExec.Command;
 
 namespace Xenial.Cli.Commands;
 
@@ -218,65 +220,98 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
         return workspace;
     }
 
+    enum FileState
+    {
+        Unchanged,
+        Modified,
+        Added
+    }
+
     protected override void ConfigurePipeline(TPipeline pipeline!!)
     {
         base.ConfigurePipeline(pipeline);
 
         pipeline.Use(async (ctx, next) =>
         {
+            var attributeSymbol = ctx.Compilation.GetTypeByMetadataName("Xenial.Framework.Layouts.DetailViewLayoutBuilderAttribute");
+
+            if (attributeSymbol is null)
+            {
+                AnsiConsole.MarkupLine($"[yellow]It seams like [/][silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/] is missing a reference to Xenial.Framework");
+                var addReference = AnsiConsole.Confirm($"[silver]Do you want to add it to the project?[/]");
+
+                if (addReference)
+                {
+                    var wd = Path.GetDirectoryName(ctx.ProjectAnalyzer.ProjectFile.Path)!;
+                    await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework", wd);
+                    await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework.Generators", wd);
+                    ctx.ExitCode = 1;
+                    AnsiConsole.MarkupLine($"[yellow]Added packages. Please restart command to see effects.[/]");
+                    await next();
+                    return;
+                }
+            }
+
+            Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications = new();
+
             foreach (var view in ctx.Application!.Views)
             {
-                var xml = X2CEngine.ConvertToXml(view);
-                var (className, code) = X2CEngine.ConvertToCode(view);
-
-                static Location? FindFile(TPipelineContext ctx, IModelView modelView)
+                if (view is IModelObjectView modelObjectView
+                    && modelObjectView
+                        .ModelClass.TypeInfo.Type
+                        //TODO: Filtering
+                        .Namespace?.StartsWith("MainDemo.Module.BusinessObjects", StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    if (modelView is IModelObjectView modelObjectView)
-                    {
-                        var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
-                        if (symbol is null)
-                        {
-                            return null;
-                        }
+                    var xml = X2CEngine.ConvertToXml(view);
+                    var (className, code) = X2CEngine.ConvertToCode(view);
 
-                        if (symbol.Locations.Any())
+                    static Location? FindFile(TPipelineContext ctx, IModelView modelView)
+                    {
+                        if (modelView is IModelObjectView modelObjectView)
                         {
-                            foreach (var location in symbol.Locations.Where(m => m.IsInSource))
+                            var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
+                            if (symbol is null)
                             {
-                                return location;
+                                return null;
+                            }
+
+                            if (symbol.Locations.Any())
+                            {
+                                foreach (var location in symbol.Locations.Where(m => m.IsInSource))
+                                {
+                                    return location;
+                                }
                             }
                         }
+                        return null;
                     }
-                    return null;
-                }
 
-                var location = FindFile(ctx, view);
+                    var location = FindFile(ctx, view);
 
-                HorizontalRule(view.Id);
-                if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
-                {
-                    var ext = Path.GetExtension(location.SourceTree.FilePath);
-                    var fileName = Path.GetFileNameWithoutExtension(location.SourceTree.FilePath);
-                    var dirName = Path.GetDirectoryName(location.SourceTree.FilePath);
+                    HorizontalRule(view.Id);
 
-                    var part = view switch
+                    if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
                     {
-                        IModelDetailView _ => ".LayoutBuilder",
-                        IModelListView _ => ".ColumnsBuilder",
-                        _ => ""
-                    };
-                    var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
-                    HorizontalDashed(location.SourceTree.FilePath);
-                    HorizontalDashed(newFilePath);
+                        var ext = Path.GetExtension(location.SourceTree.FilePath);
+                        var fileName = Path.GetFileNameWithoutExtension(location.SourceTree.FilePath);
+                        var dirName = Path.GetDirectoryName(location.SourceTree.FilePath);
 
-                    if (File.Exists(location.SourceTree.FilePath))
-                    {
-                        var source = await File.ReadAllTextAsync(location.SourceTree.FilePath);
-                        PrintSource(source);
-                        AnsiConsole.WriteLine();
-
-                        if (view is IModelObjectView modelObjectView)
+                        var part = view switch
                         {
+                            IModelDetailView _ => ".LayoutBuilder",
+                            IModelListView _ => ".ColumnsBuilder",
+                            _ => ""
+                        };
+                        var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
+                        HorizontalDashed(location.SourceTree.FilePath);
+                        HorizontalDashed(newFilePath);
+
+                        if (File.Exists(location.SourceTree.FilePath))
+                        {
+                            var source = await File.ReadAllTextAsync(location.SourceTree.FilePath);
+                            PrintSource(source);
+                            AnsiConsole.WriteLine();
+
                             var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
 
                             if (symbol is not null)
@@ -297,24 +332,25 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                                     {
                                         var newRoot = RewriteSyntaxTree(ctx, view, className, root, semanticModel);
 
-                                        PrintSource(newRoot.ToFullString());
-
                                         var newSyntaxTree = location.SourceTree.WithRootAndOptions(newRoot, location.SourceTree.Options);
+
+                                        modifications[location.SourceTree.FilePath] = (FileState.Modified, newSyntaxTree);
 
                                         ctx.Compilation = ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree);
 
+                                        PrintSource(newRoot.ToFullString());
                                         AnsiConsole.WriteLine();
                                     }
                                 }
                             }
                         }
                     }
-                }
 
-                PrintSource(xml, "xml");
-                AnsiConsole.WriteLine();
-                PrintSource(code);
-                AnsiConsole.WriteLine();
+                    PrintSource(xml, "xml");
+                    AnsiConsole.WriteLine();
+                    PrintSource(code);
+                    AnsiConsole.WriteLine();
+                }
             }
 
             await next();
