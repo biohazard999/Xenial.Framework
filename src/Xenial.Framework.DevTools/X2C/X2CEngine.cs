@@ -883,6 +883,16 @@ public sealed class X2CEngine
         foreach (var attribute in attributes)
         {
             var member = members.FirstOrDefault(m => m.Name == attribute.Name);
+
+            if (member is null)
+            {
+                member = members.Select(m => (member: m, mappedFrom: m.GetCustomAttributes(false).OfType<MappedFromModelNodeAttribute>().FirstOrDefault()))
+                    .Where(m => m.mappedFrom is not null)
+                    .Where(m => m.mappedFrom.ToNode == attribute.Name)
+                    .Select(m => m.member)
+                    .FirstOrDefault();
+            }
+
             if (member is not null)
             {
                 var value = attribute.Value;

@@ -33,13 +33,13 @@ public partial record LayoutDashboardViewItem : LayoutViewItem
     /// 
     /// </summary>
     /// <param name="dashboardViewId"></param>
-    public LayoutDashboardViewItem(string dashboardViewId) : this(dashboardViewId, dashboardViewId) { }
+    public LayoutDashboardViewItem(string dashboardViewId!!) : this(dashboardViewId, dashboardViewId) { }
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="dashboardViewId"></param>
     /// <param name="id"></param>
-    public LayoutDashboardViewItem(string dashboardViewId, string id) : base(id)
+    public LayoutDashboardViewItem(string dashboardViewId!!, string id) : base(id)
         => DashboardViewId = dashboardViewId;
 }

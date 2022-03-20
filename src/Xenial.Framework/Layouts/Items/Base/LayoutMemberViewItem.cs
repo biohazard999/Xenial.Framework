@@ -15,6 +15,7 @@ namespace Xenial.Framework.Layouts.Items.Base;
         nameof(IModelMemberViewItem.Index),
         nameof(IModelMemberViewItem.Caption),
         nameof(IModelMemberViewItem.ToolTip),
+        nameof(IModelMemberViewItem.View),
     }
 )]
 public abstract partial record LayoutMemberViewItem : LayoutViewItem
