@@ -102,6 +102,24 @@ public class X2CEngineSanityTests
         CompileCode(result.Code);
     }
 
+    [Fact]
+    public async Task ConvertEmptyDetailView()
+    {
+        var result = X2CEngine.ConvertToCode(@"<DetailView Id=""FooBarPersistent_DetailView""
+            ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"" />");
+
+        await Verifier.Verify(result.Code).UseExtension("cs");
+    }
+
+    [Fact]
+    public void CompileEmptyDetailView()
+    {
+        var result = X2CEngine.ConvertToCode(@"<DetailView Id=""FooBarPersistent_DetailView""
+            ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"" />");
+
+        CompileCode(result.Code);
+    }
+
     private void CompileCode(string code)
     {
         var references = TestReferenceAssemblies.DefaultReferenceAssemblies

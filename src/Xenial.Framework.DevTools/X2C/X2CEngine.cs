@@ -438,7 +438,7 @@ public sealed class X2CEngine
         using (sb.OpenBrace($"namespace {@namespace}"))
         using (sb.OpenBrace($"public sealed partial class {resultClassName} : LayoutBuilder<{@class}>"))
         {
-            DetailViewBuilderCodeMethod(root, sb);
+            DetailViewBuilderCodeMethod(root, sb, methodName);
         }
 
         var result = new X2CCodeResult(@namespace, @class, @namespace, resultClassName, methodName, viewId, sb.ToString(), root.OuterXml);
@@ -446,7 +446,7 @@ public sealed class X2CEngine
         return result;
     }
 
-    private static string DetailViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb)
+    private static string DetailViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb, string methodName)
     {
         static string DetailViewOptionsCode(XmlNode node, CurlyIndenter sb)
         {
@@ -465,14 +465,16 @@ public sealed class X2CEngine
             return sb.ToString();
         }
 
-        static string LayoutBuildersCode(XmlNode node, CurlyIndenter sb)
+        static string LayoutBuildersCode(XmlNode node, CurlyIndenter sb, string methodName)
         {
             var itemsNode = node.ChildNodes.OfType<XmlNode>().FirstOrDefault(m => m.Name == "Items");
             var layoutNode = node.ChildNodes.OfType<XmlNode>().FirstOrDefault(m => m.Name == "Layout");
 
             if (itemsNode is null || layoutNode is null)
             {
-                return "/* ERROR: could not find a node named 'Items' or 'Layout' */";
+                sb.WriteLine($"public Layout {methodName}() => new Layout();");
+
+                return sb.ToString();
             }
 
             //We ignore the Main Node
@@ -539,7 +541,7 @@ public sealed class X2CEngine
                 CollectNodeTree(childNode, items);
             }
 
-            sb.Write("public Layout BuildLayout() => new Layout(");
+            sb.Write($"public Layout {methodName}() => new Layout(");
             DetailViewOptionsCode(node, sb);
             sb.WriteLine("{");
             sb.Indent();
@@ -683,7 +685,7 @@ public sealed class X2CEngine
             return sb.ToString();
         }
 
-        return LayoutBuildersCode(root, sb);
+        return LayoutBuildersCode(root, sb, methodName);
     }
 
     private static void CleanNodes(XmlNode node)
