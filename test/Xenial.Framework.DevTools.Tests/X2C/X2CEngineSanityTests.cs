@@ -41,7 +41,7 @@ public class X2CEngineSanityTests
 }";
 
 
-    internal const string ListViewXml = @"<ListView Id=""FooBar_ListView""
+    internal const string ListViewXml = @"<ListView Id=""FooBarPersistent_ListView""
           ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"">
   <Columns>
     <ColumnInfo Id=""Oid""
@@ -115,6 +115,24 @@ public class X2CEngineSanityTests
     public void CompileEmptyDetailView()
     {
         var result = X2CEngine.ConvertToCode(@"<DetailView Id=""FooBarPersistent_DetailView""
+            ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"" />");
+
+        CompileCode(result.Code);
+    }
+
+    [Fact]
+    public async Task ConvertEmptyListView()
+    {
+        var result = X2CEngine.ConvertToCode(@"<ListView Id=""FooBarPersistent_DetailView""
+            ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"" />");
+
+        await Verifier.Verify(result.Code).UseExtension("cs");
+    }
+
+    [Fact]
+    public void CompileEmptyListView()
+    {
+        var result = X2CEngine.ConvertToCode(@"<ListView Id=""FooBarPersistent_DetailView""
             ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"" />");
 
         CompileCode(result.Code);

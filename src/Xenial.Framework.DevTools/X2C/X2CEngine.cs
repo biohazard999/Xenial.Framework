@@ -250,7 +250,7 @@ public sealed class X2CEngine
         using (sb.OpenBrace($"namespace {@namespace}"))
         using (sb.OpenBrace($"public sealed partial class {resultClassName} : ColumnsBuilder<{@class}>"))
         {
-            ListViewBuilderCodeMethod(root, sb);
+            ListViewBuilderCodeMethod(root, sb, methodName);
         }
 
         var result = new X2CCodeResult(@namespace, @class, @namespace, resultClassName, methodName, viewId, sb.ToString(), root.OuterXml);
@@ -258,7 +258,7 @@ public sealed class X2CEngine
         return result;
     }
 
-    private static string ListViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb)
+    private static string ListViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb, string methodName)
     {
         static string ListViewOptionsCode(XmlNode node, CurlyIndenter sb)
         {
@@ -295,16 +295,25 @@ public sealed class X2CEngine
             return sb.ToString();
         }
 
-        static string ListViewBuildersCode(XmlNode node, CurlyIndenter sb)
+        static string ListViewBuildersCode(XmlNode node, CurlyIndenter sb, string methodName)
         {
-            sb.Write("public Columns BuildColumns() => new Columns(");
+            var cols = node.ChildNodes.OfType<XmlNode>().Where(m => m.Name == nameof(IModelListView.Columns));
+
+            if (!cols.Any())
+            {
+                sb.WriteLine($"public Columns {methodName}() => new Columns();");
+
+                return sb.ToString();
+            }
+
+            sb.Write($"public Columns {methodName}() => new Columns(");
 
             ListViewOptionsCode(node, sb);
 
             sb.WriteLine("{");
             sb.Indent();
 
-            foreach (var columns in node.ChildNodes.OfType<XmlNode>().Where(m => m.Name == nameof(IModelListView.Columns)))
+            foreach (var columns in cols)
             {
                 var indexOffset = 0;
 
@@ -344,7 +353,7 @@ public sealed class X2CEngine
             return sb.ToString();
         }
 
-        return ListViewBuildersCode(root, sb);
+        return ListViewBuildersCode(root, sb, methodName);
     }
 
     internal const string DetailViewIdSuffix = "_DetailView";
