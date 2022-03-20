@@ -388,7 +388,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                                     if (attributeName is not null)
                                     {
-                                        var newRoot = RewriteSyntaxTree(ctx, view, codeResult.TargetClassName, root, semanticModel);
+                                        var newRoot = RewriteSyntaxTree(ctx, view, codeResult, root, semanticModel);
 
                                         var newSyntaxTree = location.SourceTree.WithRootAndOptions(newRoot, location.SourceTree.Options);
 
@@ -445,19 +445,40 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                     AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{path}[/][/]");
                 }
 
-                var adds = modifications.Where(m => m.Value.state == FileState.Added).Count();
-                var modified = modifications.Where(m => m.Value.state == FileState.Modified).Count();
+                var adds = modifications.Where(m => m.Value.state == FileState.Added).ToList();
+                var modified = modifications.Where(m => m.Value.state == FileState.Modified).ToList();
 
                 AnsiConsole.WriteLine();
-                if (AnsiConsole.Confirm($"[silver]Do you want to proceed? [yellow][[Modified]] {modified}[/] [green][[Added]] {adds}[/][/]"))
+                if (AnsiConsole.Confirm($"[silver]Do you want to proceed? [yellow][[Modified]] {modified.Count}[/] [green][[Added]] {adds.Count}[/][/]"))
                 {
+                    foreach (var modification in modifications.Where(m => m.Value.state != FileState.Unchanged))
+                    {
+                        var (state, syntaxTree) = modification.Value;
+                        var path = modification.Key;
 
+                        var stateString = state switch
+                        {
+                            FileState.Modified => "[[Modified]]",
+                            FileState.Added => "[[Added]]",
+                            _ => "Unknown"
+                        };
+
+                        var stateColor = state switch
+                        {
+                            FileState.Modified => "yellow",
+                            FileState.Added => "green",
+                            _ => "white"
+                        };
+
+                        AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{path}[/][/]");
+                        await File.WriteAllTextAsync(syntaxTree.FilePath, syntaxTree.ToString());
+                    }
                 }
             }
             await next();
         });
 
-        static SyntaxNode RewriteSyntaxTree(TPipelineContext ctx, IModelView? view, string? className, SyntaxNode? root, SemanticModel semanticModel)
+        static SyntaxNode RewriteSyntaxTree(TPipelineContext ctx, IModelView? view, X2CCodeResult result, SyntaxNode? root, SemanticModel semanticModel)
         {
             if (view is IModelDetailView detailView)
             {
@@ -467,11 +488,11 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                     ? null
                     : viewId;
 
-                var methodName = viewId is null
+                var methodName = result.MethodName == "BuildLayout"
                     ? null
-                    : "BuildXXXLayout"; //TODO: figure out nice way for other build method names
+                    : result.MethodName;
 
-                var rewriter = new LayoutBuilderAttributeSyntaxRewriter(semanticModel, new LayoutAttributeInfo(className)
+                var rewriter = new LayoutBuilderAttributeSyntaxRewriter(semanticModel, new LayoutAttributeInfo(result.ClassName)
                 {
                     ViewId = viewId,
                     LayoutBuilderMethod = methodName,
@@ -487,11 +508,11 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                     ? null
                     : viewId;
 
-                var methodName = viewId is null
+                var methodName = result.MethodName == "BuildColumns"
                     ? null
-                    : "BuildXXXColumns"; //TODO: figure out nice way for other build method names
+                    : result.MethodName;
 
-                var rewriter = new ColumnsBuilderAttributeSyntaxRewriter(semanticModel, new ColumnsAttributeInfo(className)
+                var rewriter = new ColumnsBuilderAttributeSyntaxRewriter(semanticModel, new ColumnsAttributeInfo(result.ClassName)
                 {
                     ViewId = viewId,
                     ColumnsBuilderMethod = methodName,
