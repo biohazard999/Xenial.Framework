@@ -19,6 +19,7 @@ namespace Xenial.FeatureCenter.Module.Win
             if (e.Control is BarButtonItem barButtonItem)
             {
                 barButtonItem.ButtonStyle = BarButtonStyle.Check;
+                barButtonItem.Down = EnableBadges;
             }
         }
     }

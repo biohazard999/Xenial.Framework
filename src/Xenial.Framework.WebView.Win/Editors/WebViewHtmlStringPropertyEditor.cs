@@ -94,7 +94,7 @@ namespace Xenial.Framework.WebView.Win.Editors
 
         /// <inheritdoc />
         /// <remarks>We don't run base to avoid outputting the full html value to the log.</remarks>
-        protected override void LogValueStoring(object newValue) => DevExpress.Persistent.Base.Tracing.Tracer.LogText($"{nameof(WebViewHtmlStringPropertyEditor)} value changed.");
+        protected override void LogValueStoring(object newValue) => DevExpress.Persistent.Base.Tracing.Tracer.LogText("{0} value changed.", nameof(WebViewHtmlStringPropertyEditor));
     }
 
     /// <summary>
