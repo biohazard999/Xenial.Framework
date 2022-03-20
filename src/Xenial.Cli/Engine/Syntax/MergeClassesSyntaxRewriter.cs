@@ -22,6 +22,13 @@ public class MergeClassesSyntaxRewriter : CSharpSyntaxRewriter
     private class MethodWalker : CSharpSyntaxWalker
     {
         public Stack<MethodDeclarationSyntax> Methods { get; } = new();
+        public Stack<UsingDirectiveSyntax> Usings { get; } = new();
+
+        public override void VisitUsingDirective(UsingDirectiveSyntax node)
+        {
+            Usings.Push(node);
+            base.VisitUsingDirective(node);
+        }
 
         public override void VisitMethodDeclaration(MethodDeclarationSyntax node)
         {
@@ -69,6 +76,20 @@ public class MergeClassesSyntaxRewriter : CSharpSyntaxRewriter
             }
 #pragma warning restore CA1031 // Do not catch general exception types
         }
+    }
+
+    public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node!!)
+    {
+        var newSyntaxTree = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)semanticModel.SyntaxTree.Options);
+        var newWalker = new MethodWalker();
+        newWalker.Visit(newSyntaxTree.GetRoot());
+
+        while (newWalker.Usings.TryPop(out var @using) && !node.Usings.Any(u => u.IsEquivalentTo(@using)))
+        {
+            node = node.WithUsings(node.Usings.Add(@using));
+        }
+
+        return base.VisitCompilationUnit(node);
     }
 
     public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node!!)
