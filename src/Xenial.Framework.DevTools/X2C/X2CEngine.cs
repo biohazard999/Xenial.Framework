@@ -28,7 +28,8 @@ namespace Xenial.Framework.DevTools.X2C;
 /// <param name="MethodName"></param>
 /// <param name="ViewId"></param>
 /// <param name="Code"></param>
-public record X2CCodeResult(string TargetNameSpace, string TargetClassName, string Namespace, string ClassName, string MethodName, string ViewId, string Code)
+/// <param name="Xml"></param>
+public record X2CCodeResult(string TargetNameSpace, string TargetClassName, string Namespace, string ClassName, string MethodName, string ViewId, string Code, string Xml)
 {
     /// <summary>
     /// 
@@ -117,7 +118,7 @@ public sealed class X2CEngine
         using var reader = XmlReader.Create(sreader, new XmlReaderSettings() { XmlResolver = null });
         doc.Load(reader);
 
-        return doc.FirstChild;
+        return doc.FirstChild ?? throw new InvalidOperationException($"{nameof(doc)}.{doc.FirstChild}");
     }
 
     /// <summary>
@@ -191,13 +192,50 @@ public sealed class X2CEngine
     private static X2CCodeResult ListViewBuilderCodeClass(XmlNode root)
     {
         var className = GetAttribute(root, "ClassName");
-        var viewId = GetAttribute(root, "Id");
+        var viewId = GetAttribute(root, "Id") ?? throw new InvalidOperationException("viewId");
 
         var (@namespace, @class) = className switch
         {
-            string c when c.Contains('.') => (string.Join(".", c.Split('.').SkipLast()), c.Split('.').Last()),
+            string c when c.Contains('.'
+#if NET5_0_OR_GREATER
+                , StringComparison.OrdinalIgnoreCase
+#endif
+            ) => (string.Join(".", c.Split('.').SkipLast()), c.Split('.').Last()),
             _ => throw new ArgumentOutOfRangeException(nameof(className), className, "Given name cannot be split into namespace and classname")
         };
+
+        static string DefaultListViewId(string @class) => $"{@class}{ListViewIdSuffix}";
+        static string DefaultLookupListViewId(string @class) => $"{@class}{LookupListViewIdSuffix}";
+
+        static string CustomLayoutMethodName(string @class, string viewId)
+        {
+            var isLookup = viewId.EndsWith(LookupListViewIdSuffix, StringComparison.OrdinalIgnoreCase);
+
+            var newViewId = TrimEnd(TrimEnd(TrimStart(viewId, @class), ListViewIdSuffix), LookupListViewIdSuffix).Trim('_');
+
+            if (isLookup)
+            {
+                while (newViewId.EndsWith("Columns", StringComparison.OrdinalIgnoreCase))
+                {
+                    newViewId = TrimEnd(newViewId, "Columns");
+                }
+            }
+
+            var methodName = $"Build{newViewId}{(isLookup ? "Lookup" : "")}Columns";
+
+            while (methodName.EndsWith("Columns", StringComparison.OrdinalIgnoreCase))
+            {
+                methodName = TrimEnd(methodName, "Columns");
+            }
+
+            return $"{methodName}Columns";
+        }
+
+        var methodName = viewId.Equals(DefaultListViewId(@class), StringComparison.OrdinalIgnoreCase)
+            ? BuildColumnsMethodName
+            : (viewId.Equals(DefaultLookupListViewId(@class), StringComparison.OrdinalIgnoreCase)
+            ? BuildLookupColumnsMethodName
+            : CustomLayoutMethodName(@class, viewId));
 
         var resultClassName = $"{@class}ColumnsBuilder";
 
@@ -215,7 +253,7 @@ public sealed class X2CEngine
             ListViewBuilderCodeMethod(root, sb);
         }
 
-        var result = new X2CCodeResult(@namespace, @class, @namespace, resultClassName, null, viewId, sb.ToString());
+        var result = new X2CCodeResult(@namespace, @class, @namespace, resultClassName, methodName, viewId, sb.ToString(), root.OuterXml);
 
         return result;
     }
@@ -309,16 +347,82 @@ public sealed class X2CEngine
         return ListViewBuildersCode(root, sb);
     }
 
+    internal const string DetailViewIdSuffix = "_DetailView";
+    internal const string ListViewIdSuffix = "_ListView";
+    internal const string LookupListViewIdSuffix = "_LookupListView";
+
+    internal static string GetNestedListViewId(Type type, string propertyName)
+        => $"{type}_{propertyName}_ListView";
+
+    internal const string BuildLayoutMethodName = "BuildLayout";
+    internal const string BuildColumnsMethodName = "BuildColumns";
+    internal const string BuildLookupColumnsMethodName = "BuildLookupColumns";
+
+    private static string TrimStart(string source, string value)
+    {
+        if (!source.StartsWith(value, StringComparison.OrdinalIgnoreCase))
+        {
+            return source;
+        }
+
+        if (string.IsNullOrEmpty(value))
+        {
+            return source;
+        }
+
+        var result = source;
+        while (result.StartsWith(value, StringComparison.OrdinalIgnoreCase))
+        {
+            result = result.Substring(value.Length);
+        }
+
+        return result;
+    }
+
+    private static string TrimEnd(string source, string value)
+    {
+        if (!source.EndsWith(value, StringComparison.OrdinalIgnoreCase))
+        {
+            return source;
+        }
+
+        return source.Remove(source.LastIndexOf(value, StringComparison.OrdinalIgnoreCase));
+    }
+
     private static X2CCodeResult DetailViewBuilderCodeClass(XmlNode root)
     {
         var className = GetAttribute(root, "ClassName");
-        var viewId = GetAttribute(root, "Id");
+        var viewId = GetAttribute(root, "Id") ?? throw new InvalidOperationException("viewId");
 
         var (@namespace, @class) = className switch
         {
-            string c when c.Contains('.') => (string.Join(".", c.Split('.').SkipLast()), c.Split('.').Last()),
+            string c when c.Contains('.'
+#if NET5_0_OR_GREATER
+                , StringComparison.OrdinalIgnoreCase
+#endif
+            ) => (string.Join(".", c.Split('.').SkipLast()), c.Split('.').Last()),
             _ => throw new ArgumentOutOfRangeException(nameof(className), className, "Given name cannot be split into namespace and classname")
         };
+
+        static string DefaultDetailViewId(string @class) => $"{@class}{DetailViewIdSuffix}";
+
+        static string CustomLayoutMethodName(string @class, string viewId)
+        {
+            var newViewId = TrimEnd(TrimStart(viewId, @class), DetailViewIdSuffix).Trim('_');
+
+            var methodName = $"Build{newViewId}Layout";
+
+            while (methodName.EndsWith("Layout", StringComparison.OrdinalIgnoreCase))
+            {
+                methodName = TrimEnd(methodName, "Layout");
+            }
+
+            return $"{methodName}Layout";
+        }
+
+        var methodName = viewId.Equals(DefaultDetailViewId(@class), StringComparison.OrdinalIgnoreCase)
+            ? BuildLayoutMethodName
+            : CustomLayoutMethodName(@class, viewId);
 
         var resultClassName = $"{@class}LayoutBuilder";
 
@@ -337,7 +441,7 @@ public sealed class X2CEngine
             DetailViewBuilderCodeMethod(root, sb);
         }
 
-        var result = new X2CCodeResult(@namespace, @class, @namespace, resultClassName, null, viewId, sb.ToString());
+        var result = new X2CCodeResult(@namespace, @class, @namespace, resultClassName, methodName, viewId, sb.ToString(), root.OuterXml);
 
         return result;
     }
