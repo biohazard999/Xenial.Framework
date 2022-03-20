@@ -326,7 +326,38 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                                 _ => ""
                             };
 
+                            var builderSymbol = ctx.Compilation.GetTypeByMetadataName(codeResult.FullName);
                             var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
+                            if (builderSymbol is null)
+                            {
+                                var builderSyntax = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)location.SourceTree.Options, path: newFilePath);
+                                ctx.Compilation = ctx.Compilation.AddSyntaxTrees(builderSyntax);
+                                modifications[newFilePath] = (FileState.Added, builderSyntax);
+                            }
+                            else
+                            {
+                                var (fileState, existingSyntaxTree) = modifications.TryGetValue(newFilePath, out var r) switch
+                                {
+                                    true => r,
+                                    false => (FileState.Unchanged, builderSymbol.Locations.First(m => m.IsInSource).SourceTree!),
+                                };
+
+                                var semanticModel = ctx.Compilation.GetSemanticModel(existingSyntaxTree);
+                                var merger = new MergeClassesSyntaxRewriter(semanticModel, codeResult);
+
+                                var root = await existingSyntaxTree.GetRootAsync();
+                                root = merger.Visit(root);
+                                root = Formatter.Format(root, ctx.Workspace!);
+
+                                var newSyntaxTree = existingSyntaxTree.WithRootAndOptions(root, existingSyntaxTree.Options);
+
+                                modifications[existingSyntaxTree.FilePath] = (
+                                    fileState == FileState.Unchanged ? FileState.Modified : fileState,
+                                    newSyntaxTree
+                                );
+
+                                ctx.Compilation = ctx.Compilation.ReplaceSyntaxTree(existingSyntaxTree, newSyntaxTree);
+                            }
 #if DEBUG
                             HorizontalDashed(location.SourceTree.FilePath);
                             HorizontalDashed(newFilePath);

@@ -323,7 +323,6 @@ public sealed class X2CEngine
                     .Where(m => m.Name == "ColumnInfo")
                     .ToList();
 
-
                 foreach (var column in columnNodes)
                 {
                     sb.Write($"Column.{GetAttribute(column, nameof(IModelColumn.Id))}");
