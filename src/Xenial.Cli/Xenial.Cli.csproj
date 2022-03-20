@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(Net6Version)-windows;$(Net5Version)-windows</TargetFrameworks>
+    <TargetFrameworks>$(Net6Version);$(Net5Version)</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
@@ -9,12 +9,8 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>xenial</ToolCommandName>
     <NoWarn>CA2007;$(NoWarn)</NoWarn>
-    <UseWindowsForms>true</UseWindowsForms>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Using Remove="System.Windows.Forms" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
