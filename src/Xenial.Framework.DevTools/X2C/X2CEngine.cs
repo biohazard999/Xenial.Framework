@@ -242,7 +242,7 @@ public sealed class X2CEngine
         var methodSb = CurlyIndenter.Create();
         methodSb.Indent();
         methodSb.Indent();
-        ListViewBuilderCodeMethod(root, methodSb, methodName, out var additionalUsings);
+        ListViewBuilderCodeMethod(root, methodSb, methodName, out var additionalUsings, out var additionalAttributes);
 
         var sb = CurlyIndenter.Create();
 
@@ -255,7 +255,7 @@ public sealed class X2CEngine
 
         if (additionalUsings.Count > 0)
         {
-            foreach (var additionalUsing in additionalUsings.Distinct().OrderBy(ns => ns))
+            foreach (var additionalUsing in additionalUsings.Distinct().OrderBy(ns => ns.Length))
             {
                 sb.WriteLine($"using {additionalUsing};");
             }
@@ -263,9 +263,16 @@ public sealed class X2CEngine
         }
 
         using (sb.OpenBrace($"namespace {@namespace}"))
-        using (sb.OpenBrace($"public sealed partial class {resultClassName} : ColumnsBuilder<{@class}>"))
         {
-            sb.WriteLine(methodSb.ToString().TrimEnd());
+            foreach (var additionalAttribute in additionalAttributes.Distinct().OrderByDescending(a => a))
+            {
+                sb.WriteLine(additionalAttribute);
+            }
+
+            using (sb.OpenBrace($"public sealed partial class {resultClassName} : ColumnsBuilder<{@class}>"))
+            {
+                sb.WriteLine(methodSb.ToString().TrimEnd());
+            }
         }
 
         var result = new X2CCodeResult(@namespace, @class, @namespace, resultClassName, methodName, viewId, sb.ToString(), root.OuterXml);
@@ -273,9 +280,10 @@ public sealed class X2CEngine
         return result;
     }
 
-    private static string ListViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb, string methodName, out List<string> additionalUsings)
+    private static string ListViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb, string methodName, out List<string> additionalUsings, out List<string> additionalAttributes)
     {
         additionalUsings = new();
+        additionalAttributes = new();
 
         static string ListViewOptionsCode(XmlNode node, CurlyIndenter sb, List<string> additionalUsings)
         {
@@ -294,7 +302,7 @@ public sealed class X2CEngine
             return sb.ToString();
         }
 
-        static string ListViewBuildersCode(XmlNode node, CurlyIndenter sb, string methodName, List<string> additionalUsings)
+        static string ListViewBuildersCode(XmlNode node, CurlyIndenter sb, string methodName, List<string> additionalUsings, List<string> additionalAttributes)
         {
             var cols = node.ChildNodes.OfType<XmlNode>().Where(m => m.Name == nameof(IModelListView.Columns));
 
@@ -324,7 +332,13 @@ public sealed class X2CEngine
 
                 foreach (var column in columnNodes)
                 {
-                    sb.Write($"Column.{GetAttribute(column, nameof(IModelColumn.Id))}");
+                    //TODO: Empty Id?
+                    var viewItemId = GetAttribute(column, nameof(IModelColumn.PropertyName))
+                        ?? GetAttribute(column, nameof(IModelColumn.Id))
+                        ?? "";
+
+                    AddXenialExpandMemberAttributes(additionalUsings, additionalAttributes, viewItemId);
+                    sb.Write(ViewItemPath("Column", viewItemId));
 
                     (indexOffset, var propertiesToWrite) = MapAttributes<Column>(indexOffset, column, columnNodes, additionalUsings);
 
@@ -351,7 +365,7 @@ public sealed class X2CEngine
             return sb.ToString();
         }
 
-        return ListViewBuildersCode(root, sb, methodName, additionalUsings);
+        return ListViewBuildersCode(root, sb, methodName, additionalUsings, additionalAttributes);
     }
 
     internal const string DetailViewIdSuffix = "_DetailView";
@@ -436,7 +450,7 @@ public sealed class X2CEngine
         var methodSb = CurlyIndenter.Create();
         methodSb.Indent();
         methodSb.Indent();
-        DetailViewBuilderCodeMethod(root, methodSb, methodName, out var additionalUsings, out var addtionalAttributes);
+        DetailViewBuilderCodeMethod(root, methodSb, methodName, out var additionalUsings, out var additionalAttributes);
 
         var sb = CurlyIndenter.Create();
 
@@ -459,7 +473,7 @@ public sealed class X2CEngine
 
         using (sb.OpenBrace($"namespace {@namespace}"))
         {
-            foreach (var additionalAttribute in addtionalAttributes.Distinct().OrderByDescending(a => a))
+            foreach (var additionalAttribute in additionalAttributes.Distinct().OrderByDescending(a => a))
             {
                 sb.WriteLine(additionalAttribute);
             }
@@ -473,18 +487,67 @@ public sealed class X2CEngine
         return result;
     }
 
-    private static string DetailViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb, string methodName, out List<string> addtionalUsings, out List<string> addtionalAttributes)
+    private static string ViewItemPath(string prefix, string viewItemId)
     {
-        addtionalUsings = new();
-        addtionalAttributes = new();
 
-        static string DetailViewOptionsCode(XmlNode node, CurlyIndenter sb, List<string> addtionalUsings)
+        if (viewItemId.Contains('.'
+#if NET5_0_OR_GREATER
+                                , StringComparison.OrdinalIgnoreCase
+#endif
+                                )
+        )
+        {
+            var viewItemIdParts = viewItemId.Split('.');
+            var last = viewItemIdParts.Last();
+            var previous = viewItemIdParts.SkipLast().Select(part => $"_{part}");
+            var items = previous.Concat(new[] { last }).ToArray();
+
+            var result = $"{prefix}.{string.Join(".", items)}";
+            return result;
+        }
+
+        return $"{prefix}.{viewItemId}";
+    }
+
+    private static void AddXenialExpandMemberAttributes(List<string> additionalUsings, List<string> additionalAttributes, string? viewItemId)
+    {
+        if (viewItemId.Contains('.'
+#if NET5_0_OR_GREATER
+                                , StringComparison.OrdinalIgnoreCase
+#endif
+                                )
+)
+        {
+            additionalUsings.Add("Xenial");
+
+            //Add the addtional constant parts
+            var parts = new Stack<string>(viewItemId.Split('.').SkipLast());
+
+            while (parts.TryPop(out var part))
+            {
+                var prevPath = string.Join(".", parts.Concat(new[] { part }).ToArray());
+                if (!string.IsNullOrEmpty(prevPath))
+                {
+                    additionalAttributes.Add($"[XenialExpandMember({ViewItemPath("Constants", prevPath)})]");
+                }
+            }
+
+            additionalAttributes.Add($"[XenialExpandMember({ViewItemPath("Constants", viewItemId)})]");
+        }
+    }
+
+    private static string DetailViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb, string methodName, out List<string> additionalUsings, out List<string> additionalAttributes)
+    {
+        additionalUsings = new();
+        additionalAttributes = new();
+
+        static string DetailViewOptionsCode(XmlNode node, CurlyIndenter sb, List<string> additionalUsings)
         {
             var ignoredAttributes = new[] { "Id", "ClassName" };
 
             using (sb.OpenBrace($"new {nameof(DetailViewOptions)}", closeBrace: "})"))
             {
-                var mappedItems = MapAttributes(typeof(DetailViewOptions), node, ignoredAttributes, addtionalUsings);
+                var mappedItems = MapAttributes(typeof(DetailViewOptions), node, ignoredAttributes, additionalUsings);
 
                 foreach (var attribute in mappedItems)
                 {
@@ -495,7 +558,7 @@ public sealed class X2CEngine
             return sb.ToString();
         }
 
-        static string LayoutBuildersCode(XmlNode node, CurlyIndenter sb, string methodName, List<string> addtionalUsings, List<string> addtionalAttributes)
+        static string LayoutBuildersCode(XmlNode node, CurlyIndenter sb, string methodName, List<string> additionalUsings, List<string> additionalAttributes)
         {
             var itemsNode = node.ChildNodes.OfType<XmlNode>().FirstOrDefault(m => m.Name == "Items");
             var layoutNode = node.ChildNodes.OfType<XmlNode>().FirstOrDefault(m => m.Name == "Layout");
@@ -572,13 +635,13 @@ public sealed class X2CEngine
             }
 
             sb.Write($"public Layout {methodName}() => new Layout(");
-            DetailViewOptionsCode(node, sb, addtionalUsings);
+            DetailViewOptionsCode(node, sb, additionalUsings);
             sb.WriteLine("{");
             sb.Indent();
 
             foreach (var item in items)
             {
-                PrintNode(sb, item, itemsNode, addtionalUsings, addtionalAttributes);
+                PrintNode(sb, item, itemsNode, additionalUsings, additionalAttributes);
 
                 if (items.LastOrDefault() != item)
                 {
@@ -593,7 +656,7 @@ public sealed class X2CEngine
             sb.UnIndent();
             sb.WriteLine("};");
 
-            static void PrintNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode, List<string> addtionalUsings, List<string> addtionalAttributes)
+            static void PrintNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode, List<string> additionalUsings, List<string> additionalAttributes)
             {
                 if (!item.IsLeaf)
                 {
@@ -612,7 +675,7 @@ public sealed class X2CEngine
                     {
                         foreach (var child in item.Children)
                         {
-                            PrintNode(sb, child, itemsNode, addtionalUsings, addtionalAttributes);
+                            PrintNode(sb, child, itemsNode, additionalUsings, additionalAttributes);
                             if (item.Children.LastOrDefault() != child)
                             {
                                 sb.WriteLine(",");
@@ -624,7 +687,7 @@ public sealed class X2CEngine
                         }
                     }
 
-                    (var indexOffset, var propertiesToWrite) = MapAttributes(item.TargetNodeType, 0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList(), addtionalUsings);
+                    (var indexOffset, var propertiesToWrite) = MapAttributes(item.TargetNodeType, 0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList(), additionalUsings);
 
                     if (propertiesToWrite.Count > 0)
                     {
@@ -643,11 +706,11 @@ public sealed class X2CEngine
                 }
                 else
                 {
-                    PrintLeafNode(sb, item, itemsNode, addtionalUsings, addtionalAttributes);
+                    PrintLeafNode(sb, item, itemsNode, additionalUsings, additionalAttributes);
                 }
             }
 
-            static void PrintLeafNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode, List<string> addtionalUsings, List<string> addtionalAttributes)
+            static void PrintLeafNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode, List<string> additionalUsings, List<string> additionalAttributes)
             {
                 if (item.TargetNodeType == typeof(LayoutEmptySpaceItem))
                 {
@@ -679,60 +742,12 @@ public sealed class X2CEngine
 
                         if (xmlViewItemNode is not null)
                         {
-                            //TODO: ExpandMemberAttribute
-                            //We replace dots with underscore because how
                             //SourceGenerators define property trains
-
-                            static string ViewItemPath(string prefix, string viewItemId)
-                            {
-
-                                if (viewItemId.Contains('.'
-#if NET5_0_OR_GREATER
-                                , StringComparison.OrdinalIgnoreCase
-#endif
-                                )
-                                )
-                                {
-                                    var viewItemIdParts = viewItemId.Split('.');
-                                    var last = viewItemIdParts.Last();
-                                    var previous = viewItemIdParts.SkipLast().Select(part => $"_{part}");
-                                    var items = previous.Concat(new[] { last }).ToArray();
-
-                                    var result = $"{prefix}.{string.Join(".", items)}";
-                                    return result;
-                                }
-
-                                return $"{prefix}.{viewItemId}";
-                            }
-
-                            if (viewItemId.Contains('.'
-#if NET5_0_OR_GREATER
-                                , StringComparison.OrdinalIgnoreCase
-#endif
-                                )
-                            )
-                            {
-                                addtionalUsings.Add("Xenial");
-
-                                //Add the addtional constant parts
-                                var parts = new Stack<string>(viewItemId.Split('.').SkipLast());
-
-                                while (parts.TryPop(out var part))
-                                {
-                                    var prevPath = string.Join(".", parts.Concat(new[] { part }).ToArray());
-                                    if (!string.IsNullOrEmpty(prevPath))
-                                    {
-                                        addtionalAttributes.Add($"[XenialExpandMember({ViewItemPath("Constants", prevPath)})]");
-                                    }
-                                }
-
-                                addtionalAttributes.Add($"[XenialExpandMember({ViewItemPath("Constants", viewItemId)})]");
-                            }
-
+                            AddXenialExpandMemberAttributes(additionalUsings, additionalAttributes, viewItemId);
                             sb.Write(ViewItemPath("Editor", viewItemId));
 
-                            (var indexOffset, var propertiesToWrite) = MapAttributes<LayoutPropertyEditorItem>(0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList(), addtionalUsings);
-                            (_, var propertiesToWrite2) = MapAttributes<LayoutPropertyEditorItem>(0, xmlViewItemNode, xmlViewItemNode.ParentNode.ChildNodes.OfType<XmlNode>().ToList(), addtionalUsings);
+                            (var indexOffset, var propertiesToWrite) = MapAttributes<LayoutPropertyEditorItem>(0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList(), additionalUsings);
+                            (_, var propertiesToWrite2) = MapAttributes<LayoutPropertyEditorItem>(0, xmlViewItemNode, xmlViewItemNode.ParentNode.ChildNodes.OfType<XmlNode>().ToList(), additionalUsings);
 
                             foreach (var pair in propertiesToWrite2)
                             {
@@ -761,7 +776,7 @@ public sealed class X2CEngine
             return sb.ToString();
         }
 
-        return LayoutBuildersCode(root, sb, methodName, addtionalUsings, addtionalAttributes);
+        return LayoutBuildersCode(root, sb, methodName, additionalUsings, additionalAttributes);
     }
 
     private static void CleanNodes(XmlNode node)

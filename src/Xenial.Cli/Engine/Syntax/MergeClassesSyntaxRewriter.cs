@@ -23,6 +23,13 @@ public class MergeClassesSyntaxRewriter : CSharpSyntaxRewriter
     {
         public Stack<MethodDeclarationSyntax> Methods { get; } = new();
         public Stack<UsingDirectiveSyntax> Usings { get; } = new();
+        public Stack<AttributeListSyntax> Attributes { get; } = new();
+
+        public override void VisitAttributeList(AttributeListSyntax node)
+        {
+            Attributes.Push(node);
+            base.VisitAttributeList(node);
+        }
 
         public override void VisitUsingDirective(UsingDirectiveSyntax node)
         {
@@ -97,6 +104,15 @@ public class MergeClassesSyntaxRewriter : CSharpSyntaxRewriter
         var newSyntaxTree = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)semanticModel.SyntaxTree.Options);
         var newWalker = new MethodWalker();
         newWalker.Visit(newSyntaxTree.GetRoot());
+
+        var attributeList = node.AttributeLists;
+
+        while (newWalker.Attributes.TryPop(out var newAttribute))
+        {
+            attributeList = attributeList.Add(newAttribute);
+        }
+
+        node = node.WithAttributeLists(attributeList);
 
         var methodList = node.Members;
 
