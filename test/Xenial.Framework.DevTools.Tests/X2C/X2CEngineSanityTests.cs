@@ -123,7 +123,7 @@ public class X2CEngineSanityTests
     [Fact]
     public async Task ConvertEmptyListView()
     {
-        var result = X2CEngine.ConvertToCode(@"<ListView Id=""FooBarPersistent_DetailView""
+        var result = X2CEngine.ConvertToCode(@"<ListView Id=""FooBarPersistent_ListView""
             ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"" />");
 
         await Verifier.Verify(result.Code).UseExtension("cs");
@@ -132,7 +132,25 @@ public class X2CEngineSanityTests
     [Fact]
     public void CompileEmptyListView()
     {
-        var result = X2CEngine.ConvertToCode(@"<ListView Id=""FooBarPersistent_DetailView""
+        var result = X2CEngine.ConvertToCode(@"<ListView Id=""FooBarPersistent_ListView""
+            ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"" />");
+
+        CompileCode(result.Code);
+    }
+
+    [Fact]
+    public async Task ConvertEmptyLookupListView()
+    {
+        var result = X2CEngine.ConvertToCode(@"<ListView Id=""FooBarPersistent_LookupListView""
+            ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"" />");
+
+        await Verifier.Verify(result.Code).UseExtension("cs");
+    }
+
+    [Fact]
+    public void CompileEmptyLookupListView()
+    {
+        var result = X2CEngine.ConvertToCode(@"<ListView Id=""FooBarPersistent_LookupListView""
             ClassName=""HtmlDemoXAFApplication.Module.BusinessObjects.FooBarPersistent"" />");
 
         CompileCode(result.Code);

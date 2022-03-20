@@ -8,6 +8,6 @@ namespace HtmlDemoXAFApplication.Module.BusinessObjects
 {
     public sealed partial class FooBarPersistentColumnsBuilder : ColumnsBuilder<FooBarPersistent>
     {
-        public Columns BuildColumns() => new Columns();
+        public Columns BuildLookupColumns() => new Columns();
     }
 }
