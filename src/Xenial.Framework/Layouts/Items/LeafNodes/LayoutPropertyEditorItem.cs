@@ -19,6 +19,7 @@ namespace Xenial.Framework.Layouts.Items.LeafNodes;
         nameof(IModelViewItem.Caption),
         nameof(IModelPropertyEditor.Index),
         nameof(IModelPropertyEditor.ToolTip),
+        nameof(IModelPropertyEditor.View),
     }
 )]
 public partial record LayoutPropertyEditorItem(string PropertyEditorId)
@@ -65,4 +66,46 @@ public partial record LayoutPropertyEditorItem(string PropertyEditorId)
             editorAlias = value;
         }
     }
+
+    private string? viewId;
+    internal bool WasViewIdSet { get; set; }
+
+    /// <summary>
+    /// Specifies a view id
+    /// </summary>
+    [MappedFromModelNode(nameof(IModelPropertyEditor.View), "Application.Views")]
+    public string? ViewId
+    {
+        get => viewId;
+        set
+        {
+            WasViewIdSet = true;
+            viewId = value;
+        }
+    }
+}
+
+/// <summary>
+/// 
+/// </summary>
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+public sealed class MappedFromModelNodeAttribute : Attribute
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="toNode"></param>
+    /// <param name="fromCollection"></param>
+    public MappedFromModelNodeAttribute(string toNode!!, string fromCollection!!)
+        => (ToNode, FromCollection) = (toNode, fromCollection);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string ToNode { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string FromCollection { get; }
 }

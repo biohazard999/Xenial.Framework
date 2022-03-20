@@ -34,4 +34,12 @@ internal partial class ViewItemMapper
             }
         }
     }
+
+    static partial void MapNodeCore(LayoutPropertyEditorItem from, IModelPropertyEditor to)
+    {
+        if (from.WasViewIdSet)
+        {
+            to.View = to.Application.Views[from.ViewId];
+        }
+    }
 }
