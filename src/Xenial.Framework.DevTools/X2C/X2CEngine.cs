@@ -239,6 +239,11 @@ public sealed class X2CEngine
 
         var resultClassName = $"{@class}ColumnsBuilder";
 
+        var methodSb = CurlyIndenter.Create();
+        methodSb.Indent();
+        methodSb.Indent();
+        ListViewBuilderCodeMethod(root, methodSb, methodName, out var additionalUsings);
+
         var sb = CurlyIndenter.Create();
 
         sb.WriteLine("using System;");
@@ -247,10 +252,20 @@ public sealed class X2CEngine
         sb.WriteLine("using Xenial.Framework.Layouts;");
         sb.WriteLine("using Xenial.Framework.Layouts.ColumnItems;");
         sb.WriteLine();
+
+        if (additionalUsings.Count > 0)
+        {
+            foreach (var additionalUsing in additionalUsings.Distinct().OrderBy(ns => ns))
+            {
+                sb.WriteLine($"using {additionalUsing};");
+            }
+            sb.WriteLine();
+        }
+
         using (sb.OpenBrace($"namespace {@namespace}"))
         using (sb.OpenBrace($"public sealed partial class {resultClassName} : ColumnsBuilder<{@class}>"))
         {
-            ListViewBuilderCodeMethod(root, sb, methodName);
+            sb.WriteLine(methodSb.ToString().TrimEnd());
         }
 
         var result = new X2CCodeResult(@namespace, @class, @namespace, resultClassName, methodName, viewId, sb.ToString(), root.OuterXml);
@@ -258,44 +273,28 @@ public sealed class X2CEngine
         return result;
     }
 
-    private static string ListViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb, string methodName)
+    private static string ListViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb, string methodName, out List<string> additionalUsings)
     {
-        static string ListViewOptionsCode(XmlNode node, CurlyIndenter sb)
+        additionalUsings = new();
+
+        static string ListViewOptionsCode(XmlNode node, CurlyIndenter sb, List<string> additionalUsings)
         {
             var ignoredAttributes = new[] { "Id", "ClassName" };
-            var attributes = node.Attributes
-                .OfType<XmlAttribute>()
-                .Where(n => !ignoredAttributes.Contains(n.Name?.ToString()))
-                .ToList();
-
-            var members = typeof(ListViewOptions).GetProperties();
 
             using (sb.OpenBrace($"new {nameof(ListViewOptions)}", closeBrace: "})"))
             {
-                foreach (var attribute in attributes)
+                var propertiesToWrite = MapAttributes(typeof(ListViewOptions), node, ignoredAttributes, additionalUsings);
+
+                foreach (var attribute in propertiesToWrite)
                 {
-                    var member = members.FirstOrDefault(m => m.Name == attribute.Name);
-                    if (member is not null)
-                    {
-                        var value = attribute.Value;
-                        var valueToWrite = value?.ToString();
-                        if (member.PropertyType == typeof(string))
-                        {
-                            valueToWrite = $"\"{valueToWrite}\"";
-                        }
-                        if (member.PropertyType == typeof(bool))
-                        {
-                            valueToWrite = $"{bool.Parse(valueToWrite)}".ToLowerInvariant();
-                        }
-                        sb.WriteLine($"{member.Name} = {valueToWrite},");
-                    }
+                    sb.WriteLine($"{attribute.Key} = {attribute.Value},");
                 }
             }
 
             return sb.ToString();
         }
 
-        static string ListViewBuildersCode(XmlNode node, CurlyIndenter sb, string methodName)
+        static string ListViewBuildersCode(XmlNode node, CurlyIndenter sb, string methodName, List<string> additionalUsings)
         {
             var cols = node.ChildNodes.OfType<XmlNode>().Where(m => m.Name == nameof(IModelListView.Columns));
 
@@ -308,7 +307,7 @@ public sealed class X2CEngine
 
             sb.Write($"public Columns {methodName}() => new Columns(");
 
-            ListViewOptionsCode(node, sb);
+            ListViewOptionsCode(node, sb, additionalUsings);
 
             sb.WriteLine("{");
             sb.Indent();
@@ -327,7 +326,7 @@ public sealed class X2CEngine
                 {
                     sb.Write($"Column.{GetAttribute(column, nameof(IModelColumn.Id))}");
 
-                    (indexOffset, var propertiesToWrite) = MapAttributes<Column>(indexOffset, column, columnNodes);
+                    (indexOffset, var propertiesToWrite) = MapAttributes<Column>(indexOffset, column, columnNodes, additionalUsings);
 
                     if (propertiesToWrite.Count > 0)
                     {
@@ -352,7 +351,7 @@ public sealed class X2CEngine
             return sb.ToString();
         }
 
-        return ListViewBuildersCode(root, sb, methodName);
+        return ListViewBuildersCode(root, sb, methodName, additionalUsings);
     }
 
     internal const string DetailViewIdSuffix = "_DetailView";
@@ -434,6 +433,11 @@ public sealed class X2CEngine
 
         var resultClassName = $"{@class}LayoutBuilder";
 
+        var methodSb = CurlyIndenter.Create();
+        methodSb.Indent();
+        methodSb.Indent();
+        DetailViewBuilderCodeMethod(root, methodSb, methodName, out var additionalUsings);
+
         var sb = CurlyIndenter.Create();
 
         sb.WriteLine("using System;");
@@ -443,10 +447,20 @@ public sealed class X2CEngine
         sb.WriteLine("using Xenial.Framework.Layouts.ColumnItems;");
         sb.WriteLine("using Xenial.Framework.Layouts.Items.Base;");
         sb.WriteLine();
+
+        if (additionalUsings.Count > 0)
+        {
+            foreach (var additionalUsing in additionalUsings.Distinct().OrderBy(ns => ns))
+            {
+                sb.WriteLine($"using {additionalUsing};");
+            }
+            sb.WriteLine();
+        }
+
         using (sb.OpenBrace($"namespace {@namespace}"))
         using (sb.OpenBrace($"public sealed partial class {resultClassName} : LayoutBuilder<{@class}>"))
         {
-            DetailViewBuilderCodeMethod(root, sb, methodName);
+            sb.WriteLine(methodSb.ToString().TrimEnd());
         }
 
         var result = new X2CCodeResult(@namespace, @class, @namespace, resultClassName, methodName, viewId, sb.ToString(), root.OuterXml);
@@ -454,15 +468,17 @@ public sealed class X2CEngine
         return result;
     }
 
-    private static string DetailViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb, string methodName)
+    private static string DetailViewBuilderCodeMethod(XmlNode root, CurlyIndenter sb, string methodName, out List<string> addtionalUsings)
     {
-        static string DetailViewOptionsCode(XmlNode node, CurlyIndenter sb)
+        addtionalUsings = new();
+
+        static string DetailViewOptionsCode(XmlNode node, CurlyIndenter sb, List<string> addtionalUsings)
         {
             var ignoredAttributes = new[] { "Id", "ClassName" };
 
             using (sb.OpenBrace($"new {nameof(DetailViewOptions)}", closeBrace: "})"))
             {
-                var mappedItems = MapAttributes(typeof(DetailViewOptions), node, ignoredAttributes);
+                var mappedItems = MapAttributes(typeof(DetailViewOptions), node, ignoredAttributes, addtionalUsings);
 
                 foreach (var attribute in mappedItems)
                 {
@@ -473,7 +489,7 @@ public sealed class X2CEngine
             return sb.ToString();
         }
 
-        static string LayoutBuildersCode(XmlNode node, CurlyIndenter sb, string methodName)
+        static string LayoutBuildersCode(XmlNode node, CurlyIndenter sb, string methodName, List<string> addtionalUsings)
         {
             var itemsNode = node.ChildNodes.OfType<XmlNode>().FirstOrDefault(m => m.Name == "Items");
             var layoutNode = node.ChildNodes.OfType<XmlNode>().FirstOrDefault(m => m.Name == "Layout");
@@ -550,13 +566,13 @@ public sealed class X2CEngine
             }
 
             sb.Write($"public Layout {methodName}() => new Layout(");
-            DetailViewOptionsCode(node, sb);
+            DetailViewOptionsCode(node, sb, addtionalUsings);
             sb.WriteLine("{");
             sb.Indent();
 
             foreach (var item in items)
             {
-                PrintNode(sb, item, itemsNode);
+                PrintNode(sb, item, itemsNode, addtionalUsings);
 
                 if (items.LastOrDefault() != item)
                 {
@@ -571,8 +587,7 @@ public sealed class X2CEngine
             sb.UnIndent();
             sb.WriteLine("};");
 
-
-            static void PrintNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode)
+            static void PrintNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode, List<string> addtionalUsings)
             {
                 if (!item.IsLeaf)
                 {
@@ -591,7 +606,7 @@ public sealed class X2CEngine
                     {
                         foreach (var child in item.Children)
                         {
-                            PrintNode(sb, child, itemsNode);
+                            PrintNode(sb, child, itemsNode, addtionalUsings);
                             if (item.Children.LastOrDefault() != child)
                             {
                                 sb.WriteLine(",");
@@ -603,7 +618,7 @@ public sealed class X2CEngine
                         }
                     }
 
-                    (var indexOffset, var propertiesToWrite) = MapAttributes(item.TargetNodeType, 0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList());
+                    (var indexOffset, var propertiesToWrite) = MapAttributes(item.TargetNodeType, 0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList(), addtionalUsings);
 
                     if (propertiesToWrite.Count > 0)
                     {
@@ -622,15 +637,15 @@ public sealed class X2CEngine
                 }
                 else
                 {
-                    PrintLeafNode(sb, item, itemsNode);
+                    PrintLeafNode(sb, item, itemsNode, addtionalUsings);
                 }
             }
 
-            static void PrintLeafNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode)
+            static void PrintLeafNode(CurlyIndenter sb, LayoutGeneratorInfo item, XmlNode itemsNode, List<string> addtionalUsings)
             {
                 if (item.TargetNodeType == typeof(LayoutEmptySpaceItem))
                 {
-                    sb.Write("EmptySpace()");
+                    sb.Write("EmptySpaceItem()");
                     return;
                 }
                 if (item.TargetNodeType == typeof(LayoutSplitterItem))
@@ -663,8 +678,8 @@ public sealed class X2CEngine
                             //SourceGenerators define property trains
                             sb.Write($"Editor.{viewItemId.Replace(".", "._")}");
 
-                            (var indexOffset, var propertiesToWrite) = MapAttributes<LayoutPropertyEditorItem>(0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList());
-                            (_, var propertiesToWrite2) = MapAttributes<LayoutPropertyEditorItem>(0, xmlViewItemNode, xmlViewItemNode.ParentNode.ChildNodes.OfType<XmlNode>().ToList());
+                            (var indexOffset, var propertiesToWrite) = MapAttributes<LayoutPropertyEditorItem>(0, item.Node, item.Node.ParentNode.ChildNodes.OfType<XmlNode>().ToList(), addtionalUsings);
+                            (_, var propertiesToWrite2) = MapAttributes<LayoutPropertyEditorItem>(0, xmlViewItemNode, xmlViewItemNode.ParentNode.ChildNodes.OfType<XmlNode>().ToList(), addtionalUsings);
 
                             foreach (var pair in propertiesToWrite2)
                             {
@@ -693,7 +708,7 @@ public sealed class X2CEngine
             return sb.ToString();
         }
 
-        return LayoutBuildersCode(root, sb, methodName);
+        return LayoutBuildersCode(root, sb, methodName, addtionalUsings);
     }
 
     private static void CleanNodes(XmlNode node)
@@ -718,10 +733,10 @@ public sealed class X2CEngine
         }
     }
 
-    private static (int indexOffset, Dictionary<string, string> propertiesToWrite) MapAttributes<TTargetObject>(int indexOffset, XmlNode node, IList<XmlNode> neighborNodes)
-        => MapAttributes(typeof(TTargetObject), indexOffset, node, neighborNodes);
+    private static (int indexOffset, Dictionary<string, string> propertiesToWrite) MapAttributes<TTargetObject>(int indexOffset, XmlNode node, IList<XmlNode> neighborNodes, List<string>? additionalUsings = null)
+        => MapAttributes(typeof(TTargetObject), indexOffset, node, neighborNodes, additionalUsings);
 
-    private static (int indexOffset, Dictionary<string, string> propertiesToWrite) MapAttributes(Type targetObjectType, int indexOffset, XmlNode column, IList<XmlNode> neighborNodes)
+    private static (int indexOffset, Dictionary<string, string> propertiesToWrite) MapAttributes(Type targetObjectType, int indexOffset, XmlNode column, IList<XmlNode> neighborNodes, List<string>? additionalUsings = null)
     {
         var propertiesToWrite = new Dictionary<string, string>();
         var ignoredAttributes = new[]
@@ -765,7 +780,7 @@ public sealed class X2CEngine
             propertiesToWrite[nameof(IModelNode.Index)] = indexToWrite.ToString();
         }
 
-        foreach (var item in MapAttributes(targetObjectType, column))
+        foreach (var item in MapAttributes(targetObjectType, column, additionalUsings: additionalUsings))
         {
             if (!propertiesToWrite.ContainsKey(item.Key))
             {
@@ -776,7 +791,7 @@ public sealed class X2CEngine
         return (indexOffset, propertiesToWrite);
     }
 
-    private static Dictionary<string, string> MapAttributes(Type targetObjectType, XmlNode node, IEnumerable<string>? ignored = null)
+    private static Dictionary<string, string> MapAttributes(Type targetObjectType, XmlNode node, IEnumerable<string>? ignored = null, List<string>? additionalUsings = null)
     {
         if (ignored is null)
         {
@@ -826,6 +841,7 @@ public sealed class X2CEngine
 
                     if (type.IsEnum)
                     {
+                        additionalUsings?.Add(type.Namespace);
                         valueToWrite = $"{type.Name}.{valueToWrite}";
                     }
                     if (type == typeof(bool))
