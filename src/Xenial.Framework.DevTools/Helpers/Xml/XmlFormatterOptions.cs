@@ -1,4 +1,4 @@
-﻿namespace Acme.Module.Helpers.Xml
+﻿namespace Xenial.Framework.DevTools.Helpers.Xml
 {
     /// <summary>   (Immutable) an XML formatter options. </summary>
     public record XmlFormatterOptions

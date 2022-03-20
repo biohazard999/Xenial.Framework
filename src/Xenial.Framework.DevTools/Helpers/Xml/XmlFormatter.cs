@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Acme.Module.Helpers.Xml
+namespace Xenial.Framework.DevTools.Helpers.Xml
 {
     /// <summary>   An XML formatter. </summary>
     public class XmlFormatter

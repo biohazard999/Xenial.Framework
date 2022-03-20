@@ -14,6 +14,7 @@
     <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
     <Net5Version>net5.0</Net5Version>
     <Net6Version>net6.0</Net6Version>
+    <NetBlazorLibVersions>$(Net5Version);$(Net6Version)</NetBlazorLibVersions>
     <NetBlazorLibVersion>$(Net5Version)</NetBlazorLibVersion>
     <NetBlazorAppVersion>$(Net5Version)</NetBlazorAppVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>

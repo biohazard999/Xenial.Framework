@@ -1,0 +1,32 @@
+﻿{
+  "profiles": {
+    "build": {
+      "commandName": "Project",
+      "commandLineArgs": "build C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module\\Xenial.FeatureCenter.Module.csproj"
+    },
+    "build.win": {
+      "commandName": "Project",
+      "commandLineArgs": "build C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module.Win\\Xenial.FeatureCenter.Module.Win.csproj"
+    },
+    "model": {
+      "commandName": "Project",
+      "commandLineArgs": "model C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module\\Xenial.FeatureCenter.Module.csproj --no-restore -f=net462 -v=debug --log-file=true"
+    },
+    "model.win": {
+      "commandName": "Project",
+      "commandLineArgs": "model C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module.Win\\Xenial.FeatureCenter.Module.Win.csproj -f=net462"
+    },
+    "model.maindemo.core": {
+      "commandName": "Project",
+      "commandLineArgs": "model \"C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\MainDemo\\CS\\MainDemo.Module\\MainDemo.Module.NetCore.Desktop.csproj\" -v=debug --fast=false -n=MainDemo.Module"
+    },
+    "model.maindemo.net46": {
+      "commandName": "Project",
+      "commandLineArgs": "model \"C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\MainDemo\\CS\\MainDemo.Module\\MainDemo.Module.csproj\" -v=debug --fast=false"
+    },
+    "model.maindemo.core.win": {
+      "commandName": "Project",
+      "commandLineArgs": "model \"C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\MainDemo\\CS\\MainDemo.Module.Win\\MainDemo.Module.Win.NetCore.Desktop.csproj\" -v=debug --fast=false"
+    }
+  }
+}

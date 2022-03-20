@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
-
-using Acme.Module.Helpers.Xml;
-
+using Xenial.Framework.DevTools.Helpers.Xml;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Utils;
 
-
-namespace Acme.Module.Helpers;
+namespace Xenial.Framework.DevTools.Helpers;
 
 #nullable enable
 

@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
+    <TargetFrameworks>$(NetBlazorLibVersions)</TargetFrameworks>
     <DxExtendStartupHost>false</DxExtendStartupHost>
     <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
     <NoWarn>$(NoWarn);NU5118</NoWarn>
     <!-- Duplicate wwwroot files with netstandard2.1 and net5.0 -->
     <PackageTags>$(PackageTags) $(DeepLinkTags) Blazor</PackageTags>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   
   <ItemGroup>

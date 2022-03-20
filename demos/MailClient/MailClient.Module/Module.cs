@@ -15,6 +15,7 @@ using MailClient.Module.BusinessObjects;
 using MailClient.Module.Updaters;
 
 using Xenial.Framework;
+using Xenial.Framework.DevTools;
 using Xenial.Framework.ModelBuilders;
 
 namespace MailClient.Module
@@ -25,7 +26,8 @@ namespace MailClient.Module
 
         protected override ModuleTypeList GetRequiredModuleTypesCore() => base.GetRequiredModuleTypesCore().AndModuleTypes(new[]
         {
-            typeof(ValidationModule)
+            typeof(ValidationModule),
+            typeof(XenialDevToolsModule)
         });
 
         protected override IEnumerable<Type> GetRegularTypes() => base.GetRegularTypes()

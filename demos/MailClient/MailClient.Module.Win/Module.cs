@@ -7,6 +7,7 @@ using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Validation.Win;
 
 using Xenial.Framework;
+using Xenial.Framework.DevTools.Win;
 
 namespace MailClient.Module.Win
 {
@@ -18,6 +19,7 @@ namespace MailClient.Module.Win
             => base.GetRequiredModuleTypesCore().AndModuleTypes(new[]
             {
                 typeof(ValidationWindowsFormsModule),
+                typeof(XenialDevToolsWindowsFormsModule),
                 typeof(MailClientModule)
             });
 

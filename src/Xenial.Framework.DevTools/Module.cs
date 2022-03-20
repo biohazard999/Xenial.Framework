@@ -22,6 +22,11 @@ public sealed partial class XenialDevToolsModule : XenialModuleBase
     /// <summary>
     /// 
     /// </summary>
+    public bool RegisterLayoutBuilders { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
     /// <returns></returns>
     protected override IEnumerable<Type> GetDeclaredExportedTypes()
         => base.GetDeclaredExportedTypes()
@@ -47,8 +52,11 @@ public sealed partial class XenialDevToolsModule : XenialModuleBase
     {
         base.AddGeneratorUpdaters(updaters);
 
-        updaters
-            .UseDetailViewLayoutBuilders();
+        if (RegisterLayoutBuilders)
+        {
+            updaters
+                .UseDetailViewLayoutBuilders();
+        }
     }
 
     /// <summary>

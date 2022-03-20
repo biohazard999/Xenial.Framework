@@ -25,12 +25,14 @@
     <PackageReference Include="Xenial.Framework.Win" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.TokenEditors.Win" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.LabelEditors.Win" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.DevTools.Win" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Win/Xenial.Framework.Win.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors.Win/Xenial.Framework.TokenEditors.Win.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.LabelEditors.Win/Xenial.Framework.LabelEditors.Win.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.DevTools.Win\Xenial.Framework.DevTools.Win.csproj" />
   </ItemGroup>
   
 </Project>
