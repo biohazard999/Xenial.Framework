@@ -29,7 +29,7 @@ namespace Xenial.Framework.DevTools.X2C;
 /// <param name="ViewId"></param>
 /// <param name="Code"></param>
 /// <param name="Xml"></param>
-public record X2CCodeResult(string TargetNameSpace, string TargetClassName, string Namespace, string ClassName, string MethodName, string ViewId, string Code, string Xml)
+public record X2CCodeResult(string TargetNameSpace, string TargetClassName, string Namespace, string ClassName, string MethodName, string? ViewId, string Code, string Xml)
 {
     /// <summary>
     /// 
@@ -236,6 +236,12 @@ public sealed class X2CEngine
             : (viewId.Equals(DefaultLookupListViewId(@class), StringComparison.OrdinalIgnoreCase)
             ? BuildLookupColumnsMethodName
             : CustomLayoutMethodName(@class, viewId));
+
+        viewId = viewId.Equals(DefaultListViewId(@class), StringComparison.OrdinalIgnoreCase)
+            ? null
+            : (viewId.Equals(DefaultLookupListViewId(@class), StringComparison.OrdinalIgnoreCase)
+            ? viewId //TODO: LookupListView
+            : viewId);
 
         var resultClassName = $"{@class}ColumnsBuilder";
 
@@ -444,6 +450,10 @@ public sealed class X2CEngine
         var methodName = viewId.Equals(DefaultDetailViewId(@class), StringComparison.OrdinalIgnoreCase)
             ? BuildLayoutMethodName
             : CustomLayoutMethodName(@class, viewId);
+
+        viewId = viewId.Equals(DefaultDetailViewId(@class), StringComparison.OrdinalIgnoreCase)
+            ? null
+            : viewId;
 
         var resultClassName = $"{@class}LayoutBuilder";
 
