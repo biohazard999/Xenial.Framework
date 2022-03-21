@@ -109,7 +109,15 @@ public class MergeClassesSyntaxRewriter : CSharpSyntaxRewriter
 
         while (newWalker.Attributes.TryPop(out var newAttribute))
         {
-            attributeList = attributeList.Add(newAttribute);
+            var existingAttribute = attributeList.FirstOrDefault(m => m.IsEquivalentTo(newAttribute));
+            if (existingAttribute is not null)
+            {
+                attributeList = attributeList.Replace(existingAttribute, newAttribute);
+            }
+            else
+            {
+                attributeList = attributeList.Add(newAttribute);
+            }
         }
 
         node = node.WithAttributeLists(attributeList);
@@ -118,7 +126,21 @@ public class MergeClassesSyntaxRewriter : CSharpSyntaxRewriter
 
         while (newWalker.Methods.TryPop(out var newMethod))
         {
-            methodList = methodList.Add(newMethod.WithLeadingTrivia(SyntaxFactory.CarriageReturn));
+            var existingMethod = methodList.OfType<MethodDeclarationSyntax>().FirstOrDefault(m => m.Identifier.IsEquivalentTo(newMethod.Identifier));
+            if (existingMethod is not null)
+            {
+                var isFirst = existingMethod.IsEquivalentTo(methodList.OfType<MethodDeclarationSyntax>().FirstOrDefault());
+
+                newMethod = isFirst
+                    ? newMethod
+                    : newMethod.WithLeadingTrivia(SyntaxFactory.CarriageReturn);
+
+                methodList = methodList.Replace(existingMethod, newMethod);
+            }
+            else
+            {
+                methodList = methodList.Add(newMethod.WithLeadingTrivia(SyntaxFactory.CarriageReturn));
+            }
         }
 
         node = node.WithMembers(methodList);
