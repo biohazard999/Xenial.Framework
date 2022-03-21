@@ -260,6 +260,8 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
             Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications = new();
             Dictionary<string, SyntaxTree> originalSyntaxTrees = new();
 
+            List<string> removedViews = new();
+
             await AnsiConsole.Status().Start("Analyzing views...", async statusContext =>
             {
                 statusContext.Spinner(Spinner.Known.Star);
@@ -421,6 +423,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                         PrintSource(codeResult.Code);
                         AnsiConsole.WriteLine();
 #endif
+                        removedViews.Add(view.Id);
                     }
                 }
             });
@@ -437,13 +440,25 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                 }
             }
 
-            if (modifications.Count > 0)
+            var xafmlSyntaxRewriter = new XafmlSyntaxRewriter(ctx.ModelStore, removedViews);
+
+            var (hasModifications, xafmlFilePath) = await xafmlSyntaxRewriter.RewriteAsync();
+
+            if (modifications.Count > 0 || hasModifications)
             {
                 AnsiConsole.WriteLine();
                 AnsiConsole.MarkupLine($"[grey]There are [yellow]{modifications.Count}[/] pending modifications for project [silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/][/]");
                 AnsiConsole.WriteLine();
 
                 HorizontalDashed("Changed Files");
+
+                if (hasModifications)
+                {
+                    var stateString = "[[Modified]]";
+                    var stateColor = "yellow";
+
+                    AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{xafmlFilePath}[/][/]");
+                }
 
                 foreach (var modification in modifications.Where(m => m.Value.state != FileState.Unchanged))
                 {
@@ -475,6 +490,13 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                 AnsiConsole.WriteLine();
                 if (AnsiConsole.Confirm($"[silver]Do you want to proceed? [yellow][[Modified]] {modified.Count}[/] [green][[Added]] {adds.Count}[/][/]"))
                 {
+                    if (hasModifications)
+                    {
+                        var stateString = "[[Modified]]";
+                        var stateColor = "yellow";
+                        await xafmlSyntaxRewriter.CommitAsync();
+                        AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{xafmlFilePath}[/][/]");
+                    }
                     foreach (var modification in modifications.Where(m => m.Value.state != FileState.Unchanged))
                     {
                         var (state, syntaxTree) = modification.Value;

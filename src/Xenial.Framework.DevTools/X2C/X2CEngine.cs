@@ -761,7 +761,7 @@ public sealed class X2CEngine
 
                             foreach (var pair in propertiesToWrite2)
                             {
-                                propertiesToWrite.Add(pair.Key, pair.Value);
+                                propertiesToWrite[pair.Key] = pair.Value;
                             }
 
                             if (propertiesToWrite.Count > 0)
