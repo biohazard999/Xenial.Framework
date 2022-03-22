@@ -32,7 +32,14 @@ jobs:
     - name: Echo TagName
       if: startsWith(github.ref, 'refs/tags/v')
       run: echo ${{ steps.get_version.outputs.VERSION }}
-
+      
+    - uses: actions/checkout@v2
+    - name: Use PullRequest Git Base
+      if: github.event.pull_request_target
+    - with:
+        ref: ${{github.event.pull_request.head.ref}}
+        repository: ${{github.event.pull_request.head.repo.full_name}}
+        
     - uses: actions/checkout@v2
     - name: Fetch all history for all tags and branches
       run: |
