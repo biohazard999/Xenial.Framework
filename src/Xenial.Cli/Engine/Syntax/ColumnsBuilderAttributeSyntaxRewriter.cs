@@ -61,7 +61,7 @@ public class ColumnsBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                 {
                     var attributes = GetAttributes(classSymbol, attributeSymbol);
 
-                    static bool IsAttributeEquivalent(ColumnsAttributeInfo builderInfo, AttributeData data)
+                    static bool IsAttributeEquivalent(ColumnsAttributeInfo builderInfo, AttributeData data, Compilation compilation)
                     {
                         static TypedConstant? GetAttribute(
                             AttributeData attribute,
@@ -86,6 +86,11 @@ public class ColumnsBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                                 data.ConstructorArguments[1].Value?.ToString()
                                 : null;
 
+                            var typeInfo = compilation.GetTypeByMetadataName(className!);
+
+                            //Patch full qualified name.
+                            className = typeInfo is null ? className : typeInfo.Name;
+
                             var attributeInfo = new ColumnsAttributeInfo(className!)
                             {
                                 ColumnsBuilderMethod = methodName,
@@ -98,7 +103,7 @@ public class ColumnsBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                         return false;
                     }
 
-                    var count = attributes.Count(a => IsAttributeEquivalent(builderInfo, a));
+                    var count = attributes.Count(a => IsAttributeEquivalent(builderInfo, a, model.Compilation));
 
                     ShouldAddAttribute = count <= 0;
                 }

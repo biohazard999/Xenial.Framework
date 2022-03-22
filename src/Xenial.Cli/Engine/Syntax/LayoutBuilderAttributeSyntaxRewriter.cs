@@ -60,7 +60,7 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                 {
                     var attributes = GetAttributes(classSymbol, attributeSymbol);
 
-                    static bool IsAttributeEquivalent(LayoutAttributeInfo builderInfo, AttributeData data)
+                    static bool IsAttributeEquivalent(LayoutAttributeInfo builderInfo, AttributeData data, Compilation compilation)
                     {
                         static TypedConstant? GetAttribute(
                             AttributeData attribute,
@@ -85,6 +85,11 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                                 data.ConstructorArguments[1].Value?.ToString()
                                 : null;
 
+                            var typeInfo = compilation.GetTypeByMetadataName(className!);
+
+                            //Patch full qualified name.
+                            className = typeInfo is null ? className : typeInfo.Name;
+
                             var attributeInfo = new LayoutAttributeInfo(className!)
                             {
                                 LayoutBuilderMethod = methodName,
@@ -97,7 +102,7 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
                         return false;
                     }
 
-                    var count = attributes.Count(a => IsAttributeEquivalent(builderInfo, a));
+                    var count = attributes.Count(a => IsAttributeEquivalent(builderInfo, a, model.Compilation));
 
                     ShouldAddAttribute = count <= 0;
                 }

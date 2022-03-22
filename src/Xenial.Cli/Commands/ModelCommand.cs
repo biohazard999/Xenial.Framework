@@ -225,7 +225,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
         return workspace;
     }
 
-    enum FileState
+    internal enum FileState
     {
         Unchanged,
         Modified,
@@ -258,6 +258,9 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
             }
 
             Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications = new();
+            Dictionary<string, SyntaxTree> originalSyntaxTrees = new();
+
+            List<string> removedViews = new();
 
             await AnsiConsole.Status().Start("Analyzing views...", async statusContext =>
             {
@@ -321,8 +324,8 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                             var part = view switch
                             {
-                                IModelDetailView _ => ".LayoutBuilder",
-                                IModelListView _ => ".ColumnsBuilder",
+                                IModelDetailView _ => ".Layouts",
+                                IModelListView _ => ".Columns",
                                 _ => ""
                             };
 
@@ -341,6 +344,11 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                                     true => r,
                                     false => (FileState.Unchanged, builderSymbol.Locations.First(m => m.IsInSource).SourceTree!),
                                 };
+
+                                if (!originalSyntaxTrees.ContainsKey(newFilePath))
+                                {
+                                    originalSyntaxTrees[newFilePath] = existingSyntaxTree;
+                                }
 
                                 var semanticModel = ctx.Compilation.GetSemanticModel(existingSyntaxTree);
                                 var merger = new MergeClassesSyntaxRewriter(semanticModel, codeResult);
@@ -375,6 +383,12 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                             if (symbol is not null)
                             {
                                 var root = await location.SourceTree.GetRootAsync();
+
+                                if (!originalSyntaxTrees.ContainsKey(location.SourceTree.FilePath))
+                                {
+                                    originalSyntaxTrees[location.SourceTree.FilePath] = location.SourceTree;
+                                }
+
                                 var semanticModel = ctx.Compilation.GetSemanticModel(location.SourceTree);
 
                                 if (root is not null)
@@ -409,17 +423,42 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                         PrintSource(codeResult.Code);
                         AnsiConsole.WriteLine();
 #endif
+                        removedViews.Add(view.Id);
                     }
                 }
             });
 
-            if (modifications.Count > 0)
+            ////Sanity-Check. We compare again so we don't touch mulitple files
+            foreach (var oldItem in originalSyntaxTrees)
+            {
+                if (modifications.TryGetValue(oldItem.Key, out var modification))
+                {
+                    if (modification.syntaxTree.IsEquivalentTo(oldItem.Value))
+                    {
+                        modifications.Remove(oldItem.Key);
+                    }
+                }
+            }
+
+            var xafmlSyntaxRewriter = new XafmlSyntaxRewriter(ctx.ModelStore, removedViews);
+
+            var (hasModifications, xafmlFilePath) = await xafmlSyntaxRewriter.RewriteAsync();
+
+            if (modifications.Count > 0 || hasModifications)
             {
                 AnsiConsole.WriteLine();
                 AnsiConsole.MarkupLine($"[grey]There are [yellow]{modifications.Count}[/] pending modifications for project [silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/][/]");
                 AnsiConsole.WriteLine();
 
                 HorizontalDashed("Changed Files");
+
+                if (hasModifications)
+                {
+                    var stateString = "[[Modified]]";
+                    var stateColor = "yellow";
+
+                    AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{xafmlFilePath}[/][/]");
+                }
 
                 foreach (var modification in modifications.Where(m => m.Value.state != FileState.Unchanged))
                 {
@@ -451,6 +490,13 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                 AnsiConsole.WriteLine();
                 if (AnsiConsole.Confirm($"[silver]Do you want to proceed? [yellow][[Modified]] {modified.Count}[/] [green][[Added]] {adds.Count}[/][/]"))
                 {
+                    if (hasModifications)
+                    {
+                        var stateString = "[[Modified]]";
+                        var stateColor = "yellow";
+                        await xafmlSyntaxRewriter.CommitAsync();
+                        AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{xafmlFilePath}[/][/]");
+                    }
                     foreach (var modification in modifications.Where(m => m.Value.state != FileState.Unchanged))
                     {
                         var (state, syntaxTree) = modification.Value;
@@ -482,19 +528,13 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
         {
             if (view is IModelDetailView detailView)
             {
-                var viewId = ModelNodeIdHelper.GetDetailViewId(detailView.ModelClass.TypeInfo.Type);
-
-                viewId = view.Id == viewId
-                    ? null
-                    : viewId;
-
                 var methodName = result.MethodName == "BuildLayout"
                     ? null
                     : result.MethodName;
 
                 var rewriter = new LayoutBuilderAttributeSyntaxRewriter(semanticModel, new LayoutAttributeInfo(result.ClassName)
                 {
-                    ViewId = viewId,
+                    ViewId = result.ViewId,
                     LayoutBuilderMethod = methodName,
                 });
 
@@ -502,19 +542,13 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
             }
             if (view is IModelListView listView)
             {
-                var viewId = ModelNodeIdHelper.GetListViewId(listView.ModelClass.TypeInfo.Type);
-
-                viewId = view.Id == viewId
-                    ? null
-                    : viewId;
-
                 var methodName = result.MethodName == "BuildColumns"
                     ? null
                     : result.MethodName;
 
                 var rewriter = new ColumnsBuilderAttributeSyntaxRewriter(semanticModel, new ColumnsAttributeInfo(result.ClassName)
                 {
-                    ViewId = viewId,
+                    ViewId = result.ViewId,
                     ColumnsBuilderMethod = methodName,
                 });
 
