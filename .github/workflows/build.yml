@@ -24,7 +24,7 @@ jobs:
 
     steps:
     - name: Output
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request_target'
       run: echo FOOO
     - name: Get the version
       id: get_version
@@ -37,7 +37,7 @@ jobs:
       run: echo ${{ steps.get_version.outputs.VERSION }}
       
     - name: Use PullRequest Git Base
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request_target'
       uses: actions/checkout@v2
       with:
         ref: ${{github.event.pull_request.head.ref}}
