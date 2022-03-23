@@ -16,7 +16,9 @@ try
 {
     var connectionId = args[0];
 
-    await NamedPipeServerAsync(connectionId);
+    var debug = args.Length > 1 ? bool.Parse(args[1]) : false;
+
+    await NamedPipeServerAsync(connectionId, debug);
 
     return 0;
 }
@@ -28,7 +30,7 @@ catch (Exception ex)
 #pragma warning restore CA1031 // Do not catch general exception types
 
 
-static async Task NamedPipeServerAsync(string connectionId)
+static async Task NamedPipeServerAsync(string connectionId, bool debug)
 {
     var clientId = 0;
     while (true)
@@ -37,15 +39,19 @@ static async Task NamedPipeServerAsync(string connectionId)
         var stream = new NamedPipeServerStream(connectionId, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
 
         await stream.WaitForConnectionAsync();
-        _ = RespondToRpcRequestsAsync(stream, ++clientId);
+        _ = RespondToRpcRequestsAsync(stream, ++clientId, debug);
     }
 }
 
-static async Task RespondToRpcRequestsAsync(Stream stream, int clientId)
+static async Task RespondToRpcRequestsAsync(Stream stream, int clientId, bool debug)
 {
     Console.WriteLine($"Connection request #{clientId} received. Spinning off an async Task to cater to requests.");
 
-    var server = new ModelEditorServer();
+    var server = new ModelEditorServer
+    {
+        Debug = debug
+    };
+
     var jsonRpc = JsonRpc.Attach(stream, server);
 
     server.JsonRpc = jsonRpc;

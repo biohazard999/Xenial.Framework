@@ -14,6 +14,8 @@ namespace Xenial.Design;
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
 public class ModelEditorServer
 {
+    public bool Debug { get; set; }
+
     public JsonRpc? JsonRpc { get; set; }
     public StandaloneModelEditorModelLoader? ModelLoader { get; set; }
 
@@ -30,9 +32,8 @@ public class ModelEditorServer
         ModelLoader = new StandaloneModelEditorModelLoader();
         try
         {
-#if DEBUG
-            Debugger.Launch();
-#endif
+            LaunchDebugger();
+
             ModelLoader.LoadModel(targetFileName, modelDifferencesStorePath, deviceSpecificDifferencesStoreName, assembliesPath);
 
             return ModelLoader.ModelApplication!.Views.Count;
@@ -41,6 +42,18 @@ public class ModelEditorServer
         {
             Console.WriteLine(ex);
             return -1;
+        }
+    }
+
+    [Conditional("DEBUG")]
+    private void LaunchDebugger()
+    {
+        if (Debug)
+        {
+            if (!Debugger.IsAttached)
+            {
+                Debugger.Launch();
+            }
         }
     }
 

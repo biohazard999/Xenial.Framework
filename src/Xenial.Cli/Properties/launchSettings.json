@@ -22,11 +22,11 @@
     },
     "model.maindemo.net46": {
       "commandName": "Project",
-      "commandLineArgs": "model \"C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\MainDemo\\CS\\MainDemo.Module\\MainDemo.Module.csproj\" -v=debug --fast=false"
+      "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module\\MainDemo.Module.csproj\" -v=debug --fast=false"
     },
     "model.maindemo.core.win": {
       "commandName": "Project",
-      "commandLineArgs": "model \"C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\MainDemo\\CS\\MainDemo.Module.Win\\MainDemo.Module.Win.NetCore.Desktop.csproj\" -v=debug --fast=false"
+      "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module.Win\\MainDemo.Module.Win.NetCore.Desktop.csproj\" -v=debug --fast=false"
     }
   }
 }
