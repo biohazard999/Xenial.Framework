@@ -133,6 +133,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Cli.Tests", "test\Xe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Generators", "lic\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj", "{E706B924-13E4-43EC-B870-2D7A28E4476A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Design", "src\Xenial.Design\Xenial.Design.csproj", "{C044447D-88AA-4890-9BEF-03E85852536F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -623,6 +625,18 @@ Global
 		{E706B924-13E4-43EC-B870-2D7A28E4476A}.Release|x64.Build.0 = Release|Any CPU
 		{E706B924-13E4-43EC-B870-2D7A28E4476A}.Release|x86.ActiveCfg = Release|Any CPU
 		{E706B924-13E4-43EC-B870-2D7A28E4476A}.Release|x86.Build.0 = Release|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Debug|x64.Build.0 = Debug|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Debug|x86.Build.0 = Debug|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Release|x64.ActiveCfg = Release|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Release|x64.Build.0 = Release|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Release|x86.ActiveCfg = Release|Any CPU
+		{C044447D-88AA-4890-9BEF-03E85852536F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -682,6 +696,7 @@ Global
 		{C965EB3E-9413-48A8-8173-24AB168866B2} = {BBC9F78B-FCA3-4E8B-BE69-DFF8533377E7}
 		{A987070B-1EF0-4C1C-AE94-532737946A13} = {D7059831-CCB9-41AA-9EAF-0F0EED485003}
 		{E706B924-13E4-43EC-B870-2D7A28E4476A} = {D7059831-CCB9-41AA-9EAF-0F0EED485003}
+		{C044447D-88AA-4890-9BEF-03E85852536F} = {BBC9F78B-FCA3-4E8B-BE69-DFF8533377E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C7E850AC-B423-49A9-8D5E-6B21CA22F615}

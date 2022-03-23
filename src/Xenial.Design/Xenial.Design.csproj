@@ -11,8 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp.Win"
-                      Version="$(DxPackageVersion)"
-                      GeneratePathProperty="true" />
+                      Version="$(DxPackageVersion)" />
   </ItemGroup>
 
   <!--<ItemGroup>
@@ -23,12 +22,7 @@
     </None>
   </ItemGroup>-->
 
-  <ItemGroup>
-    <Content Include="*.dll">
-        <Pack>true</Pack>
-        <PackagePath>lib\$(TargetFramework)</PackagePath>
-    </Content>
-  </ItemGroup>
+
   
   <ItemGroup>
     <PackageReference Remove="Xenial.Framework.Generators" />
@@ -38,12 +32,15 @@
     <PackageReference Remove="Xenial.Licensing" />
   </ItemGroup>
 
-  <!--<Target Name="TakeAction" BeforeTargets="Pack">
-    <Warning Text="hello $(PkgDevExpress_ExpressApp_Win)" />
+  <Target Name="TakeAction" AfterTargets="Compile">
+    <Warning Text="$(OutputPath)$(TargetFramework)\*.dll"></Warning>
     <ItemGroup>
-      <None Include="$(PkgDevExpress_ExpressApp_Win)\DevExpress**.dll" Pack="true" Visible="false" />
+      <Content Include="$(OutputDir)$(TargetFramework)\*.dll">
+        <Pack>true</Pack>
+        <PackagePath>lib\$(TargetFramework)</PackagePath>
+      </Content>
     </ItemGroup>
-  </Target>-->
+  </Target>
   
   <!--<ItemGroup>
     --><!-- Package the generator in the analyzer directory of the nuget package --><!--
