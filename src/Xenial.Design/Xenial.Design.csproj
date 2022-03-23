@@ -7,49 +7,37 @@
     <PackageTags>$(PackageTags) Design</PackageTags>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+    <BuildOutputTargetFolder>tools/$(TargetFramework)</BuildOutputTargetFolder>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <NoWarn>NU5128;CA2007;$(NoWarn)</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.ExpressApp.Win"
-                      Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.Win" Version="$(DxPackageVersion)" />
+    <PackageReference Include="StreamJsonRpc" Version="2.10.44" />
+    <PackageReference Include="Spectre.Console" Version="0.43.0" />
   </ItemGroup>
 
-  <!--<ItemGroup>
-    <None Include="$(PkgDevExpress_ExpressApp_Win)\lib\$(TargetFramwork)\*.dll">
-      <Link>*.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <Pack>true</Pack>
-    </None>
-  </ItemGroup>-->
-
-
-  
   <ItemGroup>
     <PackageReference Remove="Xenial.Framework.Generators" />
     <PackageReference Remove="Xenial.Framework.Generators.Internal" />
-    <PackageReference Remove="Xenial.Framework.LicGen" />
-    <PackageReference Remove="Xenial.Framework.MsBuild" />
-    <PackageReference Remove="Xenial.Licensing" />
   </ItemGroup>
 
-  <Target Name="TakeAction" AfterTargets="Compile">
-    <Warning Text="$(OutputPath)$(TargetFramework)\*.dll"></Warning>
-    <ItemGroup>
-      <Content Include="$(OutputDir)$(TargetFramework)\*.dll">
-        <Pack>true</Pack>
-        <PackagePath>lib\$(TargetFramework)</PackagePath>
-      </Content>
-    </ItemGroup>
-  </Target>
-  
-  <!--<ItemGroup>
-    --><!-- Package the generator in the analyzer directory of the nuget package --><!--
-    --><!-- Package the Newtonsoft.Json dependency alongside the generator assembly --><!--
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);ToolDependenciesTarget</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
 
-    --><!--<None Update="**\*.LayoutBuilder.cs">
-      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.LayoutBuilder', '.cs'))</DependentUpon>
-    </None>--><!--
-    
-  </ItemGroup>-->
-  
+  <!--<Target Name="ToolDependenciesTarget">
+    <Message Text="Including dependencies from $(OutputPath)" Importance="high" />
+    <ItemGroup>
+        <BuildOutputInPackage
+          Include="$(OutputPath)\*.dll"
+          Exclude="$(OutputPath)\$(TargetName)$(TargetExt);$(OutputPath)\$(TargetName).pdb"
+        >
+        <PackagePath>tools\$(TargetFramework)</PackagePath>
+      </BuildOutputInPackage>
+    </ItemGroup>
+  </Target>-->
+
 </Project>
