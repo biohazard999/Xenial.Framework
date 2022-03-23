@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>exe</OutputType>
+    <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <PackageTags>$(PackageTags) Design</PackageTags>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp.Win"
+                      Version="$(DxPackageVersion)"
+                      GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <!--<ItemGroup>
+    <None Include="$(PkgDevExpress_ExpressApp_Win)\lib\$(TargetFramwork)\*.dll">
+      <Link>*.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Pack>true</Pack>
+    </None>
+  </ItemGroup>-->
+
+  <ItemGroup>
+    <Content Include="*.dll">
+        <Pack>true</Pack>
+        <PackagePath>lib\$(TargetFramework)</PackagePath>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Remove="Xenial.Framework.Generators" />
+    <PackageReference Remove="Xenial.Framework.Generators.Internal" />
+    <PackageReference Remove="Xenial.Framework.LicGen" />
+    <PackageReference Remove="Xenial.Framework.MsBuild" />
+    <PackageReference Remove="Xenial.Licensing" />
+  </ItemGroup>
+
+  <!--<Target Name="TakeAction" BeforeTargets="Pack">
+    <Warning Text="hello $(PkgDevExpress_ExpressApp_Win)" />
+    <ItemGroup>
+      <None Include="$(PkgDevExpress_ExpressApp_Win)\DevExpress**.dll" Pack="true" Visible="false" />
+    </ItemGroup>
+  </Target>-->
+  
+  <!--<ItemGroup>
+    --><!-- Package the generator in the analyzer directory of the nuget package --><!--
+    --><!-- Package the Newtonsoft.Json dependency alongside the generator assembly --><!--
+
+    --><!--<None Update="**\*.LayoutBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.LayoutBuilder', '.cs'))</DependentUpon>
+    </None>--><!--
+    
+  </ItemGroup>-->
+  
+</Project>
