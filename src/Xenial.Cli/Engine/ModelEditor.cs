@@ -1,4 +1,6 @@
 ﻿
+using DevExpress.ExpressApp;
+
 using StreamJsonRpc;
 
 using System;
@@ -46,4 +48,17 @@ public class ModelEditor : IDisposable
     public Task Shutdown() => server.InvokeAsync(nameof(ModelEditorServer.Shutdown));
     public Task<int> LoadModel(string assemblyPath, string folder, string deviceSpecificDifferencesStoreName, string targetDir)
         => server.InvokeAsync<int>(nameof(ModelEditorServer.LoadModel), assemblyPath, folder, deviceSpecificDifferencesStoreName, targetDir);
+
+    public Task<string[]> GetViewIds(IList<string> namespaces)
+        => server.InvokeAsync<string[]>(nameof(ModelEditorServer.GetViewIds), namespaces);
+
+    public Task<string> GetViewAsXml(string viewId)
+        => server.InvokeAsync<string>(nameof(ModelEditorServer.GetViewAsXml), viewId);
+
+    public Task<string?> GetModelClass(string viewId)
+        => server.InvokeAsync<string?>(nameof(ModelEditorServer.GetModelClass), viewId);
+
+    public Task<ViewType> GetViewType(string viewId)
+        => server.InvokeAsync<ViewType>(nameof(ModelEditorServer.GetViewType), viewId);
+
 }
