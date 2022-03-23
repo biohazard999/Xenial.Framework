@@ -57,11 +57,9 @@ public record ModelContext : ModelContext<ModelCommandSettings>
 {
 }
 
-public record ModelContext<TSettings> : BuildContext<TSettings>, IDisposable
+public record ModelContext<TSettings> : BuildContext<TSettings>
     where TSettings : ModelCommandSettings
 {
-    private bool disposedValue;
-
     public IAnalyzerResult? BuildResult { get; set; }
     public IModelApplication? Application { get; set; }
     public FileModelStore? ModelStore { get; set; }
@@ -74,32 +72,22 @@ public record ModelContext<TSettings> : BuildContext<TSettings>, IDisposable
     public Process? ModelEditorProcess { get; set; }
     public ModelEditor? ModelEditor { get; set; }
 
-    protected virtual void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
-        if (!disposedValue)
+        if (disposing)
         {
-            if (disposing)
+            try
             {
-                try
-                {
-                    ModelEditorProcess?.Kill();
-                }
-                finally
-                {
-                    ModelEditorProcess?.Dispose();
-                    ModelEditor?.Dispose();
-                    DesignerStream?.Dispose();
-                }
+                ModelEditorProcess?.Kill();
             }
-
-            disposedValue = true;
+            finally
+            {
+                ModelEditorProcess?.Dispose();
+                ModelEditor?.Dispose();
+                DesignerStream?.Dispose();
+            }
         }
-    }
-
-    public void Dispose()
-    {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
+        base.Dispose(disposing);
     }
 }
 
@@ -209,17 +197,6 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                    sw.Warn("Load Workspace");
                    await next();
                }
-           }
-       })
-       .Use(async (ctx, next) =>
-       {
-           try
-           {
-               await next();
-           }
-           finally
-           {
-               ctx.Dispose();
            }
        })
        .Use(async (ctx, next) =>
