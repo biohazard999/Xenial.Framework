@@ -1,4 +1,9 @@
-﻿using DevExpress.ExpressApp;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Design;
 using DevExpress.ExpressApp.Model;
@@ -33,7 +38,7 @@ public class StandaloneModelEditorModelLoader
     }
 
     private static void InitializeTypeInfoSources(IList<ModuleBase> modules, string assembliesPath)
-        => DefaultTypesInfoInitializer.Initialize((TypesInfo)XafTypesInfo.Instance, baseType => GetRegularTypes(modules).Where<Type>(type => baseType.IsAssignableFrom(type)), (assemblyName, typeName) => DefaultTypesInfoInitializer.CreateTypesInfoInitializer(assembliesPath, assemblyName, typeName));
+        => DefaultTypesInfoInitializer.Initialize((TypesInfo)XafTypesInfo.Instance, baseType => GetRegularTypes(modules).Where(type => baseType.IsAssignableFrom(type)), (assemblyName, typeName) => DefaultTypesInfoInitializer.CreateTypesInfoInitializer(assembliesPath, assemblyName, typeName));
 
     public void LoadModel(
       string targetFileName,
@@ -103,7 +108,11 @@ public class StandaloneModelEditorModelLoader
             }
             catch (ArgumentException ex)
             {
-                if (!ex.Message.Contains("assembly doesn't contain a ModuleBase descendants", StringComparison.OrdinalIgnoreCase))
+                if (!ex.Message.Contains("assembly doesn't contain a ModuleBase descendants"
+#if NET5_0_OR_GREATER
+                    , StringComparison.OrdinalIgnoreCase
+#endif
+                ))
                 {
                     throw;
                 }

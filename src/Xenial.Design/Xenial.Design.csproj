@@ -10,7 +10,7 @@
     <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
     <BuildOutputTargetFolder>tools/$(TargetFramework)</BuildOutputTargetFolder>
     <IncludeBuildOutput>true</IncludeBuildOutput>
-    <NoWarn>NU5128;CA2007;$(NoWarn)</NoWarn>
+    <NoWarn>NU5128;CA2007;CA1303;$(NoWarn)</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,7 +27,7 @@
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);ToolDependenciesTarget</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
 
-  <!--<Target Name="ToolDependenciesTarget">
+  <Target Name="ToolDependenciesTarget">
     <Message Text="Including dependencies from $(OutputPath)" Importance="high" />
     <ItemGroup>
         <BuildOutputInPackage
@@ -37,6 +37,6 @@
         <PackagePath>tools\$(TargetFramework)</PackagePath>
       </BuildOutputInPackage>
     </ItemGroup>
-  </Target>-->
+  </Target>
 
 </Project>

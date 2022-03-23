@@ -44,7 +44,12 @@ static async Task NamedPipeServerAsync(string connectionId)
 static async Task RespondToRpcRequestsAsync(Stream stream, int clientId)
 {
     Console.WriteLine($"Connection request #{clientId} received. Spinning off an async Task to cater to requests.");
-    var jsonRpc = JsonRpc.Attach(stream, new Server());
+
+    var server = new ModelEditorServer();
+    var jsonRpc = JsonRpc.Attach(stream, server);
+
+    server.JsonRpc = jsonRpc;
+
     Console.WriteLine($"JSON-RPC listener attached to #{clientId}. Waiting for requests...");
     await jsonRpc.Completion;
     Console.WriteLine($"Connection #{clientId} terminated.");
