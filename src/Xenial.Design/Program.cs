@@ -1,6 +1,4 @@
 ﻿
-using Spectre.Console;
-
 using StreamJsonRpc;
 
 using System;
@@ -13,6 +11,7 @@ using System.Threading.Tasks;
 
 using Xenial.Design;
 
+#pragma warning disable CA1031 // Do not catch general exception types
 try
 {
     var connectionId = args[0];
@@ -23,9 +22,10 @@ try
 }
 catch (Exception ex)
 {
-    AnsiConsole.WriteException(ex);
+    Console.WriteLine(ex.ToString());
     return 1;
 }
+#pragma warning restore CA1031 // Do not catch general exception types
 
 
 static async Task NamedPipeServerAsync(string connectionId)
@@ -34,20 +34,19 @@ static async Task NamedPipeServerAsync(string connectionId)
     while (true)
     {
         await Console.Error.WriteLineAsync("Waiting for client to make a connection...");
-        using (var stream = new NamedPipeServerStream(connectionId, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
-        {
-            await stream.WaitForConnectionAsync();
-            _ = RespondToRpcRequestsAsync(stream, ++clientId);
-        }
+        var stream = new NamedPipeServerStream(connectionId, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+
+        await stream.WaitForConnectionAsync();
+        _ = RespondToRpcRequestsAsync(stream, ++clientId);
     }
 }
 
 static async Task RespondToRpcRequestsAsync(Stream stream, int clientId)
 {
-    AnsiConsole.WriteLine($"Connection request #{clientId} received. Spinning off an async Task to cater to requests.");
+    Console.WriteLine($"Connection request #{clientId} received. Spinning off an async Task to cater to requests.");
     var jsonRpc = JsonRpc.Attach(stream, new Server());
-    AnsiConsole.WriteLine($"JSON-RPC listener attached to #{clientId}. Waiting for requests...");
+    Console.WriteLine($"JSON-RPC listener attached to #{clientId}. Waiting for requests...");
     await jsonRpc.Completion;
-    AnsiConsole.WriteLine($"Connection #{clientId} terminated.");
+    Console.WriteLine($"Connection #{clientId} terminated.");
 }
 

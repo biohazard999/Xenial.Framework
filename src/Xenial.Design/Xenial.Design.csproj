@@ -16,7 +16,6 @@
   <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp.Win" Version="$(DxPackageVersion)" />
     <PackageReference Include="StreamJsonRpc" Version="2.10.44" />
-    <PackageReference Include="Spectre.Console" Version="0.43.0" />
   </ItemGroup>
 
   <ItemGroup>

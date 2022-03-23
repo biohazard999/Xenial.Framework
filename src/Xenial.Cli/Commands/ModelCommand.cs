@@ -30,9 +30,12 @@ using Xenial.Cli.Engine;
 using Xenial.Cli.Engine.Syntax;
 using Xenial.Cli.Utils;
 using Xenial.Framework.DevTools.X2C;
+using SimpleExec;
 
 using static Xenial.Cli.Utils.ConsoleHelper;
 using static SimpleExec.Command;
+using StreamJsonRpc;
+using System.IO.Pipes;
 
 namespace Xenial.Cli.Commands;
 
@@ -54,14 +57,50 @@ public record ModelContext : ModelContext<ModelCommandSettings>
 {
 }
 
-public record ModelContext<TSettings> : BuildContext<TSettings>
+public record ModelContext<TSettings> : BuildContext<TSettings>, IDisposable
     where TSettings : ModelCommandSettings
 {
+    private bool disposedValue;
+
     public IAnalyzerResult? BuildResult { get; set; }
     public IModelApplication? Application { get; set; }
     public FileModelStore? ModelStore { get; set; }
     public Compilation? Compilation { get; set; }
     public AdhocWorkspace? Workspace { get; set; }
+
+    public NamedPipeClientStream? DesignerStream { get; set; }
+
+    public string? ModelEditorId { get; set; }
+    public Process? ModelEditorProcess { get; set; }
+    public ModelEditor? ModelEditor { get; set; }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                try
+                {
+                    ModelEditorProcess?.Kill();
+                }
+                finally
+                {
+                    ModelEditorProcess?.Dispose();
+                    ModelEditor?.Dispose();
+                    DesignerStream?.Dispose();
+                }
+            }
+
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 }
 
 public abstract record ModelPipeline<TContext, TSettings> : BuildPipeline<TContext, TSettings>
@@ -171,6 +210,53 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                    await next();
                }
            }
+       })
+       .Use(async (ctx, next) =>
+       {
+           try
+           {
+               await next();
+           }
+           finally
+           {
+               ctx.Dispose();
+           }
+       })
+       .Use(async (ctx, next) =>
+       {
+           //TODO: ProcessPath
+           var processPath = @"C:\f\git\Xenial.Framework\src\Xenial.Design\bin\Debug\net462\Xenial.Design.exe";
+
+           ctx.ModelEditorId = Guid.NewGuid().ToString();
+
+           var info = new ProcessStartInfo
+           {
+               FileName = processPath,
+               Arguments = ctx.ModelEditorId
+           };
+
+           ctx.ModelEditorProcess = Process.Start(info);
+
+           await next();
+       })
+       .Use(async (ctx, next) =>
+       {
+           ctx.DesignerStream = new NamedPipeClientStream(".", ctx.ModelEditorId, PipeDirection.InOut, PipeOptions.Asynchronous);
+
+           await ctx.DesignerStream.ConnectAsync(10000);
+           await next();
+       })
+       .Use(async (ctx, next) =>
+       {
+           var attached = JsonRpc.Attach(ctx.DesignerStream!);
+
+           ctx.ModelEditor = new ModelEditor(attached);
+
+           var ping = await ctx.ModelEditor.Ping();
+
+           AnsiConsole.MarkupLine($"Connected to Server: [green]{ping.EscapeMarkup()}[/]");
+
+           await next();
        })
        .Use(async (ctx, next) =>
        {

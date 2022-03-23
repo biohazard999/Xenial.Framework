@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Xenial.Design;
 
-public class Server
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
+internal class Server
 {
+    public string Ping() => $"Hello from Server {Guid.NewGuid()}";
 }
