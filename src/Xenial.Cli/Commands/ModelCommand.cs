@@ -234,15 +234,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                const string packageId = "Xenial.Design";
 
                var version = new NuGetVersion(
-#if DEBUG
-                   "0.7.3-alpha.0.10"
-#else
-                   GetType().Assembly
-                    .GetCustomAttributes(false)
-                    .OfType<AssemblyMetadataAttribute>()
-                    .FirstOrDefault(m => m.Key == "XenialPackageVersion")
-                    ?.Value ?? "-*-"
-#endif
+                   XenialVersion.Version
                );
 
                ctx.StatusContext!.Status = $"Fetching Nugets {packageId}.{version}...";

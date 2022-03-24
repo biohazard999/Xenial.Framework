@@ -24,8 +24,6 @@
   <ItemGroup>
     <CompilerVisibleProperty Include="XenialPublicKey" />
     <CompilerVisibleProperty Include="PackageId" />
-    <CompilerVisibleProperty Include="XenialPackageVersion" />
-    <CompilerVisibleProperty Include="PackageVersion" />
   </ItemGroup>
 
   <ItemGroup>
@@ -82,10 +80,6 @@
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(PackageId)' != ''">
         <_Parameter1>XenialComponent</_Parameter1>
         <_Parameter2>$(PackageId)</_Parameter2>
-      </AssemblyAttribute>
-      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(XenialPackageVersion)' != ''">
-        <_Parameter1>XenialPackageVersion</_Parameter1>
-        <_Parameter2>$(XenialPackageVersion)</_Parameter2>
       </AssemblyAttribute>
     </ItemGroup>
   </Target>
