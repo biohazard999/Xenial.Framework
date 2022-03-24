@@ -12,11 +12,36 @@
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
 
+  <!--<Target Name="RemoveTargetPlatformIdentifier" BeforeTargets="_CheckForInvalidWindowsDesktopTargetingConfiguration">
+    <PropertyGroup>
+      <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    </PropertyGroup>
+  </Target>
+  <Target Name="RestoreTargetPlatformIdentifier" AfterTargets="_CheckForInvalidWindowsDesktopTargetingConfiguration">
+    <PropertyGroup>
+      <TargetPlatformIdentifier></TargetPlatformIdentifier>
+    </PropertyGroup>
+  </Target>-->
+
+  <!--<Target Name="PatchNuget" AfterTargets="MinVer">
+    <ItemGroup>
+      <Constant Update="Nuget.Id" Value="$(PackageId)" />
+      <Constant Update="Nuget.Version" Value="$(PackageVersion)" />
+    </ItemGroup>
+  </Target>-->
+  
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+    <PackageReference Include="StreamJsonRpc" Version="2.10.44" />
+    <PackageReference Include="NuGet.Protocol" Version="6.1.0" />
+    <PackageReference Include="NuGet.LibraryModel" Version="6.1.0" />
+    <PackageReference Include="NuGet.Commands" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Xenial.Design\Xenial.Design.csproj">
+      <OutputItemType>Content</OutputItemType>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
     <ProjectReference Include="..\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
     <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
   </ItemGroup>

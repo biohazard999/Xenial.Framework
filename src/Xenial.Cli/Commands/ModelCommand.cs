@@ -30,9 +30,21 @@ using Xenial.Cli.Engine;
 using Xenial.Cli.Engine.Syntax;
 using Xenial.Cli.Utils;
 using Xenial.Framework.DevTools.X2C;
+using SimpleExec;
 
 using static Xenial.Cli.Utils.ConsoleHelper;
 using static SimpleExec.Command;
+using StreamJsonRpc;
+using System.IO.Pipes;
+using NuGet.Configuration;
+using NuGet.Protocol.Core.Types;
+using NuGet.Versioning;
+using NuGet.Protocol;
+using NuGet.Packaging.Core;
+using NuGet.Packaging.Signing;
+using NuGet.Packaging;
+using System.Reflection;
+using NuGet.Frameworks;
 
 namespace Xenial.Cli.Commands;
 
@@ -58,10 +70,37 @@ public record ModelContext<TSettings> : BuildContext<TSettings>
     where TSettings : ModelCommandSettings
 {
     public IAnalyzerResult? BuildResult { get; set; }
-    public IModelApplication? Application { get; set; }
     public FileModelStore? ModelStore { get; set; }
     public Compilation? Compilation { get; set; }
     public AdhocWorkspace? Workspace { get; set; }
+
+    public NamedPipeClientStream? DesignerStream { get; set; }
+
+    public string? ModelEditorId { get; set; }
+    public Process? ModelEditorProcess { get; set; }
+    public ModelEditor? ModelEditor { get; set; }
+
+    public IList<FrameworkSpecificGroup>? ModelEditorTools { get; set; }
+
+    public string? ModelEditorPackageDirectory { get; set; }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            try
+            {
+                ModelEditorProcess?.Kill();
+            }
+            finally
+            {
+                ModelEditorProcess?.Dispose();
+                ModelEditor?.Dispose();
+                DesignerStream?.Dispose();
+            }
+        }
+        base.Dispose(disposing);
+    }
 }
 
 public abstract record ModelPipeline<TContext, TSettings> : BuildPipeline<TContext, TSettings>
@@ -174,25 +213,253 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
        })
        .Use(async (ctx, next) =>
        {
+           ctx.StatusContext!.Status = "Fetching Nugets...";
+
+           var logger = NuGet.Common.NullLogger.Instance;
+           var cancellationToken = CancellationToken.None;
+
+           var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+
+           var settings = Settings.LoadDefaultSettings(folder);
+
+           // Extract some data from the settings
+           var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(settings);
+           var sources = SettingsUtility.GetEnabledSources(settings);
+
+           var cache = new SourceCacheContext();
+           var providers = Repository.Provider.GetCoreV3();
+           foreach (var source in sources)
+           {
+               try
+               {
+                   var repository = new SourceRepository(source, providers);
+
+                   var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
+
+                   const string packageId = "Xenial.Design";
+
+                   var version = new NuGetVersion(
+                       XenialVersion.Version
+                   );
+
+                   ctx.StatusContext!.Status = $"Fetching Nugets {packageId}.{version}...";
+
+                   static async Task<DownloadResourceResult?> FindPackage(
+                       PackageSource source,
+                       FindPackageByIdResource resource,
+                       string globalPackagesFolder,
+                       SourceCacheContext cache,
+                       NuGet.Common.ILogger logger,
+                       ISettings? settings,
+                       string packageId,
+                       NuGetVersion version,
+                       CancellationToken cancellationToken)
+                   {
+                       var package = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(packageId, version), globalPackagesFolder);
+                       if (package is null)
+                       {
+                           if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
+                           {
+                               // Download the package
+                               using var packageStream = new MemoryStream();
+                               await resource.CopyNupkgToStreamAsync(
+                                   packageId,
+                                   version,
+                                   packageStream,
+                                   cache,
+                                   logger,
+                                   cancellationToken);
+
+                               packageStream.Seek(0, SeekOrigin.Begin);
+
+                               // Add it to the global package folder
+                               var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
+                                   source.Source,
+                                   new PackageIdentity(packageId, version),
+                                   packageStream,
+                                   globalPackagesFolder,
+                                   parentId: Guid.Empty,
+                                   ClientPolicyContext.GetClientPolicy(settings, logger),
+                                   logger,
+                                   cancellationToken);
+
+                               if (downloadResult.Status == DownloadResourceResultStatus.Available)
+                               {
+                                   return downloadResult;
+                               }
+                           }
+                       }
+                       return package;
+                   }
+
+
+                   var package = await FindPackage(source, resource, globalPackagesFolder, cache, logger, settings, packageId, version, cancellationToken);
+                   if (package is not null)
+                   {
+                       var tools = await package.PackageReader.GetToolItemsAsync(cancellationToken);
+                       ctx.ModelEditorTools = tools.OfType<FrameworkSpecificGroup>().ToList();
+
+                       var versionStr = version.ToString();
+                       ctx.ModelEditorPackageDirectory = Path.Combine(globalPackagesFolder, packageId, versionStr);
+
+                       break;
+                   }
+
+               }
+               catch (FatalProtocolException ex)
+               {
+                   if (ex.InnerException is HttpRequestException httpRequestEx)
+                   {
+                       if (httpRequestEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                       {
+                           AnsiConsole.WriteLine($"[red][[ERROR]]    Authorized Feeds are not supported yet: {source.Source.EscapeMarkup()}[/]");
+                           AnsiConsole.WriteException(ex);
+                       }
+                   }
+                   Logger.LogError(ex, "Fatal Nuget Error");
+               }
+           }
+
+           await next();
+       })
+       .Use(async (ctx, next) =>
+       {
+           var tfm = ctx.BuildResult!.TargetFramework;
+           var launcher = tfm switch
+           {
+               var s when s.StartsWith("netstandard") => "net6.0-windows",
+               var s when s.StartsWith("net5.") => "net5.0-windows",
+               var s when s.StartsWith("net6.") => "net6.0-windows",
+               var s when s.StartsWith("net7.") => "net7.0-windows",
+               var t => t,
+           };
+
+           static async Task<string> FindProcessPath(string launcher, TPipelineContext ctx)
+           {
+               if (ctx.ModelEditorTools is not null && ctx.ModelEditorTools.Count > 0)
+               {
+                   var x = new NuGetFramework("net462");
+
+                   static Dictionary<string, FrameworkSpecificGroup> ConvertToTfms(IEnumerable<FrameworkSpecificGroup> groups)
+                   {
+                       var result = new Dictionary<string, FrameworkSpecificGroup>();
+
+                       foreach (var group in groups)
+                       {
+                           if (group.TargetFramework.Framework == ".NETFramework")
+                           {
+                               var tfmVersion = group.TargetFramework.Version.ToString().Replace(".", "", StringComparison.OrdinalIgnoreCase).TrimEnd('0');
+                               var tfm = $"net{tfmVersion}";
+                               result[tfm] = group;
+                           }
+                           else
+                           {
+                               result[group.TargetFramework.ToString()] = group;
+                           }
+                       }
+
+                       return result;
+                   }
+
+                   static FrameworkSpecificGroup? FindGroup(Dictionary<string, FrameworkSpecificGroup> groups, string launcher)
+                   {
+                       if (groups.TryGetValue(launcher, out var group))
+                       {
+                           return group;
+                       }
+                       foreach (var pair in groups)
+                       {
+                           if (pair.Key.StartsWith(launcher, StringComparison.OrdinalIgnoreCase))
+                           {
+                               return pair.Value;
+                           }
+                       }
+                       return null;
+                   }
+
+                   var tfms = ConvertToTfms(ctx.ModelEditorTools);
+
+                   var tools = FindGroup(tfms, launcher);
+                   if (tools is not null && !string.IsNullOrEmpty(ctx.ModelEditorPackageDirectory))
+                   {
+                       foreach (var tool in tools.Items)
+                       {
+                           var path = Path.Combine(ctx.ModelEditorPackageDirectory, tool.Replace('/', Path.DirectorySeparatorChar));
+                           if (File.Exists(path))
+                           {
+                               var fileName = Path.GetFileName(path);
+                               if (fileName == "Xenial.Design.exe")
+                               {
+                                   return path;
+                               }
+                           }
+                       }
+                   }
+               }
+
+               if (Debugger.IsAttached)
+               {
+#if DEBUG
+                   const string configuration = "Debug";
+#else
+                   const string configuration = "Release";
+#endif
+                   var processPath = $@"..\..\..\..\Xenial.Design\bin\{configuration}\{launcher}\Xenial.Design.exe";
+               }
+
+               return null!;
+           }
+
+           var processPath = await FindProcessPath(launcher, ctx);
+
+           ctx.ModelEditorId = Guid.NewGuid().ToString();
+
+           var info = new ProcessStartInfo
+           {
+               FileName = processPath,
+               Arguments = ctx.ModelEditorId
+           };
+
+           ctx.ModelEditorProcess = Process.Start(info);
+
+           await next();
+       })
+       .Use(async (ctx, next) =>
+       {
+           ctx.DesignerStream = new NamedPipeClientStream(".", ctx.ModelEditorId, PipeDirection.InOut, PipeOptions.Asynchronous);
+
+           await ctx.DesignerStream.ConnectAsync(10000);
+           await next();
+       })
+       .Use(async (ctx, next) =>
+       {
+           var attached = JsonRpc.Attach(ctx.DesignerStream!);
+
+           ctx.ModelEditor = new ModelEditor(attached);
+
+           var ping = await ctx.ModelEditor.Ping();
+
+           AnsiConsole.MarkupLine($"Connected to Server: [green]{ping.EscapeMarkup()}[/]");
+
+           await next();
+       })
+       .Use(async (ctx, next) =>
+       {
            ctx.StatusContext!.Status = "Loading Application Model...";
 
            var assemblyPath = ctx.BuildResult!.Properties["TargetPath"];
            var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
            var targetDir = Path.GetDirectoryName(assemblyPath)!;
-           var loader = new StandaloneModelEditorModelLoader();
 
            var sw = Stopwatch.StartNew();
            try
            {
-               loader.LoadModel(
-                   assemblyPath,
+               var numberOfViews = await ctx.ModelEditor.LoadModel(assemblyPath,
                    folder,
                    "",
-                   targetDir
-               );
-               ctx.Application = loader.ModelApplication;
-               ctx.ModelStore = loader.FileModelStore;
-               sw.Success("Load Model");
+                   targetDir);
+
+               sw.Success($"Load Model: {numberOfViews} views");
                await next();
            }
            catch
@@ -238,6 +505,15 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
         pipeline.Use(async (ctx, next) =>
         {
+            var result = await ctx.ModelEditor!.Pong();
+
+            AnsiConsole.WriteLine(result);
+
+            await next();
+        });
+
+        pipeline.Use(async (ctx, next) =>
+        {
             var attributeSymbol = ctx.Compilation.GetTypeByMetadataName("Xenial.Framework.Layouts.DetailViewLayoutBuilderAttribute");
 
             if (attributeSymbol is null)
@@ -252,11 +528,13 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                     await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework.Generators", wd);
                     ctx.ExitCode = 1;
                     AnsiConsole.MarkupLine($"[yellow]Added packages. Please restart command to see effects.[/]");
-                    await next();
                     return;
                 }
             }
-
+            await next();
+        })
+        .Use(async (ctx, next) =>
+        {
             Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications = new();
             Dictionary<string, SyntaxTree> originalSyntaxTrees = new();
 
@@ -267,164 +545,154 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                 statusContext.Spinner(Spinner.Known.Star);
                 ctx.StatusContext = statusContext;
 
-                foreach (var view in ctx.Application!.Views)
+                var namespaces = ctx.Settings.Namespaces?.Split(';') ?? Array.Empty<string>();
+
+                var views = await ctx.ModelEditor.GetViewIds(namespaces);
+
+                foreach (var viewId in views)
                 {
-                    var namespaces = ctx.Settings.Namespaces?.Split(';') ?? Array.Empty<string>();
+                    AnsiConsole.MarkupLine($"[grey]Analyzing: [silver][/]{viewId}[/]");
 
-                    static bool AcceptsModelView(IModelObjectView modelObjectView, string[] namespaces)
+                    var xml = await ctx.ModelEditor.GetViewAsXml(viewId);
+                    var viewType = await ctx.ModelEditor.GetViewType(viewId);
+                    var modelClass = await ctx.ModelEditor.GetModelClass(viewId);
+
+                    //TODO: move to Design later once we have customizable X2CCode output
+                    var codeResult = X2CEngine.ConvertToCode(xml);
+
+                    static Location? FindFile(TPipelineContext ctx, string? modelClass)
                     {
-                        if (namespaces.Length == 0)
+                        if (!string.IsNullOrEmpty(modelClass))
                         {
-                            return true;
-                        }
-                        var @namespace = modelObjectView.ModelClass.TypeInfo.Type.Namespace ?? "";
-
-                        return namespaces.Any(ns => @namespace.StartsWith(ns, StringComparison.OrdinalIgnoreCase));
-                    }
-
-                    if (view is IModelObjectView modelObjectView
-                        && AcceptsModelView(modelObjectView, namespaces)
-                        )
-                    {
-                        AnsiConsole.MarkupLine($"[grey]Analyzing: [silver][/]{view.Id}[/]");
-
-                        var xml = X2CEngine.ConvertToXml(view);
-                        var codeResult = X2CEngine.ConvertToCode(view);
-
-                        static Location? FindFile(TPipelineContext ctx, IModelView modelView)
-                        {
-                            if (modelView is IModelObjectView modelObjectView)
+                            var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass);
+                            if (symbol is null)
                             {
-                                var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
-                                if (symbol is null)
-                                {
-                                    return null;
-                                }
+                                return null;
+                            }
 
-                                if (symbol.Locations.Any())
+                            if (symbol.Locations.Any())
+                            {
+                                foreach (var location in symbol.Locations.Where(m => m.IsInSource))
                                 {
-                                    foreach (var location in symbol.Locations.Where(m => m.IsInSource))
-                                    {
-                                        return location;
-                                    }
+                                    return location;
                                 }
                             }
-                            return null;
                         }
+                        return null;
+                    }
 
-                        var location = FindFile(ctx, view);
+                    var location = FindFile(ctx, modelClass);
 #if DEBUG
-                        HorizontalRule(view.Id);
+                    HorizontalRule(viewId);
 #endif
-                        if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
-                        {
-                            var ext = Path.GetExtension(location.SourceTree.FilePath);
-                            var fileName = Path.GetFileNameWithoutExtension(location.SourceTree.FilePath);
-                            var dirName = Path.GetDirectoryName(location.SourceTree.FilePath);
+                    if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
+                    {
+                        var ext = Path.GetExtension(location.SourceTree.FilePath);
+                        var fileName = Path.GetFileNameWithoutExtension(location.SourceTree.FilePath);
+                        var dirName = Path.GetDirectoryName(location.SourceTree.FilePath);
 
-                            var part = view switch
+                        var part = viewType switch
+                        {
+                            ViewType.DetailView => ".Layouts",
+                            ViewType.ListView => ".Columns",
+                            _ => ""
+                        };
+
+                        var builderSymbol = ctx.Compilation!.GetTypeByMetadataName(codeResult.FullName);
+                        var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
+                        if (builderSymbol is null)
+                        {
+                            var builderSyntax = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)location.SourceTree.Options, path: newFilePath);
+                            ctx.Compilation = ctx.Compilation.AddSyntaxTrees(builderSyntax);
+                            modifications[newFilePath] = (FileState.Added, builderSyntax);
+                        }
+                        else
+                        {
+                            var (fileState, existingSyntaxTree) = modifications.TryGetValue(newFilePath, out var r) switch
                             {
-                                IModelDetailView _ => ".Layouts",
-                                IModelListView _ => ".Columns",
-                                _ => ""
+                                true => r,
+                                false => (FileState.Unchanged, builderSymbol.Locations.First(m => m.IsInSource).SourceTree!),
                             };
 
-                            var builderSymbol = ctx.Compilation.GetTypeByMetadataName(codeResult.FullName);
-                            var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
-                            if (builderSymbol is null)
+                            if (!originalSyntaxTrees.ContainsKey(newFilePath))
                             {
-                                var builderSyntax = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)location.SourceTree.Options, path: newFilePath);
-                                ctx.Compilation = ctx.Compilation.AddSyntaxTrees(builderSyntax);
-                                modifications[newFilePath] = (FileState.Added, builderSyntax);
+                                originalSyntaxTrees[newFilePath] = existingSyntaxTree;
                             }
-                            else
+
+                            var semanticModel = ctx.Compilation.GetSemanticModel(existingSyntaxTree);
+                            var merger = new MergeClassesSyntaxRewriter(semanticModel, codeResult);
+
+                            var root = await existingSyntaxTree.GetRootAsync();
+                            root = merger.Visit(root);
+                            root = Formatter.Format(root, ctx.Workspace!);
+
+                            var newSyntaxTree = existingSyntaxTree.WithRootAndOptions(root, existingSyntaxTree.Options);
+
+                            modifications[existingSyntaxTree.FilePath] = (
+                                fileState == FileState.Unchanged ? FileState.Modified : fileState,
+                                newSyntaxTree
+                            );
+
+                            ctx.Compilation = ctx.Compilation.ReplaceSyntaxTree(existingSyntaxTree, newSyntaxTree);
+                        }
+#if DEBUG
+                        HorizontalDashed(location.SourceTree.FilePath);
+                        HorizontalDashed(newFilePath);
+
+                        if (File.Exists(location.SourceTree.FilePath))
+                        {
+                            var source = await File.ReadAllTextAsync(location.SourceTree.FilePath);
+                            PrintSource(source);
+                            AnsiConsole.WriteLine();
+                        }
+#endif
+
+                        var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass);
+
+                        if (symbol is not null)
+                        {
+                            var root = await location.SourceTree.GetRootAsync();
+
+                            if (!originalSyntaxTrees.ContainsKey(location.SourceTree.FilePath))
                             {
-                                var (fileState, existingSyntaxTree) = modifications.TryGetValue(newFilePath, out var r) switch
+                                originalSyntaxTrees[location.SourceTree.FilePath] = location.SourceTree;
+                            }
+
+                            var semanticModel = ctx.Compilation.GetSemanticModel(location.SourceTree);
+
+                            if (root is not null)
+                            {
+                                var attributeName = viewType switch
                                 {
-                                    true => r,
-                                    false => (FileState.Unchanged, builderSymbol.Locations.First(m => m.IsInSource).SourceTree!),
+                                    ViewType.DetailView => "DetailViewLayoutBuilder",
+                                    ViewType.ListView => "ListViewColumnsBuilder",
+                                    _ => null
                                 };
 
-                                if (!originalSyntaxTrees.ContainsKey(newFilePath))
+                                if (attributeName is not null)
                                 {
-                                    originalSyntaxTrees[newFilePath] = existingSyntaxTree;
-                                }
+                                    var newRoot = RewriteSyntaxTree(ctx, viewType, codeResult, root, semanticModel);
 
-                                var semanticModel = ctx.Compilation.GetSemanticModel(existingSyntaxTree);
-                                var merger = new MergeClassesSyntaxRewriter(semanticModel, codeResult);
+                                    var newSyntaxTree = location.SourceTree.WithRootAndOptions(newRoot, location.SourceTree.Options);
 
-                                var root = await existingSyntaxTree.GetRootAsync();
-                                root = merger.Visit(root);
-                                root = Formatter.Format(root, ctx.Workspace!);
+                                    modifications[location.SourceTree.FilePath] = (FileState.Modified, newSyntaxTree);
 
-                                var newSyntaxTree = existingSyntaxTree.WithRootAndOptions(root, existingSyntaxTree.Options);
-
-                                modifications[existingSyntaxTree.FilePath] = (
-                                    fileState == FileState.Unchanged ? FileState.Modified : fileState,
-                                    newSyntaxTree
-                                );
-
-                                ctx.Compilation = ctx.Compilation.ReplaceSyntaxTree(existingSyntaxTree, newSyntaxTree);
-                            }
+                                    ctx.Compilation = ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree);
 #if DEBUG
-                            HorizontalDashed(location.SourceTree.FilePath);
-                            HorizontalDashed(newFilePath);
-
-                            if (File.Exists(location.SourceTree.FilePath))
-                            {
-                                var source = await File.ReadAllTextAsync(location.SourceTree.FilePath);
-                                PrintSource(source);
-                                AnsiConsole.WriteLine();
-                            }
+                                    PrintSource(newRoot.ToFullString());
+                                    AnsiConsole.WriteLine();
 #endif
-
-                            var symbol = ctx.Compilation!.GetTypeByMetadataName(modelObjectView.ModelClass.Name);
-
-                            if (symbol is not null)
-                            {
-                                var root = await location.SourceTree.GetRootAsync();
-
-                                if (!originalSyntaxTrees.ContainsKey(location.SourceTree.FilePath))
-                                {
-                                    originalSyntaxTrees[location.SourceTree.FilePath] = location.SourceTree;
-                                }
-
-                                var semanticModel = ctx.Compilation.GetSemanticModel(location.SourceTree);
-
-                                if (root is not null)
-                                {
-                                    var attributeName = view switch
-                                    {
-                                        IModelDetailView _ => "DetailViewLayoutBuilder",
-                                        IModelListView _ => "ListViewColumnsBuilder",
-                                        _ => null
-                                    };
-
-                                    if (attributeName is not null)
-                                    {
-                                        var newRoot = RewriteSyntaxTree(ctx, view, codeResult, root, semanticModel);
-
-                                        var newSyntaxTree = location.SourceTree.WithRootAndOptions(newRoot, location.SourceTree.Options);
-
-                                        modifications[location.SourceTree.FilePath] = (FileState.Modified, newSyntaxTree);
-
-                                        ctx.Compilation = ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree);
-#if DEBUG
-                                        PrintSource(newRoot.ToFullString());
-                                        AnsiConsole.WriteLine();
-#endif
-                                    }
                                 }
                             }
                         }
-#if DEBUG
-                        PrintSource(xml, "xml");
-                        AnsiConsole.WriteLine();
-                        PrintSource(codeResult.Code);
-                        AnsiConsole.WriteLine();
-#endif
-                        removedViews.Add(view.Id);
                     }
+#if DEBUG
+                    PrintSource(xml, "xml");
+                    AnsiConsole.WriteLine();
+                    PrintSource(codeResult.Code);
+                    AnsiConsole.WriteLine();
+#endif
+                    removedViews.Add(viewId);
                 }
             });
 
@@ -522,11 +790,12 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                 }
             }
             await next();
-        });
+        })
+;
 
-        static SyntaxNode RewriteSyntaxTree(TPipelineContext ctx, IModelView? view, X2CCodeResult result, SyntaxNode? root, SemanticModel semanticModel)
+        static SyntaxNode RewriteSyntaxTree(TPipelineContext ctx, ViewType viewType, X2CCodeResult result, SyntaxNode? root, SemanticModel semanticModel)
         {
-            if (view is IModelDetailView detailView)
+            if (viewType == ViewType.DetailView)
             {
                 var methodName = result.MethodName == "BuildLayout"
                     ? null
@@ -540,7 +809,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                 root = rewriter.Visit(root);
             }
-            if (view is IModelListView listView)
+            if (viewType == ViewType.ListView)
             {
                 var methodName = result.MethodName == "BuildColumns"
                     ? null

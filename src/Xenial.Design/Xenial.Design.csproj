@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>exe</OutputType>
+    <TargetFrameworks>$(XenialWinTFMs);net47;net471;net472;net48</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <PackageTags>$(PackageTags) Design</PackageTags>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+    <BuildOutputTargetFolder>tools/$(TargetFramework)</BuildOutputTargetFolder>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <NoWarn>NU5128;CA2007;CA1303;$(NoWarn)</NoWarn>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AppConfig>app.config</AppConfig>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.config</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+    <PackageReference Include="StreamJsonRpc" Version="2.10.44" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Remove="Xenial.Framework.Generators" />
+    <PackageReference Remove="Xenial.Framework.Generators.Internal" />
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);ToolDependenciesTarget</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="ToolDependenciesTarget">
+    <Message Text="Including dependencies from $(OutputPath)" Importance="high" />
+    <ItemGroup>
+      <BuildOutputInPackage Include="$(OutputPath)\*.*" Exclude="$(OutputPath)\$(TargetName)$(TargetExt);$(OutputPath)\$(TargetName).pdb;$(OutputPath)\*.xml">
+        <PackagePath>tools\$(TargetFramework)</PackagePath>
+      </BuildOutputInPackage>
+    </ItemGroup>
+  </Target>
+        
+  <!--<PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>ToolDependenciesTarget;$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="ToolDependenciesTarget" AfterTargets="GenerateBindingRedirects" BeforeTargets="GenerateNuspec">
+    <Message Text="Including dependencies from $(OutputPath)" Importance="high" />
+    <Message Text="Including dependencies from $(OutputPath)$(TargetName)$(TargetExt).config" Importance="high" />
+      
+    <ItemGroup>
+      <BuildOutputInPackage Include="$(OutputPath)\*.*;$(OutputPath)$(TargetName)$(TargetExt).config" Exclude="$(OutputPath)\$(TargetName).pdb;$(OutputPath)\*.xml">
+        <PackagePath>tools\$(TargetFramework)</PackagePath>
+      </BuildOutputInPackage>
+    </ItemGroup>
+
+    
+  
+  </Target>-->
+
+</Project>

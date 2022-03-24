@@ -394,6 +394,18 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
         var pipelineContext = pipeline.CreateContext();
         pipelineContext.Settings = settings;
 
+        pipeline.Use(async (ctx, next) =>
+        {
+            try
+            {
+                await next();
+            }
+            finally
+            {
+                ctx.Dispose();
+            }
+        });
+
         ConfigurePipeline(pipeline);
 
         await pipeline.Execute(pipelineContext);
