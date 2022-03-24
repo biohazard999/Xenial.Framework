@@ -230,33 +230,33 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            var providers = Repository.Provider.GetCoreV3();
            foreach (var source in sources)
            {
-               var repository = new SourceRepository(source, providers);
-
-               var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
-
-               const string packageId = "Xenial.Design";
-
-               var version = new NuGetVersion(
-                   XenialVersion.Version
-               );
-
-               ctx.StatusContext!.Status = $"Fetching Nugets {packageId}.{version}...";
-
-               static async Task<DownloadResourceResult?> FindPackage(
-                   PackageSource source,
-                   FindPackageByIdResource resource,
-                   string globalPackagesFolder,
-                   SourceCacheContext cache,
-                   NuGet.Common.ILogger logger,
-                   ISettings? settings,
-                   string packageId,
-                   NuGetVersion version,
-                   CancellationToken cancellationToken)
+               try
                {
-                   var package = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(packageId, version), globalPackagesFolder);
-                   if (package is null)
+                   var repository = new SourceRepository(source, providers);
+
+                   var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
+
+                   const string packageId = "Xenial.Design";
+
+                   var version = new NuGetVersion(
+                       XenialVersion.Version
+                   );
+
+                   ctx.StatusContext!.Status = $"Fetching Nugets {packageId}.{version}...";
+
+                   static async Task<DownloadResourceResult?> FindPackage(
+                       PackageSource source,
+                       FindPackageByIdResource resource,
+                       string globalPackagesFolder,
+                       SourceCacheContext cache,
+                       NuGet.Common.ILogger logger,
+                       ISettings? settings,
+                       string packageId,
+                       NuGetVersion version,
+                       CancellationToken cancellationToken)
                    {
-                       try
+                       var package = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(packageId, version), globalPackagesFolder);
+                       if (package is null)
                        {
                            if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
                            {
@@ -289,33 +289,34 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                                }
                            }
                        }
-                       catch (FatalProtocolException ex)
+                       return package;
+                   }
+
+
+                   var package = await FindPackage(source, resource, globalPackagesFolder, cache, logger, settings, packageId, version, cancellationToken);
+                   if (package is not null)
+                   {
+                       var tools = await package.PackageReader.GetToolItemsAsync(cancellationToken);
+                       ctx.ModelEditorTools = tools.OfType<FrameworkSpecificGroup>().ToList();
+
+                       var versionStr = version.ToString();
+                       ctx.ModelEditorPackageDirectory = Path.Combine(globalPackagesFolder, packageId, versionStr);
+
+                       break;
+                   }
+
+               }
+               catch (FatalProtocolException ex)
+               {
+                   if (ex.InnerException is HttpRequestException httpRequestEx)
+                   {
+                       if (httpRequestEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                        {
-                           if (ex.InnerException is HttpRequestException httpRequestEx)
-                           {
-                               if (httpRequestEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                               {
-                                   AnsiConsole.WriteLine($"[red][[ERROR]]    Authorized Feeds are not supported yet: {source.Source.EscapeMarkup()}[/]");
-                                   AnsiConsole.WriteException(ex);
-                                   return null;
-                               }
-                           }
+                           AnsiConsole.WriteLine($"[red][[ERROR]]    Authorized Feeds are not supported yet: {source.Source.EscapeMarkup()}[/]");
+                           AnsiConsole.WriteException(ex);
                        }
                    }
-                   return package;
-               }
-
-
-               var package = await FindPackage(source, resource, globalPackagesFolder, cache, logger, settings, packageId, version, cancellationToken);
-               if (package is not null)
-               {
-                   var tools = await package.PackageReader.GetToolItemsAsync(cancellationToken);
-                   ctx.ModelEditorTools = tools.OfType<FrameworkSpecificGroup>().ToList();
-
-                   var versionStr = version.ToString();
-                   ctx.ModelEditorPackageDirectory = Path.Combine(globalPackagesFolder, packageId, versionStr);
-
-                   break;
+                   Logger.LogError(ex, "Fatal Nuget Error");
                }
            }
 
