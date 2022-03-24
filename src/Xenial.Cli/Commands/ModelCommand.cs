@@ -391,9 +391,6 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                    var processPath = $@"..\..\..\..\Xenial.Design\bin\{configuration}\{launcher}\Xenial.Design.exe";
                }
 
-
-
-
                return null!;
            }
 
