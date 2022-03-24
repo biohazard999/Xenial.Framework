@@ -211,7 +211,12 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            };
 
            //TODO: ProcessPath
-           var processPath = $@"C:\f\git\Xenial.Framework\src\Xenial.Design\bin\Debug\{launcher}\Xenial.Design.exe";
+#if DEBUG
+           const string configuration = "Debug";
+#else
+           const string configuration = "Release";
+#endif
+           var processPath = $@"..\..\..\..\Xenial.Design\bin\{configuration}\{launcher}\Xenial.Design.exe";
 
            ctx.ModelEditorId = Guid.NewGuid().ToString();
 
