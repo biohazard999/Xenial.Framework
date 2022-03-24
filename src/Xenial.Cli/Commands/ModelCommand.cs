@@ -210,13 +210,25 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                var t => t,
            };
 
-           //TODO: ProcessPath
+           static async Task<string> FindProcessPath(string launcher)
+           {
+               if (Debugger.IsAttached)
+               {
 #if DEBUG
-           const string configuration = "Debug";
+                   const string configuration = "Debug";
 #else
            const string configuration = "Release";
 #endif
-           var processPath = $@"..\..\..\..\Xenial.Design\bin\{configuration}\{launcher}\Xenial.Design.exe";
+                   var processPath = $@"..\..\..\..\Xenial.Design\bin\{configuration}\{launcher}\Xenial.Design.exe";
+               }
+
+
+
+
+               return null!;
+           }
+
+           var processPath = await FindProcessPath(launcher);
 
            ctx.ModelEditorId = Guid.NewGuid().ToString();
 
