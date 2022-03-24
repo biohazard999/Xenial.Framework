@@ -518,7 +518,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
             if (attributeSymbol is null)
             {
-                AnsiConsole.MarkupLine($"[yellow]It seams like [/][silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/] is missing a reference to Xenial.Framework");
+                AnsiConsole.MarkupLine($"[yellow]It seems like [/][silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/] is missing a reference to Xenial.Framework");
                 var addReference = AnsiConsole.Confirm($"[silver]Do you want to add it to the project?[/]");
 
                 if (addReference)
