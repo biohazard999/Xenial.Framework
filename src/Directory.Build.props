@@ -81,6 +81,10 @@
         <_Parameter1>XenialComponent</_Parameter1>
         <_Parameter2>$(PackageId)</_Parameter2>
       </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(XenialPackageVersion)' != ''">
+        <_Parameter1>XenialPackageVersion</_Parameter1>
+        <_Parameter2>$(XenialPackageVersion)</_Parameter2>
+      </AssemblyAttribute>
     </ItemGroup>
   </Target>
 

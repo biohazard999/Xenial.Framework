@@ -43,6 +43,7 @@ using NuGet.Protocol;
 using NuGet.Packaging.Core;
 using NuGet.Packaging.Signing;
 using NuGet.Packaging;
+using System.Reflection;
 
 namespace Xenial.Cli.Commands;
 
@@ -236,9 +237,15 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 #if DEBUG
                    "0.7.3-alpha.0.10"
 #else
-                   ThisAssembly.Constants.Nuget.Version
+                   GetType().Assembly
+                    .GetCustomAttributes(false)
+                    .OfType<AssemblyMetadataAttribute>()
+                    .FirstOrDefault(m => m.Key == "XenialPackageVersion")
+                    ?.Value ?? "-*-"
 #endif
                );
+
+               ctx.StatusContext!.Status = $"Fetching Nugets {packageId}.{version}...";
 
                static async Task<DownloadResourceResult?> FindPackage(
                    PackageSource source,

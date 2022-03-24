@@ -23,11 +23,6 @@
     </PropertyGroup>
   </Target>-->
 
-  <ItemGroup>
-    <Constant Include="Nuget.Id" Value="$(PackageId)" />
-    <Constant Include="Nuget.Version" Value="$(PackageVersion)" />
-  </ItemGroup>
-  
   <!--<Target Name="PatchNuget" AfterTargets="MinVer">
     <ItemGroup>
       <Constant Update="Nuget.Id" Value="$(PackageId)" />
@@ -37,7 +32,6 @@
   
   <ItemGroup>
     <PackageReference Include="StreamJsonRpc" Version="2.10.44" />
-    <PackageReference Include="ThisAssembly" Version="1.0.9" />
     <PackageReference Include="NuGet.Protocol" Version="6.1.0" />
     <PackageReference Include="NuGet.LibraryModel" Version="6.1.0" />
     <PackageReference Include="NuGet.Commands" Version="6.1.0" />
