@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Design;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Utils;
+using DevExpress.Utils.Design;
 
 namespace Xenial.Cli.Engine;
 
@@ -46,6 +48,17 @@ public class StandaloneModelEditorModelLoader
       string deviceSpecificDifferencesStoreName,
       string? assembliesPath)
     {
+#if FULL_FRAMEWORK
+        //DesignTimeTools.isDesignModeCore = true;
+        var field = typeof(DesignTimeTools).GetField("isDesignModeCore",
+                    BindingFlags.Static |
+                    BindingFlags.NonPublic);
+
+        // Normally the first argument to "SetValue" is the instance
+        // of the type but since we are mutating a static field we pass "null"
+        field.SetValue(null, true);
+#endif
+
         if (string.IsNullOrEmpty(assembliesPath))
         {
             assembliesPath = Path.GetDirectoryName(targetFileName);
