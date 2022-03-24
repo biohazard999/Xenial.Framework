@@ -24,6 +24,8 @@
   <ItemGroup>
     <CompilerVisibleProperty Include="XenialPublicKey" />
     <CompilerVisibleProperty Include="PackageId" />
+    <CompilerVisibleProperty Include="XenialPackageVersion" />
+    <CompilerVisibleProperty Include="PackageVersion" />
   </ItemGroup>
 
   <ItemGroup>
