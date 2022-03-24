@@ -2,6 +2,7 @@
 using StreamJsonRpc;
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 
@@ -39,11 +40,18 @@ static async Task NamedPipeServerAsync(string connectionId, bool debug)
         var stream = new NamedPipeServerStream(connectionId, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
 
         await stream.WaitForConnectionAsync();
-        _ = RespondToRpcRequestsAsync(stream, ++clientId, debug);
+        var shouldDispose = await RespondToRpcRequestsAsync(stream, ++clientId, debug);
+        if (shouldDispose)
+        {
+            Console.WriteLine($"Exiting designer process #{Process.GetCurrentProcess().Id}.");
+            stream.Disconnect();
+            stream.Dispose();
+            break;
+        }
     }
 }
 
-static async Task RespondToRpcRequestsAsync(Stream stream, int clientId, bool debug)
+static async Task<bool> RespondToRpcRequestsAsync(Stream stream, int clientId, bool debug)
 {
     Console.WriteLine($"Connection request #{clientId} received. Spinning off an async Task to cater to requests.");
 
@@ -59,5 +67,6 @@ static async Task RespondToRpcRequestsAsync(Stream stream, int clientId, bool de
     Console.WriteLine($"JSON-RPC listener attached to #{clientId}. Waiting for requests...");
     await jsonRpc.Completion;
     Console.WriteLine($"Connection #{clientId} terminated.");
+    return true;
 }
 

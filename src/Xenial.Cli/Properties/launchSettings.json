@@ -27,6 +27,10 @@
     "model.maindemo.core.win": {
       "commandName": "Project",
       "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module.Win\\MainDemo.Module.Win.NetCore.Desktop.csproj\" -v=debug --fast=false -n=MainDemo.Module"
+    },
+    "model.maindemo.net46.win": {
+      "commandName": "Project",
+      "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module.Win\\MainDemo.Module.Win.csproj\" -v=debug --fast=false -n=MainDemo.Module"
     }
   }
 }

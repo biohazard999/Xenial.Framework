@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>exe</OutputType>
-    <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
+    <TargetFrameworks>$(XenialWinTFMs);net47;net471;net472;net48</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
     <PackageTags>$(PackageTags) Design</PackageTags>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.ExpressApp.Win" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
     <PackageReference Include="StreamJsonRpc" Version="2.10.44" />
   </ItemGroup>
 

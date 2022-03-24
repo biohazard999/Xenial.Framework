@@ -204,10 +204,10 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            var launcher = tfm switch
            {
                var s when s.StartsWith("netstandard") => "net6.0-windows",
-               var s when s.StartsWith("net5") => "net5.0-windows",
-               var s when s.StartsWith("net6") => "net6.0-windows",
-               var s when s.StartsWith("net7") => "net7.0-windows",
-               _ => "net462",
+               var s when s.StartsWith("net5.") => "net5.0-windows",
+               var s when s.StartsWith("net6.") => "net6.0-windows",
+               var s when s.StartsWith("net7.") => "net7.0-windows",
+               var t => t,
            };
 
            //TODO: ProcessPath
