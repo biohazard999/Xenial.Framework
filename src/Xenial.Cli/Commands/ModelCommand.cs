@@ -78,6 +78,8 @@ public record ModelContext<TSettings> : BuildContext<TSettings>
     public Process? ModelEditorProcess { get; set; }
     public ModelEditor? ModelEditor { get; set; }
 
+    public IList<FrameworkSpecificGroup>? ModelEditorTools { get; set; }
+
     protected override void Dispose(bool disposing)
     {
         if (disposing)
@@ -210,7 +212,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            ctx.StatusContext!.Status = "Fetching Nugets...";
 
            var logger = NuGet.Common.NullLogger.Instance;
-           CancellationToken cancellationToken = CancellationToken.None;
+           var cancellationToken = CancellationToken.None;
 
            var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
 
@@ -228,43 +230,71 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
 
-               var packageId = "Xenial.Design";
+               const string packageId = "Xenial.Design";
 
-               var version = new NuGetVersion("0.7.3-alpha.0.10"); //TODO: use ThisAssembly
+               var version = new NuGetVersion(
+#if DEBUG
+                   "0.7.3-alpha.0.10"
+#else
+                   ThisAssembly.Constants.Nuget.Version
+#endif
+               ); //TODO: use ThisAssembly
 
-               if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
+               static async Task<DownloadResourceResult?> FindPackage(
+                   PackageSource source,
+                   FindPackageByIdResource resource,
+                   string globalPackagesFolder,
+                   SourceCacheContext cache,
+                   NuGet.Common.ILogger logger,
+                   ISettings? settings,
+                   string packageId,
+                   NuGetVersion version,
+                   CancellationToken cancellationToken)
                {
-                   // Download the package
-                   using var packageStream = new MemoryStream();
-                   await resource.CopyNupkgToStreamAsync(
-                       packageId,
-                       version,
-                       packageStream,
-                       cache,
-                       logger,
-                       cancellationToken);
-
-                   packageStream.Seek(0, SeekOrigin.Begin);
-
-                   // Add it to the global package folder
-                   var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
-                       source.Source,
-                       new PackageIdentity(packageId, version),
-                       packageStream,
-                       globalPackagesFolder,
-                       parentId: Guid.Empty,
-                       ClientPolicyContext.GetClientPolicy(settings, logger),
-                       logger,
-                       cancellationToken);
-
-                   if (downloadResult.Status == DownloadResourceResultStatus.Available)
+                   var package = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(packageId, version), globalPackagesFolder);
+                   if (package is null)
                    {
-                       var toolItems = await downloadResult.PackageReader.GetToolItemsAsync(cancellationToken);
+                       if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
+                       {
+                           // Download the package
+                           using var packageStream = new MemoryStream();
+                           await resource.CopyNupkgToStreamAsync(
+                               packageId,
+                               version,
+                               packageStream,
+                               cache,
+                               logger,
+                               cancellationToken);
 
-                       var tfmTools = toolItems.OfType<FrameworkSpecificGroup>().ToList();
+                           packageStream.Seek(0, SeekOrigin.Begin);
 
-                       break;
+                           // Add it to the global package folder
+                           var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
+                               source.Source,
+                               new PackageIdentity(packageId, version),
+                               packageStream,
+                               globalPackagesFolder,
+                               parentId: Guid.Empty,
+                               ClientPolicyContext.GetClientPolicy(settings, logger),
+                               logger,
+                               cancellationToken);
+
+                           if (downloadResult.Status == DownloadResourceResultStatus.Available)
+                           {
+                               return downloadResult;
+                           }
+                       }
                    }
+                   return package;
+               }
+
+
+               var package = await FindPackage(source, resource, globalPackagesFolder, cache, logger, settings, packageId, version, cancellationToken);
+               if (package is not null)
+               {
+                   var tools = await package.PackageReader.GetToolItemsAsync(cancellationToken);
+                   ctx.ModelEditorTools = tools.OfType<FrameworkSpecificGroup>().ToList();
+                   break;
                }
            }
 
