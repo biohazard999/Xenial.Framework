@@ -36,9 +36,11 @@
   </Target>
   
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
     <PackageReference Include="StreamJsonRpc" Version="2.10.44" />
     <PackageReference Include="ThisAssembly" Version="1.0.9" />
+    <PackageReference Include="NuGet.Protocol" Version="6.1.0" />
+    <PackageReference Include="NuGet.LibraryModel" Version="6.1.0" />
+    <PackageReference Include="NuGet.Commands" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>

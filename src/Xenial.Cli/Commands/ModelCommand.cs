@@ -36,6 +36,13 @@ using static Xenial.Cli.Utils.ConsoleHelper;
 using static SimpleExec.Command;
 using StreamJsonRpc;
 using System.IO.Pipes;
+using NuGet.Configuration;
+using NuGet.Protocol.Core.Types;
+using NuGet.Versioning;
+using NuGet.Protocol;
+using NuGet.Packaging.Core;
+using NuGet.Packaging.Signing;
+using NuGet.Packaging;
 
 namespace Xenial.Cli.Commands;
 
@@ -197,6 +204,71 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                    await next();
                }
            }
+       })
+       .Use(async (ctx, next) =>
+       {
+           ctx.StatusContext!.Status = "Fetching Nugets...";
+
+           var logger = NuGet.Common.NullLogger.Instance;
+           CancellationToken cancellationToken = CancellationToken.None;
+
+           var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+
+           var settings = Settings.LoadDefaultSettings(folder);
+
+           // Extract some data from the settings
+           var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(settings);
+           var sources = SettingsUtility.GetEnabledSources(settings);
+
+           var cache = new SourceCacheContext();
+           var providers = Repository.Provider.GetCoreV3();
+           foreach (var source in sources)
+           {
+               var repository = new SourceRepository(source, providers);
+
+               var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
+
+               var packageId = "Xenial.Design";
+
+               var version = new NuGetVersion("0.7.3-alpha.0.10"); //TODO: use ThisAssembly
+
+               if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
+               {
+                   // Download the package
+                   using var packageStream = new MemoryStream();
+                   await resource.CopyNupkgToStreamAsync(
+                       packageId,
+                       version,
+                       packageStream,
+                       cache,
+                       logger,
+                       cancellationToken);
+
+                   packageStream.Seek(0, SeekOrigin.Begin);
+
+                   // Add it to the global package folder
+                   var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
+                       source.Source,
+                       new PackageIdentity(packageId, version),
+                       packageStream,
+                       globalPackagesFolder,
+                       parentId: Guid.Empty,
+                       ClientPolicyContext.GetClientPolicy(settings, logger),
+                       logger,
+                       cancellationToken);
+
+                   if (downloadResult.Status == DownloadResourceResultStatus.Available)
+                   {
+                       var toolItems = await downloadResult.PackageReader.GetToolItemsAsync(cancellationToken);
+
+                       var tfmTools = toolItems.OfType<FrameworkSpecificGroup>().ToList();
+
+                       break;
+                   }
+               }
+           }
+
+           await next();
        })
        .Use(async (ctx, next) =>
        {
