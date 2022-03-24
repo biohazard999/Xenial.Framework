@@ -28,12 +28,12 @@
     <Constant Include="Nuget.Version" Value="$(PackageVersion)" />
   </ItemGroup>
   
-  <Target Name="PatchNuget" AfterTargets="MinVer">
+  <!--<Target Name="PatchNuget" AfterTargets="MinVer">
     <ItemGroup>
       <Constant Update="Nuget.Id" Value="$(PackageId)" />
       <Constant Update="Nuget.Version" Value="$(PackageVersion)" />
     </ItemGroup>
-  </Target>
+  </Target>-->
   
   <ItemGroup>
     <PackageReference Include="StreamJsonRpc" Version="2.10.44" />

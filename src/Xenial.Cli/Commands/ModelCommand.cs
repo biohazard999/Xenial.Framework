@@ -238,7 +238,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 #else
                    ThisAssembly.Constants.Nuget.Version
 #endif
-               ); //TODO: use ThisAssembly
+               );
 
                static async Task<DownloadResourceResult?> FindPackage(
                    PackageSource source,
