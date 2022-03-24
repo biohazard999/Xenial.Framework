@@ -44,6 +44,7 @@ using NuGet.Packaging.Core;
 using NuGet.Packaging.Signing;
 using NuGet.Packaging;
 using System.Reflection;
+using NuGet.Frameworks;
 
 namespace Xenial.Cli.Commands;
 
@@ -80,6 +81,8 @@ public record ModelContext<TSettings> : BuildContext<TSettings>
     public ModelEditor? ModelEditor { get; set; }
 
     public IList<FrameworkSpecificGroup>? ModelEditorTools { get; set; }
+
+    public string? ModelEditorPackageDirectory { get; set; }
 
     protected override void Dispose(bool disposing)
     {
@@ -293,6 +296,10 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                {
                    var tools = await package.PackageReader.GetToolItemsAsync(cancellationToken);
                    ctx.ModelEditorTools = tools.OfType<FrameworkSpecificGroup>().ToList();
+
+                   var versionStr = version.ToString();
+                   ctx.ModelEditorPackageDirectory = Path.Combine(globalPackagesFolder, packageId, versionStr);
+
                    break;
                }
            }
@@ -311,14 +318,75 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                var t => t,
            };
 
-           static async Task<string> FindProcessPath(string launcher)
+           static async Task<string> FindProcessPath(string launcher, TPipelineContext ctx)
            {
+               if (ctx.ModelEditorTools is not null && ctx.ModelEditorTools.Count > 0)
+               {
+                   var x = new NuGetFramework("net462");
+
+                   static Dictionary<string, FrameworkSpecificGroup> ConvertToTfms(IEnumerable<FrameworkSpecificGroup> groups)
+                   {
+                       var result = new Dictionary<string, FrameworkSpecificGroup>();
+
+                       foreach (var group in groups)
+                       {
+                           if (group.TargetFramework.Framework == ".NETFramework")
+                           {
+                               var tfmVersion = group.TargetFramework.Version.ToString().Replace(".", "", StringComparison.OrdinalIgnoreCase).TrimEnd('0');
+                               var tfm = $"net{tfmVersion}";
+                               result[tfm] = group;
+                           }
+                           else
+                           {
+                               result[group.TargetFramework.ToString()] = group;
+                           }
+                       }
+
+                       return result;
+                   }
+
+                   static FrameworkSpecificGroup? FindGroup(Dictionary<string, FrameworkSpecificGroup> groups, string launcher)
+                   {
+                       if (groups.TryGetValue(launcher, out var group))
+                       {
+                           return group;
+                       }
+                       foreach (var pair in groups)
+                       {
+                           if (pair.Key.StartsWith(launcher, StringComparison.OrdinalIgnoreCase))
+                           {
+                               return pair.Value;
+                           }
+                       }
+                       return null;
+                   }
+
+                   var tfms = ConvertToTfms(ctx.ModelEditorTools);
+
+                   var tools = FindGroup(tfms, launcher);
+                   if (tools is not null && !string.IsNullOrEmpty(ctx.ModelEditorPackageDirectory))
+                   {
+                       foreach (var tool in tools.Items)
+                       {
+                           var path = Path.Combine(ctx.ModelEditorPackageDirectory, tool.Replace('/', Path.DirectorySeparatorChar));
+                           if (File.Exists(path))
+                           {
+                               var fileName = Path.GetFileName(path);
+                               if (fileName == "Xenial.Design.exe")
+                               {
+                                   return path;
+                               }
+                           }
+                       }
+                   }
+               }
+
                if (Debugger.IsAttached)
                {
 #if DEBUG
                    const string configuration = "Debug";
 #else
-           const string configuration = "Release";
+                   const string configuration = "Release";
 #endif
                    var processPath = $@"..\..\..\..\Xenial.Design\bin\{configuration}\{launcher}\Xenial.Design.exe";
                }
@@ -329,7 +397,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                return null!;
            }
 
-           var processPath = await FindProcessPath(launcher);
+           var processPath = await FindProcessPath(launcher, ctx);
 
            ctx.ModelEditorId = Guid.NewGuid().ToString();
 

@@ -11,6 +11,7 @@
     <BuildOutputTargetFolder>tools/$(TargetFramework)</BuildOutputTargetFolder>
     <IncludeBuildOutput>true</IncludeBuildOutput>
     <NoWarn>NU5128;CA2007;CA1303;$(NoWarn)</NoWarn>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,7 +35,10 @@
   <Target Name="ToolDependenciesTarget">
     <Message Text="Including dependencies from $(OutputPath)" Importance="high" />
     <ItemGroup>
-        <BuildOutputInPackage Include="$(OutputPath)\*.dll" Exclude="$(OutputPath)\$(TargetName)$(TargetExt);$(OutputPath)\$(TargetName).pdb">
+      <BuildOutputInPackage Include="$(OutputPath)\*.dll" Exclude="$(OutputPath)\$(TargetName)$(TargetExt);$(OutputPath)\$(TargetName).pdb">
+        <PackagePath>tools\$(TargetFramework)</PackagePath>
+      </BuildOutputInPackage>
+      <BuildOutputInPackage Include="$(OutputPath)\*.config" Exclude="$(OutputPath)\$(TargetName)$(TargetExt);$(OutputPath)\$(TargetName).pdb">
         <PackagePath>tools\$(TargetFramework)</PackagePath>
       </BuildOutputInPackage>
     </ItemGroup>
