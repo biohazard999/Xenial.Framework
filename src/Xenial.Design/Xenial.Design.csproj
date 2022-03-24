@@ -12,6 +12,7 @@
     <IncludeBuildOutput>true</IncludeBuildOutput>
     <NoWarn>NU5128;CA2007;CA1303;$(NoWarn)</NoWarn>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AppConfig>app.config</AppConfig>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,20 +26,28 @@
   </ItemGroup>
 
   <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);ToolDependenciesTarget</TargetsForTfmSpecificBuildOutput>
+    <TargetsForTfmSpecificBuildOutput>ToolDependenciesTarget;$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
 
-  <Target Name="ToolDependenciesTarget">
+  <Target Name="ToolDependenciesTarget" AfterTargets="GenerateBindingRedirects" BeforeTargets="GenerateNuspec">
     <Message Text="Including dependencies from $(OutputPath)" Importance="high" />
+    <Message Text="Including dependencies from $(OutputPath)$(TargetName)$(TargetExt).config" Importance="high" />
+      
     <ItemGroup>
-      <BuildOutputInPackage Include="$(OutputPath)\*.*" Exclude="$(OutputPath)\$(TargetName)$(TargetExt);$(OutputPath)\$(TargetName).pdb;$(OutputPath)\*.xml">
+      <BuildOutputInPackage Include="$(OutputPath)\*.*;$(OutputPath)$(TargetName)$(TargetExt).config" Exclude="$(OutputPath)\$(TargetName).pdb;$(OutputPath)\*.xml">
         <PackagePath>tools\$(TargetFramework)</PackagePath>
       </BuildOutputInPackage>
     </ItemGroup>
+
+    
+  
   </Target>
 
 </Project>
