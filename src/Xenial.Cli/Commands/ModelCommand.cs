@@ -256,34 +256,49 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                    var package = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(packageId, version), globalPackagesFolder);
                    if (package is null)
                    {
-                       if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
+                       try
                        {
-                           // Download the package
-                           using var packageStream = new MemoryStream();
-                           await resource.CopyNupkgToStreamAsync(
-                               packageId,
-                               version,
-                               packageStream,
-                               cache,
-                               logger,
-                               cancellationToken);
-
-                           packageStream.Seek(0, SeekOrigin.Begin);
-
-                           // Add it to the global package folder
-                           var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
-                               source.Source,
-                               new PackageIdentity(packageId, version),
-                               packageStream,
-                               globalPackagesFolder,
-                               parentId: Guid.Empty,
-                               ClientPolicyContext.GetClientPolicy(settings, logger),
-                               logger,
-                               cancellationToken);
-
-                           if (downloadResult.Status == DownloadResourceResultStatus.Available)
+                           if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
                            {
-                               return downloadResult;
+                               // Download the package
+                               using var packageStream = new MemoryStream();
+                               await resource.CopyNupkgToStreamAsync(
+                                   packageId,
+                                   version,
+                                   packageStream,
+                                   cache,
+                                   logger,
+                                   cancellationToken);
+
+                               packageStream.Seek(0, SeekOrigin.Begin);
+
+                               // Add it to the global package folder
+                               var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
+                                   source.Source,
+                                   new PackageIdentity(packageId, version),
+                                   packageStream,
+                                   globalPackagesFolder,
+                                   parentId: Guid.Empty,
+                                   ClientPolicyContext.GetClientPolicy(settings, logger),
+                                   logger,
+                                   cancellationToken);
+
+                               if (downloadResult.Status == DownloadResourceResultStatus.Available)
+                               {
+                                   return downloadResult;
+                               }
+                           }
+                       }
+                       catch (FatalProtocolException ex)
+                       {
+                           if (ex.InnerException is HttpRequestException httpRequestEx)
+                           {
+                               if (httpRequestEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                               {
+                                   AnsiConsole.WriteLine($"[red][[ERROR]]    Authorized Feeds are not supported yet: {source.Source.EscapeMarkup()}[/]");
+                                   AnsiConsole.WriteException(ex);
+                                   return null;
+                               }
                            }
                        }
                    }
