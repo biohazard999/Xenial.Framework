@@ -35,10 +35,7 @@
   <Target Name="ToolDependenciesTarget">
     <Message Text="Including dependencies from $(OutputPath)" Importance="high" />
     <ItemGroup>
-      <BuildOutputInPackage Include="$(OutputPath)\*.dll" Exclude="$(OutputPath)\$(TargetName)$(TargetExt);$(OutputPath)\$(TargetName).pdb">
-        <PackagePath>tools\$(TargetFramework)</PackagePath>
-      </BuildOutputInPackage>
-      <BuildOutputInPackage Include="$(OutputPath)\*.config" Exclude="$(OutputPath)\$(TargetName)$(TargetExt);$(OutputPath)\$(TargetName).pdb">
+      <BuildOutputInPackage Include="$(OutputPath)\*.*" Exclude="$(OutputPath)\$(TargetName)$(TargetExt);$(OutputPath)\$(TargetName).pdb">
         <PackagePath>tools\$(TargetFramework)</PackagePath>
       </BuildOutputInPackage>
     </ItemGroup>
