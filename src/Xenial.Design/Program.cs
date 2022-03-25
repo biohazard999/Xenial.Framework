@@ -30,7 +30,7 @@ try
 }
 catch (Exception ex)
 {
-    Console.Error.WriteLine(ex.ToString());
+    await Console.Error.WriteLineAsync(ex.ToString());
     return 1;
 }
 
