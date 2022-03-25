@@ -68,7 +68,7 @@ static async Task<bool> RespondToRpcRequestsAsync(Stream stream, int clientId, b
     server.JsonRpc = jsonRpc;
 
     await Console.Out.WriteLineAsync($"JSON-RPC listener attached to #{clientId}. Waiting for requests...");
-    //await jsonRpc.Completion;
+    await jsonRpc.Completion;
     await Console.Out.WriteLineAsync($"Connection #{clientId} terminated.");
     return true;
 }

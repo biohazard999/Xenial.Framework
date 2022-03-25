@@ -262,7 +262,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                            ctx.Settings.DesignerNugetPackageVersion ?? XenialVersion.Version
                        );
 
-                       ctx.StatusContext!.Status = $"Fetching Nugets {packageId}.{version} from {source}...";
+                       ctx.StatusContext!.Status = $"Fetching Nugets {packageId.EscapeMarkup()}.{version.ToString().EscapeMarkup()} from {source.ToString().EscapeMarkup()}...";
 
                        static async Task<DownloadResourceResult?> FindPackage(
                            PackageSource source,
