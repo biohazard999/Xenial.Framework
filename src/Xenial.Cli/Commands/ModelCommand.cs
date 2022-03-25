@@ -4,47 +4,45 @@ using Buildalyzer.Environment;
 using Buildalyzer.Workspaces;
 
 using DevExpress.ExpressApp;
-using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Microsoft.CodeAnalysis;
 
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Microsoft.CodeAnalysis.Formatting;
-using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.Extensions.Logging;
 
 using ModelToCodeConverter.Engine;
 
+using NuGet.Configuration;
+using NuGet.Frameworks;
+
+using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.Packaging.Signing;
+using NuGet.Protocol;
+
+using NuGet.Protocol.Core.Types;
+using NuGet.Versioning;
+
 using Spectre.Console;
 using Spectre.Console.Cli;
+
+using StreamJsonRpc;
 
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO.Pipes;
 using System.Linq;
 
 using Xenial.Cli.Engine;
 using Xenial.Cli.Engine.Syntax;
 using Xenial.Cli.Utils;
 using Xenial.Framework.DevTools.X2C;
-using SimpleExec;
 
-using static Xenial.Cli.Utils.ConsoleHelper;
 using static SimpleExec.Command;
-using StreamJsonRpc;
-using System.IO.Pipes;
-using NuGet.Configuration;
-using NuGet.Protocol.Core.Types;
-using NuGet.Versioning;
-using NuGet.Protocol;
-using NuGet.Packaging.Core;
-using NuGet.Packaging.Signing;
-using NuGet.Packaging;
-using System.Reflection;
-using NuGet.Frameworks;
+using static Xenial.Cli.Utils.ConsoleHelper;
 
 namespace Xenial.Cli.Commands;
 
@@ -60,6 +58,20 @@ public class ModelCommandSettings : BuildCommandSettings
     [Description("Specifies which namespaces to inspect. You can specify multiple by separation by semicolon.")]
     [CommandOption("-n|--namespaces")]
     public string? Namespaces { get; set; }
+
+    [Description("Specifies the nuget feed to restore the designer package. By default it will use the project package sources. You can specify multiple by separation by semicolon.")]
+    [CommandOption("--designer-nuget-feed")]
+    public string? DesignerNugetFeed { get; set; }
+
+    [Description("Specifies the package version to restore the designer package. By default it will autodetect the correct version.")]
+    [CommandOption("--designer-nuget-package-version")]
+    public string? DesignerNugetPackageVersion { get; set; }
+
+    [Description("Launches the design process with an attached debugger.")]
+    [CommandOption("--designer-debug")]
+    [DefaultValue(false)]
+    public bool DesignerDebug { get; set; }
+
 }
 
 public record ModelContext : ModelContext<ModelCommandSettings>
@@ -79,7 +91,7 @@ public record ModelContext<TSettings> : BuildContext<TSettings>
     public string? ModelEditorId { get; set; }
     public Process? ModelEditorProcess { get; set; }
     public ModelEditor? ModelEditor { get; set; }
-
+    public string? ModelEditorVersion { get; set; }
     public IList<FrameworkSpecificGroup>? ModelEditorTools { get; set; }
 
     public string? ModelEditorPackageDirectory { get; set; }
@@ -213,117 +225,137 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
        })
        .Use(async (ctx, next) =>
        {
-           ctx.StatusContext!.Status = "Fetching Nugets...";
+           ctx.StatusContext!.Status = "Fetching Designer...";
 
-           var logger = NuGet.Common.NullLogger.Instance;
-           var cancellationToken = CancellationToken.None;
-
-           var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
-
-           var settings = Settings.LoadDefaultSettings(folder);
-
-           // Extract some data from the settings
-           var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(settings);
-           var sources = SettingsUtility.GetEnabledSources(settings);
-
-           var cache = new SourceCacheContext();
-           var providers = Repository.Provider.GetCoreV3();
-           foreach (var source in sources)
+           var sw = Stopwatch.StartNew();
+           try
            {
-               try
+               var logger = NuGet.Common.NullLogger.Instance;
+               var cancellationToken = CancellationToken.None;
+
+               var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+
+               var settings = Settings.LoadDefaultSettings(folder);
+
+               // Extract some data from the settings
+               var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(settings);
+
+               var sources = ctx.Settings.DesignerNugetFeed switch
                {
-                   var repository = new SourceRepository(source, providers);
+                   string feed => feed.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(f => new PackageSource(f)),
+                   _ => SettingsUtility.GetEnabledSources(settings)
+               };
 
-                   var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
-
-                   const string packageId = "Xenial.Design";
-
-                   var version = new NuGetVersion(
-                       XenialVersion.Version
-                   );
-
-                   ctx.StatusContext!.Status = $"Fetching Nugets {packageId}.{version}...";
-
-                   static async Task<DownloadResourceResult?> FindPackage(
-                       PackageSource source,
-                       FindPackageByIdResource resource,
-                       string globalPackagesFolder,
-                       SourceCacheContext cache,
-                       NuGet.Common.ILogger logger,
-                       ISettings? settings,
-                       string packageId,
-                       NuGetVersion version,
-                       CancellationToken cancellationToken)
+               var cache = new SourceCacheContext();
+               var providers = Repository.Provider.GetCoreV3();
+               foreach (var source in sources)
+               {
+                   try
                    {
-                       var package = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(packageId, version), globalPackagesFolder);
-                       if (package is null)
+                       var repository = new SourceRepository(source, providers);
+
+                       var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
+
+                       const string packageId = "Xenial.Design";
+
+                       var version = new NuGetVersion(
+                           ctx.Settings.DesignerNugetPackageVersion ?? XenialVersion.Version
+                       );
+
+                       ctx.StatusContext!.Status = $"Fetching Nugets {packageId}.{version} from {source}...";
+
+                       static async Task<DownloadResourceResult?> FindPackage(
+                           PackageSource source,
+                           FindPackageByIdResource resource,
+                           string globalPackagesFolder,
+                           SourceCacheContext cache,
+                           NuGet.Common.ILogger logger,
+                           ISettings? settings,
+                           string packageId,
+                           NuGetVersion version,
+                           CancellationToken cancellationToken)
                        {
-                           if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
+                           var package = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(packageId, version), globalPackagesFolder);
+                           if (package is null)
                            {
-                               // Download the package
-                               using var packageStream = new MemoryStream();
-                               await resource.CopyNupkgToStreamAsync(
-                                   packageId,
-                                   version,
-                                   packageStream,
-                                   cache,
-                                   logger,
-                                   cancellationToken);
-
-                               packageStream.Seek(0, SeekOrigin.Begin);
-
-                               // Add it to the global package folder
-                               var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
-                                   source.Source,
-                                   new PackageIdentity(packageId, version),
-                                   packageStream,
-                                   globalPackagesFolder,
-                                   parentId: Guid.Empty,
-                                   ClientPolicyContext.GetClientPolicy(settings, logger),
-                                   logger,
-                                   cancellationToken);
-
-                               if (downloadResult.Status == DownloadResourceResultStatus.Available)
+                               if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
                                {
-                                   return downloadResult;
+                                   // Download the package
+                                   using var packageStream = new MemoryStream();
+                                   await resource.CopyNupkgToStreamAsync(
+                                       packageId,
+                                       version,
+                                       packageStream,
+                                       cache,
+                                       logger,
+                                       cancellationToken);
+
+                                   packageStream.Seek(0, SeekOrigin.Begin);
+
+                                   // Add it to the global package folder
+                                   var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
+                                       source.Source,
+                                       new PackageIdentity(packageId, version),
+                                       packageStream,
+                                       globalPackagesFolder,
+                                       parentId: Guid.Empty,
+                                       ClientPolicyContext.GetClientPolicy(settings, logger),
+                                       logger,
+                                       cancellationToken);
+
+                                   if (downloadResult.Status == DownloadResourceResultStatus.Available)
+                                   {
+                                       return downloadResult;
+                                   }
                                }
                            }
+                           return package;
                        }
-                       return package;
-                   }
 
 
-                   var package = await FindPackage(source, resource, globalPackagesFolder, cache, logger, settings, packageId, version, cancellationToken);
-                   if (package is not null)
-                   {
-                       var tools = await package.PackageReader.GetToolItemsAsync(cancellationToken);
-                       ctx.ModelEditorTools = tools.OfType<FrameworkSpecificGroup>().ToList();
-
-                       var versionStr = version.ToString();
-                       ctx.ModelEditorPackageDirectory = Path.Combine(globalPackagesFolder, packageId, versionStr);
-
-                       break;
-                   }
-
-               }
-               catch (FatalProtocolException ex)
-               {
-                   if (ex.InnerException is HttpRequestException httpRequestEx)
-                   {
-                       if (httpRequestEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                       var package = await FindPackage(source, resource, globalPackagesFolder, cache, logger, settings, packageId, version, cancellationToken);
+                       if (package is not null)
                        {
-                           AnsiConsole.WriteLine($"[red][[ERROR]]    Authorized Feeds are not supported yet: {source.Source.EscapeMarkup()}[/]");
-                           AnsiConsole.WriteException(ex);
+                           var tools = await package.PackageReader.GetToolItemsAsync(cancellationToken);
+                           ctx.ModelEditorVersion = version.ToString();
+                           ctx.ModelEditorTools = tools.OfType<FrameworkSpecificGroup>().ToList();
+
+                           var versionStr = version.ToString();
+                           ctx.ModelEditorPackageDirectory = Path.Combine(globalPackagesFolder, packageId, versionStr);
+
+                           break;
                        }
+
                    }
-                   Logger.LogError(ex, "Fatal Nuget Error");
+                   catch (FatalProtocolException ex)
+                   {
+                       if (ex.InnerException is HttpRequestException httpRequestEx)
+                       {
+                           if (httpRequestEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                           {
+                               AnsiConsole.WriteLine($"[grey][[INFO]]    Authorized Feeds are not supported yet: {source.Source.EscapeMarkup()}[/]");
+                               AnsiConsole.WriteException(ex);
+                           }
+                       }
+                       Logger.LogWarning(ex, "Fatal Nuget Error");
+                   }
                }
+
+               sw.Success($"Fetching Designer: {ctx.ModelEditorVersion}");
+               await next();
+           }
+           catch (Exception ex)
+           {
+               sw.Fail("Fetching Designer");
+               Logger.LogError(ex, "Fetching Designer");
+               throw;
            }
 
-           await next();
        })
        .Use(async (ctx, next) =>
        {
+           ctx.StatusContext!.Status = "Launching Designer...";
+
            var tfm = ctx.BuildResult!.TargetFramework;
            var launcher = tfm switch
            {
@@ -414,46 +446,95 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
            ctx.ModelEditorId = Guid.NewGuid().ToString();
 
-           var info = new ProcessStartInfo
+           if (!File.Exists(processPath))
            {
-               FileName = processPath,
-               Arguments = ctx.ModelEditorId
-           };
+               Stopwatch.StartNew().Fail($"Designer does not exist {processPath}");
+               Logger.LogError($"Designer does not exist {processPath}");
+           }
+           else
+           {
+               var sw = Stopwatch.StartNew();
+               try
+               {
+                   var info = new ProcessStartInfo
+                   {
+                       FileName = processPath,
+                       ArgumentList =
+                   {
+                       ctx.ModelEditorId,
+#pragma warning disable CA1308
+                       ctx.Settings.DesignerDebug.ToString().ToLowerInvariant()
+#pragma warning restore CA1308
+                   }
+                   };
 
-           ctx.ModelEditorProcess = Process.Start(info);
+                   ctx.ModelEditorProcess = Process.Start(info);
 
-           await next();
+                   sw.Success("Launching Designer");
+
+                   await next();
+               }
+               catch (Exception ex)
+               {
+                   sw.Fail("Launching Designer");
+                   Logger.LogError(ex, "Launching Designer");
+                   throw;
+               }
+           }
        })
        .Use(async (ctx, next) =>
        {
-           ctx.DesignerStream = new NamedPipeClientStream(".", ctx.ModelEditorId, PipeDirection.InOut, PipeOptions.Asynchronous);
+           ctx.StatusContext!.Status = "Connecting to Designer...";
+           var sw = Stopwatch.StartNew();
+           try
+           {
+               ctx.DesignerStream = new NamedPipeClientStream(".", ctx.ModelEditorId, PipeDirection.InOut, PipeOptions.Asynchronous);
 
-           await ctx.DesignerStream.ConnectAsync(10000);
-           await next();
+               await ctx.DesignerStream.ConnectAsync(10000);
+               sw.Success("Connecting to Designer");
+               await next();
+           }
+           catch (Exception ex)
+           {
+               sw.Fail("Connecting to Designer");
+               Logger.LogError(ex, "Connecting to Designer");
+               throw;
+           }
        })
        .Use(async (ctx, next) =>
        {
-           var attached = JsonRpc.Attach(ctx.DesignerStream!);
+           ctx.StatusContext!.Status = "Connecting Designer RPC...";
+           var sw = Stopwatch.StartNew();
+           try
+           {
+               var attached = JsonRpc.Attach(ctx.DesignerStream!);
 
-           ctx.ModelEditor = new ModelEditor(attached);
+               ctx.ModelEditor = new ModelEditor(attached);
 
-           var ping = await ctx.ModelEditor.Ping();
+               var ping = await ctx.ModelEditor.Ping();
 
-           AnsiConsole.MarkupLine($"Connected to Server: [green]{ping.EscapeMarkup()}[/]");
+               sw.Success($"Connecting Designer RPC: [green]{ping.EscapeMarkup()}[/]");
 
-           await next();
+               await next();
+           }
+           catch (Exception ex)
+           {
+               sw.Fail($"Connecting Designer RPC");
+               Logger.LogError(ex, "Connecting Designer RPC");
+               throw;
+           }
        })
        .Use(async (ctx, next) =>
        {
            ctx.StatusContext!.Status = "Loading Application Model...";
 
-           var assemblyPath = ctx.BuildResult!.Properties["TargetPath"];
-           var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
-           var targetDir = Path.GetDirectoryName(assemblyPath)!;
-
            var sw = Stopwatch.StartNew();
            try
            {
+               var assemblyPath = ctx.BuildResult!.Properties["TargetPath"];
+               var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+               var targetDir = Path.GetDirectoryName(assemblyPath)!;
+
                var numberOfViews = await ctx.ModelEditor.LoadModel(assemblyPath,
                    folder,
                    "",
@@ -462,8 +543,9 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                sw.Success($"Load Model: {numberOfViews} views");
                await next();
            }
-           catch
+           catch (Exception ex)
            {
+               Logger.LogError(ex, "Load Model");
                if (ctx.Settings.Strict)
                {
                    sw.Fail("Load Model");

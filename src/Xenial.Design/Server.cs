@@ -23,8 +23,8 @@ public class ModelEditorServer
     public JsonRpc? JsonRpc { get; set; }
     public StandaloneModelEditorModelLoader? ModelLoader { get; set; }
 
-    public string Ping() => $"Hello from Server {Guid.NewGuid()}";
-    public string Pong() => $"Pong from Server {Guid.NewGuid()}";
+    public string Ping() => $"Ping from Server PID: {Process.GetCurrentProcess().Id}";
+    public string Pong() => $"Pong from Server PID: {Process.GetCurrentProcess().Id}";
 
     public int LoadModel(
         string targetFileName,
@@ -49,8 +49,7 @@ public class ModelEditorServer
         }
     }
 
-    [Conditional("DEBUG")]
-    private void LaunchDebugger()
+    public void LaunchDebugger()
     {
         if (Debug)
         {

@@ -7,8 +7,12 @@ using Spectre.Console.Cli;
 
 using System.CommandLine;
 using System.Diagnostics;
+using System.Text;
 
 using Xenial.Cli.Commands;
+
+Console.OutputEncoding = Encoding.UTF8;
+Console.InputEncoding = Encoding.UTF8;
 
 var logVerbosityOption = new Option<LogLevel?>(new[] { "-v", "--verbosity" });
 var logFileOption = new Option<bool?>(new[] { "--log-file" });
@@ -40,7 +44,11 @@ services.AddLogging(builder =>
 
 using var registrar = new Xenial.Cli.DependencyInjection.DependencyInjectionRegistrar(services);
 
-var app = new CommandApp<Xenial.Cli.Commands.EntryWizardCommand>(registrar);
+var app = new CommandApp
+#if DEBUG
+    <Xenial.Cli.Commands.EntryWizardCommand>
+#endif
+(registrar);
 
 app.Configure(c =>
 {
