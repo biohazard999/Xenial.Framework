@@ -7,11 +7,11 @@ using System;
 
 using System.Linq;
 
-using Xenial.Design;
+using Xenial.Design.Contracts;
 
 namespace Xenial.Cli.Engine;
 
-public class ModelEditor : IDisposable
+public class ModelEditor : IDisposable, IModelEditorServer
 {
     private readonly JsonRpc server;
     private bool disposedValue;
@@ -42,23 +42,30 @@ public class ModelEditor : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public Task<string> Ping() => server.InvokeAsync<string>(nameof(ModelEditorServer.Ping));
-    public Task<string> Pong() => server.InvokeAsync<string>(nameof(ModelEditorServer.Pong));
+    public Task<string> Ping()
+        => server.InvokeAsync<string>(nameof(Ping));
 
-    public Task Shutdown() => server.InvokeAsync(nameof(ModelEditorServer.Shutdown));
+    public Task<string> Pong()
+        => server.InvokeAsync<string>(nameof(Pong));
+
+    public Task Shutdown()
+        => server.InvokeAsync(nameof(Shutdown));
+
     public Task<int> LoadModel(string assemblyPath, string folder, string deviceSpecificDifferencesStoreName, string targetDir)
-        => server.InvokeAsync<int>(nameof(ModelEditorServer.LoadModel), assemblyPath, folder, deviceSpecificDifferencesStoreName, targetDir);
+        => server.InvokeAsync<int>(nameof(LoadModel), assemblyPath, folder, deviceSpecificDifferencesStoreName, targetDir);
 
     public Task<string[]> GetViewIds(IList<string> namespaces)
-        => server.InvokeAsync<string[]>(nameof(ModelEditorServer.GetViewIds), namespaces);
+        => server.InvokeAsync<string[]>(nameof(GetViewIds), namespaces);
 
     public Task<string> GetViewAsXml(string viewId)
-        => server.InvokeAsync<string>(nameof(ModelEditorServer.GetViewAsXml), viewId);
+        => server.InvokeAsync<string>(nameof(GetViewAsXml), viewId);
 
     public Task<string?> GetModelClass(string viewId)
-        => server.InvokeAsync<string?>(nameof(ModelEditorServer.GetModelClass), viewId);
+        => server.InvokeAsync<string?>(nameof(GetModelClass), viewId);
 
     public Task<ViewType> GetViewType(string viewId)
-        => server.InvokeAsync<ViewType>(nameof(ModelEditorServer.GetViewType), viewId);
+        => server.InvokeAsync<ViewType>(nameof(GetViewType), viewId);
 
+    public Task LaunchDebugger()
+        => server.InvokeAsync(nameof(LaunchDebugger));
 }

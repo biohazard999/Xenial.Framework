@@ -11,22 +11,24 @@ using DevExpress.ExpressApp.Model;
 using StreamJsonRpc;
 
 using Xenial.Cli.Engine;
+using Xenial.Design.Contracts;
 using Xenial.Framework.DevTools.X2C;
 
 namespace Xenial.Design;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
-public class ModelEditorServer
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+public class ModelEditorServer : IModelEditorServer
 {
     public bool Debug { get; set; }
 
     public JsonRpc? JsonRpc { get; set; }
     public StandaloneModelEditorModelLoader? ModelLoader { get; set; }
 
-    public string Ping() => $"Ping from Server PID: {Process.GetCurrentProcess().Id}";
-    public string Pong() => $"Pong from Server PID: {Process.GetCurrentProcess().Id}";
+    public async Task<string> Ping() => $"Ping from Server PID: {Process.GetCurrentProcess().Id}";
+    public async Task<string> Pong() => $"Pong from Server PID: {Process.GetCurrentProcess().Id}";
 
-    public int LoadModel(
+    public async Task<int> LoadModel(
         string targetFileName,
         string modelDifferencesStorePath,
         string deviceSpecificDifferencesStoreName,
@@ -49,7 +51,7 @@ public class ModelEditorServer
         }
     }
 
-    public void LaunchDebugger()
+    public async Task LaunchDebugger()
     {
         if (Debug)
         {
@@ -60,7 +62,7 @@ public class ModelEditorServer
         }
     }
 
-    public string[] GetViewIds(IList<string> namespaces!!)
+    public async Task<string[]> GetViewIds(IList<string> namespaces!!)
     {
         static IEnumerable<string> IterateViewIds(IModelApplication application, IList<string> namespaces)
         {
@@ -92,7 +94,7 @@ public class ModelEditorServer
             .ToArray();
     }
 
-    public ViewType GetViewType(string viewId)
+    public async Task<ViewType> GetViewType(string viewId)
     {
         static ViewType FindViewType(IModelApplication modelApplication, string viewId)
         {
@@ -110,7 +112,7 @@ public class ModelEditorServer
     }
     //modelObjectView.ModelClass.Name
 
-    public string GetViewAsXml(string viewId)
+    public async Task<string> GetViewAsXml(string viewId)
     {
         static string ConvertViewToXml(IModelApplication modelApplication, string viewId)
         {
@@ -124,7 +126,7 @@ public class ModelEditorServer
         return ConvertViewToXml(ModelLoader!.ModelApplication!, viewId);
     }
 
-    public string? GetModelClass(string viewId)
+    public async Task<string?> GetModelClass(string viewId)
     {
         static string? FindModelClass(IModelApplication modelApplication, string viewId)
         {
@@ -139,7 +141,7 @@ public class ModelEditorServer
         return FindModelClass(ModelLoader!.ModelApplication!, viewId);
     }
 
-    public void Shutdown()
+    public async Task Shutdown()
     {
         try
         {

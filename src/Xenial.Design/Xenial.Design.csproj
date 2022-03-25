@@ -27,9 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Design.Contracts\Xenial.Design.Contracts.csproj" />
     <ProjectReference Include="..\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
   </ItemGroup>
 
