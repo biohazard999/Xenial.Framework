@@ -57,6 +57,8 @@ public class StandaloneModelEditorModelLoader
         // Normally the first argument to "SetValue" is the instance
         // of the type but since we are mutating a static field we pass "null"
         field.SetValue(null, true);
+#else
+        ModuleHelper.IsDesignMode = true;
 #endif
 
         if (string.IsNullOrEmpty(assembliesPath))
