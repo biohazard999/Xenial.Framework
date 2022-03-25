@@ -10,14 +10,12 @@ using DevExpress.ExpressApp.Model;
 
 using StreamJsonRpc;
 
-using Xenial.Cli.Engine;
 using Xenial.Design.Contracts;
+using Xenial.Design.Engine;
 using Xenial.Framework.DevTools.X2C;
 
 namespace Xenial.Design;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 public class ModelEditorServer : IModelEditorServer
 {
     public bool Debug { get; set; }
@@ -38,7 +36,7 @@ public class ModelEditorServer : IModelEditorServer
         ModelLoader = new StandaloneModelEditorModelLoader();
         try
         {
-            LaunchDebugger();
+            await LaunchDebugger();
 
             ModelLoader.LoadModel(targetFileName, modelDifferencesStorePath, deviceSpecificDifferencesStoreName, assembliesPath);
 
@@ -62,7 +60,7 @@ public class ModelEditorServer : IModelEditorServer
         }
     }
 
-    public async Task<string[]> GetViewIds(IList<string> namespaces!!)
+    public async Task<IList<string>> GetViewIds(IList<string> namespaces)
     {
         static IEnumerable<string> IterateViewIds(IModelApplication application, IList<string> namespaces)
         {
@@ -75,9 +73,9 @@ public class ModelEditorServer : IModelEditorServer
                         return true;
                     }
 
-                    var @namespace = modelObjectView.ModelClass.TypeInfo.Type.Namespace ?? "";
+                    var ns = modelObjectView.ModelClass.TypeInfo.Type.Namespace ?? "";
 
-                    return namespaces.Any(ns => @namespace.StartsWith(ns, StringComparison.OrdinalIgnoreCase));
+                    return namespaces.Any(ns => ns.StartsWith(ns, StringComparison.OrdinalIgnoreCase));
                 }
 
                 //TODO: Dashboard views
@@ -110,7 +108,6 @@ public class ModelEditorServer : IModelEditorServer
 
         return FindViewType(ModelLoader!.ModelApplication!, viewId);
     }
-    //modelObjectView.ModelClass.Name
 
     public async Task<string> GetViewAsXml(string viewId)
     {

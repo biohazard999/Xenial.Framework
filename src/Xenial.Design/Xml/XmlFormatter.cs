@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Xenial.Cli.Xml
+namespace Xenial.Design.Xml
 {
     /// <summary>   An XML formatter. </summary>
     public class XmlFormatter

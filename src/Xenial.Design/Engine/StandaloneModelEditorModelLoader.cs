@@ -11,7 +11,7 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Utils;
 using DevExpress.Utils.Design;
 
-namespace Xenial.Cli.Engine;
+namespace Xenial.Design.Engine;
 
 public class StandaloneModelEditorModelLoader
 {

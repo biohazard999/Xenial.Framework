@@ -14,7 +14,7 @@ public interface IModelEditorServer
 {
     Task<string?> GetModelClass(string viewId);
     Task<string> GetViewAsXml(string viewId);
-    Task<string[]> GetViewIds(IList<string> namespaces);
+    Task<IList<string>> GetViewIds(IList<string> namespaces);
     Task<ViewType> GetViewType(string viewId);
     Task LaunchDebugger();
     Task<int> LoadModel(string targetFileName, string modelDifferencesStorePath, string deviceSpecificDifferencesStoreName, string? assembliesPath);

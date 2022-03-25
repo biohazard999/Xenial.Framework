@@ -1,4 +1,4 @@
-﻿namespace Xenial.Cli.Xml
+﻿namespace Xenial.Design.Xml
 {
     /// <summary>   (Immutable) an XML formatter options. </summary>
     public record XmlFormatterOptions

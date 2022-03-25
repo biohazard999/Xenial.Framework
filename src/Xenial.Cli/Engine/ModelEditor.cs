@@ -54,8 +54,8 @@ public class ModelEditor : IDisposable, IModelEditorServer
     public Task<int> LoadModel(string assemblyPath, string folder, string deviceSpecificDifferencesStoreName, string targetDir)
         => server.InvokeAsync<int>(nameof(LoadModel), assemblyPath, folder, deviceSpecificDifferencesStoreName, targetDir);
 
-    public Task<string[]> GetViewIds(IList<string> namespaces)
-        => server.InvokeAsync<string[]>(nameof(GetViewIds), namespaces);
+    public Task<IList<string>> GetViewIds(IList<string> namespaces)
+        => server.InvokeAsync<IList<string>>(nameof(GetViewIds), namespaces);
 
     public Task<string> GetViewAsXml(string viewId)
         => server.InvokeAsync<string>(nameof(GetViewAsXml), viewId);

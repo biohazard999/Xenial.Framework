@@ -10,7 +10,7 @@
     <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
     <BuildOutputTargetFolder>tools/$(TargetFramework)</BuildOutputTargetFolder>
     <IncludeBuildOutput>true</IncludeBuildOutput>
-    <NoWarn>NU5128;CA2007;CA1303;$(NoWarn)</NoWarn>
+    <NoWarn>NU5128;CA2007;CA1303;CA2007;CA1031;CS1998;$(NoWarn)</NoWarn>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AppConfig>app.config</AppConfig>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.config</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -43,23 +43,5 @@
       </BuildOutputInPackage>
     </ItemGroup>
   </Target>
-        
-  <!--<PropertyGroup>
-    <TargetsForTfmSpecificBuildOutput>ToolDependenciesTarget;$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
-  </PropertyGroup>
-
-  <Target Name="ToolDependenciesTarget" AfterTargets="GenerateBindingRedirects" BeforeTargets="GenerateNuspec">
-    <Message Text="Including dependencies from $(OutputPath)" Importance="high" />
-    <Message Text="Including dependencies from $(OutputPath)$(TargetName)$(TargetExt).config" Importance="high" />
-      
-    <ItemGroup>
-      <BuildOutputInPackage Include="$(OutputPath)\*.*;$(OutputPath)$(TargetName)$(TargetExt).config" Exclude="$(OutputPath)\$(TargetName).pdb;$(OutputPath)\*.xml">
-        <PackagePath>tools\$(TargetFramework)</PackagePath>
-      </BuildOutputInPackage>
-    </ItemGroup>
-
-    
-  
-  </Target>-->
 
 </Project>

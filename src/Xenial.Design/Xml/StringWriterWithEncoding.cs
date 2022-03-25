@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Xenial.Cli.Xml
+namespace Xenial.Design.Xml
 {
     /// <summary>   A string writer with encoding. This class cannot be inherited. </summary>
     ///

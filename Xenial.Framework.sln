@@ -135,7 +135,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Framework.Generators
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Design", "src\Xenial.Design\Xenial.Design.csproj", "{C044447D-88AA-4890-9BEF-03E85852536F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Design.Contracts", "src\Xenial.Design.Contracts\Xenial.Design.Contracts.csproj", "{19DFC32E-3EB8-4863-AFD0-FB1211B843E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Design.Contracts", "src\Xenial.Design.Contracts\Xenial.Design.Contracts.csproj", "{19DFC32E-3EB8-4863-AFD0-FB1211B843E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

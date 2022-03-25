@@ -6,13 +6,10 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 
-using System.Linq;
-
 using System.Threading.Tasks;
 
 using Xenial.Design;
 
-#pragma warning disable CA1031 // Do not catch general exception types
 try
 {
     var connectionId = args[0];
@@ -33,11 +30,9 @@ try
 }
 catch (Exception ex)
 {
-    await Console.Error.WriteLineAsync(ex.ToString());
+    Console.Error.WriteLine(ex.ToString());
     return 1;
 }
-#pragma warning restore CA1031 // Do not catch general exception types
-
 
 static async Task NamedPipeServerAsync(string connectionId, bool debug)
 {
@@ -73,8 +68,7 @@ static async Task<bool> RespondToRpcRequestsAsync(Stream stream, int clientId, b
     server.JsonRpc = jsonRpc;
 
     await Console.Out.WriteLineAsync($"JSON-RPC listener attached to #{clientId}. Waiting for requests...");
-    await jsonRpc.Completion;
+    //await jsonRpc.Completion;
     await Console.Out.WriteLineAsync($"Connection #{clientId} terminated.");
     return true;
 }
-
