@@ -33,12 +33,14 @@ using StreamJsonRpc;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO.Pipes;
 using System.Linq;
 
 using Xenial.Cli.Engine;
 using Xenial.Cli.Engine.Syntax;
 using Xenial.Cli.Utils;
+using Xenial.Framework;
 using Xenial.Framework.DevTools.X2C;
 
 using static SimpleExec.Command;
@@ -72,6 +74,20 @@ public class ModelCommandSettings : BuildCommandSettings
     [DefaultValue(false)]
     public bool DesignerDebug { get; set; }
 
+    [Description("Specifies if the project references should be built.")]
+    [CommandOption("-r|--references")]
+    [DefaultValue(true)]
+    public bool BuildReferences { get; set; }
+
+    [Description("For internal use only.")]
+    [CommandOption("--launch-from-nuget")]
+    [DefaultValue(true)]
+    public bool LaunchFromNuget { get; set; }
+
+    [Description("Specifies the connection timeout for the design process communitcation in milliseconds. Will be unlimited when debugger is attached.")]
+    [CommandOption("--designer-connection-timeout")]
+    [DefaultValue(10000)]
+    public int DesignerConnectionTimeout { get; set; }
 }
 
 public record ModelContext : ModelContext<ModelCommandSettings>
@@ -197,13 +213,20 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                ctx.StatusContext!.Status = "Preparing Workspace...";
                ctx.Workspace = CreateWorkspace(ctx.AnalyzerManager);
-               ctx.BuildResult.AddToWorkspace(ctx.Workspace, false);
+               ctx.BuildResult.AddToWorkspace(ctx.Workspace, ctx.Settings.BuildReferences);
 
                foreach (var project in ctx.Workspace.CurrentSolution.Projects)
                {
                    ctx.StatusContext!.Status = "Compiling Workspace...";
                    ctx.Compilation = await project.GetCompilationAsync();
                }
+
+               var currentProject = ctx.Workspace.CurrentSolution.Projects.FirstOrDefault(m => m.FilePath == ctx.ProjectAnalyzer.ProjectFile.Path);
+               if (currentProject is not null)
+               {
+                   ctx.Compilation = await currentProject.GetCompilationAsync();
+               }
+
                sw.Success("Load Workspace");
                await next();
            }
@@ -368,78 +391,78 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
            static async Task<string> FindProcessPath(string launcher, TPipelineContext ctx)
            {
-               if (ctx.ModelEditorTools is not null && ctx.ModelEditorTools.Count > 0)
+               if (ctx.Settings.LaunchFromNuget)
                {
-                   var x = new NuGetFramework("net462");
-
-                   static Dictionary<string, FrameworkSpecificGroup> ConvertToTfms(IEnumerable<FrameworkSpecificGroup> groups)
+                   if (ctx.ModelEditorTools is not null && ctx.ModelEditorTools.Count > 0)
                    {
-                       var result = new Dictionary<string, FrameworkSpecificGroup>();
+                       var x = new NuGetFramework("net462");
 
-                       foreach (var group in groups)
+                       static Dictionary<string, FrameworkSpecificGroup> ConvertToTfms(IEnumerable<FrameworkSpecificGroup> groups)
                        {
-                           if (group.TargetFramework.Framework == ".NETFramework")
-                           {
-                               var tfmVersion = group.TargetFramework.Version.ToString().Replace(".", "", StringComparison.OrdinalIgnoreCase).TrimEnd('0');
-                               var tfm = $"net{tfmVersion}";
-                               result[tfm] = group;
-                           }
-                           else
-                           {
-                               result[group.TargetFramework.ToString()] = group;
-                           }
-                       }
+                           var result = new Dictionary<string, FrameworkSpecificGroup>();
 
-                       return result;
-                   }
-
-                   static FrameworkSpecificGroup? FindGroup(Dictionary<string, FrameworkSpecificGroup> groups, string launcher)
-                   {
-                       if (groups.TryGetValue(launcher, out var group))
-                       {
-                           return group;
-                       }
-                       foreach (var pair in groups)
-                       {
-                           if (pair.Key.StartsWith(launcher, StringComparison.OrdinalIgnoreCase))
+                           foreach (var group in groups)
                            {
-                               return pair.Value;
-                           }
-                       }
-                       return null;
-                   }
-
-                   var tfms = ConvertToTfms(ctx.ModelEditorTools);
-
-                   var tools = FindGroup(tfms, launcher);
-                   if (tools is not null && !string.IsNullOrEmpty(ctx.ModelEditorPackageDirectory))
-                   {
-                       foreach (var tool in tools.Items)
-                       {
-                           var path = Path.Combine(ctx.ModelEditorPackageDirectory, tool.Replace('/', Path.DirectorySeparatorChar));
-                           if (File.Exists(path))
-                           {
-                               var fileName = Path.GetFileName(path);
-                               if (fileName == "Xenial.Design.exe")
+                               if (group.TargetFramework.Framework == ".NETFramework")
                                {
-                                   return path;
+                                   var tfmVersion = group.TargetFramework.Version.ToString().Replace(".", "", StringComparison.OrdinalIgnoreCase).TrimEnd('0');
+                                   var tfm = $"net{tfmVersion}";
+                                   result[tfm] = group;
+                               }
+                               else
+                               {
+                                   result[group.TargetFramework.ToString()] = group;
+                               }
+                           }
+
+                           return result;
+                       }
+
+                       static FrameworkSpecificGroup? FindGroup(Dictionary<string, FrameworkSpecificGroup> groups, string launcher)
+                       {
+                           if (groups.TryGetValue(launcher, out var group))
+                           {
+                               return group;
+                           }
+                           foreach (var pair in groups)
+                           {
+                               if (pair.Key.StartsWith(launcher, StringComparison.OrdinalIgnoreCase))
+                               {
+                                   return pair.Value;
+                               }
+                           }
+                           return null;
+                       }
+
+                       var tfms = ConvertToTfms(ctx.ModelEditorTools);
+
+                       var tools = FindGroup(tfms, launcher);
+                       if (tools is not null && !string.IsNullOrEmpty(ctx.ModelEditorPackageDirectory))
+                       {
+                           foreach (var tool in tools.Items)
+                           {
+                               var path = Path.Combine(ctx.ModelEditorPackageDirectory, tool.Replace('/', Path.DirectorySeparatorChar));
+                               if (File.Exists(path))
+                               {
+                                   var fileName = Path.GetFileName(path);
+                                   if (fileName == "Xenial.Design.exe")
+                                   {
+                                       return path;
+                                   }
                                }
                            }
                        }
                    }
                }
 
-               if (Debugger.IsAttached)
-               {
 #if DEBUG
-                   const string configuration = "Debug";
+               const string configuration = "Debug";
 #else
-                   const string configuration = "Release";
+               const string configuration = "Release";
 #endif
-                   var processPath = $@"..\..\..\..\Xenial.Design\bin\{configuration}\{launcher}\Xenial.Design.exe";
-               }
+               var processPath = $@"..\..\..\..\Xenial.Design\bin\{configuration}\{launcher}\Xenial.Design.exe";
 
-               return null!;
+               return processPath!;
            }
 
            var processPath = await FindProcessPath(launcher, ctx);
@@ -464,7 +487,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                        ctx.ModelEditorId,
 #pragma warning disable CA1308
                        ctx.Settings.DesignerDebug.ToString().ToLowerInvariant()
-#pragma warning restore CA1308
+#pragma warning restore CA1308,
                    }
                    };
 
@@ -490,7 +513,15 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            {
                ctx.DesignerStream = new NamedPipeClientStream(".", ctx.ModelEditorId, PipeDirection.InOut, PipeOptions.Asynchronous);
 
-               await ctx.DesignerStream.ConnectAsync(10000);
+               if (ctx.Settings.DesignerDebug)
+               {
+                   await ctx.DesignerStream.ConnectAsync();
+               }
+               else
+               {
+                   await ctx.DesignerStream.ConnectAsync(ctx.Settings.DesignerConnectionTimeout);
+               }
+
                sw.Success("Connecting to Designer");
                await next();
            }
@@ -596,7 +627,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
         pipeline.Use(async (ctx, next) =>
         {
-            var attributeSymbol = ctx.Compilation.GetTypeByMetadataName("Xenial.Framework.Layouts.DetailViewLayoutBuilderAttribute");
+            var attributeSymbol = ctx.Compilation.GetTypeByMetadataName(typeof(XenialModuleBase).FullName!);
 
             if (attributeSymbol is null)
             {

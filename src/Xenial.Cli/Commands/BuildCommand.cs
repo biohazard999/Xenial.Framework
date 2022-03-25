@@ -55,11 +55,6 @@ public class BuildCommandSettings : BaseCommandSettings
     [DefaultValue(true)]
     public bool Strict { get; set; }
 
-    [Description("Tries to do as little effort when building as possible. When set to false, it relaxes some conditions, but will be slower")]
-    [CommandOption("--fast")]
-    [DefaultValue(true)]
-    public bool Fast { get; set; }
-
     public override ValidationResult Validate()
     {
         if (!RunAsWizard)
@@ -237,17 +232,14 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
 
     protected static void PatchOptions(TPipelineContext ctx!!, IDictionary<string, string> globalProperties!!)
     {
-        if (!ctx.Settings.Fast)
-        {
-            globalProperties[MsBuildProperties.SkipCompilerExecution] = "false";
-            globalProperties[MsBuildProperties.BuildingProject] = "true";
-            globalProperties[MsBuildProperties.AutoGenerateBindingRedirects] = "true";
+        globalProperties[MsBuildProperties.SkipCompilerExecution] = "false";
+        globalProperties[MsBuildProperties.BuildingProject] = "true";
+        globalProperties[MsBuildProperties.AutoGenerateBindingRedirects] = "true";
 
-            globalProperties[MsBuildProperties.ComputeNETCoreBuildOutputFiles] = "true";
-            globalProperties[MsBuildProperties.CopyBuildOutputToOutputDirectory] = "true";
-            globalProperties[MsBuildProperties.BuildProjectReferences] = "true";
-            globalProperties[MsBuildProperties.SkipCopyBuildProduct] = "false";
-        }
+        globalProperties[MsBuildProperties.ComputeNETCoreBuildOutputFiles] = "true";
+        globalProperties[MsBuildProperties.CopyBuildOutputToOutputDirectory] = "true";
+        globalProperties[MsBuildProperties.BuildProjectReferences] = "true";
+        globalProperties[MsBuildProperties.SkipCopyBuildProduct] = "false";
     }
 
     protected virtual void ConfigureStatusPipeline(TPipeline pipeline!!)

@@ -62,11 +62,12 @@ public sealed class X2CEngine
     /// 
     /// </summary>
     /// <param name="view"></param>
+    /// <param name="prettyPrint"></param>
     /// <returns></returns>
-    public static string ConvertToXml(IModelView view!!)
+    public static string ConvertToXml(IModelView view!!, bool prettyPrint = true)
     {
         var node = LoadXml(view);
-        return VisualizeNodeHelper.PrettyPrint(node.OuterXml);
+        return VisualizeNodeHelper.PrettyPrint(node.OuterXml, prettyPrint);
     }
 
     /// <summary>

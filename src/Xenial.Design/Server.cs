@@ -115,7 +115,7 @@ public class ModelEditorServer : IModelEditorServer
         {
             var view = modelApplication.Views[viewId];
 
-            var xml = X2CEngine.ConvertToXml(view);
+            var xml = X2CEngine.ConvertToXml(view, false);
 
             return xml;
         }
