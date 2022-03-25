@@ -48,7 +48,8 @@ public class StandaloneModelEditorModelLoader
       string deviceSpecificDifferencesStoreName,
       string? assembliesPath)
     {
-#if FULL_FRAMEWORK
+#if NETFRAMEWORK
+        //This sets:
         //DesignTimeTools.isDesignModeCore = true;
         var field = typeof(DesignTimeTools).GetField("isDesignModeCore",
                     BindingFlags.Static |
