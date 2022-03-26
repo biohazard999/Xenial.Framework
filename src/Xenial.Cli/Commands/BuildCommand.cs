@@ -25,7 +25,7 @@ public class BuildCommandSettings : BaseCommandSettings
     public BuildCommandSettings(string? workingDirectory) : base(workingDirectory) { }
 
     [Description("Project (csproj) or Solution (sln) file")]
-    [CommandArgument(0, "<project>")]
+    [CommandArgument(0, "[project]")]
     public string ProjectOrSolution { get; set; } = "";
 
     [Description("Doesn't execute an implicit restore during build.")]
@@ -57,14 +57,44 @@ public class BuildCommandSettings : BaseCommandSettings
 
     public override ValidationResult Validate()
     {
+        var result = base.Validate();
         if (!RunAsWizard)
         {
+            if (string.IsNullOrEmpty(ProjectOrSolution) && result.Successful)
+            {
+                var files = Directory.EnumerateFiles(WorkingDirectory, "*.csproj").Concat(Directory.EnumerateFiles(WorkingDirectory, "*.sln")).ToList();
+                if (files.Count > 1)
+                {
+                    var slns = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".sln".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
+                    if (slns.Count > 1)
+                    {
+                        return ValidationResult.Error($"There are mutiple sln files in the directory '{WorkingDirectory}' please specify one explicitly.");
+                    }
+                    var (sln, _) = slns.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(sln))
+                    {
+                        ProjectOrSolution = sln;
+                    }
+
+                    var csprojs = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".csproj".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
+                    if (csprojs.Count > 1)
+                    {
+                        return ValidationResult.Error($"There are mutiple csproj files in the directory '{WorkingDirectory}' please specify one explicitly.");
+                    }
+                    var (csproj, _) = csprojs.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(csproj))
+                    {
+                        ProjectOrSolution = csproj;
+                    }
+                }
+            }
             if (!File.Exists(ProjectOrSolution))
             {
                 return ValidationResult.Error($"The project file '{ProjectOrSolution}' does not exist.");
             }
         }
-        return base.Validate();
+
+        return result;
     }
 }
 
