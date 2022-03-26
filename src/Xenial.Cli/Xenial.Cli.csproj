@@ -8,28 +8,9 @@
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>xenial</ToolCommandName>
-    <!--<NoWarn>CA2007;CA1031;CA1848;CA2254;CA1062;$(NoWarn)</NoWarn>-->
     <NoWarn>CA2007;$(NoWarn)</NoWarn>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
-
-  <!--<Target Name="RemoveTargetPlatformIdentifier" BeforeTargets="_CheckForInvalidWindowsDesktopTargetingConfiguration">
-    <PropertyGroup>
-      <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
-    </PropertyGroup>
-  </Target>
-  <Target Name="RestoreTargetPlatformIdentifier" AfterTargets="_CheckForInvalidWindowsDesktopTargetingConfiguration">
-    <PropertyGroup>
-      <TargetPlatformIdentifier></TargetPlatformIdentifier>
-    </PropertyGroup>
-  </Target>-->
-
-  <!--<Target Name="PatchNuget" AfterTargets="MinVer">
-    <ItemGroup>
-      <Constant Update="Nuget.Id" Value="$(PackageId)" />
-      <Constant Update="Nuget.Version" Value="$(PackageVersion)" />
-    </ItemGroup>
-  </Target>-->
   
   <ItemGroup>
     <PackageReference Include="StreamJsonRpc" Version="2.10.44" />

@@ -19,8 +19,8 @@
     },
     "model.cwd": {
       "commandName": "Project",
-      "commandLineArgs": "model",
-      "workingDirectory": "C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module"
+      "commandLineArgs": "model FeatureCenter.Module.NetCore.Desktop.csproj",
+      "workingDirectory": "C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\FeatureCenter\\CS\\FeatureCenter.Module"
     },
     "model.win": {
       "commandName": "Project",
@@ -28,11 +28,11 @@
     },
     "model.maindemo.core": {
       "commandName": "Project",
-      "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module\\MainDemo.Module.NetCore.Desktop.csproj\" -n=MainDemo.Module"
+      "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module\\MainDemo.Module.NetCore.Desktop.csproj\" --launch-from-nuget=false"
     },
     "model.maindemo.net46": {
       "commandName": "Project",
-      "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module\\MainDemo.Module.csproj\" -v=debug -n=MainDemo.Module"
+      "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module\\MainDemo.Module.csproj\" --launch-from-nuget=false"
     },
     "model.maindemo.core.win": {
       "commandName": "Project",
