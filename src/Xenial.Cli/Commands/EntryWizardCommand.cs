@@ -47,11 +47,11 @@ public class BaseCommandSettings : CommandSettings, IBaseSettings
     )]
     public bool NoLogo { get; set; }
 
-    [Description("Run as wizard aka. interactive mode")]
-    [CommandOption("-z|--wizard"
-    //    , IsHidden = true //TODO: is not available in 0.4.3, wait for later version
-    )]
-    public bool RunAsWizard { get; set; }
+    //[Description("Run as wizard aka. interactive mode")]
+    //[CommandOption("-z|--wizard"
+    ////    , IsHidden = true //TODO: is not available in 0.4.3, wait for later version
+    //)]
+    //public bool RunAsWizard { get; set; }
 }
 
 public sealed class EntryWizardCommand : Command<BaseCommandSettings>
