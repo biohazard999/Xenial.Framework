@@ -118,20 +118,13 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
     where TPipeline : Pipeline<TPipelineContext>
     where TPipelineContext : BuildContext<TSettings>
 {
-    protected readonly ILoggerFactory LoggerFactory;
-    protected readonly ILogger<BuildCommand<TSettings, TPipeline, TPipelineContext>> Logger;
+    protected ILoggerFactory LoggerFactory { get; }
+    protected ILogger<BuildCommand<TSettings, TPipeline, TPipelineContext>> Logger { get; }
 
     protected BuildCommand(ILoggerFactory loggerFactory, ILogger<BuildCommand<TSettings, TPipeline, TPipelineContext>> logger)
         => (LoggerFactory, Logger) = (loggerFactory, logger);
 
     protected abstract TPipeline CreatePipeline();
-
-    public static string GetWizardValue(string message)
-    {
-        var name = AnsiConsole.Ask<string>($"[gray bold]{message}: [/]");
-
-        return name;
-    }
 
     public abstract string CommandName { get; }
 

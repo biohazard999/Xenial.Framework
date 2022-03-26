@@ -5,9 +5,7 @@ namespace Wcwidth
     internal static class IntegerExtensions
     {
         public static bool Exist(this uint[,] table, uint value)
-        {
-            return Find(table, value) != 0;
-        }
+            => Find(table, value) != 0;
 
         public static int Find(this uint[,] table, uint value)
         {

@@ -497,7 +497,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                             AnsiConsole.WriteLine();
                         }
 #endif
-                        var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass);
+                        var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass!);
 
                         if (symbol is not null)
                         {
@@ -730,7 +730,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
             root = rewriter.Visit(root);
         }
-        root = Formatter.Format(root, ctx.Workspace!);
+        root = Formatter.Format(root!, ctx.Workspace!);
         return root;
     }
 

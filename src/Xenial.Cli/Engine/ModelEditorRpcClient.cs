@@ -51,8 +51,8 @@ public class ModelEditorRpcClient : IDisposable, IModelEditorServer
     public Task Shutdown()
         => server.InvokeAsync(nameof(Shutdown));
 
-    public Task<int> LoadModel(string assemblyPath, string folder, string deviceSpecificDifferencesStoreName, string targetDir)
-        => server.InvokeAsync<int>(nameof(LoadModel), assemblyPath, folder, deviceSpecificDifferencesStoreName, targetDir);
+    public Task<int> LoadModel(string targetFileName, string modelDifferencesStorePath, string deviceSpecificDifferencesStoreName, string? assembliesPath)
+        => server.InvokeAsync<int>(nameof(LoadModel), targetFileName, modelDifferencesStorePath, deviceSpecificDifferencesStoreName, assembliesPath);
 
     public Task<IList<string>> GetViewIds(IList<string> namespaces)
         => server.InvokeAsync<IList<string>>(nameof(GetViewIds), namespaces);
