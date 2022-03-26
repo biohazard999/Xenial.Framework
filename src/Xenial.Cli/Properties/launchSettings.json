@@ -4,6 +4,11 @@
       "commandName": "Project",
       "commandLineArgs": "build C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module\\Xenial.FeatureCenter.Module.csproj"
     },
+    "build.cwd": {
+      "commandName": "Project",
+      "commandLineArgs": "build Xenial.FeatureCenter.Module.csproj",
+      "workingDirectory": "C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module"
+    },
     "build.win": {
       "commandName": "Project",
       "commandLineArgs": "build C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module.Win\\Xenial.FeatureCenter.Module.Win.csproj"
@@ -11,6 +16,11 @@
     "model": {
       "commandName": "Project",
       "commandLineArgs": "model C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module\\Xenial.FeatureCenter.Module.csproj -f=net462 --log-file=true --designer-debug=true --launch-from-nuget=false"
+    },
+    "model.cwd": {
+      "commandName": "Project",
+      "commandLineArgs": "model",
+      "workingDirectory": "C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module"
     },
     "model.win": {
       "commandName": "Project",

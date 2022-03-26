@@ -62,29 +62,27 @@ public class BuildCommandSettings : BaseCommandSettings
         if (string.IsNullOrEmpty(ProjectOrSolution))
         {
             var files = Directory.EnumerateFiles(WorkingDirectory, "*.csproj").Concat(Directory.EnumerateFiles(WorkingDirectory, "*.sln")).ToList();
-            if (files.Count > 1)
-            {
-                var slns = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".sln".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
-                if (slns.Count > 1)
-                {
-                    return ValidationResult.Error($"There are mutiple sln files in the directory '{WorkingDirectory}' please specify one explicitly.");
-                }
-                var (sln, _) = slns.FirstOrDefault();
-                if (!string.IsNullOrEmpty(sln))
-                {
-                    ProjectOrSolution = sln;
-                }
 
-                var csprojs = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".csproj".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
-                if (csprojs.Count > 1)
-                {
-                    return ValidationResult.Error($"There are mutiple csproj files in the directory '{WorkingDirectory}' please specify one explicitly.");
-                }
-                var (csproj, _) = csprojs.FirstOrDefault();
-                if (!string.IsNullOrEmpty(csproj))
-                {
-                    ProjectOrSolution = csproj;
-                }
+            var slns = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".sln".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (slns.Count > 1)
+            {
+                return ValidationResult.Error($"There are mutiple sln files in the directory '{WorkingDirectory}' please specify one explicitly.");
+            }
+            var (_, sln) = slns.FirstOrDefault();
+            if (!string.IsNullOrEmpty(sln))
+            {
+                ProjectOrSolution = sln;
+            }
+
+            var csprojs = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".csproj".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (csprojs.Count > 1)
+            {
+                return ValidationResult.Error($"There are mutiple csproj files in the directory '{WorkingDirectory}' please specify one explicitly.");
+            }
+            var (_, csproj) = csprojs.FirstOrDefault();
+            if (!string.IsNullOrEmpty(csproj))
+            {
+                ProjectOrSolution = csproj;
             }
         }
 
@@ -223,7 +221,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
         {
             await AnsiConsole.Status().Start("Analyzing project...", async statusContext =>
             {
-                statusContext.Spinner(Spinner.Known.Star);
+                statusContext.Spinner(Spinner.Known.Ascii);
                 ctx.StatusContext = statusContext;
 
                 var pipeline = CreatePipeline();
@@ -401,8 +399,10 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             await next();
         });
 
+    public override ValidationResult Validate(CommandContext context, TSettings settings!!)
+        => settings.Validate();
 
-    public override async Task<int> ExecuteAsync(CommandContext context, TSettings settings)
+    public override async Task<int> ExecuteAsync(CommandContext context, TSettings settings!!)
     {
         var pipeline = CreatePipeline();
         var pipelineContext = pipeline.CreateContext();

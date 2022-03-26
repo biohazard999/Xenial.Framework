@@ -35,8 +35,8 @@ public class BaseCommandSettings : CommandSettings, IBaseSettings
 
     public override ValidationResult Validate()
         => Directory.Exists(WorkingDirectory)
-            ? ValidationResult.Error($"{nameof(WorkingDirectory)} must exist: {WorkingDirectory}")
-            : ValidationResult.Success();
+            ? ValidationResult.Success()
+            : ValidationResult.Error($"{nameof(WorkingDirectory)} must exist: {WorkingDirectory}");
 
     [DefaultValue(LogLevel.Warning)]
     [CommandOption("-v|--verbosity")]
