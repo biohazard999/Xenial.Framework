@@ -787,7 +787,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 #if DEBUG
         const string configuration = "Debug";
 #else
-               const string configuration = "Release";
+        const string configuration = "Release";
 #endif
         var processPath = $@"..\..\..\..\Xenial.Design\bin\{configuration}\{launcher}\Xenial.Design.exe";
 
