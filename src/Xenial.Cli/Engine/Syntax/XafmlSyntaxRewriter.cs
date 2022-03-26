@@ -33,7 +33,7 @@ public class XafmlSyntaxRewriter
         }
 
         var content = await File.ReadAllTextAsync(ModelStore.Name);
-        doc = new XmlDocument() { XmlResolver = null };
+        doc = new XmlDocument() { XmlResolver = null! };
 
         var sreader = new System.IO.StringReader(content);
         using var reader = XmlReader.Create(sreader, new XmlReaderSettings() { XmlResolver = null });

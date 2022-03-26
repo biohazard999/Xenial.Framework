@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
-using Xenial.Cli.Xml;
+
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Utils;
 
 
-namespace Xenial.Cli;
-
-#nullable enable
+namespace Xenial.Design.Xml;
 
 internal static class VisualizeNodeHelper
 {

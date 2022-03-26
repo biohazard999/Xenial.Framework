@@ -11,7 +11,7 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Utils;
 using DevExpress.Utils.Design;
 
-namespace Xenial.Cli.Engine;
+namespace Xenial.Design.Engine;
 
 public class StandaloneModelEditorModelLoader
 {
@@ -48,7 +48,8 @@ public class StandaloneModelEditorModelLoader
       string deviceSpecificDifferencesStoreName,
       string? assembliesPath)
     {
-#if FULL_FRAMEWORK
+#if NETFRAMEWORK
+        //This sets:
         //DesignTimeTools.isDesignModeCore = true;
         var field = typeof(DesignTimeTools).GetField("isDesignModeCore",
                     BindingFlags.Static |
@@ -57,6 +58,8 @@ public class StandaloneModelEditorModelLoader
         // Normally the first argument to "SetValue" is the instance
         // of the type but since we are mutating a static field we pass "null"
         field.SetValue(null, true);
+#else
+        ModuleHelper.IsDesignMode = true;
 #endif
 
         if (string.IsNullOrEmpty(assembliesPath))

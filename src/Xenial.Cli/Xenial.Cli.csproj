@@ -8,6 +8,7 @@
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>xenial</ToolCommandName>
+    <!--<NoWarn>CA2007;CA1031;CA1848;CA2254;CA1062;$(NoWarn)</NoWarn>-->
     <NoWarn>CA2007;$(NoWarn)</NoWarn>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
@@ -38,7 +39,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Xenial.Design.Contracts\Xenial.Design.Contracts.csproj" />
     <ProjectReference Include="..\Xenial.Design\Xenial.Design.csproj">
+      <ExcludeAssets>All</ExcludeAssets>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <OutputItemType>Content</OutputItemType>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
@@ -58,8 +62,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-    <PackageReference Include="Spectre.Console" Version="0.43.0" />
-    <PackageReference Include="Spectre.Console.Analyzer" Version="0.43.0" />
+    <PackageReference Include="Spectre.Console" Version="0.43.1-preview.0.45" />
+    <PackageReference Include="Spectre.Console.Analyzer" Version="0.43.1-preview.0.45" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta3.22114.1" />
     <PackageReference Include="TextMateSharp" Version="1.0.31" />
     <PackageReference Include="TextMateSharp.Grammars" Version="1.0.31" />

@@ -25,7 +25,7 @@ public class BuildCommandSettings : BaseCommandSettings
     public BuildCommandSettings(string? workingDirectory) : base(workingDirectory) { }
 
     [Description("Project (csproj) or Solution (sln) file")]
-    [CommandArgument(0, "<project>")]
+    [CommandArgument(0, "[project]")]
     public string ProjectOrSolution { get; set; } = "";
 
     [Description("Doesn't execute an implicit restore during build.")]
@@ -55,21 +55,43 @@ public class BuildCommandSettings : BaseCommandSettings
     [DefaultValue(true)]
     public bool Strict { get; set; }
 
-    [Description("Tries to do as little effort when building as possible. When set to false, it relaxes some conditions, but will be slower")]
-    [CommandOption("--fast")]
-    [DefaultValue(true)]
-    public bool Fast { get; set; }
-
     public override ValidationResult Validate()
     {
-        if (!RunAsWizard)
+        var result = base.Validate();
+
+        if (string.IsNullOrEmpty(ProjectOrSolution))
         {
-            if (!File.Exists(ProjectOrSolution))
+            var files = Directory.EnumerateFiles(WorkingDirectory, "*.csproj").Concat(Directory.EnumerateFiles(WorkingDirectory, "*.sln")).ToList();
+
+            var slns = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".sln".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (slns.Count > 1)
             {
-                return ValidationResult.Error($"The project file '{ProjectOrSolution}' does not exist.");
+                return ValidationResult.Error($"There are mutiple sln files in the directory '{WorkingDirectory}' please specify one explicitly.");
+            }
+            var (_, sln) = slns.FirstOrDefault();
+            if (!string.IsNullOrEmpty(sln))
+            {
+                ProjectOrSolution = sln;
+            }
+
+            var csprojs = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".csproj".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (csprojs.Count > 1)
+            {
+                return ValidationResult.Error($"There are mutiple csproj files in the directory '{WorkingDirectory}' please specify one explicitly.");
+            }
+            var (_, csproj) = csprojs.FirstOrDefault();
+            if (!string.IsNullOrEmpty(csproj))
+            {
+                ProjectOrSolution = csproj;
             }
         }
-        return base.Validate();
+
+        if (!File.Exists(ProjectOrSolution))
+        {
+            return ValidationResult.Error($"The project file '{ProjectOrSolution}' does not exist.");
+        }
+
+        return result;
     }
 }
 
@@ -123,20 +145,13 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
     where TPipeline : Pipeline<TPipelineContext>
     where TPipelineContext : BuildContext<TSettings>
 {
-    protected readonly ILoggerFactory LoggerFactory;
-    protected readonly ILogger<BuildCommand<TSettings, TPipeline, TPipelineContext>> Logger;
+    protected ILoggerFactory LoggerFactory { get; }
+    protected ILogger<BuildCommand<TSettings, TPipeline, TPipelineContext>> Logger { get; }
 
     protected BuildCommand(ILoggerFactory loggerFactory, ILogger<BuildCommand<TSettings, TPipeline, TPipelineContext>> logger)
         => (LoggerFactory, Logger) = (loggerFactory, logger);
 
     protected abstract TPipeline CreatePipeline();
-
-    public static string GetWizardValue(string message)
-    {
-        var name = AnsiConsole.Ask<string>($"[gray bold]{message}: [/]");
-
-        return name;
-    }
 
     public abstract string CommandName { get; }
 
@@ -206,7 +221,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
         {
             await AnsiConsole.Status().Start("Analyzing project...", async statusContext =>
             {
-                statusContext.Spinner(Spinner.Known.Star);
+                statusContext.Spinner(Spinner.Known.Ascii);
                 ctx.StatusContext = statusContext;
 
                 var pipeline = CreatePipeline();
@@ -237,17 +252,14 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
 
     protected static void PatchOptions(TPipelineContext ctx!!, IDictionary<string, string> globalProperties!!)
     {
-        if (!ctx.Settings.Fast)
-        {
-            globalProperties[MsBuildProperties.SkipCompilerExecution] = "false";
-            globalProperties[MsBuildProperties.BuildingProject] = "true";
-            globalProperties[MsBuildProperties.AutoGenerateBindingRedirects] = "true";
+        globalProperties[MsBuildProperties.SkipCompilerExecution] = "false";
+        globalProperties[MsBuildProperties.BuildingProject] = "true";
+        globalProperties[MsBuildProperties.AutoGenerateBindingRedirects] = "true";
 
-            globalProperties[MsBuildProperties.ComputeNETCoreBuildOutputFiles] = "true";
-            globalProperties[MsBuildProperties.CopyBuildOutputToOutputDirectory] = "true";
-            globalProperties[MsBuildProperties.BuildProjectReferences] = "true";
-            globalProperties[MsBuildProperties.SkipCopyBuildProduct] = "false";
-        }
+        globalProperties[MsBuildProperties.ComputeNETCoreBuildOutputFiles] = "true";
+        globalProperties[MsBuildProperties.CopyBuildOutputToOutputDirectory] = "true";
+        globalProperties[MsBuildProperties.BuildProjectReferences] = "true";
+        globalProperties[MsBuildProperties.SkipCopyBuildProduct] = "false";
     }
 
     protected virtual void ConfigureStatusPipeline(TPipeline pipeline!!)
@@ -387,8 +399,10 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             await next();
         });
 
+    public override ValidationResult Validate(CommandContext context, TSettings settings!!)
+        => settings.Validate();
 
-    public override async Task<int> ExecuteAsync(CommandContext context, TSettings settings)
+    public override async Task<int> ExecuteAsync(CommandContext context, TSettings settings!!)
     {
         var pipeline = CreatePipeline();
         var pipelineContext = pipeline.CreateContext();

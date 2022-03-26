@@ -4,115 +4,49 @@ using Buildalyzer.Environment;
 using Buildalyzer.Workspaces;
 
 using DevExpress.ExpressApp;
-using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.Model.NodeGenerators;
 
 using Microsoft.CodeAnalysis;
 
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Microsoft.CodeAnalysis.Formatting;
-using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.Extensions.Logging;
 
 using ModelToCodeConverter.Engine;
 
+using NuGet.Configuration;
+using NuGet.Frameworks;
+
+using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.Packaging.Signing;
+using NuGet.Protocol;
+
+using NuGet.Protocol.Core.Types;
+using NuGet.Versioning;
+
 using Spectre.Console;
 using Spectre.Console.Cli;
+
+using StreamJsonRpc;
 
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO.Pipes;
 using System.Linq;
 
 using Xenial.Cli.Engine;
 using Xenial.Cli.Engine.Syntax;
 using Xenial.Cli.Utils;
+using Xenial.Framework;
 using Xenial.Framework.DevTools.X2C;
-using SimpleExec;
 
-using static Xenial.Cli.Utils.ConsoleHelper;
 using static SimpleExec.Command;
-using StreamJsonRpc;
-using System.IO.Pipes;
-using NuGet.Configuration;
-using NuGet.Protocol.Core.Types;
-using NuGet.Versioning;
-using NuGet.Protocol;
-using NuGet.Packaging.Core;
-using NuGet.Packaging.Signing;
-using NuGet.Packaging;
-using System.Reflection;
-using NuGet.Frameworks;
+using static Xenial.Cli.Utils.ConsoleHelper;
 
 namespace Xenial.Cli.Commands;
-
-public class ModelCommandSettings : BuildCommandSettings
-{
-    public ModelCommandSettings(string workingDirectory) : base(workingDirectory) { }
-
-    [Description("Specifies the target framework to load the model from. Is required when the project is multi-targeted.")]
-    [CommandOption("-f|--tfm")]
-    public string? Tfm { get; set; }
-
-
-    [Description("Specifies which namespaces to inspect. You can specify multiple by separation by semicolon.")]
-    [CommandOption("-n|--namespaces")]
-    public string? Namespaces { get; set; }
-}
-
-public record ModelContext : ModelContext<ModelCommandSettings>
-{
-}
-
-public record ModelContext<TSettings> : BuildContext<TSettings>
-    where TSettings : ModelCommandSettings
-{
-    public IAnalyzerResult? BuildResult { get; set; }
-    public FileModelStore? ModelStore { get; set; }
-    public Compilation? Compilation { get; set; }
-    public AdhocWorkspace? Workspace { get; set; }
-
-    public NamedPipeClientStream? DesignerStream { get; set; }
-
-    public string? ModelEditorId { get; set; }
-    public Process? ModelEditorProcess { get; set; }
-    public ModelEditor? ModelEditor { get; set; }
-
-    public IList<FrameworkSpecificGroup>? ModelEditorTools { get; set; }
-
-    public string? ModelEditorPackageDirectory { get; set; }
-
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            try
-            {
-                ModelEditorProcess?.Kill();
-            }
-            finally
-            {
-                ModelEditorProcess?.Dispose();
-                ModelEditor?.Dispose();
-                DesignerStream?.Dispose();
-            }
-        }
-        base.Dispose(disposing);
-    }
-}
-
-public abstract record ModelPipeline<TContext, TSettings> : BuildPipeline<TContext, TSettings>
-    where TContext : ModelContext<TSettings>
-    where TSettings : ModelCommandSettings
-{
-}
-
-public record ModelPipeline : BuildPipeline<ModelContext, ModelCommandSettings>
-{
-    public override ModelContext CreateContext() => new();
-}
 
 public class ModelCommand : ModelCommand<ModelCommandSettings, ModelPipeline, ModelContext>
 {
@@ -185,13 +119,21 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                ctx.StatusContext!.Status = "Preparing Workspace...";
                ctx.Workspace = CreateWorkspace(ctx.AnalyzerManager);
-               ctx.BuildResult.AddToWorkspace(ctx.Workspace, false);
+               ctx.BuildResult.AddToWorkspace(ctx.Workspace, ctx.Settings.BuildReferences);
 
                foreach (var project in ctx.Workspace.CurrentSolution.Projects)
                {
                    ctx.StatusContext!.Status = "Compiling Workspace...";
-                   ctx.Compilation = await project.GetCompilationAsync();
+
+                   ctx.SetCompilationForProject(project, await project.GetCompilationAsync());
                }
+
+               var currentProject = ctx.Workspace.CurrentSolution.Projects.FirstOrDefault(m => m.FilePath == ctx.ProjectAnalyzer.ProjectFile.Path);
+               if (currentProject is not null)
+               {
+                   ctx.SetCompilationForProject(currentProject, await currentProject.GetCompilationAsync());
+               }
+
                sw.Success("Load Workspace");
                await next();
            }
@@ -213,247 +155,199 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
        })
        .Use(async (ctx, next) =>
        {
-           ctx.StatusContext!.Status = "Fetching Nugets...";
+           ctx.StatusContext!.Status = "Fetching Designer...";
 
-           var logger = NuGet.Common.NullLogger.Instance;
-           var cancellationToken = CancellationToken.None;
-
-           var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
-
-           var settings = Settings.LoadDefaultSettings(folder);
-
-           // Extract some data from the settings
-           var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(settings);
-           var sources = SettingsUtility.GetEnabledSources(settings);
-
-           var cache = new SourceCacheContext();
-           var providers = Repository.Provider.GetCoreV3();
-           foreach (var source in sources)
+           var sw = Stopwatch.StartNew();
+           try
            {
-               try
+               var logger = NuGet.Common.NullLogger.Instance;
+               var cancellationToken = CancellationToken.None;
+
+               var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+
+               var settings = Settings.LoadDefaultSettings(folder);
+
+               // Extract some data from the settings
+               var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(settings);
+
+               var sources = ctx.Settings.DesignerNugetFeed switch
                {
-                   var repository = new SourceRepository(source, providers);
+                   string feed => feed.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(f => new PackageSource(f)),
+                   _ => SettingsUtility.GetEnabledSources(settings)
+               };
 
-                   var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
-
-                   const string packageId = "Xenial.Design";
-
-                   var version = new NuGetVersion(
-                       XenialVersion.Version
-                   );
-
-                   ctx.StatusContext!.Status = $"Fetching Nugets {packageId}.{version}...";
-
-                   static async Task<DownloadResourceResult?> FindPackage(
-                       PackageSource source,
-                       FindPackageByIdResource resource,
-                       string globalPackagesFolder,
-                       SourceCacheContext cache,
-                       NuGet.Common.ILogger logger,
-                       ISettings? settings,
-                       string packageId,
-                       NuGetVersion version,
-                       CancellationToken cancellationToken)
+               var cache = new SourceCacheContext();
+               var providers = Repository.Provider.GetCoreV3();
+               foreach (var source in sources)
+               {
+                   try
                    {
-                       var package = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(packageId, version), globalPackagesFolder);
-                       if (package is null)
+                       var repository = new SourceRepository(source, providers);
+
+                       var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
+
+                       const string packageId = "Xenial.Design";
+
+                       var version = new NuGetVersion(
+                           ctx.Settings.DesignerNugetPackageVersion ?? XenialVersion.Version
+                       );
+
+                       ctx.StatusContext!.Status = $"Fetching Nugets {packageId.EscapeMarkup()}.{version.ToString().EscapeMarkup()} from {source.ToString().EscapeMarkup()}...";
+
+                       var package = await FindPackage(source, resource, globalPackagesFolder, cache, logger, settings, packageId, version, cancellationToken);
+                       if (package is not null)
                        {
-                           if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
+                           var tools = await package.PackageReader.GetToolItemsAsync(cancellationToken);
+                           ctx.ModelEditorVersion = version.ToString();
+                           ctx.ModelEditorTools.AddRange(tools.OfType<FrameworkSpecificGroup>());
+
+                           var versionStr = version.ToString();
+                           ctx.ModelEditorPackageDirectory = Path.Combine(globalPackagesFolder, packageId, versionStr);
+
+                           break;
+                       }
+
+                   }
+                   catch (FatalProtocolException ex)
+                   {
+                       if (ex.InnerException is HttpRequestException httpRequestEx)
+                       {
+                           if (httpRequestEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                            {
-                               // Download the package
-                               using var packageStream = new MemoryStream();
-                               await resource.CopyNupkgToStreamAsync(
-                                   packageId,
-                                   version,
-                                   packageStream,
-                                   cache,
-                                   logger,
-                                   cancellationToken);
-
-                               packageStream.Seek(0, SeekOrigin.Begin);
-
-                               // Add it to the global package folder
-                               var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
-                                   source.Source,
-                                   new PackageIdentity(packageId, version),
-                                   packageStream,
-                                   globalPackagesFolder,
-                                   parentId: Guid.Empty,
-                                   ClientPolicyContext.GetClientPolicy(settings, logger),
-                                   logger,
-                                   cancellationToken);
-
-                               if (downloadResult.Status == DownloadResourceResultStatus.Available)
-                               {
-                                   return downloadResult;
-                               }
+                               AnsiConsole.WriteLine($"[grey][[INFO]]    Authorized Feeds are not supported yet: {source.Source.EscapeMarkup()}[/]");
+                               AnsiConsole.WriteException(ex);
                            }
                        }
-                       return package;
+                       Logger.LogWarning(ex, "Fatal Nuget Error");
                    }
-
-
-                   var package = await FindPackage(source, resource, globalPackagesFolder, cache, logger, settings, packageId, version, cancellationToken);
-                   if (package is not null)
-                   {
-                       var tools = await package.PackageReader.GetToolItemsAsync(cancellationToken);
-                       ctx.ModelEditorTools = tools.OfType<FrameworkSpecificGroup>().ToList();
-
-                       var versionStr = version.ToString();
-                       ctx.ModelEditorPackageDirectory = Path.Combine(globalPackagesFolder, packageId, versionStr);
-
-                       break;
-                   }
-
                }
-               catch (FatalProtocolException ex)
-               {
-                   if (ex.InnerException is HttpRequestException httpRequestEx)
-                   {
-                       if (httpRequestEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                       {
-                           AnsiConsole.WriteLine($"[red][[ERROR]]    Authorized Feeds are not supported yet: {source.Source.EscapeMarkup()}[/]");
-                           AnsiConsole.WriteException(ex);
-                       }
-                   }
-                   Logger.LogError(ex, "Fatal Nuget Error");
-               }
+
+               sw.Success($"Fetching Designer: {ctx.ModelEditorVersion}");
+               await next();
+           }
+           catch (Exception ex)
+           {
+               sw.Fail("Fetching Designer");
+               Logger.LogError(ex, "Fetching Designer");
+               throw;
            }
 
-           await next();
        })
        .Use(async (ctx, next) =>
        {
+           ctx.StatusContext!.Status = "Launching Designer...";
+
            var tfm = ctx.BuildResult!.TargetFramework;
            var launcher = tfm switch
            {
-               var s when s.StartsWith("netstandard") => "net6.0-windows",
-               var s when s.StartsWith("net5.") => "net5.0-windows",
-               var s when s.StartsWith("net6.") => "net6.0-windows",
-               var s when s.StartsWith("net7.") => "net7.0-windows",
+               var s when s.StartsWith("netstandard", StringComparison.OrdinalIgnoreCase) => "net6.0-windows",
+               var s when s.StartsWith("net5.", StringComparison.OrdinalIgnoreCase) => "net5.0-windows",
+               var s when s.StartsWith("net6.", StringComparison.OrdinalIgnoreCase) => "net6.0-windows",
+               var s when s.StartsWith("net7.", StringComparison.OrdinalIgnoreCase) => "net7.0-windows",
                var t => t,
            };
-
-           static async Task<string> FindProcessPath(string launcher, TPipelineContext ctx)
-           {
-               if (ctx.ModelEditorTools is not null && ctx.ModelEditorTools.Count > 0)
-               {
-                   var x = new NuGetFramework("net462");
-
-                   static Dictionary<string, FrameworkSpecificGroup> ConvertToTfms(IEnumerable<FrameworkSpecificGroup> groups)
-                   {
-                       var result = new Dictionary<string, FrameworkSpecificGroup>();
-
-                       foreach (var group in groups)
-                       {
-                           if (group.TargetFramework.Framework == ".NETFramework")
-                           {
-                               var tfmVersion = group.TargetFramework.Version.ToString().Replace(".", "", StringComparison.OrdinalIgnoreCase).TrimEnd('0');
-                               var tfm = $"net{tfmVersion}";
-                               result[tfm] = group;
-                           }
-                           else
-                           {
-                               result[group.TargetFramework.ToString()] = group;
-                           }
-                       }
-
-                       return result;
-                   }
-
-                   static FrameworkSpecificGroup? FindGroup(Dictionary<string, FrameworkSpecificGroup> groups, string launcher)
-                   {
-                       if (groups.TryGetValue(launcher, out var group))
-                       {
-                           return group;
-                       }
-                       foreach (var pair in groups)
-                       {
-                           if (pair.Key.StartsWith(launcher, StringComparison.OrdinalIgnoreCase))
-                           {
-                               return pair.Value;
-                           }
-                       }
-                       return null;
-                   }
-
-                   var tfms = ConvertToTfms(ctx.ModelEditorTools);
-
-                   var tools = FindGroup(tfms, launcher);
-                   if (tools is not null && !string.IsNullOrEmpty(ctx.ModelEditorPackageDirectory))
-                   {
-                       foreach (var tool in tools.Items)
-                       {
-                           var path = Path.Combine(ctx.ModelEditorPackageDirectory, tool.Replace('/', Path.DirectorySeparatorChar));
-                           if (File.Exists(path))
-                           {
-                               var fileName = Path.GetFileName(path);
-                               if (fileName == "Xenial.Design.exe")
-                               {
-                                   return path;
-                               }
-                           }
-                       }
-                   }
-               }
-
-               if (Debugger.IsAttached)
-               {
-#if DEBUG
-                   const string configuration = "Debug";
-#else
-                   const string configuration = "Release";
-#endif
-                   var processPath = $@"..\..\..\..\Xenial.Design\bin\{configuration}\{launcher}\Xenial.Design.exe";
-               }
-
-               return null!;
-           }
 
            var processPath = await FindProcessPath(launcher, ctx);
 
            ctx.ModelEditorId = Guid.NewGuid().ToString();
 
-           var info = new ProcessStartInfo
+           if (!File.Exists(processPath))
            {
-               FileName = processPath,
-               Arguments = ctx.ModelEditorId
-           };
+               Stopwatch.StartNew().Fail($"Designer does not exist {processPath}");
+               Logger.LogError($"Designer does not exist {processPath}");
+           }
+           else
+           {
+               var sw = Stopwatch.StartNew();
+               try
+               {
+                   var info = new ProcessStartInfo
+                   {
+                       FileName = processPath,
+                       ArgumentList =
+                   {
+                       ctx.ModelEditorId,
+#pragma warning disable CA1308
+                       ctx.Settings.DesignerDebug.ToString().ToLowerInvariant()
+#pragma warning restore CA1308,
+                   }
+                   };
 
-           ctx.ModelEditorProcess = Process.Start(info);
+                   ctx.ModelEditorProcess = Process.Start(info);
 
-           await next();
+                   sw.Success("Launching Designer");
+
+                   await next();
+               }
+               catch (Exception ex)
+               {
+                   sw.Fail("Launching Designer");
+                   Logger.LogError(ex, "Launching Designer");
+                   throw;
+               }
+           }
        })
        .Use(async (ctx, next) =>
        {
-           ctx.DesignerStream = new NamedPipeClientStream(".", ctx.ModelEditorId, PipeDirection.InOut, PipeOptions.Asynchronous);
+           ctx.StatusContext!.Status = "Connecting to Designer...";
+           var sw = Stopwatch.StartNew();
+           try
+           {
+               ctx.DesignerStream = new NamedPipeClientStream(".", ctx.ModelEditorId, PipeDirection.InOut, PipeOptions.Asynchronous);
 
-           await ctx.DesignerStream.ConnectAsync(10000);
-           await next();
+               if (ctx.Settings.DesignerDebug)
+               {
+                   await ctx.DesignerStream.ConnectAsync();
+               }
+               else
+               {
+                   await ctx.DesignerStream.ConnectAsync(ctx.Settings.DesignerConnectionTimeout);
+               }
+
+               sw.Success("Connecting to Designer");
+               await next();
+           }
+           catch (Exception ex)
+           {
+               sw.Fail("Connecting to Designer");
+               Logger.LogError(ex, "Connecting to Designer");
+               throw;
+           }
        })
        .Use(async (ctx, next) =>
        {
-           var attached = JsonRpc.Attach(ctx.DesignerStream!);
+           ctx.StatusContext!.Status = "Connecting Designer RPC...";
+           var sw = Stopwatch.StartNew();
+           try
+           {
+               var attached = JsonRpc.Attach(ctx.DesignerStream!);
 
-           ctx.ModelEditor = new ModelEditor(attached);
+               ctx.ModelEditor = new ModelEditorRpcClient(attached);
 
-           var ping = await ctx.ModelEditor.Ping();
+               var ping = await ctx.ModelEditor.Ping();
 
-           AnsiConsole.MarkupLine($"Connected to Server: [green]{ping.EscapeMarkup()}[/]");
+               sw.Success($"Connecting Designer RPC: [green]{ping.EscapeMarkup()}[/]");
 
-           await next();
+               await next();
+           }
+           catch (Exception ex)
+           {
+               sw.Fail($"Connecting Designer RPC");
+               Logger.LogError(ex, "Connecting Designer RPC");
+               throw;
+           }
        })
        .Use(async (ctx, next) =>
        {
            ctx.StatusContext!.Status = "Loading Application Model...";
 
-           var assemblyPath = ctx.BuildResult!.Properties["TargetPath"];
-           var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
-           var targetDir = Path.GetDirectoryName(assemblyPath)!;
-
            var sw = Stopwatch.StartNew();
            try
            {
+               var assemblyPath = ctx.BuildResult!.Properties["TargetPath"];
+               var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+               var targetDir = Path.GetDirectoryName(assemblyPath)!;
+
                var numberOfViews = await ctx.ModelEditor.LoadModel(assemblyPath,
                    folder,
                    "",
@@ -462,8 +356,9 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                sw.Success($"Load Model: {numberOfViews} views");
                await next();
            }
-           catch
+           catch (Exception ex)
            {
+               Logger.LogError(ex, "Load Model");
                if (ctx.Settings.Strict)
                {
                    sw.Fail("Load Model");
@@ -514,11 +409,11 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
         pipeline.Use(async (ctx, next) =>
         {
-            var attributeSymbol = ctx.Compilation.GetTypeByMetadataName("Xenial.Framework.Layouts.DetailViewLayoutBuilderAttribute");
+            var attributeSymbol = ctx.Compilation.GetTypeByMetadataName(typeof(XenialModuleBase).FullName!);
 
             if (attributeSymbol is null)
             {
-                AnsiConsole.MarkupLine($"[yellow]It seams like [/][silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/] is missing a reference to Xenial.Framework");
+                AnsiConsole.MarkupLine($"[yellow]It seems like [/][silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/] is missing a reference to Xenial.Framework");
                 var addReference = AnsiConsole.Confirm($"[silver]Do you want to add it to the project?[/]");
 
                 if (addReference)
@@ -542,7 +437,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
             await AnsiConsole.Status().Start("Analyzing views...", async statusContext =>
             {
-                statusContext.Spinner(Spinner.Known.Star);
+                statusContext.Spinner(Spinner.Known.Ascii);
                 ctx.StatusContext = statusContext;
 
                 var namespaces = ctx.Settings.Namespaces?.Split(';') ?? Array.Empty<string>();
@@ -560,26 +455,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                     //TODO: move to Design later once we have customizable X2CCode output
                     var codeResult = X2CEngine.ConvertToCode(xml);
 
-                    static Location? FindFile(TPipelineContext ctx, string? modelClass)
-                    {
-                        if (!string.IsNullOrEmpty(modelClass))
-                        {
-                            var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass);
-                            if (symbol is null)
-                            {
-                                return null;
-                            }
 
-                            if (symbol.Locations.Any())
-                            {
-                                foreach (var location in symbol.Locations.Where(m => m.IsInSource))
-                                {
-                                    return location;
-                                }
-                            }
-                        }
-                        return null;
-                    }
 
                     var location = FindFile(ctx, modelClass);
 #if DEBUG
@@ -603,37 +479,12 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                         if (builderSymbol is null)
                         {
                             var builderSyntax = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)location.SourceTree.Options, path: newFilePath);
-                            ctx.Compilation = ctx.Compilation.AddSyntaxTrees(builderSyntax);
+                            ctx.ReplaceCurrentCompilation(ctx.Compilation.AddSyntaxTrees(builderSyntax));
                             modifications[newFilePath] = (FileState.Added, builderSyntax);
                         }
                         else
                         {
-                            var (fileState, existingSyntaxTree) = modifications.TryGetValue(newFilePath, out var r) switch
-                            {
-                                true => r,
-                                false => (FileState.Unchanged, builderSymbol.Locations.First(m => m.IsInSource).SourceTree!),
-                            };
-
-                            if (!originalSyntaxTrees.ContainsKey(newFilePath))
-                            {
-                                originalSyntaxTrees[newFilePath] = existingSyntaxTree;
-                            }
-
-                            var semanticModel = ctx.Compilation.GetSemanticModel(existingSyntaxTree);
-                            var merger = new MergeClassesSyntaxRewriter(semanticModel, codeResult);
-
-                            var root = await existingSyntaxTree.GetRootAsync();
-                            root = merger.Visit(root);
-                            root = Formatter.Format(root, ctx.Workspace!);
-
-                            var newSyntaxTree = existingSyntaxTree.WithRootAndOptions(root, existingSyntaxTree.Options);
-
-                            modifications[existingSyntaxTree.FilePath] = (
-                                fileState == FileState.Unchanged ? FileState.Modified : fileState,
-                                newSyntaxTree
-                            );
-
-                            ctx.Compilation = ctx.Compilation.ReplaceSyntaxTree(existingSyntaxTree, newSyntaxTree);
+                            await ReplaceSyntaxTree(ctx, modifications, originalSyntaxTrees, builderSymbol, newFilePath, codeResult);
                         }
 #if DEBUG
                         HorizontalDashed(location.SourceTree.FilePath);
@@ -646,8 +497,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                             AnsiConsole.WriteLine();
                         }
 #endif
-
-                        var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass);
+                        var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass!);
 
                         if (symbol is not null)
                         {
@@ -677,7 +527,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                                     modifications[location.SourceTree.FilePath] = (FileState.Modified, newSyntaxTree);
 
-                                    ctx.Compilation = ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree);
+                                    ctx.ReplaceCurrentCompilation(ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree));
 #if DEBUG
                                     PrintSource(newRoot.ToFullString());
                                     AnsiConsole.WriteLine();
@@ -790,42 +640,243 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                 }
             }
             await next();
-        })
-;
+        });
+    }
 
-        static SyntaxNode RewriteSyntaxTree(TPipelineContext ctx, ViewType viewType, X2CCodeResult result, SyntaxNode? root, SemanticModel semanticModel)
+    private static async Task ReplaceSyntaxTree(TPipelineContext ctx, Dictionary<string, (ModelCommand<TSettings, TPipeline, TPipelineContext>.FileState state, SyntaxTree syntaxTree)> modifications, Dictionary<string, SyntaxTree> originalSyntaxTrees, INamedTypeSymbol builderSymbol, string newFilePath, X2CCodeResult codeResult)
+    {
+        var (fileState, existingSyntaxTree) = modifications.TryGetValue(newFilePath, out var r) switch
         {
-            if (viewType == ViewType.DetailView)
-            {
-                var methodName = result.MethodName == "BuildLayout"
-                    ? null
-                    : result.MethodName;
+            true => r,
+            false => (FileState.Unchanged, builderSymbol.Locations.First(m => m.IsInSource).SourceTree!),
+        };
 
-                var rewriter = new LayoutBuilderAttributeSyntaxRewriter(semanticModel, new LayoutAttributeInfo(result.ClassName)
-                {
-                    ViewId = result.ViewId,
-                    LayoutBuilderMethod = methodName,
-                });
-
-                root = rewriter.Visit(root);
-            }
-            if (viewType == ViewType.ListView)
-            {
-                var methodName = result.MethodName == "BuildColumns"
-                    ? null
-                    : result.MethodName;
-
-                var rewriter = new ColumnsBuilderAttributeSyntaxRewriter(semanticModel, new ColumnsAttributeInfo(result.ClassName)
-                {
-                    ViewId = result.ViewId,
-                    ColumnsBuilderMethod = methodName,
-                });
-
-                root = rewriter.Visit(root);
-            }
-            root = Formatter.Format(root, ctx.Workspace!);
-            return root;
+        if (!originalSyntaxTrees.ContainsKey(newFilePath))
+        {
+            originalSyntaxTrees[newFilePath] = existingSyntaxTree;
         }
+
+        try
+        {
+            var semanticModel = ctx.Compilation!.GetSemanticModel(existingSyntaxTree);
+            var merger = new MergeClassesSyntaxRewriter(semanticModel, codeResult);
+
+            var root = await existingSyntaxTree.GetRootAsync();
+            root = merger.Visit(root);
+            root = Formatter.Format(root, ctx.Workspace!);
+
+            var newSyntaxTree = existingSyntaxTree.WithRootAndOptions(root, existingSyntaxTree.Options);
+
+            modifications[existingSyntaxTree.FilePath] = (
+                fileState == FileState.Unchanged ? FileState.Modified : fileState,
+                newSyntaxTree
+            );
+
+
+            ctx.ReplaceCurrentCompilation(ctx.Compilation.ReplaceSyntaxTree(existingSyntaxTree, newSyntaxTree));
+        }
+        catch (ArgumentException)
+        {
+            var found = false;
+            foreach (var project in ctx.Workspace!.CurrentSolution.Projects)
+            {
+                ctx.Workspace!.CurrentSolution.GetDocumentIdsWithFilePath(existingSyntaxTree.FilePath);
+                var file = project.Documents.FirstOrDefault(m => m.FilePath == existingSyntaxTree.FilePath);
+                if (file is not null)
+                {
+                    ctx.SetCompilationForProject(project, await ctx.GetCompilationForProject(project));
+                    found = true;
+                    break;
+                }
+            }
+            if (found)
+            {
+                await ReplaceSyntaxTree(ctx, modifications, originalSyntaxTrees, builderSymbol, newFilePath, codeResult);
+            }
+            else
+            {
+                throw;
+            }
+        }
+    }
+
+    private static SyntaxNode RewriteSyntaxTree(TPipelineContext ctx, ViewType viewType, X2CCodeResult result, SyntaxNode? root, SemanticModel semanticModel)
+    {
+        if (viewType == ViewType.DetailView)
+        {
+            var methodName = result.MethodName == "BuildLayout"
+                ? null
+                : result.MethodName;
+
+            var rewriter = new LayoutBuilderAttributeSyntaxRewriter(semanticModel, new LayoutAttributeInfo(result.ClassName)
+            {
+                ViewId = result.ViewId,
+                LayoutBuilderMethod = methodName,
+            });
+
+            root = rewriter.Visit(root);
+        }
+        if (viewType == ViewType.ListView)
+        {
+            var methodName = result.MethodName == "BuildColumns"
+                ? null
+                : result.MethodName;
+
+            var rewriter = new ColumnsBuilderAttributeSyntaxRewriter(semanticModel, new ColumnsAttributeInfo(result.ClassName)
+            {
+                ViewId = result.ViewId,
+                ColumnsBuilderMethod = methodName,
+            });
+
+            root = rewriter.Visit(root);
+        }
+        root = Formatter.Format(root!, ctx.Workspace!);
+        return root;
+    }
+
+    private static Location? FindFile(TPipelineContext ctx, string? modelClass)
+    {
+        if (!string.IsNullOrEmpty(modelClass))
+        {
+            var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass);
+            if (symbol is null)
+            {
+                return null;
+            }
+
+            if (symbol.Locations.Any())
+            {
+                foreach (var location in symbol.Locations.Where(m => m.IsInSource))
+                {
+                    return location;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static Task<string> FindProcessPath(string launcher, TPipelineContext ctx)
+    {
+        if (ctx.Settings.LaunchFromNuget)
+        {
+            if (ctx.ModelEditorTools is not null && ctx.ModelEditorTools.Count > 0)
+            {
+                var x = new NuGetFramework("net462");
+
+                var tfms = ConvertToTfms(ctx.ModelEditorTools);
+
+                var tools = FindGroup(tfms, launcher);
+                if (tools is not null && !string.IsNullOrEmpty(ctx.ModelEditorPackageDirectory))
+                {
+                    foreach (var tool in tools.Items)
+                    {
+                        var path = Path.Combine(ctx.ModelEditorPackageDirectory, tool.Replace('/', Path.DirectorySeparatorChar));
+                        if (File.Exists(path))
+                        {
+                            var fileName = Path.GetFileName(path);
+                            if (fileName == "Xenial.Design.exe")
+                            {
+                                return Task.FromResult(path);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+#if DEBUG
+        const string configuration = "Debug";
+#else
+        const string configuration = "Release";
+#endif
+        var processPath = $@"..\..\..\..\Xenial.Design\bin\{configuration}\{launcher}\Xenial.Design.exe";
+
+        return Task.FromResult(processPath!);
+    }
+
+    private static Dictionary<string, FrameworkSpecificGroup> ConvertToTfms(IEnumerable<FrameworkSpecificGroup> groups)
+    {
+        var result = new Dictionary<string, FrameworkSpecificGroup>();
+
+        foreach (var group in groups)
+        {
+            if (group.TargetFramework.Framework == ".NETFramework")
+            {
+                var tfmVersion = group.TargetFramework.Version.ToString().Replace(".", "", StringComparison.OrdinalIgnoreCase).TrimEnd('0');
+                var tfm = $"net{tfmVersion}";
+                result[tfm] = group;
+            }
+            else
+            {
+                result[group.TargetFramework.ToString()] = group;
+            }
+        }
+
+        return result;
+    }
+
+    private static FrameworkSpecificGroup? FindGroup(Dictionary<string, FrameworkSpecificGroup> groups, string launcher)
+    {
+        if (groups.TryGetValue(launcher, out var group))
+        {
+            return group;
+        }
+        foreach (var pair in groups)
+        {
+            if (pair.Key.StartsWith(launcher, StringComparison.OrdinalIgnoreCase))
+            {
+                return pair.Value;
+            }
+        }
+        return null;
+    }
+
+    private static async Task<DownloadResourceResult?> FindPackage(
+                          PackageSource source,
+                          FindPackageByIdResource resource,
+                          string globalPackagesFolder,
+                          SourceCacheContext cache,
+                          NuGet.Common.ILogger logger,
+                          ISettings? settings,
+                          string packageId,
+                          NuGetVersion version,
+                          CancellationToken cancellationToken)
+    {
+        var package = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(packageId, version), globalPackagesFolder);
+        if (package is null)
+        {
+            if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
+            {
+                // Download the package
+                using var packageStream = new MemoryStream();
+                await resource.CopyNupkgToStreamAsync(
+                    packageId,
+                    version,
+                    packageStream,
+                    cache,
+                    logger,
+                    cancellationToken);
+
+                packageStream.Seek(0, SeekOrigin.Begin);
+
+                // Add it to the global package folder
+                var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
+                    source.Source,
+                    new PackageIdentity(packageId, version),
+                    packageStream,
+                    globalPackagesFolder,
+                    parentId: Guid.Empty,
+                    ClientPolicyContext.GetClientPolicy(settings, logger),
+                    logger,
+                    cancellationToken);
+
+                if (downloadResult.Status == DownloadResourceResultStatus.Available)
+                {
+                    return downloadResult;
+                }
+            }
+        }
+        return package;
     }
 
 }

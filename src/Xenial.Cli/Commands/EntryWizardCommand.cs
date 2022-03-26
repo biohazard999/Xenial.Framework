@@ -35,8 +35,8 @@ public class BaseCommandSettings : CommandSettings, IBaseSettings
 
     public override ValidationResult Validate()
         => Directory.Exists(WorkingDirectory)
-            ? ValidationResult.Error($"{nameof(WorkingDirectory)} must exist: {WorkingDirectory}")
-            : ValidationResult.Success();
+            ? ValidationResult.Success()
+            : ValidationResult.Error($"{nameof(WorkingDirectory)} must exist: {WorkingDirectory}");
 
     [DefaultValue(LogLevel.Warning)]
     [CommandOption("-v|--verbosity")]
@@ -47,11 +47,11 @@ public class BaseCommandSettings : CommandSettings, IBaseSettings
     )]
     public bool NoLogo { get; set; }
 
-    [Description("Run as wizard aka. interactive mode")]
-    [CommandOption("-z|--wizard"
-    //    , IsHidden = true //TODO: is not available in 0.4.3, wait for later version
-    )]
-    public bool RunAsWizard { get; set; }
+    //[Description("Run as wizard aka. interactive mode")]
+    //[CommandOption("-z|--wizard"
+    ////    , IsHidden = true //TODO: is not available in 0.4.3, wait for later version
+    //)]
+    //public bool RunAsWizard { get; set; }
 }
 
 public sealed class EntryWizardCommand : Command<BaseCommandSettings>

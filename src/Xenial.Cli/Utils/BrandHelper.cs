@@ -13,8 +13,15 @@ namespace Xenial.Cli.Utils;
 public static class BrandHelper
 {
     public static void PrintBrandInfo()
-        => AnsiConsole.Write(
-            new FigletText("xenial.io")
-            .Centered()
-            .Color(new Color(red: 56, green: 188, blue: 216)));
+    {
+        var color = new Color(red: 56, green: 188, blue: 216);
+        AnsiConsole.Write(
+           new FigletText("xenial.io")
+           .Centered()
+           .Color(color));
+
+        var rule = new Rule($"[silver]Xenial: {XenialVersion.Version.EscapeMarkup()}   DevExpress: {XenialVersion.DxVersion.EscapeMarkup()}[/]");
+        rule.RuleStyle(new Style(color));
+        AnsiConsole.Write(rule);
+    }
 }

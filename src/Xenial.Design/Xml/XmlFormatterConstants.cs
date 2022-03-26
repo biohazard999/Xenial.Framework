@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xenial.Cli.Xml
+namespace Xenial.Design.Xml
 {
     /// <summary>   An XML formatter constants. </summary>
     public static class XmlFormatterConstants
