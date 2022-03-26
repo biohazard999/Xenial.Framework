@@ -11,14 +11,14 @@ using Xenial.Design.Contracts;
 
 namespace Xenial.Cli.Engine;
 
-public class ModelEditor : IDisposable, IModelEditorServer
+public class ModelEditorRpcClient : IDisposable, IModelEditorServer
 {
     private readonly JsonRpc server;
     private bool disposedValue;
 
     public bool IsDisposed => disposedValue;
 
-    public ModelEditor(JsonRpc server)
+    public ModelEditorRpcClient(JsonRpc server)
         => this.server = server;
 
     protected virtual void Dispose(bool disposing)
