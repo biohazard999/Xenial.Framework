@@ -20,112 +20,6 @@ using static Xenial.Cli.Utils.ConsoleHelper;
 
 namespace Xenial.Cli.Commands;
 
-public class BuildCommandSettings : BaseCommandSettings
-{
-    public BuildCommandSettings(string? workingDirectory) : base(workingDirectory) { }
-
-    [Description("Project (csproj) or Solution (sln) file")]
-    [CommandArgument(0, "[project]")]
-    public string ProjectOrSolution { get; set; } = "";
-
-    [Description("Doesn't execute an implicit restore during build.")]
-    [CommandOption("--no-restore")]
-    public bool NoRestore { get; set; }
-
-    [Description("Doesn't execute an implicit build.")]
-    [CommandOption("--no-build")]
-    public bool NoBuild { get; set; }
-
-    [Description("Specifies the msbuild log verbosity during build.")]
-    [CommandOption("--build-verbosity")]
-    public LoggerVerbosity? MsBuildVerbosity { get; set; }
-
-    [Description("Specifies if msbuild should log to command line.")]
-    [CommandOption("--log-build")]
-    [DefaultValue(false)]
-    public bool LogMSBuildCommandLine { get; set; }
-
-    [Description("Specifies the target framework monikers. Use * for all, separate by semicolon for multiple values")]
-    [CommandOption("--tfms")]
-    [DefaultValue("*")]
-    public string Tfms { get; set; } = "*";
-
-    [Description("Specifies if error behavior should be strict. When set to false, it continues even if build errors are present")]
-    [CommandOption("-s|--strict")]
-    [DefaultValue(true)]
-    public bool Strict { get; set; }
-
-    public override ValidationResult Validate()
-    {
-        var result = base.Validate();
-
-        if (string.IsNullOrEmpty(ProjectOrSolution))
-        {
-            var files = Directory.EnumerateFiles(WorkingDirectory, "*.csproj").Concat(Directory.EnumerateFiles(WorkingDirectory, "*.sln")).ToList();
-
-            var slns = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".sln".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (slns.Count > 1)
-            {
-                return ValidationResult.Error($"There are mutiple sln files in the directory '{WorkingDirectory}' please specify one explicitly.");
-            }
-            var (_, sln) = slns.FirstOrDefault();
-            if (!string.IsNullOrEmpty(sln))
-            {
-                ProjectOrSolution = sln;
-            }
-
-            var csprojs = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".csproj".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (csprojs.Count > 1)
-            {
-                return ValidationResult.Error($"There are mutiple csproj files in the directory '{WorkingDirectory}' please specify one explicitly.");
-            }
-            var (_, csproj) = csprojs.FirstOrDefault();
-            if (!string.IsNullOrEmpty(csproj))
-            {
-                ProjectOrSolution = csproj;
-            }
-        }
-
-        if (!File.Exists(ProjectOrSolution))
-        {
-            return ValidationResult.Error($"The project file '{ProjectOrSolution}' does not exist.");
-        }
-
-        return result;
-    }
-}
-
-public record BuildContext : BuildContext<BuildCommandSettings>
-{
-
-}
-
-public record BuildContext<TSettings> : PipelineContext
-    where TSettings : BuildCommandSettings
-{
-    public TSettings Settings { get; set; } = default!;
-
-    public IAnalyzerManager? AnalyzerManager { get; set; }
-    public IProjectAnalyzer? ProjectAnalyzer { get; set; }
-    public IAnalyzerResults? BuildResults { get; set; }
-
-    public StatusContext? StatusContext { get; set; }
-
-    public int? ExitCode { get; set; }
-    public Exception? Exception { get; set; }
-}
-
-public abstract record BuildPipeline<TContext, TSettings> : Pipeline<TContext>
-    where TContext : BuildContext<TSettings>
-    where TSettings : BuildCommandSettings
-{
-}
-
-public record BuildPipeline : BuildPipeline<BuildContext, BuildCommandSettings>
-{
-    public override BuildContext CreateContext() => new();
-}
-
 public class BuildCommand : BuildCommand<BuildCommandSettings, BuildPipeline, BuildContext>
 {
     public BuildCommand(ILoggerFactory loggerFactory, ILogger<BuildCommand> logger) : base(loggerFactory, logger) { }
@@ -133,11 +27,6 @@ public class BuildCommand : BuildCommand<BuildCommandSettings, BuildPipeline, Bu
     public override string CommandName => "build";
 
     protected override BuildPipeline CreatePipeline() => new();
-}
-
-public interface IXenialCommand : ICommand
-{
-    string CommandName { get; }
 }
 
 public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : AsyncCommand<TSettings>, IXenialCommand
@@ -155,7 +44,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
 
     public abstract string CommandName { get; }
 
-    protected virtual void ConfigurePipeline(TPipeline pipeline!!)
+    protected virtual void ConfigurePipeline(TPipeline pipeline)
         => pipeline.Use((ctx, next) =>
         {
             using var _ = Logger.LogInformationTick($"Command `{CommandName}`");
@@ -237,10 +126,10 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             }
         });
 
-    protected static void PatchOptions(TPipelineContext ctx!!, EnvironmentOptions environmentOptions!!)
+    protected static void PatchOptions(TPipelineContext ctx, EnvironmentOptions environmentOptions)
         => PatchOptions(ctx, environmentOptions.GlobalProperties);
 
-    protected static void PatchOptions(TPipelineContext ctx!!, IProjectAnalyzer projectAnalyzer!!)
+    protected static void PatchOptions(TPipelineContext ctx, IProjectAnalyzer projectAnalyzer)
     {
         var dic = new Dictionary<string, string>();
         PatchOptions(ctx, dic);
@@ -250,7 +139,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
         }
     }
 
-    protected static void PatchOptions(TPipelineContext ctx!!, IDictionary<string, string> globalProperties!!)
+    protected static void PatchOptions(TPipelineContext ctx, IDictionary<string, string> globalProperties)
     {
         globalProperties[MsBuildProperties.SkipCompilerExecution] = "false";
         globalProperties[MsBuildProperties.BuildingProject] = "true";
@@ -262,7 +151,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
         globalProperties[MsBuildProperties.SkipCopyBuildProduct] = "false";
     }
 
-    protected virtual void ConfigureStatusPipeline(TPipeline pipeline!!)
+    protected virtual void ConfigureStatusPipeline(TPipeline pipeline)
         => pipeline.Use(async (ctx, next) =>
         {
             var options = new AnalyzerManagerOptions
@@ -399,10 +288,10 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             await next();
         });
 
-    public override ValidationResult Validate(CommandContext context, TSettings settings!!)
+    public override ValidationResult Validate(CommandContext context, TSettings settings)
         => settings.Validate();
 
-    public override async Task<int> ExecuteAsync(CommandContext context, TSettings settings!!)
+    public override async Task<int> ExecuteAsync(CommandContext context, TSettings settings)
     {
         var pipeline = CreatePipeline();
         var pipelineContext = pipeline.CreateContext();

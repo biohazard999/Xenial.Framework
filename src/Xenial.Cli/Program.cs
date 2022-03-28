@@ -62,7 +62,7 @@ var app = new CommandApp
 
 app.Configure(c =>
 {
-    c.SetInterceptor(new CommandInterceptor(logLvl));
+    //c.SetInterceptor(new CommandInterceptor(logLvl));
     c.SetApplicationName("xenial");
     c.ValidateExamples();
 

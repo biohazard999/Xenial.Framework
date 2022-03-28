@@ -28,27 +28,6 @@ public record ModelContext<TSettings> : BuildContext<TSettings>
     public Project? CurrentProject { get; private set; }
     public AdhocWorkspace? Workspace { get; set; }
 
-    private readonly Dictionary<Project, Compilation?> compilations = new();
-
-    public async Task<Compilation?> GetCompilationForProject(Project project!!)
-    {
-        if (compilations.TryGetValue(project, out var compilation))
-        {
-            return compilation;
-        }
-        return await project.GetCompilationAsync();
-    }
-
-    public void SetCompilationForProject(Project project!!, Compilation? compilation)
-    {
-        compilations[project] = compilation;
-        Compilation = compilation;
-        CurrentProject = project;
-    }
-
-    public void ReplaceCurrentCompilation(Compilation? compilation)
-        => SetCompilationForProject(CurrentProject!, compilation);
-
     public NamedPipeClientStream? DesignerStream { get; set; }
 
     public string? ModelEditorId { get; set; }
@@ -76,4 +55,30 @@ public record ModelContext<TSettings> : BuildContext<TSettings>
         }
         base.Dispose(disposing);
     }
+
+
+    private readonly Dictionary<Project, Compilation?> compilations = new();
+
+    public async Task<Compilation?> GetCompilationForProject(Project project)
+    {
+        _ = project ?? throw new ArgumentNullException(nameof(project));
+
+        if (compilations.TryGetValue(project, out var compilation))
+        {
+            return compilation;
+        }
+        return await project.GetCompilationAsync();
+    }
+
+    public void SetCompilationForProject(Project project, Compilation? compilation)
+    {
+        _ = project ?? throw new ArgumentNullException(nameof(project));
+        compilations[project] = compilation;
+        Compilation = compilation;
+        CurrentProject = project;
+    }
+
+    public void ReplaceCurrentCompilation(Compilation? compilation)
+        => SetCompilationForProject(CurrentProject!, compilation);
+
 }

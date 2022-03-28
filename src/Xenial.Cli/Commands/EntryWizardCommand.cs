@@ -56,7 +56,7 @@ public class BaseCommandSettings : CommandSettings, IBaseSettings
 
 public sealed class EntryWizardCommand : Command<BaseCommandSettings>
 {
-    private List<string> commands = new()
+    private readonly List<string> commands = new()
     {
         "build",
         "model"

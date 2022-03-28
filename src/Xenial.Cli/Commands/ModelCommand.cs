@@ -31,9 +31,7 @@ using Spectre.Console.Cli;
 using StreamJsonRpc;
 
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO.Pipes;
 using System.Linq;
 
@@ -65,7 +63,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
     protected ModelCommand(ILoggerFactory loggerFactory, ILogger<ModelCommand<TSettings, TPipeline, TPipelineContext>> logger)
         : base(loggerFactory, logger) { }
 
-    protected override void ConfigureStatusPipeline(TPipeline pipeline!!)
+    protected override void ConfigureStatusPipeline(TPipeline pipeline)
     {
         base.ConfigureStatusPipeline(pipeline);
 
@@ -394,7 +392,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
         Added
     }
 
-    protected override void ConfigurePipeline(TPipeline pipeline!!)
+    protected override void ConfigurePipeline(TPipeline pipeline)
     {
         base.ConfigurePipeline(pipeline);
 
