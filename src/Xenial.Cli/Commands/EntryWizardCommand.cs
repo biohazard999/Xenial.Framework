@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Spectre.Console;
@@ -13,6 +14,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Xenial.Cli.Utils;
 
 namespace Xenial.Cli.Commands;
 
@@ -54,7 +57,7 @@ public class BaseCommandSettings : CommandSettings, IBaseSettings
     //public bool RunAsWizard { get; set; }
 }
 
-public sealed class EntryWizardCommand : Command<BaseCommandSettings>
+public sealed class EntryWizardCommand : AsyncCommand<BaseCommandSettings>
 {
     private readonly List<string> commands = new()
     {
@@ -62,25 +65,40 @@ public sealed class EntryWizardCommand : Command<BaseCommandSettings>
         "model"
     };
 
-    private readonly IServiceProvider serviceProvider;
+    private readonly IServiceCollection serviceCollection;
+    private readonly ICommandlineArgsProvider commandlineArgsProvider;
 
-    public EntryWizardCommand(IServiceProvider serviceProvider) 
-        => this.serviceProvider = serviceProvider;
-
-    public override int Execute([NotNull] CommandContext context, [NotNull] BaseCommandSettings settings)
+    public EntryWizardCommand(IServiceCollection serviceCollection, ICommandlineArgsProvider commandlineArgsProvider)
     {
-        var fruit = AnsiConsole.Prompt(
-             new SelectionPrompt<string>()
-                 .Title("What [silver]command[/] do you want to execute?")
-                 .PageSize(10)
-                 //.MoreChoicesText("[grey](Move up and down to reveal commands)[/]")
-                 .AddChoices(commands));
+        this.commandlineArgsProvider = commandlineArgsProvider;
+        this.serviceCollection = serviceCollection;
+    }
+
+    public override async Task<int> ExecuteAsync(CommandContext context, BaseCommandSettings settings)
+    {
+        var commandName = AnsiConsole.Prompt(
+          new SelectionPrompt<string>()
+              .Title("What [silver]command[/] do you want to execute?")
+              .PageSize(10)
+              //.MoreChoicesText("[grey](Move up and down to reveal commands)[/]")
+              .AddChoices(commands));
 
         // Echo the fruit back to the terminal
-        AnsiConsole.WriteLine($"I agree. {fruit} is tasty!");
+        AnsiConsole.WriteLine($"I agree. {commandName} is tasty!");
         AnsiConsole.WriteLine($"I agree. {settings.WorkingDirectory} is tasty!");
 
-        return 0;
+        using var registrar = new Xenial.Cli.DependencyInjection.DependencyInjectionRegistrar(serviceCollection);
+
+        ICommandApp app = commandName switch
+        {
+            "build" => new CommandApp<BuildCommand>(registrar),
+            "model" => new CommandApp<ModelCommand>(registrar),
+            _ => throw new ArgumentOutOfRangeException(nameof(commandName), commandName, "No wizard implemented")
+        };
+
+        var args = commandlineArgsProvider.Arguments;
+        return await app.RunAsync(args);
+
     }
 }
 

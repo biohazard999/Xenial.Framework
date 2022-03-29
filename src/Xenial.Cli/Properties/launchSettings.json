@@ -1,5 +1,10 @@
 ﻿{
   "profiles": {
+    "wizard": {
+      "commandName": "Project",
+      "commandLineArgs": "",
+      "workingDirectory": "C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\FeatureCenter\\CS\\FeatureCenter.Module"
+    },
     "build": {
       "commandName": "Project",
       "commandLineArgs": "build C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module\\Xenial.FeatureCenter.Module.csproj"

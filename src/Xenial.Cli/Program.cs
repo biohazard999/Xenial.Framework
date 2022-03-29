@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Text;
 
 using Xenial.Cli.Commands;
+using Xenial.Cli.Utils;
 
 Console.OutputEncoding = Encoding.UTF8;
 Console.InputEncoding = Encoding.UTF8;
@@ -33,6 +34,8 @@ if (debug.HasValue && debug.Value)
 }
 
 var services = new ServiceCollection();
+services.AddSingleton<IServiceCollection>(services);
+services.AddSingleton<ICommandlineArgsProvider>(new CommandlineArgsProvider(args));
 
 services.AddLogging(builder =>
 {
@@ -62,7 +65,7 @@ var app = new CommandApp
 
 app.Configure(c =>
 {
-    //c.SetInterceptor(new CommandInterceptor(logLvl));
+    c.SetInterceptor(new CommandInterceptor(logLvl));
     c.SetApplicationName("xenial");
     c.ValidateExamples();
 
