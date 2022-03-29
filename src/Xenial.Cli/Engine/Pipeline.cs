@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelToCodeConverter.Engine;
+namespace Xenial.Cli.Engine;
 
 public record PipelineContext() : IDisposable
 {
@@ -71,8 +71,16 @@ public abstract record Pipeline<TContext>
 
     public async Task Execute(TContext? context = null)
     {
-        context ??= CreateContext();
+    Start:
+        try
+        {
+            context ??= CreateContext();
 
-        await BuildMiddleware()(context);
+            await BuildMiddleware()(context);
+        }
+        catch (RestartPipelineException)
+        {
+            goto Start;
+        }
     }
 }

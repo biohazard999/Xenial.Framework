@@ -12,8 +12,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.Extensions.Logging;
 
-using ModelToCodeConverter.Engine;
-
 using NuGet.Configuration;
 using NuGet.Frameworks;
 
@@ -419,9 +417,8 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                     var wd = Path.GetDirectoryName(ctx.ProjectAnalyzer.ProjectFile.Path)!;
                     await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework", wd);
                     await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework.Generators", wd);
-                    ctx.ExitCode = 1;
-                    AnsiConsole.MarkupLine($"[yellow]Added packages. Please restart command to see effects.[/]");
-                    return;
+                    AnsiConsole.MarkupLine($"[yellow]Added packages. Restart command...[/]");
+                    throw new RestartPipelineException("Installed packages. Restarting command");
                 }
             }
             await next();
@@ -563,17 +560,17 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
             var xafmlSyntaxRewriter = new XafmlSyntaxRewriter(ctx.ModelStore, removedViews);
 
-            var (hasModifications, xafmlFilePath) = await xafmlSyntaxRewriter.RewriteAsync();
+            var (hasXamlModifications, xafmlFilePath) = await xafmlSyntaxRewriter.RewriteAsync();
 
-            if (modifications.Count > 0 || hasModifications)
+            if (modifications.Count > 0 || hasXamlModifications)
             {
                 AnsiConsole.WriteLine();
-                AnsiConsole.MarkupLine($"[grey]There are [yellow]{modifications.Count}[/] pending modifications for project [silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/][/]");
+                AnsiConsole.MarkupLine($"[grey]There are [yellow]{modifications.Count + (hasXamlModifications ? 1 : 0)}[/] pending modifications for project [silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/][/]");
                 AnsiConsole.WriteLine();
 
                 HorizontalDashed("Changed Files");
 
-                if (hasModifications)
+                if (hasXamlModifications)
                 {
                     var stateString = "[[Modified]]";
                     var stateColor = "yellow";
@@ -611,7 +608,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                 AnsiConsole.WriteLine();
                 if (AnsiConsole.Confirm($"[silver]Do you want to proceed? [yellow][[Modified]] {modified.Count}[/] [green][[Added]] {adds.Count}[/][/]"))
                 {
-                    if (hasModifications)
+                    if (hasXamlModifications)
                     {
                         var stateString = "[[Modified]]";
                         var stateColor = "yellow";

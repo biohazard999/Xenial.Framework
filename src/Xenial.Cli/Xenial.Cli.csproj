@@ -17,6 +17,7 @@
     <PackageReference Include="NuGet.Protocol" Version="6.1.0" />
     <PackageReference Include="NuGet.LibraryModel" Version="6.1.0" />
     <PackageReference Include="NuGet.Commands" Version="6.1.0" />
+    <PackageReference Include="CsProjEditor" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>

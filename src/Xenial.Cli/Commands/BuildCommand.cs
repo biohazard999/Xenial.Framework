@@ -4,8 +4,6 @@ using Buildalyzer.Environment;
 using Microsoft.Build.Framework;
 using Microsoft.Extensions.Logging;
 
-using ModelToCodeConverter.Engine;
-
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -14,6 +12,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
+using Xenial.Cli.Engine;
 using Xenial.Cli.Utils;
 
 using static Xenial.Cli.Utils.ConsoleHelper;
@@ -78,6 +77,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             {
                 await next();
             }
+            catch (RestartPipelineException) { throw; }
             catch (Exception ex)
             {
                 AnsiConsole.WriteException(ex);
