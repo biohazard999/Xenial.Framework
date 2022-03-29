@@ -182,7 +182,9 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
 
             var sw = Stopwatch.StartNew();
             ctx.StatusContext!.Status("Designtime-Build...");
+            var retried = false;
 
+        Rebuild:
             var environmentOptions = new EnvironmentOptions
             {
                 Restore = !ctx.Settings.NoRestore,
@@ -198,7 +200,53 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
                 environmentOptions.TargetsToBuild.Add("Build");
             }
 
+            if (retried)
+            {
+                environmentOptions.TargetsToBuild.Clear();
+                environmentOptions.TargetsToBuild.Add("Restore");
+                environmentOptions.TargetsToBuild.Add("Build");
+            }
+
             ctx.BuildResults = ctx.ProjectAnalyzer.Build(environmentOptions);
+
+            if (!ctx.BuildResults.OverallSuccess && !retried)
+            {
+                retried = true;
+                AnsiConsole.MarkupLine("[red]It seams the design time build failed.[/]");
+                AnsiConsole.MarkupLine("[yellow]We will clean the following directories[/]");
+                AnsiConsole.MarkupLine("[red]and run the Restore target.[/]");
+                AnsiConsole.WriteLine();
+
+                var directoriesToDelete = new List<string>();
+
+                foreach (var buildResult in ctx.BuildResults.Results)
+                {
+                    var targetDir = buildResult.GetProperty("TargetDir");
+                    var projectDir = buildResult.GetProperty("ProjectDir");
+                    var intermediateOutputPath = buildResult.GetProperty("BaseIntermediateOutputPath");
+                    if (targetDir is not null && Directory.Exists(targetDir))
+                    {
+                        directoriesToDelete.Add(targetDir);
+                    }
+                    var objDirectory = Path.Combine(projectDir, intermediateOutputPath);
+                    if (objDirectory is not null && Directory.Exists(objDirectory))
+                    {
+                        directoriesToDelete.Add(objDirectory);
+                    }
+                }
+
+                foreach (var dir in directoriesToDelete)
+                {
+                    AnsiConsole.MarkupLine($"\t[grey strikethrough]{dir.EscapeMarkup()}[/]");
+                }
+
+                foreach (var dir in directoriesToDelete)
+                {
+                    Directory.Delete(dir, true);
+                }
+
+                goto Rebuild;
+            }
 
             if (ctx.BuildResults.OverallSuccess)
             {

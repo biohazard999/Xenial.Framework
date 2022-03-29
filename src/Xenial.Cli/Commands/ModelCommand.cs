@@ -383,13 +383,6 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
         return workspace;
     }
 
-    internal enum FileState
-    {
-        Unchanged,
-        Modified,
-        Added
-    }
-
     protected override void ConfigurePipeline(TPipeline pipeline)
     {
         base.ConfigurePipeline(pipeline);
@@ -562,6 +555,10 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
             var (hasXamlModifications, xafmlFilePath) = await xafmlSyntaxRewriter.RewriteAsync();
 
+            var csProjSyntaxRewriter = new CsProjSyntaxRewriter(ctx.ProjectAnalyzer!, ctx.BuildResult!, modifications);
+
+            var (hasCsProjModifications, csprojFilePath) = await csProjSyntaxRewriter.RewriteAsync();
+
             if (modifications.Count > 0 || hasXamlModifications)
             {
                 AnsiConsole.WriteLine();
@@ -643,7 +640,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
         });
     }
 
-    private static async Task ReplaceSyntaxTree(TPipelineContext ctx, Dictionary<string, (ModelCommand<TSettings, TPipeline, TPipelineContext>.FileState state, SyntaxTree syntaxTree)> modifications, Dictionary<string, SyntaxTree> originalSyntaxTrees, INamedTypeSymbol builderSymbol, string newFilePath, X2CCodeResult codeResult)
+    private static async Task ReplaceSyntaxTree(TPipelineContext ctx, Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications, Dictionary<string, SyntaxTree> originalSyntaxTrees, INamedTypeSymbol builderSymbol, string newFilePath, X2CCodeResult codeResult)
     {
         var (fileState, existingSyntaxTree) = modifications.TryGetValue(newFilePath, out var r) switch
         {
