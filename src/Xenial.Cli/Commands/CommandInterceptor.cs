@@ -9,7 +9,7 @@ using Xenial.Cli.Utils;
 
 namespace Xenial.Cli.Commands;
 
-public record CommandInterceptor(LogLevel LogLevel) : ICommandInterceptor
+public record CommandInterceptor(LogLevel LogLevel, bool? Wizard = null, bool? NoLogo = null) : ICommandInterceptor
 {
     public void Intercept(CommandContext context, CommandSettings settings)
     {
@@ -18,7 +18,14 @@ public record CommandInterceptor(LogLevel LogLevel) : ICommandInterceptor
             baseSettings.Verbosity = LogLevel;
             if (!baseSettings.NoLogo)
             {
-                BrandHelper.PrintBrandInfo();
+                if (!NoLogo.HasValue || !NoLogo.Value)
+                {
+                    BrandHelper.PrintBrandInfo();
+                }
+            }
+            if (Wizard.HasValue)
+            {
+                baseSettings.RunAsWizard = Wizard.Value;
             }
         }
     }

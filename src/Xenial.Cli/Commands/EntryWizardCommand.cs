@@ -24,7 +24,8 @@ public interface IBaseSettings
 {
     string WorkingDirectory { get; }
     bool NoLogo { get; }
-    public LogLevel Verbosity { get; set; }
+    LogLevel Verbosity { get; set; }
+    bool RunAsWizard { get; set; }
 }
 
 public class BaseCommandSettings : CommandSettings, IBaseSettings
@@ -49,11 +50,9 @@ public class BaseCommandSettings : CommandSettings, IBaseSettings
     [CommandOption("--nologo", IsHidden = true)]
     public bool NoLogo { get; set; }
 
-    //[Description("Run as wizard aka. interactive mode")]
-    //[CommandOption("-z|--wizard"
-    ////    , IsHidden = true //TODO: is not available in 0.4.3, wait for later version
-    //)]
-    //public bool RunAsWizard { get; set; }
+    [Description("Run as wizard aka. interactive mode")]
+    [CommandOption("-z|--wizard", IsHidden = true)]
+    public bool RunAsWizard { get; set; }
 }
 
 public sealed class EntryWizardCommand : AsyncCommand<BaseCommandSettings>
@@ -98,6 +97,11 @@ public sealed class EntryWizardCommand : AsyncCommand<BaseCommandSettings>
             "model" => new CommandApp<ModelCommand>(registrar),
             _ => throw new ArgumentOutOfRangeException(nameof(commandName), commandName, "No wizard implemented")
         };
+
+        app.Configure(c =>
+        {
+            c.SetInterceptor(new CommandInterceptor(settings.Verbosity, Wizard: true, NoLogo: true));
+        });
 
         var args = commandlineArgsProvider.Arguments;
         return await app.RunAsync(args);

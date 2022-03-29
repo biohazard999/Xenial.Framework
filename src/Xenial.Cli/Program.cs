@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Text;
 
 using Xenial.Cli.Commands;
+using Xenial.Cli.DependencyInjection;
 using Xenial.Cli.Utils;
 
 Console.OutputEncoding = Encoding.UTF8;
@@ -55,13 +56,9 @@ services.AddLogging(builder =>
     }
 }).Configure<LoggerFilterOptions>(options => options.MinLevel = logLvl);
 
-using var registrar = new Xenial.Cli.DependencyInjection.DependencyInjectionRegistrar(services);
+using var registrar = new DependencyInjectionRegistrar(services);
 
-var app = new CommandApp
-#if DEBUG
-    <Xenial.Cli.Commands.EntryWizardCommand>
-#endif
-(registrar);
+var app = new CommandApp<EntryWizardCommand>(registrar);
 
 app.Configure(c =>
 {
@@ -69,8 +66,8 @@ app.Configure(c =>
     c.SetApplicationName("xenial");
     c.ValidateExamples();
 
-    c.AddCommand<Xenial.Cli.Commands.BuildCommand>("build");
-    c.AddCommand<Xenial.Cli.Commands.ModelCommand>("model");
+    c.AddCommand<BuildCommand>("build");
+    c.AddCommand<ModelCommand>("model");
 });
 
 return app.Run(args);
