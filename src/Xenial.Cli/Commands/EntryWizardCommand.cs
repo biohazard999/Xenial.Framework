@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Xenial.Cli.DependencyInjection;
 using Xenial.Cli.Utils;
 
 namespace Xenial.Cli.Commands;
@@ -45,9 +46,7 @@ public class BaseCommandSettings : CommandSettings, IBaseSettings
     [CommandOption("-v|--verbosity")]
     public LogLevel Verbosity { get; set; }
 
-    [CommandOption("--nologo"
-    //    , IsHidden = true //TODO: is not available in 0.4.3, wait for later version
-    )]
+    [CommandOption("--nologo", IsHidden = true)]
     public bool NoLogo { get; set; }
 
     //[Description("Run as wizard aka. interactive mode")]
@@ -59,10 +58,10 @@ public class BaseCommandSettings : CommandSettings, IBaseSettings
 
 public sealed class EntryWizardCommand : AsyncCommand<BaseCommandSettings>
 {
-    private readonly List<string> commands = new()
+    private readonly Dictionary<string, string> commands = new()
     {
-        "build",
-        "model"
+        ["build"] = "Builds a project to inspect with xenial.cli",
+        ["model"] = "Converts xafml based views to LayoutBuilder code"
     };
 
     private readonly IServiceCollection serviceCollection;
@@ -76,18 +75,22 @@ public sealed class EntryWizardCommand : AsyncCommand<BaseCommandSettings>
 
     public override async Task<int> ExecuteAsync(CommandContext context, BaseCommandSettings settings)
     {
+        _ = settings ?? throw new ArgumentNullException(nameof(settings));
+
+        var choices = commands.Keys;
+
         var commandName = AnsiConsole.Prompt(
-          new SelectionPrompt<string>()
+            new SelectionPrompt<string>()
               .Title("What [silver]command[/] do you want to execute?")
               .PageSize(10)
-              //.MoreChoicesText("[grey](Move up and down to reveal commands)[/]")
-              .AddChoices(commands));
+              .MoreChoicesText("[grey](Move up and down to reveal commands)[/]")
+              .AddChoices(choices)
+              .UseConverter(displayString => $"{displayString} - {commands[displayString]}")
+            );
 
-        // Echo the fruit back to the terminal
-        AnsiConsole.WriteLine($"I agree. {commandName} is tasty!");
-        AnsiConsole.WriteLine($"I agree. {settings.WorkingDirectory} is tasty!");
+        AnsiConsole.MarkupLine($"Executing [silver]{commandName}[/]");
 
-        using var registrar = new Xenial.Cli.DependencyInjection.DependencyInjectionRegistrar(serviceCollection);
+        using var registrar = new DependencyInjectionRegistrar(serviceCollection);
 
         ICommandApp app = commandName switch
         {
@@ -98,7 +101,6 @@ public sealed class EntryWizardCommand : AsyncCommand<BaseCommandSettings>
 
         var args = commandlineArgsProvider.Arguments;
         return await app.RunAsync(args);
-
     }
 }
 

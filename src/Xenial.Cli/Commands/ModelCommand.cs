@@ -438,9 +438,14 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                 statusContext.Spinner(Spinner.Known.Ascii);
                 ctx.StatusContext = statusContext;
 
-                var namespaces = ctx.Settings.Namespaces?.Split(';') ?? Array.Empty<string>();
+                var namespacesFilter = ctx.Settings.Namespaces?.Split(';') ?? Array.Empty<string>();
+                var viewsFilter = ctx.Settings.Views?.Split(';') ?? Array.Empty<string>();
 
-                var views = await ctx.ModelEditor.GetViewIds(namespaces);
+                var views = await ctx.ModelEditor.GetViewIds(namespacesFilter);
+
+                views = viewsFilter.Length > 0
+                    ? views.Where(viewId => viewsFilter.Contains(viewId)).ToList()
+                    : views;
 
                 foreach (var viewId in views)
                 {

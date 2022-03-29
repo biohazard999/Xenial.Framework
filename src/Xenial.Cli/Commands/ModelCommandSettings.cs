@@ -19,6 +19,10 @@ public class ModelCommandSettings : BuildCommandSettings
     [CommandOption("-n|--namespaces")]
     public string? Namespaces { get; set; }
 
+    [Description("Specifies which views to inspect. You can specify multiple by separation by semicolon.")]
+    [CommandOption("--views")]
+    public string? Views { get; set; }
+
     [Description("Specifies the nuget feed to restore the designer package. By default it will use the project package sources. You can specify multiple by separation by semicolon.")]
     [CommandOption("--designer-nuget-feed")]
     public string? DesignerNugetFeed { get; set; }
