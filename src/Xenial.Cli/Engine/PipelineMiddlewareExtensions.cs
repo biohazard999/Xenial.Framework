@@ -33,6 +33,30 @@ public static class PipelineMiddlewareExtensions
                 await tsc.Task;
                 await next();
             });
+    public static Pipeline<TContext> UseProgress<TContext>(this Pipeline<TContext> pipeline, string caption, Func<TContext, ProgressContext, Func<Task>, Task> middleware)
+        where TContext : PipelineContext
+        => pipeline.Use(async (ctx, next) =>
+        {
+            var tsc = new TaskCompletionSource();
+
+            Func<Task> newnext = () =>
+            {
+                tsc.SetResult();
+                return Task.CompletedTask;
+            };
+
+            await AnsiConsole.Progress()
+                .AutoClear(true)
+                .AutoRefresh(true)
+                .HideCompleted(true)
+                .StartAsync(async statusContext =>
+            {
+                await middleware(ctx, statusContext, newnext);
+            });
+
+            await tsc.Task;
+            await next();
+        });
 
     public static Pipeline<TContext> UseStatusWithTimer<TContext>(
         this Pipeline<TContext> pipeline,
@@ -87,4 +111,59 @@ public static class PipelineMiddlewareExtensions
                 await next();
             }
         });
+
+    public static Pipeline<TContext> UseStatusWithProgress<TContext>(
+       this Pipeline<TContext> pipeline,
+       string caption,
+       string id,
+       Func<TContext, bool> success,
+       Func<TContext, bool> warnOnFail,
+       Func<TContext, ProgressContext, Func<Task>, Task> middleware,
+       Func<TContext, bool>? skippedOnFail = null,
+       Func<TContext, bool>? forceRunNext = null
+   ) where TContext : PipelineContext
+       =>
+       pipeline.Use(async (ctx, next) =>
+       {
+           ctx.Stopwatch.Restart();
+           await next();
+
+       })
+       .UseProgress(caption, middleware)
+       .Use(async (ctx, next) =>
+       {
+           var isSkipped = skippedOnFail?.Invoke(ctx) ?? false;
+
+           if (isSkipped)
+           {
+               await next();
+               return;
+           }
+
+           if (success(ctx))
+           {
+               ctx.Stopwatch.Success(id);
+               await next();
+               return;
+           }
+           else
+           {
+               if (warnOnFail(ctx))
+               {
+                   ctx.Stopwatch.Warn(id);
+                   await next();
+                   return;
+               }
+               else
+               {
+                   ctx.Stopwatch.Fail(id);
+                   ctx.ExitCode = 1;
+               }
+           }
+
+           if (forceRunNext?.Invoke(ctx) ?? false)
+           {
+               await next();
+           }
+       });
 }

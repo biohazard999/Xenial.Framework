@@ -197,12 +197,16 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            //ctx.DesignerPackage = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(ctx.DesignerPackageId, ctx.DesignerPackageVersion), ctx.NugetToolContext.GlobalPackagesFolder);
 
            await next();
-       }).UseStatusWithTimer("Downloading Designer...", "Download Designer", _ => true, _ => false, async (ctx, next) =>
+       }).UseStatusWithProgress("Downloading Designer...", "Download Designer", _ => true, _ => false, async (ctx, progress, next) =>
        {
            foreach (var source in ctx.NugetToolContext!.Sources)
            {
+               var task = progress.AddTask($"Fetching Nuget {source.Name.EscapeMarkup()}", autoStart: false);
+
                try
                {
+                   var packageIdentity = new PackageIdentity(ctx.DesignerPackageId, ctx.DesignerPackageVersion);
+
                    var repository = new SourceRepository(source, ctx.NugetToolContext!.Providers);
 
                    var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
@@ -231,26 +235,14 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                    }
 
                    // Download the package
-                   using var packageStream = new MemoryStream();
-
-                   if (!await resource.CopyNupkgToStreamAsync(
-                       ctx.DesignerPackageId,
-                       ctx.DesignerPackageVersion,
-                       packageStream,
-                       ctx.NugetToolContext!.Cache,
-                       ctx.NugetToolContext!.Logger,
-                       ctx.NugetToolContext!.CancellationToken
-                   ))
-                   {
-                       continue;
-                   }
+                   using var packageStream = new MemoryStreamWithProgress(task);
 
                    packageStream.Seek(0, SeekOrigin.Begin);
 
                    // Add it to the global package folder
                    var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
                        source.Source,
-                       new PackageIdentity(ctx.DesignerPackageId, ctx.DesignerPackageVersion),
+                       packageIdentity,
                        packageStream,
                        ctx.NugetToolContext.GlobalPackagesFolder,
                        parentId: Guid.Empty,
@@ -294,6 +286,10 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                    }
 
                    Logger.LogWarning(ex, "Fatal Nuget Error");
+               }
+               finally
+               {
+                   task.StopTask();
                }
            }
 

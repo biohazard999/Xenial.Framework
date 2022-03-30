@@ -24,15 +24,15 @@ public class ModelCommandSettings : BuildCommandSettings
     public string? Views { get; set; }
 
     [Description("Specifies the nuget feed to restore the designer package. By default it will use the project package sources. You can specify multiple by separation by semicolon.")]
-    [CommandOption("--designer-nuget-feed")]
+    [CommandOption("--designer-nuget-feed", IsHidden = true)]
     public string? DesignerNugetFeed { get; set; }
 
     [Description("Specifies the package version to restore the designer package. By default it will autodetect the correct version.")]
-    [CommandOption("--designer-nuget-package-version")]
+    [CommandOption("--designer-nuget-package-version", IsHidden = true)]
     public string? DesignerNugetPackageVersion { get; set; }
 
     [Description("Launches the design process with an attached debugger.")]
-    [CommandOption("--designer-debug")]
+    [CommandOption("--designer-debug", IsHidden = true)]
     [DefaultValue(false)]
     public bool DesignerDebug { get; set; }
 
@@ -42,12 +42,12 @@ public class ModelCommandSettings : BuildCommandSettings
     public bool BuildReferences { get; set; }
 
     [Description("For internal use only.")]
-    [CommandOption("--launch-from-nuget")]
+    [CommandOption("--launch-from-nuget", IsHidden = true)]
     [DefaultValue(true)]
     public bool LaunchFromNuget { get; set; }
 
     [Description("Specifies the connection timeout for the design process communitcation in milliseconds. Will be unlimited when debugger is attached.")]
-    [CommandOption("--designer-connection-timeout")]
+    [CommandOption("--designer-connection-timeout", IsHidden = true)]
     [DefaultValue(10000)]
     public int DesignerConnectionTimeout { get; set; } = 10000;
 }
