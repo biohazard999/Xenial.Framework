@@ -88,7 +88,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
         {
             var options = new AnalyzerManagerOptions
             {
-                LoggerFactory = LoggerFactory
+                LoggerFactory = ctx.Settings.LogMSBuildCommandLine ? LoggerFactory : null
             };
 
             ctx.AnalyzerManager = new AnalyzerManager(options);
@@ -228,6 +228,21 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
 
             ctx.BuildResults = ctx.ProjectAnalyzer!.Build(ctx.BuildTfms, environmentOptions);
             await next();
+        }, forceRunNext: _ => true)
+        .Use(async (ctx, next) =>
+        {
+            if (!ctx.BuildResults!.OverallSuccess)
+            {
+                AnsiConsole.WriteLine();
+                AnsiConsole.Markup("The build [red bold]failed[/], ");
+                AnsiConsole.Markup("try to run the command [yellow]again[/] with the [green bold]--log-build[/] option ");
+                AnsiConsole.Markup("to get more information about build failures.");
+                AnsiConsole.WriteLine();
+            }
+            else
+            {
+                await next();
+            }
         });
 
     protected static void PatchOptions(TPipelineContext ctx, EnvironmentOptions environmentOptions)

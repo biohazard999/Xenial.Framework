@@ -2,7 +2,7 @@
   "profiles": {
     "wizard": {
       "commandName": "Project",
-      "commandLineArgs": "--log-build -v=debug",
+      "commandLineArgs": "",
       "workingDirectory": "C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\FeatureCenter\\CS\\FeatureCenter.Module"
     },
     "build": {

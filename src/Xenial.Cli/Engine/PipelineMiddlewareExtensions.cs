@@ -41,7 +41,8 @@ public static class PipelineMiddlewareExtensions
         Func<TContext, bool> success,
         Func<TContext, bool> warnOnFail,
         Func<TContext, Func<Task>, Task> middleware,
-        Func<TContext, bool>? skippedOnFail = null
+        Func<TContext, bool>? skippedOnFail = null,
+        Func<TContext, bool>? forceRunNext = null
     ) where TContext : PipelineContext
         =>
         pipeline.Use(async (ctx, next) =>
@@ -64,6 +65,7 @@ public static class PipelineMiddlewareExtensions
             {
                 ctx.Stopwatch.Success(id);
                 await next();
+                return;
             }
             else
             {
@@ -71,12 +73,18 @@ public static class PipelineMiddlewareExtensions
                 {
                     ctx.Stopwatch.Warn(id);
                     await next();
+                    return;
                 }
                 else
                 {
                     ctx.Stopwatch.Fail(id);
                     ctx.ExitCode = 1;
                 }
+            }
+
+            if (forceRunNext?.Invoke(ctx) ?? false)
+            {
+                await next();
             }
         });
 }

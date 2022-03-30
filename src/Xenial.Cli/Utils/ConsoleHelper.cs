@@ -32,10 +32,13 @@ public static class ConsoleHelper
         AnsiConsole.Write(path);
     }
 
-    public static void Success(this Stopwatch sw!!, string caption)
+    public static void Success(this Stopwatch sw, string caption)
+        => WriteBadge(sw, "SUCCESS", "green", caption);
+
+    private static void WriteBadge(Stopwatch sw, string badge, string color, string caption)
     {
         sw.Stop();
-        AnsiConsole.Markup($"[green]{"[SUCCESS]".PadRight(DefaultColumnSize).EscapeMarkup()}[/][grey]: [/]");
+        AnsiConsole.Markup($"[{color}]{$"[{badge}]".PadRight(DefaultColumnSize).EscapeMarkup()}[/][grey]: [/]");
 
         var table = new Table()
             .NoBorder()
@@ -45,25 +48,16 @@ public static class ConsoleHelper
             .AddColumn("Elapsed", c => c.RightAligned());
 
         table.AddRow($"[silver]{caption.EscapeMarkup()}[/]", $"[grey][[{sw.Elapsed}]][/]");
-        //[silver]{caption}[/] [grey][[{sw.Elapsed}]][/]
         AnsiConsole.Write(table);
 
         sw.Restart();
     }
 
     public static void Warn(this Stopwatch sw!!, string caption)
-    {
-        sw.Stop();
-        AnsiConsole.MarkupLine($"[red][[WARNING]]        [/][grey]: [/][red]{caption}[/] [silver][[{sw.Elapsed}]][/]");
-        sw.Restart();
-    }
+        => WriteBadge(sw, "WARNING", "yellow", caption);
 
     public static void Fail(this Stopwatch sw!!, string caption)
-    {
-        sw.Stop();
-        AnsiConsole.MarkupLine($"[red][[FAILURE]]        [/][grey]: [/][red]{caption}[/] [silver][[{sw.Elapsed}]][/]");
-        sw.Restart();
-    }
+        => WriteBadge(sw, "FAILURE", "red", caption);
 
     public static void HorizontalRule(string title)
     {
