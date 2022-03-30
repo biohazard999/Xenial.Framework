@@ -9,11 +9,32 @@ using DevExpress.ExpressApp;
 
 using Microsoft.CodeAnalysis;
 
+using NuGet.Common;
+using NuGet.Configuration;
 using NuGet.Packaging;
+using NuGet.Protocol.Core.Types;
+using NuGet.Versioning;
 
 using Xenial.Cli.Engine;
 
 namespace Xenial.Cli.Commands;
+
+public record NugetToolContext
+{
+    public string GlobalPackagesFolder { get; set; } = "";
+
+    public ISettings Settings { get; set; } = default!;
+
+    public IEnumerable<PackageSource> Sources { get; set; } = Enumerable.Empty<PackageSource>();
+
+    public IEnumerable<Lazy<INuGetResourceProvider>> Providers { get; set; } = Enumerable.Empty<Lazy<INuGetResourceProvider>>();
+
+    public CancellationToken CancellationToken { get; set; } = CancellationToken.None;
+
+    public SourceCacheContext Cache { get; set; } = new SourceCacheContext();
+
+    public ILogger Logger { get; set; } = default!;
+}
 
 public record ModelContext : ModelContext<ModelCommandSettings>
 {
@@ -27,6 +48,11 @@ public record ModelContext<TSettings> : BuildContext<TSettings>
     public Compilation? Compilation { get; private set; }
     public Project? CurrentProject { get; private set; }
     public AdhocWorkspace? Workspace { get; set; }
+
+    public NugetToolContext? NugetToolContext { get; set; }
+    public string? DesignerPackageId { get; set; }
+    public NuGetVersion? DesignerPackageVersion { get; set; }
+    public DownloadResourceResult? DesignerPackage { get; set; }
 
     public NamedPipeClientStream? DesignerStream { get; set; }
 

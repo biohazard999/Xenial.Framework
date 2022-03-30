@@ -23,8 +23,12 @@ public static class ConsoleHelper
     internal const int DefaultColumnSize = 20;
     internal const int MaxWidth = 119;
 
-    public static void PrintInfo(string caption, string info, int columnSize = DefaultColumnSize)
-        => AnsiConsole.MarkupLine($"[gray bold]{caption?.PadRight(columnSize).EscapeMarkup()}: [/]{info.EscapeMarkup()}");
+    public static void PrintInfo(string caption, string info, string? color = null, int columnSize = DefaultColumnSize)
+    {
+        var colorMarkup = string.IsNullOrEmpty(color) ? "" : $"[{color}]";
+        var colorMarkupClose = string.IsNullOrEmpty(color) ? "" : $"[/]";
+        AnsiConsole.MarkupLine($"[gray bold]{caption?.PadRight(columnSize).EscapeMarkup()}: [/]{colorMarkup}{info.EscapeMarkup()}{colorMarkupClose}");
+    }
 
     public static void PrintInfo(string caption, TextPath path, int columnSize = DefaultColumnSize)
     {
@@ -80,9 +84,12 @@ public static class ConsoleHelper
         AnsiConsole.WriteLine();
     }
 
-    public static TextPath ToPath(string path)
+    public static TextPath ToPath(string path, bool skipEllipsis = false)
     {
-        path = EllipsisPath(path, 80);
+        if (!skipEllipsis)
+        {
+            path = EllipsisPath(path, 80);
+        }
 
         return new TextPath(path)
                         .RootColor(Color.White)
