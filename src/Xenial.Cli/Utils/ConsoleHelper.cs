@@ -20,10 +20,34 @@ namespace Xenial.Cli.Utils;
 
 public static class ConsoleHelper
 {
+    internal const int DefaultColumnSize = 20;
+    internal const int MaxWidth = 119;
+
+    public static void PrintInfo(string caption, string info, int columnSize = DefaultColumnSize)
+        => AnsiConsole.MarkupLine($"[gray bold]{caption?.PadRight(columnSize).EscapeMarkup()}: [/]{info.EscapeMarkup()}");
+
+    public static void PrintInfo(string caption, TextPath path, int columnSize = DefaultColumnSize)
+    {
+        AnsiConsole.Markup($"[gray bold]{caption?.PadRight(columnSize).EscapeMarkup()}: [/]");
+        AnsiConsole.Write(path);
+    }
+
     public static void Success(this Stopwatch sw!!, string caption)
     {
         sw.Stop();
-        AnsiConsole.MarkupLine($"[green][[SUCCESS]]        [/][grey]: [/][silver]{caption}[/] [grey][[{sw.Elapsed}]][/]");
+        AnsiConsole.Markup($"[green]{"[SUCCESS]".PadRight(DefaultColumnSize).EscapeMarkup()}[/][grey]: [/]");
+
+        var table = new Table()
+            .NoBorder()
+            .Width(MaxWidth - DefaultColumnSize)
+            .HideHeaders()
+            .AddColumn("Caption")
+            .AddColumn("Elapsed", c => c.RightAligned());
+
+        table.AddRow($"[silver]{caption.EscapeMarkup()}[/]", $"[grey][[{sw.Elapsed}]][/]");
+        //[silver]{caption}[/] [grey][[{sw.Elapsed}]][/]
+        AnsiConsole.Write(table);
+
         sw.Restart();
     }
 
@@ -54,16 +78,23 @@ public static class ConsoleHelper
     }
 
     public static void WritePath(string path)
+        => AnsiConsole.Write(ToPath(path));
+
+    public static void WriteLinePath(string path)
+    {
+        WritePath(path);
+        AnsiConsole.WriteLine();
+    }
+
+    public static TextPath ToPath(string path)
     {
         path = EllipsisPath(path, 80);
 
-        AnsiConsole.Write(
-            new TextPath(path)
-                .RootColor(Color.White)
-                .SeparatorColor(Color.Grey)
-                .StemColor(Color.White)
-                .LeafColor(Color.Green)
-        );
+        return new TextPath(path)
+                        .RootColor(Color.White)
+                        .SeparatorColor(Color.Grey)
+                        .StemColor(Color.White)
+                        .LeafColor(Color.Green);
     }
 
     public static string EllipsisPath(this string rawString!!, int maxLength = 80, char delimiter = '\\')

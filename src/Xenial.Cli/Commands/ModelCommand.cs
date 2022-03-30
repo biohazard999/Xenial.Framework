@@ -61,9 +61,21 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
     protected ModelCommand(ILoggerFactory loggerFactory, ILogger<ModelCommand<TSettings, TPipeline, TPipelineContext>> logger)
         : base(loggerFactory, logger) { }
 
-    protected override void ConfigureStatusPipeline(TPipeline pipeline)
+    internal static AdhocWorkspace CreateWorkspace(IAnalyzerManager manager)
     {
-        base.ConfigureStatusPipeline(pipeline);
+        var workspace = new AdhocWorkspace();
+        ILogger? logger = manager.LoggerFactory?.CreateLogger<AdhocWorkspace>();
+        if (logger is not null)
+        {
+            workspace.WorkspaceChanged += (sender, args) => logger.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
+            workspace.WorkspaceFailed += (sender, args) => logger.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
+        }
+        return workspace;
+    }
+
+    protected override void ConfigurePipeline(TPipeline pipeline)
+    {
+        base.ConfigurePipeline(pipeline);
 
         pipeline.Use(async (ctx, next) =>
         {
@@ -102,9 +114,8 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            }
            await next();
        })
-       .Use(async (ctx, next) =>
+       .UseStatus("Loading Workspace...", async (ctx, next) =>
        {
-           ctx.StatusContext!.Status = "Loading Workspace...";
            var sw = Stopwatch.StartNew();
            try
            {
@@ -113,13 +124,15 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                ctx.ProjectAnalyzer.SetGlobalProperty("CopyLocalLockFileAssemblies", "true");
                ctx.ProjectAnalyzer.SetGlobalProperty(MsBuildProperties.CopyBuildOutputToOutputDirectory, "true");
 
-               ctx.StatusContext!.Status = "Preparing Workspace...";
+               //TODO: Status
+               //ctx.StatusContext!.Status = "Preparing Workspace...";
                ctx.Workspace = CreateWorkspace(ctx.AnalyzerManager);
                ctx.BuildResult.AddToWorkspace(ctx.Workspace, ctx.Settings.BuildReferences);
 
                foreach (var project in ctx.Workspace.CurrentSolution.Projects)
                {
-                   ctx.StatusContext!.Status = "Compiling Workspace...";
+                   //TODO: Status
+                   //ctx.StatusContext!.Status = "Compiling Workspace...";
 
                    ctx.SetCompilationForProject(project, await project.GetCompilationAsync());
                }
@@ -149,10 +162,8 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                }
            }
        })
-       .Use(async (ctx, next) =>
+       .UseStatus("Fetching Designer...", async (ctx, next) =>
        {
-           ctx.StatusContext!.Status = "Fetching Designer...";
-
            var sw = Stopwatch.StartNew();
            try
            {
@@ -188,7 +199,8 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                            ctx.Settings.DesignerNugetPackageVersion ?? XenialVersion.Version
                        );
 
-                       ctx.StatusContext!.Status = $"Fetching Nugets {packageId.EscapeMarkup()}.{version.ToString().EscapeMarkup()} from {source.ToString().EscapeMarkup()}...";
+                       //TODO: Status
+                       //ctx.StatusContext!.Status = $"Fetching Nugets {packageId.EscapeMarkup()}.{version.ToString().EscapeMarkup()} from {source.ToString().EscapeMarkup()}...";
 
                        var package = await FindPackage(source, resource, globalPackagesFolder, cache, logger, settings, packageId, version, cancellationToken);
                        if (package is not null)
@@ -229,10 +241,8 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            }
 
        })
-       .Use(async (ctx, next) =>
+       .UseStatus("Launching Designer...", async (ctx, next) =>
        {
-           ctx.StatusContext!.Status = "Launching Designer...";
-
            var tfm = ctx.BuildResult!.TargetFramework;
            var launcher = tfm switch
            {
@@ -283,9 +293,8 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                }
            }
        })
-       .Use(async (ctx, next) =>
+       .UseStatus("Connecting to Designer...", async (ctx, next) =>
        {
-           ctx.StatusContext!.Status = "Connecting to Designer...";
            var sw = Stopwatch.StartNew();
            try
            {
@@ -310,9 +319,8 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                throw;
            }
        })
-       .Use(async (ctx, next) =>
+       .UseStatus("Connecting Designer RPC...", async (ctx, next) =>
        {
-           ctx.StatusContext!.Status = "Connecting Designer RPC...";
            var sw = Stopwatch.StartNew();
            try
            {
@@ -333,10 +341,8 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                throw;
            }
        })
-       .Use(async (ctx, next) =>
+       .UseStatus("Loading Application Model...", async (ctx, next) =>
        {
-           ctx.StatusContext!.Status = "Loading Application Model...";
-
            var sw = Stopwatch.StartNew();
            try
            {
@@ -368,35 +374,15 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                }
            }
        })
-       ;
-    }
-
-    internal static AdhocWorkspace CreateWorkspace(IAnalyzerManager manager)
-    {
-        var workspace = new AdhocWorkspace();
-        ILogger? logger = manager.LoggerFactory?.CreateLogger<AdhocWorkspace>();
-        if (logger is not null)
-        {
-            workspace.WorkspaceChanged += (sender, args) => logger.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
-            workspace.WorkspaceFailed += (sender, args) => logger.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
-        }
-        return workspace;
-    }
-
-    protected override void ConfigurePipeline(TPipeline pipeline)
-    {
-        base.ConfigurePipeline(pipeline);
-
-        pipeline.Use(async (ctx, next) =>
+       .Use(async (ctx, next) =>
         {
             var result = await ctx.ModelEditor!.Pong();
 
             AnsiConsole.WriteLine(result);
 
             await next();
-        });
-
-        pipeline.Use(async (ctx, next) =>
+        })
+       .Use(async (ctx, next) =>
         {
             var attributeSymbol = ctx.Compilation.GetTypeByMetadataName(typeof(XenialModuleBase).FullName!);
 
@@ -416,69 +402,62 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
             }
             await next();
         })
-        .Use(async (ctx, next) =>
+        .UseStatus("Analyzing views...", async (ctx, next) =>
         {
             Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications = new();
             Dictionary<string, SyntaxTree> originalSyntaxTrees = new();
 
             List<string> removedViews = new();
 
-            await AnsiConsole.Status().Start("Analyzing views...", async statusContext =>
+            var namespacesFilter = ctx.Settings.Namespaces?.Split(';') ?? Array.Empty<string>();
+            var viewsFilter = ctx.Settings.Views?.Split(';') ?? Array.Empty<string>();
+
+            var views = await ctx.ModelEditor.GetViewIds(namespacesFilter);
+
+            views = viewsFilter.Length > 0
+                ? views.Where(viewId => viewsFilter.Contains(viewId)).ToList()
+                : views;
+
+            foreach (var viewId in views)
             {
-                statusContext.Spinner(Spinner.Known.Ascii);
-                ctx.StatusContext = statusContext;
+                AnsiConsole.MarkupLine($"[grey]Analyzing: [silver][/]{viewId}[/]");
 
-                var namespacesFilter = ctx.Settings.Namespaces?.Split(';') ?? Array.Empty<string>();
-                var viewsFilter = ctx.Settings.Views?.Split(';') ?? Array.Empty<string>();
+                var xml = await ctx.ModelEditor.GetViewAsXml(viewId);
+                var viewType = await ctx.ModelEditor.GetViewType(viewId);
+                var modelClass = await ctx.ModelEditor.GetModelClass(viewId);
 
-                var views = await ctx.ModelEditor.GetViewIds(namespacesFilter);
+                //TODO: move to Design later once we have customizable X2CCode output
+                var codeResult = X2CEngine.ConvertToCode(xml);
 
-                views = viewsFilter.Length > 0
-                    ? views.Where(viewId => viewsFilter.Contains(viewId)).ToList()
-                    : views;
-
-                foreach (var viewId in views)
-                {
-                    AnsiConsole.MarkupLine($"[grey]Analyzing: [silver][/]{viewId}[/]");
-
-                    var xml = await ctx.ModelEditor.GetViewAsXml(viewId);
-                    var viewType = await ctx.ModelEditor.GetViewType(viewId);
-                    var modelClass = await ctx.ModelEditor.GetModelClass(viewId);
-
-                    //TODO: move to Design later once we have customizable X2CCode output
-                    var codeResult = X2CEngine.ConvertToCode(xml);
-
-
-
-                    var location = FindFile(ctx, modelClass);
+                var location = FindFile(ctx, modelClass);
 #if DEBUG
-                    HorizontalRule(viewId);
+                HorizontalRule(viewId);
 #endif
-                    if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
+                if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
+                {
+                    var ext = Path.GetExtension(location.SourceTree.FilePath);
+                    var fileName = Path.GetFileNameWithoutExtension(location.SourceTree.FilePath);
+                    var dirName = Path.GetDirectoryName(location.SourceTree.FilePath);
+
+                    var part = viewType switch
                     {
-                        var ext = Path.GetExtension(location.SourceTree.FilePath);
-                        var fileName = Path.GetFileNameWithoutExtension(location.SourceTree.FilePath);
-                        var dirName = Path.GetDirectoryName(location.SourceTree.FilePath);
+                        ViewType.DetailView => ".Layouts",
+                        ViewType.ListView => ".Columns",
+                        _ => ""
+                    };
 
-                        var part = viewType switch
-                        {
-                            ViewType.DetailView => ".Layouts",
-                            ViewType.ListView => ".Columns",
-                            _ => ""
-                        };
-
-                        var builderSymbol = ctx.Compilation!.GetTypeByMetadataName(codeResult.FullName);
-                        var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
-                        if (builderSymbol is null)
-                        {
-                            var builderSyntax = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)location.SourceTree.Options, path: newFilePath);
-                            ctx.ReplaceCurrentCompilation(ctx.Compilation.AddSyntaxTrees(builderSyntax));
-                            modifications[newFilePath] = (FileState.Added, builderSyntax);
-                        }
-                        else
-                        {
-                            await ReplaceSyntaxTree(ctx, modifications, originalSyntaxTrees, builderSymbol, newFilePath, codeResult);
-                        }
+                    var builderSymbol = ctx.Compilation!.GetTypeByMetadataName(codeResult.FullName);
+                    var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
+                    if (builderSymbol is null)
+                    {
+                        var builderSyntax = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)location.SourceTree.Options, path: newFilePath);
+                        ctx.ReplaceCurrentCompilation(ctx.Compilation.AddSyntaxTrees(builderSyntax));
+                        modifications[newFilePath] = (FileState.Added, builderSyntax);
+                    }
+                    else
+                    {
+                        await ReplaceSyntaxTree(ctx, modifications, originalSyntaxTrees, builderSymbol, newFilePath, codeResult);
+                    }
 #if DEBUG
                         HorizontalDashed(location.SourceTree.FilePath);
                         HorizontalDashed(newFilePath);
@@ -490,54 +469,53 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                             AnsiConsole.WriteLine();
                         }
 #endif
-                        var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass!);
+                    var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass!);
 
-                        if (symbol is not null)
+                    if (symbol is not null)
+                    {
+                        var root = await location.SourceTree.GetRootAsync();
+
+                        if (!originalSyntaxTrees.ContainsKey(location.SourceTree.FilePath))
                         {
-                            var root = await location.SourceTree.GetRootAsync();
+                            originalSyntaxTrees[location.SourceTree.FilePath] = location.SourceTree;
+                        }
 
-                            if (!originalSyntaxTrees.ContainsKey(location.SourceTree.FilePath))
+                        var semanticModel = ctx.Compilation.GetSemanticModel(location.SourceTree);
+
+                        if (root is not null)
+                        {
+                            var attributeName = viewType switch
                             {
-                                originalSyntaxTrees[location.SourceTree.FilePath] = location.SourceTree;
-                            }
+                                ViewType.DetailView => "DetailViewLayoutBuilder",
+                                ViewType.ListView => "ListViewColumnsBuilder",
+                                _ => null
+                            };
 
-                            var semanticModel = ctx.Compilation.GetSemanticModel(location.SourceTree);
-
-                            if (root is not null)
+                            if (attributeName is not null)
                             {
-                                var attributeName = viewType switch
-                                {
-                                    ViewType.DetailView => "DetailViewLayoutBuilder",
-                                    ViewType.ListView => "ListViewColumnsBuilder",
-                                    _ => null
-                                };
+                                var newRoot = RewriteSyntaxTree(ctx, viewType, codeResult, root, semanticModel);
 
-                                if (attributeName is not null)
-                                {
-                                    var newRoot = RewriteSyntaxTree(ctx, viewType, codeResult, root, semanticModel);
+                                var newSyntaxTree = location.SourceTree.WithRootAndOptions(newRoot, location.SourceTree.Options);
 
-                                    var newSyntaxTree = location.SourceTree.WithRootAndOptions(newRoot, location.SourceTree.Options);
+                                modifications[location.SourceTree.FilePath] = (FileState.Modified, newSyntaxTree);
 
-                                    modifications[location.SourceTree.FilePath] = (FileState.Modified, newSyntaxTree);
-
-                                    ctx.ReplaceCurrentCompilation(ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree));
+                                ctx.ReplaceCurrentCompilation(ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree));
 #if DEBUG
                                     PrintSource(newRoot.ToFullString());
                                     AnsiConsole.WriteLine();
 #endif
-                                }
                             }
                         }
                     }
+                }
 #if DEBUG
                     PrintSource(xml, "xml");
                     AnsiConsole.WriteLine();
                     PrintSource(codeResult.Code);
                     AnsiConsole.WriteLine();
 #endif
-                    removedViews.Add(viewId);
-                }
-            });
+                removedViews.Add(viewId);
+            }
 
             ////Sanity-Check. We compare again so we don't touch mulitple files
             foreach (var oldItem in originalSyntaxTrees)

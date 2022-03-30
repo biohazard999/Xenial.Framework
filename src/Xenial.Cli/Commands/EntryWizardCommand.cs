@@ -87,7 +87,7 @@ public sealed class EntryWizardCommand : AsyncCommand<BaseCommandSettings>
               .UseConverter(displayString => $"{displayString} - {commands[displayString]}")
             );
 
-        AnsiConsole.MarkupLine($"Executing [silver]{commandName}[/]");
+        AnsiConsole.WriteLine();
 
         using var registrar = new DependencyInjectionRegistrar(serviceCollection);
 
