@@ -12,6 +12,7 @@ namespace Xenial.Design.Contracts;
 
 public interface IModelEditorServer
 {
+    Task<string?> GetModelFileName();
     Task<string?> GetModelClass(string viewId);
     Task<string> GetViewAsXml(string viewId);
     Task<IList<string>> GetViewIds(IList<string> namespaces);
@@ -19,7 +20,6 @@ public interface IModelEditorServer
     Task LaunchDebugger();
     Task<int> LoadModel(string targetFileName, string modelDifferencesStorePath, string deviceSpecificDifferencesStoreName, string? assembliesPath);
     Task<string> Ping();
-    Task<string> Pong();
     Task Shutdown();
 }
 

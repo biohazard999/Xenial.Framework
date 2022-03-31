@@ -5,6 +5,8 @@ using Buildalyzer.Workspaces;
 
 using DevExpress.ExpressApp;
 
+using Humanizer;
+
 using Microsoft.CodeAnalysis;
 
 using Microsoft.CodeAnalysis.CSharp;
@@ -30,6 +32,7 @@ using StreamJsonRpc;
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO.Pipes;
 using System.Linq;
 
@@ -310,7 +313,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
            await next();
        })
-       .UseStatus("Launching Designer...", async (ctx, next) =>
+       .UseStatusWithTimer("Launching Designer...", "Find Designer", ctx => File.Exists(ctx.ModelEditorProcessPath), _ => false, async (ctx, next) =>
        {
            var tfm = ctx.BuildResult!.TargetFramework;
            var launcher = tfm switch
@@ -322,135 +325,102 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                var t => t,
            };
 
-           var processPath = await FindProcessPath(launcher, ctx);
+           ctx.ModelEditorProcessPath = await FindProcessPath(launcher, ctx);
 
            ctx.ModelEditorId = Guid.NewGuid().ToString();
-
-           if (!File.Exists(processPath))
-           {
-               Stopwatch.StartNew().Fail($"Designer does not exist {processPath}");
-               Logger.LogError($"Designer does not exist {processPath}");
-           }
-           else
-           {
-               var sw = Stopwatch.StartNew();
-               try
-               {
-                   var info = new ProcessStartInfo
-                   {
-                       FileName = processPath,
-                       ArgumentList =
-                   {
-                       ctx.ModelEditorId,
-#pragma warning disable CA1308
-                       ctx.Settings.DesignerDebug.ToString().ToLowerInvariant()
-#pragma warning restore CA1308,
-                   }
-                   };
-
-                   ctx.ModelEditorProcess = Process.Start(info);
-
-                   sw.Success("Launching Designer");
-
-                   await next();
-               }
-               catch (Exception ex)
-               {
-                   sw.Fail("Launching Designer");
-                   Logger.LogError(ex, "Launching Designer");
-                   throw;
-               }
-           }
+           await next();
        })
-       .UseStatus("Connecting to Designer...", async (ctx, next) =>
-       {
-           var sw = Stopwatch.StartNew();
-           try
-           {
-               ctx.DesignerStream = new NamedPipeClientStream(".", ctx.ModelEditorId, PipeDirection.InOut, PipeOptions.Asynchronous);
-
-               if (ctx.Settings.DesignerDebug)
-               {
-                   await ctx.DesignerStream.ConnectAsync();
-               }
-               else
-               {
-                   await ctx.DesignerStream.ConnectAsync(ctx.Settings.DesignerConnectionTimeout);
-               }
-
-               sw.Success("Connecting to Designer");
-               await next();
-           }
-           catch (Exception ex)
-           {
-               sw.Fail("Connecting to Designer");
-               Logger.LogError(ex, "Connecting to Designer");
-               throw;
-           }
-       })
-       .UseStatus("Connecting Designer RPC...", async (ctx, next) =>
-       {
-           var sw = Stopwatch.StartNew();
-           try
-           {
-               var attached = JsonRpc.Attach(ctx.DesignerStream!);
-
-               ctx.ModelEditor = new ModelEditorRpcClient(attached);
-
-               var ping = await ctx.ModelEditor.Ping();
-
-               sw.Success($"Connecting Designer RPC: [green]{ping.EscapeMarkup()}[/]");
-
-               await next();
-           }
-           catch (Exception ex)
-           {
-               sw.Fail($"Connecting Designer RPC");
-               Logger.LogError(ex, "Connecting Designer RPC");
-               throw;
-           }
-       })
-       .UseStatus("Loading Application Model...", async (ctx, next) =>
-       {
-           var sw = Stopwatch.StartNew();
-           try
-           {
-               var assemblyPath = ctx.BuildResult!.Properties["TargetPath"];
-               var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
-               var targetDir = Path.GetDirectoryName(assemblyPath)!;
-
-               var numberOfViews = await ctx.ModelEditor.LoadModel(assemblyPath,
-                   folder,
-                   "",
-                   targetDir);
-
-               sw.Success($"Load Model: {numberOfViews} views");
-               await next();
-           }
-           catch (Exception ex)
-           {
-               Logger.LogError(ex, "Load Model");
-               if (ctx.Settings.Strict)
-               {
-                   sw.Fail("Load Model");
-                   ctx.ExitCode = 1;
-                   throw;
-               }
-               else
-               {
-                   sw.Warn("Load Model");
-                   await next();
-               }
-           }
-       })
-       .Use(async (ctx, next) =>
+       .UseStatusWithTimer("Launching Designer...", "Launch Designer", ctx => ctx.ModelEditorProcess is not null, _ => false, async (ctx, next) =>
         {
-            var result = await ctx.ModelEditor!.Pong();
+            var path = ctx.ModelEditorProcessPath;
+            if (path.StartsWith(ctx.NugetToolContext.GlobalPackagesFolder, StringComparison.OrdinalIgnoreCase))
+            {
+                path = path.Substring(ctx.NugetToolContext.GlobalPackagesFolder.Length);
+            }
 
-            AnsiConsole.WriteLine(result);
+            PrintInfo("Designer-Path", ToPath(path, skipEllipsis: true));
+
+            var info = new ProcessStartInfo
+            {
+                FileName = ctx.ModelEditorProcessPath,
+                ArgumentList =
+                {
+                    ctx.ModelEditorId,
+#pragma warning disable CA1308
+                    ctx.Settings.DesignerDebug.ToString().ToLowerInvariant()
+#pragma warning restore CA1308,
+                },
+
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+            };
+
+            ctx.ModelEditorProcess = Process.Start(info);
+            if (ctx.ModelEditorProcess is not null)
+            {
+                PrintInfo("Designer-PID", ctx.ModelEditorProcess.Id.ToString(CultureInfo.InvariantCulture));
+                ctx.ModelEditorProcess.OutputDataReceived += (s, e) =>
+                {
+                    PrintInfo($"Xenial.Design", e.Data);
+                };
+                ctx.ModelEditorProcess.ErrorDataReceived += (s, e) =>
+                {
+                    PrintInfo($"Xenial.Design", e.Data, "red");
+                };
+                ctx.ModelEditorProcess.BeginOutputReadLine();
+                ctx.ModelEditorProcess.BeginErrorReadLine();
+            }
+            await next();
+
+        })
+       .UseStatusWithTimer("Connecting to Designer...", "Designer connected", _ => true, _ => false, async (ctx, next) =>
+        {
+            ctx.DesignerStream = new NamedPipeClientStream(".", ctx.ModelEditorId, PipeDirection.InOut, PipeOptions.Asynchronous);
+
+            if (ctx.Settings.DesignerDebug)
+            {
+                PrintInfo("Designer-Debug", ctx.Settings.DesignerDebug.ToString());
+                await ctx.DesignerStream.ConnectAsync();
+            }
+            else
+            {
+                PrintInfo("Designer-Timeout", ctx.Settings.DesignerConnectionTimeout.Milliseconds().Humanize());
+                await ctx.DesignerStream.ConnectAsync(ctx.Settings.DesignerConnectionTimeout);
+            }
 
             await next();
         })
+       .UseStatusWithTimer("Connecting Designer RPC...", "Designer RPC", _ => true, _ => false, async (ctx, next) =>
+       {
+           var attached = JsonRpc.Attach(ctx.DesignerStream!);
+
+           ctx.ModelEditor = new ModelEditorRpcClient(attached);
+
+           var ping = await ctx.ModelEditor.Ping();
+
+           PrintInfo($"Xenial.Design", ping, "green");
+
+           await next();
+       })
+       .UseStatus("Loading Application Model...", async (ctx, next) =>
+       {
+           var assemblyPath = ctx.BuildResult!.Properties["TargetPath"];
+           var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+           var targetDir = Path.GetDirectoryName(assemblyPath)!;
+
+           PrintInfo($"AssemblyPath", ToPath(assemblyPath));
+           PrintInfo($"ProjectFolder", ToPath(folder));
+           PrintInfo($"AssembliesFolder", ToPath(targetDir));
+
+           var numberOfViews = await ctx.ModelEditor.LoadModel(assemblyPath,
+               folder,
+               "",
+               targetDir);
+
+           PrintInfo($"Xenial.Design", $"Load Model: {numberOfViews} views");
+
+           await next();
+       })
        .Use(async (ctx, next) =>
         {
             var attributeSymbol = ctx.Compilation.GetTypeByMetadataName(typeof(XenialModuleBase).FullName!);
@@ -471,15 +441,28 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
             }
             await next();
         })
-        .UseStatus("Analyzing views...", async (ctx, next) =>
+        .UseStatusWithTimer("Analyzing views...", "Analyze views", _ => true, _ => false, async (ctx, next) =>
         {
-            Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications = new();
-            Dictionary<string, SyntaxTree> originalSyntaxTrees = new();
-
-            List<string> removedViews = new();
-
             var namespacesFilter = ctx.Settings.Namespaces?.Split(';') ?? Array.Empty<string>();
             var viewsFilter = ctx.Settings.Views?.Split(';') ?? Array.Empty<string>();
+
+            if (namespacesFilter.Length > 0)
+            {
+                PrintInfo("Filter", "Namespace");
+                foreach (var filter in namespacesFilter)
+                {
+                    PrintInfo("", filter);
+                }
+            }
+
+            if (viewsFilter.Length > 0)
+            {
+                PrintInfo("Filter", "View-Ids");
+                foreach (var filter in viewsFilter)
+                {
+                    PrintInfo("", filter);
+                }
+            }
 
             var views = await ctx.ModelEditor.GetViewIds(namespacesFilter);
 
@@ -487,9 +470,12 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                 ? views.Where(viewId => viewsFilter.Contains(viewId)).ToList()
                 : views;
 
+            var analizingInfo = "Analyzing";
+
             foreach (var viewId in views)
             {
-                AnsiConsole.MarkupLine($"[grey]Analyzing: [silver][/]{viewId}[/]");
+                PrintInfo(analizingInfo, viewId);
+                analizingInfo = "";
 
                 var xml = await ctx.ModelEditor.GetViewAsXml(viewId);
                 var viewType = await ctx.ModelEditor.GetViewType(viewId);
@@ -499,9 +485,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                 var codeResult = X2CEngine.ConvertToCode(xml);
 
                 var location = FindFile(ctx, modelClass);
-#if DEBUG
-                HorizontalRule(viewId);
-#endif
+
                 if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
                 {
                     var ext = Path.GetExtension(location.SourceTree.FilePath);
@@ -521,32 +505,22 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                     {
                         var builderSyntax = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)location.SourceTree.Options, path: newFilePath);
                         ctx.ReplaceCurrentCompilation(ctx.Compilation.AddSyntaxTrees(builderSyntax));
-                        modifications[newFilePath] = (FileState.Added, builderSyntax);
+                        ctx.Modifications[newFilePath] = (FileState.Added, builderSyntax);
                     }
                     else
                     {
-                        await ReplaceSyntaxTree(ctx, modifications, originalSyntaxTrees, builderSymbol, newFilePath, codeResult);
+                        await ReplaceSyntaxTree(ctx, ctx.Modifications, ctx.OriginalSyntaxTrees, builderSymbol, newFilePath, codeResult);
                     }
-#if DEBUG
-                    HorizontalDashed(location.SourceTree.FilePath);
-                    HorizontalDashed(newFilePath);
 
-                    if (File.Exists(location.SourceTree.FilePath))
-                    {
-                        var source = await File.ReadAllTextAsync(location.SourceTree.FilePath);
-                        PrintSource(source);
-                        AnsiConsole.WriteLine();
-                    }
-#endif
                     var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass!);
 
                     if (symbol is not null)
                     {
                         var root = await location.SourceTree.GetRootAsync();
 
-                        if (!originalSyntaxTrees.ContainsKey(location.SourceTree.FilePath))
+                        if (!ctx.OriginalSyntaxTrees.ContainsKey(location.SourceTree.FilePath))
                         {
-                            originalSyntaxTrees[location.SourceTree.FilePath] = location.SourceTree;
+                            ctx.OriginalSyntaxTrees[location.SourceTree.FilePath] = location.SourceTree;
                         }
 
                         var semanticModel = ctx.Compilation.GetSemanticModel(location.SourceTree);
@@ -566,50 +540,59 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                                 var newSyntaxTree = location.SourceTree.WithRootAndOptions(newRoot, location.SourceTree.Options);
 
-                                modifications[location.SourceTree.FilePath] = (FileState.Modified, newSyntaxTree);
+                                ctx.Modifications[location.SourceTree.FilePath] = (FileState.Modified, newSyntaxTree);
 
                                 ctx.ReplaceCurrentCompilation(ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree));
-#if DEBUG
-                                PrintSource(newRoot.ToFullString());
-                                AnsiConsole.WriteLine();
-#endif
                             }
                         }
                     }
                 }
-#if DEBUG
-                PrintSource(xml, "xml");
-                AnsiConsole.WriteLine();
-                PrintSource(codeResult.Code);
-                AnsiConsole.WriteLine();
-#endif
-                removedViews.Add(viewId);
+
+                ctx.RemovedViews.Add(viewId);
             }
 
             ////Sanity-Check. We compare again so we don't touch mulitple files
-            foreach (var oldItem in originalSyntaxTrees)
+            foreach (var oldItem in ctx.OriginalSyntaxTrees)
             {
-                if (modifications.TryGetValue(oldItem.Key, out var modification))
+                if (ctx.Modifications.TryGetValue(oldItem.Key, out var modification))
                 {
                     if (modification.syntaxTree.IsEquivalentTo(oldItem.Value))
                     {
-                        modifications.Remove(oldItem.Key);
+                        ctx.Modifications.Remove(oldItem.Key);
                     }
                 }
             }
 
-            var xafmlSyntaxRewriter = new XafmlSyntaxRewriter(ctx.ModelStore, removedViews);
+            await next();
+
+        }).Use(async (ctx, next) =>
+        {
+            var xafmlSyntaxRewriter = new XafmlSyntaxRewriter(await ctx.ModelEditor.GetModelFileName(), ctx.RemovedViews);
 
             var (hasXamlModifications, xafmlFilePath) = await xafmlSyntaxRewriter.RewriteAsync();
 
-            var csProjSyntaxRewriter = new CsProjSyntaxRewriter(ctx.ProjectAnalyzer!, ctx.BuildResult!, modifications);
+            var csProjSyntaxRewriter = new CsProjSyntaxRewriter(ctx.ProjectAnalyzer!, ctx.BuildResult!, ctx.Modifications);
 
             var (hasCsProjModifications, csprojFilePath) = await csProjSyntaxRewriter.RewriteAsync();
 
-            if (modifications.Count > 0 || hasXamlModifications)
+            static string StateToString(FileState state) => state switch
+            {
+                FileState.Modified => "[[Modified]]",
+                FileState.Added => "[[Added]]   ",
+                _ => "Unknown"
+            };
+
+            static string StateToColor(FileState state) => state switch
+            {
+                FileState.Modified => "yellow",
+                FileState.Added => "green",
+                _ => "white"
+            };
+
+            if (ctx.Modifications.Count > 0 || hasXamlModifications)
             {
                 AnsiConsole.WriteLine();
-                AnsiConsole.MarkupLine($"[grey]There are [yellow]{modifications.Count + (hasXamlModifications ? 1 : 0)}[/] pending modifications for project [silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/][/]");
+                AnsiConsole.MarkupLine($"[grey]There are [yellow]{ctx.Modifications.Count + (hasXamlModifications ? 1 : 0)}[/] pending modifications for project [silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/][/]");
                 AnsiConsole.WriteLine();
 
                 HorizontalDashed("Changed Files");
@@ -622,32 +605,35 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                     AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{xafmlFilePath}[/][/]");
                 }
 
-                foreach (var modification in modifications.Where(m => m.Value.state != FileState.Unchanged))
+                foreach (var modification in ctx.Modifications.Where(m => m.Value.state != FileState.Unchanged))
                 {
                     var (state, syntaxTree) = modification.Value;
                     var path = modification.Key;
 
-                    var stateString = state switch
-                    {
-                        FileState.Modified => "[[Modified]]",
-                        FileState.Added => "[[Added]]",
-                        _ => "Unknown"
-                    };
-
-                    var stateColor = state switch
-                    {
-                        FileState.Modified => "yellow",
-                        FileState.Added => "green",
-                        _ => "white"
-                    };
+                    var stateString = StateToString(state);
+                    var stateColor = StateToColor(state);
 
                     path = ConsoleHelper.EllipsisPath(path);
 
                     AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{path}[/][/]");
                 }
 
-                var adds = modifications.Where(m => m.Value.state == FileState.Added).ToList();
-                var modified = modifications.Where(m => m.Value.state == FileState.Modified).ToList();
+                var adds = ctx.Modifications.Where(m => m.Value.state == FileState.Added).ToList();
+                var modified = ctx.Modifications.Where(m => m.Value.state == FileState.Modified).ToList();
+
+                AnsiConsole.WriteLine();
+
+                var table = new Table()
+                    .RoundedBorder()
+                    .BorderColor(Color.Red)
+                    .Centered()
+                    .Expand()
+                    .AddColumn("WARNING", c => c.Centered())
+                    .AddRow("Make sure to backup your project before proceeding!")
+                    .AddRow("This is an irreversible operation!")
+                ;
+
+                AnsiConsole.Write(table);
 
                 AnsiConsole.WriteLine();
                 if (AnsiConsole.Confirm($"[silver]Do you want to proceed? [yellow][[Modified]] {modified.Count}[/] [green][[Added]] {adds.Count}[/][/]"))
@@ -659,24 +645,14 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                         await xafmlSyntaxRewriter.CommitAsync();
                         AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{xafmlFilePath}[/][/]");
                     }
-                    foreach (var modification in modifications.Where(m => m.Value.state != FileState.Unchanged))
+                    foreach (var modification in ctx.Modifications.Where(m => m.Value.state != FileState.Unchanged))
                     {
                         var (state, syntaxTree) = modification.Value;
                         var path = modification.Key;
 
-                        var stateString = state switch
-                        {
-                            FileState.Modified => "[[Modified]]",
-                            FileState.Added => "[[Added]]",
-                            _ => "Unknown"
-                        };
+                        var stateString = StateToString(state);
 
-                        var stateColor = state switch
-                        {
-                            FileState.Modified => "yellow",
-                            FileState.Added => "green",
-                            _ => "white"
-                        };
+                        var stateColor = StateToColor(state);
 
                         AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{path}[/][/]");
                         await File.WriteAllTextAsync(syntaxTree.FilePath, syntaxTree.ToString());

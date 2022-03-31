@@ -56,6 +56,7 @@ public record ModelContext<TSettings> : BuildContext<TSettings>
 
     public NamedPipeClientStream? DesignerStream { get; set; }
 
+    public string? ModelEditorProcessPath { get; set; }
     public string? ModelEditorId { get; set; }
     public Process? ModelEditorProcess { get; set; }
     public ModelEditorRpcClient? ModelEditor { get; set; }
@@ -81,6 +82,10 @@ public record ModelContext<TSettings> : BuildContext<TSettings>
         }
         base.Dispose(disposing);
     }
+
+    public Dictionary<string, (FileState state, SyntaxTree syntaxTree)> Modifications { get; } = new();
+    public Dictionary<string, SyntaxTree> OriginalSyntaxTrees { get; } = new();
+    public List<string> RemovedViews { get; } = new();
 
 
     private readonly Dictionary<Project, Compilation?> compilations = new();
