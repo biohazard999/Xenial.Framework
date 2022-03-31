@@ -23,6 +23,10 @@ public class ModelCommandSettings : BuildCommandSettings
     [CommandOption("--views")]
     public string? Views { get; set; }
 
+    [Description("Specifies which nuget package version to install. By default it matches the cli tool version.")]
+    [CommandOption("-p|--package-version")]
+    public string? NugetPackageVersion { get; set; }
+
     [Description("Specifies the nuget feed to restore the designer package. By default it will use the project package sources. You can specify multiple by separation by semicolon.")]
     [CommandOption("--designer-nuget-feed", IsHidden = true)]
     public string? DesignerNugetFeed { get; set; }

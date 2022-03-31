@@ -432,9 +432,13 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                if (addReference)
                {
+                   var xenialPackageVersion = ctx.Settings.NugetPackageVersion ?? XenialVersion.Version;
+
+                   PrintInfo("Xenial-PackageVersion", xenialPackageVersion);
+
                    var wd = Path.GetDirectoryName(ctx.ProjectAnalyzer.ProjectFile.Path)!;
-                   await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework", wd);
-                   await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework.Generators", wd);
+                   await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework {xenialPackageVersion}", wd);
+                   await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework.Generators {xenialPackageVersion}", wd);
                    AnsiConsole.MarkupLine($"[yellow]Added packages. Restart command...[/]");
                    throw new RestartPipelineException("Installed packages. Restarting command");
                }

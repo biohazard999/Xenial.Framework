@@ -2,7 +2,7 @@
   "profiles": {
     "wizard": {
       "commandName": "Project",
-      "commandLineArgs": "",
+      "commandLineArgs": "--designer-force-nuget=true --designer-nuget-package-version=0.7.6 --designer-nuget-feed=https://pkgs.dev.azure.com/mgrundner/_packaging/Dev/nuget/v3/index.json;https://pkgs.dev.azure.com/mgrundner/_packaging/Dev/nuget/v3/index.json;https://pkgs.dev.azure.com/mgrundner/_packaging/Dev/nuget/v3/index.json;https://pkgs.dev.azure.com/mgrundner/_packaging/Dev/nuget/v3/index.json;https://pkgs.dev.azure.com/mgrundner/_packaging/Dev/nuget/v3/index.json;https://pkgs.dev.azure.com/mgrundner/_packaging/Dev/nuget/v3/index.json;https://pkgs.dev.azure.com/mgrundner/_packaging/Dev/nuget/v3/index.json;https://api.nuget.org/v3/index.json",
       //"workingDirectory": "C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\FeatureCenter\\CS\\FeatureCenter.Module"
       "workingDirectory": "C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\MainDemo\\CS\\MainDemo.Module"
     },
