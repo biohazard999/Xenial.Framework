@@ -31,6 +31,16 @@ public class ModelCommandSettings : BuildCommandSettings
     [CommandOption("--designer-nuget-package-version", IsHidden = true)]
     public string? DesignerNugetPackageVersion { get; set; }
 
+    [Description("Specifies if the Designer always should be located via nuget. If set to true, the global tools cache is ignored.")]
+    [CommandOption("--designer-force-nuget", IsHidden = true)]
+    [DefaultValue(false)]
+    public bool DesignerForceNuget { get; set; }
+
+    [Description("For internal use only.")]
+    [CommandOption("--designer-launch-from-nuget", IsHidden = true)]
+    [DefaultValue(true)]
+    public bool DesignerLaunchFromNuget { get; set; }
+
     [Description("Launches the design process with an attached debugger.")]
     [CommandOption("--designer-debug", IsHidden = true)]
     [DefaultValue(false)]
@@ -41,10 +51,6 @@ public class ModelCommandSettings : BuildCommandSettings
     [DefaultValue(true)]
     public bool BuildReferences { get; set; }
 
-    [Description("For internal use only.")]
-    [CommandOption("--launch-from-nuget", IsHidden = true)]
-    [DefaultValue(true)]
-    public bool LaunchFromNuget { get; set; }
 
     [Description("Specifies the connection timeout for the design process communitcation in milliseconds. Will be unlimited when debugger is attached.")]
     [CommandOption("--designer-connection-timeout", IsHidden = true)]

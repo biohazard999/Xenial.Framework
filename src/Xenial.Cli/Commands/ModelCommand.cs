@@ -153,7 +153,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
            var sources = ctx.Settings.DesignerNugetFeed switch
            {
-               string feed => feed.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(f => new PackageSource(f)),
+               string feed => feed.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(f => new PackageSource(f, "cli")),
                _ => SettingsUtility.GetEnabledSources(settings)
            } ?? Enumerable.Empty<PackageSource>();
 
@@ -193,8 +193,12 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
        }).UseStatus("Locating Designer...", async (ctx, next) =>
        {
-           //TODO: use local designer
-           ctx.DesignerPackage = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(ctx.DesignerPackageId, ctx.DesignerPackageVersion), ctx.NugetToolContext.GlobalPackagesFolder);
+           var useCache = !ctx.Settings.DesignerForceNuget;
+           PrintInfo("Designer-Cached", useCache.ToString(), "grey");
+           if (useCache)
+           {
+               ctx.DesignerPackage = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(ctx.DesignerPackageId, ctx.DesignerPackageVersion), ctx.NugetToolContext.GlobalPackagesFolder);
+           }
 
            await next();
        }).UseStatusWithProgress("Downloading Designer...", "Download Designer", ctx => ctx.DesignerPackage is not null, _ => false, async (ctx, progress, next) =>
@@ -270,36 +274,22 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                        PrintInfo("", $"{source.Name} - fetched", "green");
                        ctx.DesignerPackage = downloadResult;
                        break;
-
-                       //return downloadResult;
                    }
-
-                   //var package = await FindPackage(source, resource, globalPackagesFolder, cache, logger, settings, packageId, version, cancellationToken);
-                   //if (package is not null)
-                   //{
-                   //    var tools = await package.PackageReader.GetToolItemsAsync(cancellationToken);
-                   //    ctx.ModelEditorVersion = version.ToString();
-                   //    ctx.ModelEditorTools.AddRange(tools.OfType<FrameworkSpecificGroup>());
-
-                   //    var versionStr = version.ToString();
-                   //    ctx.ModelEditorPackageDirectory = Path.Combine(globalPackagesFolder, packageId, versionStr);
-
-                   //    break;
-                   //}
-
-
                }
                catch (FatalProtocolException ex)
                {
+                   Logger.LogWarning(ex, "Fatal Nuget Error");
+
                    if (ex.InnerException is HttpRequestException httpRequestEx)
                    {
                        if (httpRequestEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                        {
-                           PrintInfo("", "Authorized Feeds are not supported yet", "grey");
+                           PrintInfo("", $"{source.Name}: Authorized Feeds are not supported yet", "olive");
+                           continue;
                        }
-                   }
 
-                   Logger.LogWarning(ex, "Fatal Nuget Error");
+                       throw;
+                   }
                }
                finally
                {
@@ -811,7 +801,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
     private static Task<string> FindProcessPath(string launcher, TPipelineContext ctx)
     {
-        if (ctx.Settings.LaunchFromNuget)
+        if (ctx.Settings.DesignerLaunchFromNuget)
         {
             if (ctx.ModelEditorTools is not null && ctx.ModelEditorTools.Count > 0)
             {
