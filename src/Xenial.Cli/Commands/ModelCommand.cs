@@ -427,18 +427,21 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
            if (attributeSymbol is null)
            {
+               var xenialPackageVersion = ctx.Settings.NugetPackageVersion ?? XenialVersion.Version;
+               PrintInfo("Xenial-Version", xenialPackageVersion);
+
+               AnsiConsole.WriteLine();
+
                AnsiConsole.MarkupLine($"[yellow]It seems like [/][silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/] is missing a reference to Xenial.Framework");
-               var addReference = AnsiConsole.Confirm($"[silver]Do you want to add it to the project?[/]");
+
+               var addReference = AnsiConsole.Confirm($"[silver]Do you want to add [green]Xenial {xenialPackageVersion}[/] to the project?[/]");
 
                if (addReference)
                {
-                   var xenialPackageVersion = ctx.Settings.NugetPackageVersion ?? XenialVersion.Version;
-
-                   PrintInfo("Xenial-PackageVersion", xenialPackageVersion);
 
                    var wd = Path.GetDirectoryName(ctx.ProjectAnalyzer.ProjectFile.Path)!;
-                   await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework {xenialPackageVersion}", wd);
-                   await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework.Generators {xenialPackageVersion}", wd);
+                   await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework -v {xenialPackageVersion}", wd);
+                   await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework.Generators -v {xenialPackageVersion}", wd);
                    AnsiConsole.MarkupLine($"[yellow]Added packages. Restart command...[/]");
                    throw new RestartPipelineException("Installed packages. Restarting command");
                }
