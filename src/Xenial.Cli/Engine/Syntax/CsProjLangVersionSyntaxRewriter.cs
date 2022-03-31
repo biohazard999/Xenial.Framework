@@ -6,7 +6,7 @@ using Xenial.Cli.Engine;
 
 using CsprojEditor = CsProjEditor.Project;
 
-public class CsProjLangVersionSyntaxRewriter
+public class CsProjSyntaxRewriter
 {
     private readonly IProjectAnalyzer projectAnalyzer;
     private readonly IAnalyzerResult buildResult;
@@ -14,12 +14,14 @@ public class CsProjLangVersionSyntaxRewriter
 
     private CsprojEditor? CsprojEditor { get; set; }
 
-    public CsProjLangVersionSyntaxRewriter(IProjectAnalyzer projectAnalyzer, IAnalyzerResult buildResult, Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications)
+    public CsProjSyntaxRewriter(IProjectAnalyzer projectAnalyzer, IAnalyzerResult buildResult, Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications)
     {
         this.projectAnalyzer = projectAnalyzer;
         this.buildResult = buildResult;
         this.modifications = modifications;
     }
+
+
 
     public async Task<(bool shouldRewrite, string? csprojFileName)> RewriteAsync()
     {

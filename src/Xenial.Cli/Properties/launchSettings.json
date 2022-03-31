@@ -3,7 +3,8 @@
     "wizard": {
       "commandName": "Project",
       "commandLineArgs": "",
-      "workingDirectory": "C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\FeatureCenter\\CS\\FeatureCenter.Module"
+      //"workingDirectory": "C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\FeatureCenter\\CS\\FeatureCenter.Module"
+      "workingDirectory": "C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\MainDemo\\CS\\MainDemo.Module"
     },
     "build": {
       "commandName": "Project",

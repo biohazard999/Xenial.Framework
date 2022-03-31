@@ -634,6 +634,20 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                     WritePath($"...{xafmlFilePath!.EllipsisPath()}", stateColor);
                 }
 
+                if (hasCsProjModifications)
+                {
+                    var stateString = "[[Modified]]";
+                    var stateColor = "yellow";
+
+                    if (csprojFilePath!.StartsWith(folder, StringComparison.OrdinalIgnoreCase))
+                    {
+                        csprojFilePath = csprojFilePath.Substring(folder.Length);
+                    }
+
+                    AnsiConsole.Markup($"[{stateColor}]{stateString.PadRight(10)}: [/]");
+                    WritePath($"...{csprojFilePath!.EllipsisPath()}", stateColor);
+                }
+
                 foreach (var modification in ctx.Modifications.Where(m => m.Value.state != FileState.Unchanged))
                 {
                     var (state, syntaxTree) = modification.Value;
@@ -677,6 +691,13 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                         var stateColor = "yellow";
                         await xafmlSyntaxRewriter.CommitAsync();
                         AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{xafmlFilePath}[/][/]");
+                    }
+                    if (hasCsProjModifications)
+                    {
+                        var stateString = "[[Modified]]";
+                        var stateColor = "yellow";
+                        await csProjSyntaxRewriter.CommitAsync();
+                        AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{csprojFilePath}[/][/]");
                     }
                     foreach (var modification in ctx.Modifications.Where(m => m.Value.state != FileState.Unchanged))
                     {
