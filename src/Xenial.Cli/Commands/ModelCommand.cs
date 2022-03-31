@@ -597,12 +597,41 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
                 HorizontalDashed("Changed Files");
 
+                var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+
+                AnsiConsole.WriteLine($"{folder.EllipsisPath()} ...");
+
+                static void WritePath(string path, string color)
+                {
+
+                    var p = new TextPath(path)
+                        .RootColor(Color.Grey)
+                        .SeparatorColor(Color.Grey)
+                        .StemColor(Color.Grey)
+                        .LeafColor(color switch
+                        {
+                            "silver" => Color.Silver,
+                            "red" => Color.Red,
+                            "yellow" => Color.Yellow,
+                            "green" => Color.Green,
+                            _ => Color.Grey,
+                        });
+
+                    AnsiConsole.Write(p);
+                }
+
                 if (hasXamlModifications)
                 {
                     var stateString = "[[Modified]]";
                     var stateColor = "yellow";
 
-                    AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{xafmlFilePath}[/][/]");
+                    if (xafmlFilePath!.StartsWith(folder, StringComparison.OrdinalIgnoreCase))
+                    {
+                        xafmlFilePath = xafmlFilePath.Substring(folder.Length);
+                    }
+
+                    AnsiConsole.Markup($"[{stateColor}]{stateString.PadRight(10)}: [/]");
+                    WritePath($"...{xafmlFilePath!.EllipsisPath()}", stateColor);
                 }
 
                 foreach (var modification in ctx.Modifications.Where(m => m.Value.state != FileState.Unchanged))
@@ -610,12 +639,16 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                     var (state, syntaxTree) = modification.Value;
                     var path = modification.Key;
 
+                    if (path.StartsWith(folder, StringComparison.OrdinalIgnoreCase))
+                    {
+                        path = path.Substring(folder.Length);
+                    }
+
                     var stateString = StateToString(state);
                     var stateColor = StateToColor(state);
 
-                    path = ConsoleHelper.EllipsisPath(path);
-
-                    AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{path}[/][/]");
+                    AnsiConsole.Markup($"[{stateColor}]{stateString.PadRight(10)}: [/]");
+                    WritePath($"...{path!.EllipsisPath()}", stateColor);
                 }
 
                 var adds = ctx.Modifications.Where(m => m.Value.state == FileState.Added).ToList();

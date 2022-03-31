@@ -78,7 +78,12 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             catch (RestartPipelineException) { throw; }
             catch (Exception ex)
             {
-                AnsiConsole.WriteException(ex);
+                AnsiConsole.WriteException(ex,
+                    ExceptionFormats.ShortenPaths
+                    | ExceptionFormats.ShortenTypes
+                    | ExceptionFormats.ShortenMethods
+                    | ExceptionFormats.ShowLinks
+                );
                 Logger.LogError(ex, "Fatal error in build");
                 ctx.ExitCode = 1;
                 ctx.Exception = ex;

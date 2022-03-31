@@ -92,10 +92,10 @@ public static class ConsoleHelper
         }
 
         return new TextPath(path)
-                        .RootColor(Color.White)
-                        .SeparatorColor(Color.Grey)
-                        .StemColor(Color.White)
-                        .LeafColor(Color.Green);
+            .RootColor(Color.White)
+            .SeparatorColor(Color.Grey)
+            .StemColor(Color.White)
+            .LeafColor(Color.Green);
     }
 
     public static string EllipsisPath(this string rawString!!, int maxLength = 80, char delimiter = '\\')
