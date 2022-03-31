@@ -4,8 +4,6 @@ using Buildalyzer.Environment;
 using Microsoft.Build.Framework;
 using Microsoft.Extensions.Logging;
 
-using ModelToCodeConverter.Engine;
-
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -14,117 +12,12 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
+using Xenial.Cli.Engine;
 using Xenial.Cli.Utils;
 
 using static Xenial.Cli.Utils.ConsoleHelper;
 
 namespace Xenial.Cli.Commands;
-
-public class BuildCommandSettings : BaseCommandSettings
-{
-    public BuildCommandSettings(string? workingDirectory) : base(workingDirectory) { }
-
-    [Description("Project (csproj) or Solution (sln) file")]
-    [CommandArgument(0, "[project]")]
-    public string ProjectOrSolution { get; set; } = "";
-
-    [Description("Doesn't execute an implicit restore during build.")]
-    [CommandOption("--no-restore")]
-    public bool NoRestore { get; set; }
-
-    [Description("Doesn't execute an implicit build.")]
-    [CommandOption("--no-build")]
-    public bool NoBuild { get; set; }
-
-    [Description("Specifies the msbuild log verbosity during build.")]
-    [CommandOption("--build-verbosity")]
-    public LoggerVerbosity? MsBuildVerbosity { get; set; }
-
-    [Description("Specifies if msbuild should log to command line.")]
-    [CommandOption("--log-build")]
-    [DefaultValue(false)]
-    public bool LogMSBuildCommandLine { get; set; }
-
-    [Description("Specifies the target framework monikers. Use * for all, separate by semicolon for multiple values")]
-    [CommandOption("--tfms")]
-    [DefaultValue("*")]
-    public string Tfms { get; set; } = "*";
-
-    [Description("Specifies if error behavior should be strict. When set to false, it continues even if build errors are present")]
-    [CommandOption("-s|--strict")]
-    [DefaultValue(true)]
-    public bool Strict { get; set; }
-
-    public override ValidationResult Validate()
-    {
-        var result = base.Validate();
-
-        if (string.IsNullOrEmpty(ProjectOrSolution))
-        {
-            var files = Directory.EnumerateFiles(WorkingDirectory, "*.csproj").Concat(Directory.EnumerateFiles(WorkingDirectory, "*.sln")).ToList();
-
-            var slns = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".sln".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (slns.Count > 1)
-            {
-                return ValidationResult.Error($"There are mutiple sln files in the directory '{WorkingDirectory}' please specify one explicitly.");
-            }
-            var (_, sln) = slns.FirstOrDefault();
-            if (!string.IsNullOrEmpty(sln))
-            {
-                ProjectOrSolution = sln;
-            }
-
-            var csprojs = files.Select(f => (ext: Path.GetExtension(f), f)).Where((f) => ".csproj".Equals(f.ext, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (csprojs.Count > 1)
-            {
-                return ValidationResult.Error($"There are mutiple csproj files in the directory '{WorkingDirectory}' please specify one explicitly.");
-            }
-            var (_, csproj) = csprojs.FirstOrDefault();
-            if (!string.IsNullOrEmpty(csproj))
-            {
-                ProjectOrSolution = csproj;
-            }
-        }
-
-        if (!File.Exists(ProjectOrSolution))
-        {
-            return ValidationResult.Error($"The project file '{ProjectOrSolution}' does not exist.");
-        }
-
-        return result;
-    }
-}
-
-public record BuildContext : BuildContext<BuildCommandSettings>
-{
-
-}
-
-public record BuildContext<TSettings> : PipelineContext
-    where TSettings : BuildCommandSettings
-{
-    public TSettings Settings { get; set; } = default!;
-
-    public IAnalyzerManager? AnalyzerManager { get; set; }
-    public IProjectAnalyzer? ProjectAnalyzer { get; set; }
-    public IAnalyzerResults? BuildResults { get; set; }
-
-    public StatusContext? StatusContext { get; set; }
-
-    public int? ExitCode { get; set; }
-    public Exception? Exception { get; set; }
-}
-
-public abstract record BuildPipeline<TContext, TSettings> : Pipeline<TContext>
-    where TContext : BuildContext<TSettings>
-    where TSettings : BuildCommandSettings
-{
-}
-
-public record BuildPipeline : BuildPipeline<BuildContext, BuildCommandSettings>
-{
-    public override BuildContext CreateContext() => new();
-}
 
 public class BuildCommand : BuildCommand<BuildCommandSettings, BuildPipeline, BuildContext>
 {
@@ -133,11 +26,6 @@ public class BuildCommand : BuildCommand<BuildCommandSettings, BuildPipeline, Bu
     public override string CommandName => "build";
 
     protected override BuildPipeline CreatePipeline() => new();
-}
-
-public interface IXenialCommand : ICommand
-{
-    string CommandName { get; }
 }
 
 public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : AsyncCommand<TSettings>, IXenialCommand
@@ -155,7 +43,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
 
     public abstract string CommandName { get; }
 
-    protected virtual void ConfigurePipeline(TPipeline pipeline!!)
+    protected virtual void ConfigurePipeline(TPipeline pipeline)
         => pipeline.Use((ctx, next) =>
         {
             using var _ = Logger.LogInformationTick($"Command `{CommandName}`");
@@ -177,10 +65,8 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
         })
         .Use((ctx, next) =>
         {
-            AnsiConsole.Markup("[gray bold]Working-Directory: [/]");
-            WritePath(ctx.Settings.WorkingDirectory);
-            AnsiConsole.Markup("[gray bold]Project-File     : [/]");
-            WritePath(ctx.Settings.ProjectOrSolution);
+            PrintInfo("Working-Directory", ToPath(ctx.Settings.WorkingDirectory));
+            PrintInfo("Project-File", ToPath(ctx.Settings.ProjectOrSolution));
             return next();
         })
         .Use(async (ctx, next) =>
@@ -189,85 +75,25 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             {
                 await next();
             }
+            catch (RestartPipelineException) { throw; }
             catch (Exception ex)
             {
-                AnsiConsole.WriteException(ex);
+                AnsiConsole.WriteException(ex,
+                    ExceptionFormats.ShortenPaths
+                    | ExceptionFormats.ShortenTypes
+                    | ExceptionFormats.ShortenMethods
+                    | ExceptionFormats.ShowLinks
+                );
                 Logger.LogError(ex, "Fatal error in build");
                 ctx.ExitCode = 1;
                 ctx.Exception = ex;
             }
         })
-        .Use(async (ctx, next) =>
-        {
-            var sw = Stopwatch.StartNew();
-            try
-            {
-                await next();
-            }
-            finally
-            {
-                var exitCode = ctx.ExitCode ?? 0;
-                if (exitCode == 0)
-                {
-                    sw.Success("Total Time");
-                }
-                else
-                {
-                    sw.Fail("Total Time");
-                }
-            }
-        })
-        .Use(async (ctx, next) =>
-        {
-            await AnsiConsole.Status().Start("Analyzing project...", async statusContext =>
-            {
-                statusContext.Spinner(Spinner.Known.Ascii);
-                ctx.StatusContext = statusContext;
-
-                var pipeline = CreatePipeline();
-
-                ConfigureStatusPipeline(pipeline);
-
-                await pipeline.Execute(ctx);
-            });
-
-            if ((ctx.ExitCode ?? 0) == 0)
-            {
-                await next();
-            }
-        });
-
-    protected static void PatchOptions(TPipelineContext ctx!!, EnvironmentOptions environmentOptions!!)
-        => PatchOptions(ctx, environmentOptions.GlobalProperties);
-
-    protected static void PatchOptions(TPipelineContext ctx!!, IProjectAnalyzer projectAnalyzer!!)
-    {
-        var dic = new Dictionary<string, string>();
-        PatchOptions(ctx, dic);
-        foreach (var pair in dic)
-        {
-            projectAnalyzer.SetGlobalProperty(pair.Key, pair.Value);
-        }
-    }
-
-    protected static void PatchOptions(TPipelineContext ctx!!, IDictionary<string, string> globalProperties!!)
-    {
-        globalProperties[MsBuildProperties.SkipCompilerExecution] = "false";
-        globalProperties[MsBuildProperties.BuildingProject] = "true";
-        globalProperties[MsBuildProperties.AutoGenerateBindingRedirects] = "true";
-
-        globalProperties[MsBuildProperties.ComputeNETCoreBuildOutputFiles] = "true";
-        globalProperties[MsBuildProperties.CopyBuildOutputToOutputDirectory] = "true";
-        globalProperties[MsBuildProperties.BuildProjectReferences] = "true";
-        globalProperties[MsBuildProperties.SkipCopyBuildProduct] = "false";
-    }
-
-    protected virtual void ConfigureStatusPipeline(TPipeline pipeline!!)
-        => pipeline.Use(async (ctx, next) =>
+        .UseStatusWithTimer("Designtime-Build...", "Designtime-Build", ctx => ctx.BuildResults!.OverallSuccess, _ => true, async (ctx, next) =>
         {
             var options = new AnalyzerManagerOptions
             {
-                LoggerFactory = LoggerFactory
+                LoggerFactory = ctx.Settings.LogMSBuildCommandLine ? LoggerFactory : null
             };
 
             ctx.AnalyzerManager = new AnalyzerManager(options);
@@ -291,57 +117,82 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
                 ctx.ProjectAnalyzer.AddBuildLogger(new Microsoft.Build.Logging.ConsoleLogger(verbosity));
             }
 
-            var sw = Stopwatch.StartNew();
-            ctx.StatusContext!.Status("Designtime-Build...");
-
-            var environmentOptions = new EnvironmentOptions
+            ctx.DesignTimeEnvironmentOptions = new EnvironmentOptions
             {
                 Restore = !ctx.Settings.NoRestore,
                 DesignTime = true
             };
 
-            PatchOptions(ctx, environmentOptions);
+            PatchOptions(ctx, ctx.DesignTimeEnvironmentOptions);
 
-            if (ctx.Settings.NoBuild)
-            {
-                //We don't want to clean if we don't build
-                environmentOptions.TargetsToBuild.Clear();
-                environmentOptions.TargetsToBuild.Add("Build");
-            }
+            //We don't want to clean
+            ctx.DesignTimeEnvironmentOptions.TargetsToBuild.Clear();
+            ctx.DesignTimeEnvironmentOptions.TargetsToBuild.Add("Build");
 
-            ctx.BuildResults = ctx.ProjectAnalyzer.Build(environmentOptions);
+            ctx.BuildResults = ctx.ProjectAnalyzer.Build(ctx.DesignTimeEnvironmentOptions);
 
-            if (ctx.BuildResults.OverallSuccess)
+            await next();
+
+        }).Use(async (ctx, next) =>
+        {
+            if (!ctx.BuildResults!.OverallSuccess)
             {
-                sw.Success("Designtime-Build");
-                await next();
-            }
-            else
-            {
-                if (ctx.Settings.Strict)
+                AnsiConsole.MarkupLine("[red]It seams the design time build failed.[/]");
+                AnsiConsole.MarkupLine("[yellow]We will clean the following directories[/]");
+                AnsiConsole.MarkupLine("[red]and run the Restore target.[/]");
+                AnsiConsole.WriteLine();
+
+                var directoriesToDelete = new List<string>();
+
+                foreach (var buildResult in ctx.BuildResults.Results)
                 {
-                    sw.Fail("Designtime-Build");
-                    ctx.ExitCode = 1;
-                    return;
+                    var targetDir = buildResult.GetProperty("TargetDir");
+                    var projectDir = buildResult.GetProperty("ProjectDir");
+                    var intermediateOutputPath = buildResult.GetProperty("BaseIntermediateOutputPath");
+                    if (targetDir is not null && Directory.Exists(targetDir))
+                    {
+                        directoriesToDelete.Add(targetDir);
+                    }
+                    var objDirectory = Path.Combine(projectDir, intermediateOutputPath);
+                    if (objDirectory is not null && Directory.Exists(objDirectory))
+                    {
+                        directoriesToDelete.Add(objDirectory);
+                    }
                 }
-                else
+
+                foreach (var dir in directoriesToDelete)
                 {
-                    sw.Warn("Designtime-Build");
-                    await next();
+                    AnsiConsole.MarkupLine($"\t[grey strikethrough]{dir.EscapeMarkup()}[/]");
                 }
+
+                var shouldDelete = AnsiConsole.Confirm("Do you want to [red]delete[/] those directories?");
+                if (shouldDelete)
+                {
+                    foreach (var dir in directoriesToDelete)
+                    {
+                        Directory.Delete(dir, true);
+                    }
+                }
+
+                ctx.DesignTimeEnvironmentOptions!.Restore = true;
+                ctx.NeedsDesignTimeRebuild = true;
             }
+
+            await next();
         })
+        .UseStatusWithTimer("Designtime-ReBuild...", "Designtime-ReBuild", ctx => ctx.BuildResults!.OverallSuccess, _ => false, async (ctx, next) =>
+        {
+            if (ctx.NeedsDesignTimeRebuild)
+            {
+                ctx.BuildResults = ctx.ProjectAnalyzer!.Build(ctx.DesignTimeEnvironmentOptions);
+            }
+            await next();
+        }, ctx => !ctx.NeedsDesignTimeRebuild)
         .Use(async (ctx, next) =>
         {
-            if (ctx.Settings.NoBuild)
-            {
-                await next();
-                return;
-            }
-
             var tfms = ctx.Settings.Tfms.Contains(';', StringComparison.OrdinalIgnoreCase)
-                    ? ctx.Settings.Tfms.Trim().Split(';')
-                    : new[] { ctx.Settings.Tfms.Trim() };
+                   ? ctx.Settings.Tfms.Trim().Split(';')
+                   : new[] { ctx.Settings.Tfms.Trim() };
 
             tfms = (tfms.Contains("*")
                 ? ctx.BuildResults!.Select(m => m.TargetFramework).ToArray()
@@ -350,10 +201,18 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
                 .Distinct()
                 .ToArray();
 
-            AnsiConsole.MarkupLine($"[grey bold]TFMs: [/][silver]{string.Join(", ", tfms)}[/]");
+            PrintInfo("Available TFM's", string.Join(", ", tfms));
 
-            var sw = Stopwatch.StartNew();
-            ctx.StatusContext!.Status("Building...");
+            ctx.BuildTfms = tfms;
+            await next();
+        })
+        .UseStatusWithTimer("Building...", "Build", ctx => ctx.BuildResults!.OverallSuccess, _ => false, async (ctx, next) =>
+        {
+            if (ctx.Settings.NoBuild)
+            {
+                await next();
+                return;
+            }
 
             var environmentOptions = new EnvironmentOptions
             {
@@ -372,37 +231,54 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
             environmentOptions.TargetsToBuild.Clear();
             environmentOptions.TargetsToBuild.Add("Build");
 
-            ctx.BuildResults = ctx.ProjectAnalyzer!.Build(tfms, environmentOptions);
-
-            if (ctx.BuildResults.OverallSuccess)
+            ctx.BuildResults = ctx.ProjectAnalyzer!.Build(ctx.BuildTfms, environmentOptions);
+            await next();
+        }, forceRunNext: _ => true)
+        .Use(async (ctx, next) =>
+        {
+            if (!ctx.BuildResults!.OverallSuccess)
             {
-                sw.Success("Build");
-                await next();
+                AnsiConsole.WriteLine();
+                AnsiConsole.Markup("The build [red bold]failed[/], ");
+                AnsiConsole.Markup("try to run the command [yellow]again[/] with the [green bold]--log-build[/] option ");
+                AnsiConsole.Markup("to get more information about build failures.");
+                AnsiConsole.WriteLine();
             }
             else
             {
-                if (ctx.Settings.Strict)
-                {
-                    sw.Fail("Build");
-                    ctx.ExitCode = 1;
-                }
-                else
-                {
-                    sw.Warn("Build");
-                    await next();
-                }
+                await next();
             }
-        })
-        .Use(async (ctx, next) =>
-        {
-            ctx.StatusContext!.Status("Completed!");
-            await next();
         });
 
-    public override ValidationResult Validate(CommandContext context, TSettings settings!!)
+    protected static void PatchOptions(TPipelineContext ctx, EnvironmentOptions environmentOptions)
+        => PatchOptions(ctx, environmentOptions.GlobalProperties);
+
+    protected static void PatchOptions(TPipelineContext ctx, IProjectAnalyzer projectAnalyzer)
+    {
+        var dic = new Dictionary<string, string>();
+        PatchOptions(ctx, dic);
+        foreach (var pair in dic)
+        {
+            projectAnalyzer.SetGlobalProperty(pair.Key, pair.Value);
+        }
+    }
+
+    protected static void PatchOptions(TPipelineContext ctx, IDictionary<string, string> globalProperties)
+    {
+        globalProperties[MsBuildProperties.SkipCompilerExecution] = "false";
+        globalProperties[MsBuildProperties.BuildingProject] = "true";
+        globalProperties[MsBuildProperties.AutoGenerateBindingRedirects] = "true";
+
+        globalProperties[MsBuildProperties.ComputeNETCoreBuildOutputFiles] = "true";
+        globalProperties[MsBuildProperties.CopyBuildOutputToOutputDirectory] = "true";
+        globalProperties[MsBuildProperties.BuildProjectReferences] = "true";
+        globalProperties[MsBuildProperties.SkipCopyBuildProduct] = "false";
+    }
+
+    public override ValidationResult Validate(CommandContext context, TSettings settings)
         => settings.Validate();
 
-    public override async Task<int> ExecuteAsync(CommandContext context, TSettings settings!!)
+    public override async Task<int> ExecuteAsync(CommandContext context, TSettings settings)
     {
         var pipeline = CreatePipeline();
         var pipelineContext = pipeline.CreateContext();

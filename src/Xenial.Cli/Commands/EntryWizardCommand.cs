@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Spectre.Console;
@@ -14,13 +15,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Xenial.Cli.DependencyInjection;
+using Xenial.Cli.Utils;
+
 namespace Xenial.Cli.Commands;
 
 public interface IBaseSettings
 {
     string WorkingDirectory { get; }
     bool NoLogo { get; }
-    public LogLevel Verbosity { get; set; }
+    LogLevel Verbosity { get; set; }
+    bool RunAsWizard { get; set; }
 }
 
 public class BaseCommandSettings : CommandSettings, IBaseSettings
@@ -42,45 +47,64 @@ public class BaseCommandSettings : CommandSettings, IBaseSettings
     [CommandOption("-v|--verbosity")]
     public LogLevel Verbosity { get; set; }
 
-    [CommandOption("--nologo"
-    //    , IsHidden = true //TODO: is not available in 0.4.3, wait for later version
-    )]
+    [CommandOption("--nologo", IsHidden = true)]
     public bool NoLogo { get; set; }
 
-    //[Description("Run as wizard aka. interactive mode")]
-    //[CommandOption("-z|--wizard"
-    ////    , IsHidden = true //TODO: is not available in 0.4.3, wait for later version
-    //)]
-    //public bool RunAsWizard { get; set; }
+    [Description("Run as wizard aka. interactive mode")]
+    [CommandOption("-z|--wizard", IsHidden = true)]
+    public bool RunAsWizard { get; set; }
 }
 
-public sealed class EntryWizardCommand : Command<BaseCommandSettings>
+public sealed class EntryWizardCommand : AsyncCommand<BaseCommandSettings>
 {
-    private List<string> commands = new()
+    private readonly Dictionary<string, string> commands = new()
     {
-        "build",
-        "model"
+        ["build"] = "Builds a project to inspect with xenial.cli",
+        ["model"] = "Converts xafml based views to LayoutBuilder code"
     };
 
-    private readonly IServiceProvider serviceProvider;
+    private readonly IServiceCollection serviceCollection;
+    private readonly ICommandlineArgsProvider commandlineArgsProvider;
 
-    public EntryWizardCommand(IServiceProvider serviceProvider) 
-        => this.serviceProvider = serviceProvider;
-
-    public override int Execute([NotNull] CommandContext context, [NotNull] BaseCommandSettings settings)
+    public EntryWizardCommand(IServiceCollection serviceCollection, ICommandlineArgsProvider commandlineArgsProvider)
     {
-        var fruit = AnsiConsole.Prompt(
-             new SelectionPrompt<string>()
-                 .Title("What [silver]command[/] do you want to execute?")
-                 .PageSize(10)
-                 //.MoreChoicesText("[grey](Move up and down to reveal commands)[/]")
-                 .AddChoices(commands));
+        this.commandlineArgsProvider = commandlineArgsProvider;
+        this.serviceCollection = serviceCollection;
+    }
 
-        // Echo the fruit back to the terminal
-        AnsiConsole.WriteLine($"I agree. {fruit} is tasty!");
-        AnsiConsole.WriteLine($"I agree. {settings.WorkingDirectory} is tasty!");
+    public override async Task<int> ExecuteAsync(CommandContext context, BaseCommandSettings settings)
+    {
+        _ = settings ?? throw new ArgumentNullException(nameof(settings));
 
-        return 0;
+        var choices = commands.Keys;
+
+        var commandName = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+              .Title("What [silver]command[/] do you want to execute?")
+              .PageSize(10)
+              .MoreChoicesText("[grey](Move up and down to reveal commands)[/]")
+              .AddChoices(choices)
+              .UseConverter(displayString => $"{displayString} - {commands[displayString]}")
+            );
+
+        AnsiConsole.WriteLine();
+
+        using var registrar = new DependencyInjectionRegistrar(serviceCollection);
+
+        ICommandApp app = commandName switch
+        {
+            "build" => new CommandApp<BuildCommand>(registrar),
+            "model" => new CommandApp<ModelCommand>(registrar),
+            _ => throw new ArgumentOutOfRangeException(nameof(commandName), commandName, "No wizard implemented")
+        };
+
+        app.Configure(c =>
+        {
+            c.SetInterceptor(new CommandInterceptor(settings.Verbosity, Wizard: true, NoLogo: true));
+        });
+
+        var args = commandlineArgsProvider.Arguments;
+        return await app.RunAsync(args);
     }
 }
 

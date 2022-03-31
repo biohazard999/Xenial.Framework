@@ -5,14 +5,14 @@ using Buildalyzer.Workspaces;
 
 using DevExpress.ExpressApp;
 
+using Humanizer;
+
 using Microsoft.CodeAnalysis;
 
 using Microsoft.CodeAnalysis.CSharp;
 
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.Extensions.Logging;
-
-using ModelToCodeConverter.Engine;
 
 using NuGet.Configuration;
 using NuGet.Frameworks;
@@ -31,7 +31,6 @@ using Spectre.Console.Cli;
 using StreamJsonRpc;
 
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO.Pipes;
@@ -65,12 +64,25 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
     protected ModelCommand(ILoggerFactory loggerFactory, ILogger<ModelCommand<TSettings, TPipeline, TPipelineContext>> logger)
         : base(loggerFactory, logger) { }
 
-    protected override void ConfigureStatusPipeline(TPipeline pipeline!!)
+    internal static AdhocWorkspace CreateWorkspace(IAnalyzerManager manager)
     {
-        base.ConfigureStatusPipeline(pipeline);
+        var workspace = new AdhocWorkspace();
+        ILogger? logger = manager.LoggerFactory?.CreateLogger<AdhocWorkspace>();
+        if (logger is not null)
+        {
+            workspace.WorkspaceChanged += (sender, args) => logger.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
+            workspace.WorkspaceFailed += (sender, args) => logger.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
+        }
+        return workspace;
+    }
+
+    protected override void ConfigurePipeline(TPipeline pipeline)
+    {
+        base.ConfigurePipeline(pipeline);
 
         pipeline.Use(async (ctx, next) =>
         {
+            //TODO: Select TFM
             if (string.IsNullOrEmpty(ctx.Settings.Tfm) && ctx.ProjectAnalyzer!.ProjectFile.IsMultiTargeted)
             {
                 AnsiConsole.WriteLine();
@@ -106,137 +118,203 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            }
            await next();
        })
-       .Use(async (ctx, next) =>
+       .UseStatusWithTimer("Loading Workspace...", "Load Workspace", _ => true, _ => false, async (ctx, next) =>
        {
-           ctx.StatusContext!.Status = "Loading Workspace...";
-           var sw = Stopwatch.StartNew();
-           try
+           PatchOptions(ctx, ctx.ProjectAnalyzer);
+
+           ctx.ProjectAnalyzer.SetGlobalProperty("CopyLocalLockFileAssemblies", "true");
+           ctx.ProjectAnalyzer.SetGlobalProperty(MsBuildProperties.CopyBuildOutputToOutputDirectory, "true");
+           PrintInfo("Build-References", $"{ctx.Settings.BuildReferences}");
+
+           ctx.Workspace = CreateWorkspace(ctx.AnalyzerManager);
+           ctx.BuildResult.AddToWorkspace(ctx.Workspace, ctx.Settings.BuildReferences);
+
+           foreach (var project in ctx.Workspace.CurrentSolution.Projects)
            {
-               PatchOptions(ctx, ctx.ProjectAnalyzer);
-
-               ctx.ProjectAnalyzer.SetGlobalProperty("CopyLocalLockFileAssemblies", "true");
-               ctx.ProjectAnalyzer.SetGlobalProperty(MsBuildProperties.CopyBuildOutputToOutputDirectory, "true");
-
-               ctx.StatusContext!.Status = "Preparing Workspace...";
-               ctx.Workspace = CreateWorkspace(ctx.AnalyzerManager);
-               ctx.BuildResult.AddToWorkspace(ctx.Workspace, ctx.Settings.BuildReferences);
-
-               foreach (var project in ctx.Workspace.CurrentSolution.Projects)
-               {
-                   ctx.StatusContext!.Status = "Compiling Workspace...";
-
-                   ctx.SetCompilationForProject(project, await project.GetCompilationAsync());
-               }
-
-               var currentProject = ctx.Workspace.CurrentSolution.Projects.FirstOrDefault(m => m.FilePath == ctx.ProjectAnalyzer.ProjectFile.Path);
-               if (currentProject is not null)
-               {
-                   ctx.SetCompilationForProject(currentProject, await currentProject.GetCompilationAsync());
-               }
-
-               sw.Success("Load Workspace");
-               await next();
+               ctx.SetCompilationForProject(project, await project.GetCompilationAsync());
            }
-           catch (Exception ex)
+
+           var currentProject = ctx.Workspace.CurrentSolution.Projects.FirstOrDefault(m => m.FilePath == ctx.ProjectAnalyzer.ProjectFile.Path);
+           if (currentProject is not null)
            {
-               AnsiConsole.WriteException(ex);
-               Logger.LogError(ex, "Fatal error in load workspace");
-               if (ctx.Settings.Strict)
-               {
-                   ctx.ExitCode = 1;
-                   sw.Fail("Load Workspace");
-               }
-               else
-               {
-                   sw.Warn("Load Workspace");
-                   await next();
-               }
+               ctx.SetCompilationForProject(currentProject, await currentProject.GetCompilationAsync());
            }
+
+           await next();
        })
-       .Use(async (ctx, next) =>
+       .UseStatus("Locating Designer...", async (ctx, next) =>
        {
-           ctx.StatusContext!.Status = "Fetching Designer...";
+           var logger = NuGet.Common.NullLogger.Instance; //TODO: Log Nuget
+           var cancellationToken = CancellationToken.None;
 
-           var sw = Stopwatch.StartNew();
-           try
+           var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+
+           var settings = Settings.LoadDefaultSettings(folder);
+
+           // Extract some data from the settings
+           var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(settings);
+
+           var sources = ctx.Settings.DesignerNugetFeed switch
            {
-               var logger = NuGet.Common.NullLogger.Instance;
-               var cancellationToken = CancellationToken.None;
+               string feed => feed.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(f => new PackageSource(f, "cli")),
+               _ => SettingsUtility.GetEnabledSources(settings)
+           } ?? Enumerable.Empty<PackageSource>();
 
-               var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+           var providers = Repository.Provider.GetCoreV3();
 
-               var settings = Settings.LoadDefaultSettings(folder);
+           if (sources.Any())
+           {
+               var firstSource = sources.First();
 
-               // Extract some data from the settings
-               var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(settings);
+               PrintInfo("Nuget-Sources", firstSource.Name, "grey");
 
-               var sources = ctx.Settings.DesignerNugetFeed switch
+               if (sources.Count() > 1)
                {
-                   string feed => feed.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(f => new PackageSource(f)),
-                   _ => SettingsUtility.GetEnabledSources(settings)
-               };
-
-               var cache = new SourceCacheContext();
-               var providers = Repository.Provider.GetCoreV3();
-               foreach (var source in sources)
-               {
-                   try
+                   foreach (var source in sources.Skip(1))
                    {
-                       var repository = new SourceRepository(source, providers);
-
-                       var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
-
-                       const string packageId = "Xenial.Design";
-
-                       var version = new NuGetVersion(
-                           ctx.Settings.DesignerNugetPackageVersion ?? XenialVersion.Version
-                       );
-
-                       ctx.StatusContext!.Status = $"Fetching Nugets {packageId.EscapeMarkup()}.{version.ToString().EscapeMarkup()} from {source.ToString().EscapeMarkup()}...";
-
-                       var package = await FindPackage(source, resource, globalPackagesFolder, cache, logger, settings, packageId, version, cancellationToken);
-                       if (package is not null)
-                       {
-                           var tools = await package.PackageReader.GetToolItemsAsync(cancellationToken);
-                           ctx.ModelEditorVersion = version.ToString();
-                           ctx.ModelEditorTools.AddRange(tools.OfType<FrameworkSpecificGroup>());
-
-                           var versionStr = version.ToString();
-                           ctx.ModelEditorPackageDirectory = Path.Combine(globalPackagesFolder, packageId, versionStr);
-
-                           break;
-                       }
-
-                   }
-                   catch (FatalProtocolException ex)
-                   {
-                       if (ex.InnerException is HttpRequestException httpRequestEx)
-                       {
-                           if (httpRequestEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                           {
-                               AnsiConsole.WriteLine($"[grey][[INFO]]    Authorized Feeds are not supported yet: {source.Source.EscapeMarkup()}[/]");
-                               AnsiConsole.WriteException(ex);
-                           }
-                       }
-                       Logger.LogWarning(ex, "Fatal Nuget Error");
+                       PrintInfo("", source.Name, "grey");
                    }
                }
-
-               sw.Success($"Fetching Designer: {ctx.ModelEditorVersion}");
-               await next();
            }
-           catch (Exception ex)
+           ctx.NugetToolContext = new NugetToolContext
            {
-               sw.Fail("Fetching Designer");
-               Logger.LogError(ex, "Fetching Designer");
-               throw;
+               GlobalPackagesFolder = globalPackagesFolder,
+               Settings = settings,
+               Sources = sources,
+               Providers = providers,
+               Logger = logger
+           };
+
+           ctx.DesignerPackageId = "Xenial.Design";
+           ctx.DesignerPackageVersion = new NuGetVersion(
+               ctx.Settings.DesignerNugetPackageVersion ?? XenialVersion.Version
+           );
+
+           PrintInfo("Designer-Package", $"{ctx.DesignerPackageId} {ctx.DesignerPackageVersion}");
+
+           await next();
+
+       }).UseStatus("Locating Designer...", async (ctx, next) =>
+       {
+           var useCache = !ctx.Settings.DesignerForceNuget;
+           PrintInfo("Designer-Cached", useCache.ToString(), "grey");
+           if (useCache)
+           {
+               ctx.DesignerPackage = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(ctx.DesignerPackageId, ctx.DesignerPackageVersion), ctx.NugetToolContext.GlobalPackagesFolder);
            }
 
-       })
+           await next();
+       }).UseStatusWithProgress("Downloading Designer...", "Download Designer", ctx => ctx.DesignerPackage is not null, _ => false, async (ctx, progress, next) =>
+       {
+           foreach (var source in ctx.NugetToolContext!.Sources)
+           {
+               var task = progress.AddTask($"Fetching Nuget {source.Name.EscapeMarkup()}")
+                    .IsIndeterminate(true);
+
+               try
+               {
+                   var packageIdentity = new PackageIdentity(ctx.DesignerPackageId, ctx.DesignerPackageVersion);
+
+                   var repository = new SourceRepository(source, ctx.NugetToolContext!.Providers);
+
+                   var resource = await repository.GetResourceAsync<FindPackageByIdResource>();
+
+                   if (resource is null)
+                   {
+                       PrintInfo("", $"{source.Name} - Resource is null", "grey");
+                       continue;
+                   }
+
+                   var exists = await resource.DoesPackageExistAsync(
+                       ctx.DesignerPackageId,
+                       ctx.DesignerPackageVersion,
+                       ctx.NugetToolContext!.Cache,
+                       ctx.NugetToolContext!.Logger,
+                       ctx.NugetToolContext!.CancellationToken);
+
+                   if (!exists)
+                   {
+                       PrintInfo("", $"{source.Name} - Not found", "grey");
+                       continue;
+                   }
+                   else
+                   {
+                       PrintInfo("", $"{source.Name} - found", "green");
+                   }
+
+                   // Download the package
+                   using var packageStream = new MemoryStreamWithProgress(task);
+
+                   if (!await resource.CopyNupkgToStreamAsync(
+                       ctx.DesignerPackageId,
+                       ctx.DesignerPackageVersion,
+                       packageStream,
+                       ctx.NugetToolContext!.Cache,
+                       ctx.NugetToolContext!.Logger,
+                       ctx.NugetToolContext!.CancellationToken
+                   ))
+                   {
+                       continue;
+                   }
+
+                   packageStream.Seek(0, SeekOrigin.Begin);
+
+                   // Add it to the global package folder
+                   var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
+                       source.Source,
+                       packageIdentity,
+                       packageStream,
+                       ctx.NugetToolContext.GlobalPackagesFolder,
+                       parentId: Guid.Empty,
+                       ClientPolicyContext.GetClientPolicy(ctx.NugetToolContext.Settings, ctx.NugetToolContext.Logger),
+                       ctx.NugetToolContext.Logger,
+                       ctx.NugetToolContext.CancellationToken
+                   );
+
+                   if (downloadResult.Status == DownloadResourceResultStatus.Available)
+                   {
+                       task.StopTask();
+                       PrintInfo("", $"{source.Name} - fetched", "green");
+                       ctx.DesignerPackage = downloadResult;
+                       break;
+                   }
+               }
+               catch (FatalProtocolException ex)
+               {
+                   Logger.LogWarning(ex, "Fatal Nuget Error");
+
+                   if (ex.InnerException is HttpRequestException httpRequestEx)
+                   {
+                       if (httpRequestEx.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                       {
+                           PrintInfo("", $"{source.Name}: Authorized Feeds are not supported yet", "olive");
+                           continue;
+                       }
+
+                       throw;
+                   }
+               }
+               finally
+               {
+                   task.StopTask();
+               }
+           }
+
+           await next();
+       }, skipWhen: ctx => ctx.DesignerPackage is not null)
        .Use(async (ctx, next) =>
        {
-           ctx.StatusContext!.Status = "Launching Designer...";
+           var tools = await ctx.DesignerPackage.PackageReader.GetToolItemsAsync(ctx.NugetToolContext.CancellationToken);
+           ctx.ModelEditorVersion = ctx.DesignerPackageVersion.ToString();
+           ctx.ModelEditorTools.AddRange(tools.OfType<FrameworkSpecificGroup>());
 
+           var versionStr = ctx.DesignerPackageVersion.ToString();
+           ctx.ModelEditorPackageDirectory = Path.Combine(ctx.NugetToolContext.GlobalPackagesFolder, ctx.DesignerPackageId, versionStr);
+
+           await next();
+       })
+       .UseStatusWithTimer("Launching Designer...", "Find Designer", ctx => File.Exists(ctx.ModelEditorProcessPath), _ => false, async (ctx, next) =>
+       {
            var tfm = ctx.BuildResult!.TargetFramework;
            var launcher = tfm switch
            {
@@ -247,403 +325,471 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                var t => t,
            };
 
-           var processPath = await FindProcessPath(launcher, ctx);
+           ctx.ModelEditorProcessPath = await FindProcessPath(launcher, ctx);
 
            ctx.ModelEditorId = Guid.NewGuid().ToString();
-
-           if (!File.Exists(processPath))
-           {
-               Stopwatch.StartNew().Fail($"Designer does not exist {processPath}");
-               Logger.LogError($"Designer does not exist {processPath}");
-           }
-           else
-           {
-               var sw = Stopwatch.StartNew();
-               try
-               {
-                   var info = new ProcessStartInfo
-                   {
-                       FileName = processPath,
-                       ArgumentList =
-                   {
-                       ctx.ModelEditorId,
-#pragma warning disable CA1308
-                       ctx.Settings.DesignerDebug.ToString().ToLowerInvariant()
-#pragma warning restore CA1308,
-                   }
-                   };
-
-                   ctx.ModelEditorProcess = Process.Start(info);
-
-                   sw.Success("Launching Designer");
-
-                   await next();
-               }
-               catch (Exception ex)
-               {
-                   sw.Fail("Launching Designer");
-                   Logger.LogError(ex, "Launching Designer");
-                   throw;
-               }
-           }
+           await next();
        })
-       .Use(async (ctx, next) =>
-       {
-           ctx.StatusContext!.Status = "Connecting to Designer...";
-           var sw = Stopwatch.StartNew();
-           try
-           {
-               ctx.DesignerStream = new NamedPipeClientStream(".", ctx.ModelEditorId, PipeDirection.InOut, PipeOptions.Asynchronous);
-
-               if (ctx.Settings.DesignerDebug)
-               {
-                   await ctx.DesignerStream.ConnectAsync();
-               }
-               else
-               {
-                   await ctx.DesignerStream.ConnectAsync(ctx.Settings.DesignerConnectionTimeout);
-               }
-
-               sw.Success("Connecting to Designer");
-               await next();
-           }
-           catch (Exception ex)
-           {
-               sw.Fail("Connecting to Designer");
-               Logger.LogError(ex, "Connecting to Designer");
-               throw;
-           }
-       })
-       .Use(async (ctx, next) =>
-       {
-           ctx.StatusContext!.Status = "Connecting Designer RPC...";
-           var sw = Stopwatch.StartNew();
-           try
-           {
-               var attached = JsonRpc.Attach(ctx.DesignerStream!);
-
-               ctx.ModelEditor = new ModelEditorRpcClient(attached);
-
-               var ping = await ctx.ModelEditor.Ping();
-
-               sw.Success($"Connecting Designer RPC: [green]{ping.EscapeMarkup()}[/]");
-
-               await next();
-           }
-           catch (Exception ex)
-           {
-               sw.Fail($"Connecting Designer RPC");
-               Logger.LogError(ex, "Connecting Designer RPC");
-               throw;
-           }
-       })
-       .Use(async (ctx, next) =>
-       {
-           ctx.StatusContext!.Status = "Loading Application Model...";
-
-           var sw = Stopwatch.StartNew();
-           try
-           {
-               var assemblyPath = ctx.BuildResult!.Properties["TargetPath"];
-               var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
-               var targetDir = Path.GetDirectoryName(assemblyPath)!;
-
-               var numberOfViews = await ctx.ModelEditor.LoadModel(assemblyPath,
-                   folder,
-                   "",
-                   targetDir);
-
-               sw.Success($"Load Model: {numberOfViews} views");
-               await next();
-           }
-           catch (Exception ex)
-           {
-               Logger.LogError(ex, "Load Model");
-               if (ctx.Settings.Strict)
-               {
-                   sw.Fail("Load Model");
-                   ctx.ExitCode = 1;
-                   throw;
-               }
-               else
-               {
-                   sw.Warn("Load Model");
-                   await next();
-               }
-           }
-       })
-       ;
-    }
-
-    internal static AdhocWorkspace CreateWorkspace(IAnalyzerManager manager)
-    {
-        var workspace = new AdhocWorkspace();
-        ILogger? logger = manager.LoggerFactory?.CreateLogger<AdhocWorkspace>();
-        if (logger is not null)
+       .UseStatusWithTimer("Launching Designer...", "Launch Designer", ctx => ctx.ModelEditorProcess is not null, _ => false, async (ctx, next) =>
         {
-            workspace.WorkspaceChanged += (sender, args) => logger.LogDebug($"Workspace changed: {args.Kind.ToString()}{System.Environment.NewLine}");
-            workspace.WorkspaceFailed += (sender, args) => logger.LogError($"Workspace failed: {args.Diagnostic}{System.Environment.NewLine}");
-        }
-        return workspace;
-    }
-
-    internal enum FileState
-    {
-        Unchanged,
-        Modified,
-        Added
-    }
-
-    protected override void ConfigurePipeline(TPipeline pipeline!!)
-    {
-        base.ConfigurePipeline(pipeline);
-
-        pipeline.Use(async (ctx, next) =>
-        {
-            var result = await ctx.ModelEditor!.Pong();
-
-            AnsiConsole.WriteLine(result);
-
-            await next();
-        });
-
-        pipeline.Use(async (ctx, next) =>
-        {
-            var attributeSymbol = ctx.Compilation.GetTypeByMetadataName(typeof(XenialModuleBase).FullName!);
-
-            if (attributeSymbol is null)
+            var path = ctx.ModelEditorProcessPath;
+            if (path.StartsWith(ctx.NugetToolContext.GlobalPackagesFolder, StringComparison.OrdinalIgnoreCase))
             {
-                AnsiConsole.MarkupLine($"[yellow]It seems like [/][silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/] is missing a reference to Xenial.Framework");
-                var addReference = AnsiConsole.Confirm($"[silver]Do you want to add it to the project?[/]");
-
-                if (addReference)
-                {
-                    var wd = Path.GetDirectoryName(ctx.ProjectAnalyzer.ProjectFile.Path)!;
-                    await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework", wd);
-                    await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework.Generators", wd);
-                    ctx.ExitCode = 1;
-                    AnsiConsole.MarkupLine($"[yellow]Added packages. Please restart command to see effects.[/]");
-                    return;
-                }
+                path = path.Substring(ctx.NugetToolContext.GlobalPackagesFolder.Length);
             }
+
+            PrintInfo("Designer-Path", ToPath(path, skipEllipsis: true));
+
+            var info = new ProcessStartInfo
+            {
+                FileName = ctx.ModelEditorProcessPath,
+                ArgumentList =
+                {
+                    ctx.ModelEditorId,
+#pragma warning disable CA1308
+                    ctx.Settings.DesignerDebug.ToString().ToLowerInvariant()
+#pragma warning restore CA1308,
+                },
+
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+            };
+
+            ctx.ModelEditorProcess = Process.Start(info);
+            if (ctx.ModelEditorProcess is not null)
+            {
+                PrintInfo("Designer-PID", ctx.ModelEditorProcess.Id.ToString(CultureInfo.InvariantCulture));
+                ctx.ModelEditorProcess.OutputDataReceived += (s, e) =>
+                {
+                    PrintInfo($"Xenial.Design", e.Data);
+                };
+                ctx.ModelEditorProcess.ErrorDataReceived += (s, e) =>
+                {
+                    PrintInfo($"Xenial.Design", e.Data, "red");
+                };
+                ctx.ModelEditorProcess.BeginOutputReadLine();
+                ctx.ModelEditorProcess.BeginErrorReadLine();
+            }
+            await next();
+
+        })
+       .UseStatusWithTimer("Connecting to Designer...", "Designer connected", _ => true, _ => false, async (ctx, next) =>
+        {
+            ctx.DesignerStream = new NamedPipeClientStream(".", ctx.ModelEditorId, PipeDirection.InOut, PipeOptions.Asynchronous);
+
+            if (ctx.Settings.DesignerDebug)
+            {
+                PrintInfo("Designer-Debug", ctx.Settings.DesignerDebug.ToString());
+                await ctx.DesignerStream.ConnectAsync();
+            }
+            else
+            {
+                PrintInfo("Designer-Timeout", ctx.Settings.DesignerConnectionTimeout.Milliseconds().Humanize());
+                await ctx.DesignerStream.ConnectAsync(ctx.Settings.DesignerConnectionTimeout);
+            }
+
             await next();
         })
-        .Use(async (ctx, next) =>
-        {
-            Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications = new();
-            Dictionary<string, SyntaxTree> originalSyntaxTrees = new();
+       .UseStatusWithTimer("Connecting Designer RPC...", "Designer RPC", _ => true, _ => false, async (ctx, next) =>
+       {
+           var attached = JsonRpc.Attach(ctx.DesignerStream!);
 
-            List<string> removedViews = new();
+           ctx.ModelEditor = new ModelEditorRpcClient(attached);
 
-            await AnsiConsole.Status().Start("Analyzing views...", async statusContext =>
-            {
-                statusContext.Spinner(Spinner.Known.Ascii);
-                ctx.StatusContext = statusContext;
+           var ping = await ctx.ModelEditor.Ping();
 
-                var namespaces = ctx.Settings.Namespaces?.Split(';') ?? Array.Empty<string>();
+           PrintInfo($"Xenial.Design", ping, "green");
 
-                var views = await ctx.ModelEditor.GetViewIds(namespaces);
+           await next();
+       })
+       .UseStatus("Loading Application Model...", async (ctx, next) =>
+       {
+           var assemblyPath = ctx.BuildResult!.Properties["TargetPath"];
+           var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+           var targetDir = Path.GetDirectoryName(assemblyPath)!;
 
-                foreach (var viewId in views)
-                {
-                    AnsiConsole.MarkupLine($"[grey]Analyzing: [silver][/]{viewId}[/]");
+           PrintInfo($"AssemblyPath", ToPath(assemblyPath));
+           PrintInfo($"ProjectFolder", ToPath(folder));
+           PrintInfo($"AssembliesFolder", ToPath(targetDir));
 
-                    var xml = await ctx.ModelEditor.GetViewAsXml(viewId);
-                    var viewType = await ctx.ModelEditor.GetViewType(viewId);
-                    var modelClass = await ctx.ModelEditor.GetModelClass(viewId);
+           var numberOfViews = await ctx.ModelEditor.LoadModel(assemblyPath,
+               folder,
+               "",
+               targetDir);
 
-                    //TODO: move to Design later once we have customizable X2CCode output
-                    var codeResult = X2CEngine.ConvertToCode(xml);
+           PrintInfo($"Xenial.Design", $"Load Model: {numberOfViews} views");
 
+           await next();
+       })
+       .Use(async (ctx, next) =>
+       {
+           var attributeSymbol = ctx.Compilation.GetTypeByMetadataName(typeof(XenialModuleBase).FullName!);
 
+           if (attributeSymbol is null)
+           {
+               var xenialPackageVersion = ctx.Settings.NugetPackageVersion ?? XenialVersion.Version;
+               PrintInfo("Xenial-Version", xenialPackageVersion);
 
-                    var location = FindFile(ctx, modelClass);
-#if DEBUG
-                    HorizontalRule(viewId);
-#endif
-                    if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
-                    {
-                        var ext = Path.GetExtension(location.SourceTree.FilePath);
-                        var fileName = Path.GetFileNameWithoutExtension(location.SourceTree.FilePath);
-                        var dirName = Path.GetDirectoryName(location.SourceTree.FilePath);
+               AnsiConsole.WriteLine();
 
-                        var part = viewType switch
-                        {
-                            ViewType.DetailView => ".Layouts",
-                            ViewType.ListView => ".Columns",
-                            _ => ""
-                        };
+               AnsiConsole.MarkupLine($"[yellow]It seems like [/][silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/] is missing a reference to Xenial.Framework");
 
-                        var builderSymbol = ctx.Compilation!.GetTypeByMetadataName(codeResult.FullName);
-                        var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
-                        if (builderSymbol is null)
-                        {
-                            var builderSyntax = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)location.SourceTree.Options, path: newFilePath);
-                            ctx.ReplaceCurrentCompilation(ctx.Compilation.AddSyntaxTrees(builderSyntax));
-                            modifications[newFilePath] = (FileState.Added, builderSyntax);
-                        }
-                        else
-                        {
-                            await ReplaceSyntaxTree(ctx, modifications, originalSyntaxTrees, builderSymbol, newFilePath, codeResult);
-                        }
-#if DEBUG
-                        HorizontalDashed(location.SourceTree.FilePath);
-                        HorizontalDashed(newFilePath);
+               var addReference = AnsiConsole.Confirm($"[silver]Do you want to add [green]Xenial {xenialPackageVersion}[/] to the project?[/]");
 
-                        if (File.Exists(location.SourceTree.FilePath))
-                        {
-                            var source = await File.ReadAllTextAsync(location.SourceTree.FilePath);
-                            PrintSource(source);
-                            AnsiConsole.WriteLine();
-                        }
-#endif
-                        var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass!);
+               if (addReference)
+               {
 
-                        if (symbol is not null)
-                        {
-                            var root = await location.SourceTree.GetRootAsync();
+                   var wd = Path.GetDirectoryName(ctx.ProjectAnalyzer.ProjectFile.Path)!;
+                   await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework -v {xenialPackageVersion}", wd);
+                   await RunAsync("dotnet.exe", $"add {ctx.ProjectAnalyzer.ProjectFile.Name} package Xenial.Framework.Generators -v {xenialPackageVersion}", wd);
+                   AnsiConsole.MarkupLine($"[yellow]Added packages. Restart command...[/]");
+                   throw new RestartPipelineException("Installed packages. Restarting command");
+               }
+           }
+           await next();
+       })
+       .Use(async (ctx, next) =>
+       {
+           var compilationLangVersion = ((CSharpCompilation)ctx.Compilation).LanguageVersion;
 
-                            if (!originalSyntaxTrees.ContainsKey(location.SourceTree.FilePath))
-                            {
-                                originalSyntaxTrees[location.SourceTree.FilePath] = location.SourceTree;
-                            }
+           var minVersion = LanguageVersion.CSharp9;
 
-                            var semanticModel = ctx.Compilation.GetSemanticModel(location.SourceTree);
+           if (compilationLangVersion < minVersion)
+           {
+               AnsiConsole.WriteLine();
+               AnsiConsole.MarkupLine($"[yellow]Xenial requires the usage of at least {minVersion}.[/]");
+               AnsiConsole.MarkupLine($"[silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/] is using [yellow]{compilationLangVersion}[/].");
 
-                            if (root is not null)
-                            {
-                                var attributeName = viewType switch
-                                {
-                                    ViewType.DetailView => "DetailViewLayoutBuilder",
-                                    ViewType.ListView => "ListViewColumnsBuilder",
-                                    _ => null
-                                };
+               var addReference = AnsiConsole.Confirm($"[silver]Do you want to automatically update?[/]");
 
-                                if (attributeName is not null)
-                                {
-                                    var newRoot = RewriteSyntaxTree(ctx, viewType, codeResult, root, semanticModel);
+               if (addReference)
+               {
+                   var values = Enum.GetValues<LanguageVersion>()
+                    .Where(v => v >= minVersion)
+                    //We filter out LatestMajor and Latest, because they are framework dependent
+                    .Where(v => v != LanguageVersion.LatestMajor && v != LanguageVersion.Latest);
 
-                                    var newSyntaxTree = location.SourceTree.WithRootAndOptions(newRoot, location.SourceTree.Options);
+                   var newLangVersion = AnsiConsole.Prompt(
+                       new SelectionPrompt<LanguageVersion>()
+                        .Title("Which [silver]CSharp version[/] do you want convert to?")
+                        .PageSize(10)
+                        .MoreChoicesText("[grey](Move up and down to reveal more)[/]")
+                        .AddChoices(values)
+                        .UseConverter(displayString => $"{displayString}")
+                   );
 
-                                    modifications[location.SourceTree.FilePath] = (FileState.Modified, newSyntaxTree);
+                   var rewriter = new CsProjLangVersionSyntaxRewriter(ctx.ProjectAnalyzer, ctx.BuildResult, newLangVersion);
 
-                                    ctx.ReplaceCurrentCompilation(ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree));
-#if DEBUG
-                                    PrintSource(newRoot.ToFullString());
-                                    AnsiConsole.WriteLine();
-#endif
-                                }
-                            }
-                        }
-                    }
-#if DEBUG
-                    PrintSource(xml, "xml");
-                    AnsiConsole.WriteLine();
-                    PrintSource(codeResult.Code);
-                    AnsiConsole.WriteLine();
-#endif
-                    removedViews.Add(viewId);
-                }
-            });
+                   var (shouldRewrite, _) = await rewriter.RewriteAsync();
+                   if (shouldRewrite)
+                   {
+                       await rewriter.CommitAsync();
+                   }
 
-            ////Sanity-Check. We compare again so we don't touch mulitple files
-            foreach (var oldItem in originalSyntaxTrees)
-            {
-                if (modifications.TryGetValue(oldItem.Key, out var modification))
-                {
-                    if (modification.syntaxTree.IsEquivalentTo(oldItem.Value))
-                    {
-                        modifications.Remove(oldItem.Key);
-                    }
-                }
-            }
+                   AnsiConsole.MarkupLine($"[yellow]Updated LangVersion. Restart command...[/]");
+                   throw new RestartPipelineException("Updated LangVersion. Restarting command");
+               }
+           }
+           await next();
+       })
+       .UseStatusWithTimer("Analyzing views...", "Analyze views", _ => true, _ => false, async (ctx, next) =>
+       {
+           var namespacesFilter = ctx.Settings.Namespaces?.Split(';') ?? Array.Empty<string>();
+           var viewsFilter = ctx.Settings.Views?.Split(';') ?? Array.Empty<string>();
 
-            var xafmlSyntaxRewriter = new XafmlSyntaxRewriter(ctx.ModelStore, removedViews);
+           if (namespacesFilter.Length > 0)
+           {
+               PrintInfo("Filter", "Namespace");
+               foreach (var filter in namespacesFilter)
+               {
+                   PrintInfo("", filter);
+               }
+           }
 
-            var (hasModifications, xafmlFilePath) = await xafmlSyntaxRewriter.RewriteAsync();
+           if (viewsFilter.Length > 0)
+           {
+               PrintInfo("Filter", "View-Ids");
+               foreach (var filter in viewsFilter)
+               {
+                   PrintInfo("", filter);
+               }
+           }
 
-            if (modifications.Count > 0 || hasModifications)
-            {
-                AnsiConsole.WriteLine();
-                AnsiConsole.MarkupLine($"[grey]There are [yellow]{modifications.Count}[/] pending modifications for project [silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/][/]");
-                AnsiConsole.WriteLine();
+           var views = await ctx.ModelEditor.GetViewIds(namespacesFilter);
 
-                HorizontalDashed("Changed Files");
+           views = viewsFilter.Length > 0
+               ? views.Where(viewId => viewsFilter.Contains(viewId)).ToList()
+               : views;
 
-                if (hasModifications)
-                {
-                    var stateString = "[[Modified]]";
-                    var stateColor = "yellow";
+           var analizingInfo = "Analyzing";
 
-                    AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{xafmlFilePath}[/][/]");
-                }
+           foreach (var viewId in views)
+           {
+               PrintInfo(analizingInfo, viewId);
+               analizingInfo = "";
 
-                foreach (var modification in modifications.Where(m => m.Value.state != FileState.Unchanged))
-                {
-                    var (state, syntaxTree) = modification.Value;
-                    var path = modification.Key;
+               var xml = await ctx.ModelEditor.GetViewAsXml(viewId);
+               var viewType = await ctx.ModelEditor.GetViewType(viewId);
+               var modelClass = await ctx.ModelEditor.GetModelClass(viewId);
 
-                    var stateString = state switch
-                    {
-                        FileState.Modified => "[[Modified]]",
-                        FileState.Added => "[[Added]]",
-                        _ => "Unknown"
-                    };
+               //TODO: move to Design later once we have customizable X2CCode output
+               var codeResult = X2CEngine.ConvertToCode(xml);
 
-                    var stateColor = state switch
-                    {
-                        FileState.Modified => "yellow",
-                        FileState.Added => "green",
-                        _ => "white"
-                    };
+               var location = FindFile(ctx, modelClass);
 
-                    path = ConsoleHelper.EllipsisPath(path);
+               if (location is not null && location.SourceTree is not null && !string.IsNullOrEmpty(location.SourceTree.FilePath))
+               {
+                   var ext = Path.GetExtension(location.SourceTree.FilePath);
+                   var fileName = Path.GetFileNameWithoutExtension(location.SourceTree.FilePath);
+                   var dirName = Path.GetDirectoryName(location.SourceTree.FilePath);
 
-                    AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{path}[/][/]");
-                }
+                   var part = viewType switch
+                   {
+                       ViewType.DetailView => ".Layouts",
+                       ViewType.ListView => ".Columns",
+                       _ => ""
+                   };
 
-                var adds = modifications.Where(m => m.Value.state == FileState.Added).ToList();
-                var modified = modifications.Where(m => m.Value.state == FileState.Modified).ToList();
+                   var builderSymbol = ctx.Compilation!.GetTypeByMetadataName(codeResult.FullName);
+                   var newFilePath = Path.Combine(dirName ?? "", $"{fileName}{part}{ext}");
+                   if (builderSymbol is null)
+                   {
+                       var builderSyntax = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)location.SourceTree.Options, path: newFilePath);
+                       ctx.ReplaceCurrentCompilation(ctx.Compilation.AddSyntaxTrees(builderSyntax));
+                       ctx.Modifications[newFilePath] = (FileState.Added, builderSyntax);
+                   }
+                   else
+                   {
+                       await ReplaceSyntaxTree(ctx, ctx.Modifications, ctx.OriginalSyntaxTrees, builderSymbol, newFilePath, codeResult);
+                   }
 
-                AnsiConsole.WriteLine();
-                if (AnsiConsole.Confirm($"[silver]Do you want to proceed? [yellow][[Modified]] {modified.Count}[/] [green][[Added]] {adds.Count}[/][/]"))
-                {
-                    if (hasModifications)
-                    {
-                        var stateString = "[[Modified]]";
-                        var stateColor = "yellow";
-                        await xafmlSyntaxRewriter.CommitAsync();
-                        AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{xafmlFilePath}[/][/]");
-                    }
-                    foreach (var modification in modifications.Where(m => m.Value.state != FileState.Unchanged))
-                    {
-                        var (state, syntaxTree) = modification.Value;
-                        var path = modification.Key;
+                   var symbol = ctx.Compilation!.GetTypeByMetadataName(modelClass!);
 
-                        var stateString = state switch
-                        {
-                            FileState.Modified => "[[Modified]]",
-                            FileState.Added => "[[Added]]",
-                            _ => "Unknown"
-                        };
+                   if (symbol is not null)
+                   {
+                       var root = await location.SourceTree.GetRootAsync();
 
-                        var stateColor = state switch
-                        {
-                            FileState.Modified => "yellow",
-                            FileState.Added => "green",
-                            _ => "white"
-                        };
+                       if (!ctx.OriginalSyntaxTrees.ContainsKey(location.SourceTree.FilePath))
+                       {
+                           ctx.OriginalSyntaxTrees[location.SourceTree.FilePath] = location.SourceTree;
+                       }
 
-                        AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{path}[/][/]");
-                        await File.WriteAllTextAsync(syntaxTree.FilePath, syntaxTree.ToString());
-                    }
-                }
-            }
-            await next();
-        });
+                       var semanticModel = ctx.Compilation.GetSemanticModel(location.SourceTree);
+
+                       if (root is not null)
+                       {
+                           var attributeName = viewType switch
+                           {
+                               ViewType.DetailView => "DetailViewLayoutBuilder",
+                               ViewType.ListView => "ListViewColumnsBuilder",
+                               _ => null
+                           };
+
+                           if (attributeName is not null)
+                           {
+                               var newRoot = RewriteSyntaxTree(ctx, viewType, codeResult, root, semanticModel);
+
+                               var newSyntaxTree = location.SourceTree.WithRootAndOptions(newRoot, location.SourceTree.Options);
+
+                               ctx.Modifications[location.SourceTree.FilePath] = (FileState.Modified, newSyntaxTree);
+
+                               ctx.ReplaceCurrentCompilation(ctx.Compilation.ReplaceSyntaxTree(location.SourceTree, newSyntaxTree));
+                           }
+                       }
+                   }
+               }
+
+               ctx.RemovedViews.Add(viewId);
+           }
+
+           var moduleRewriter = new InjectXenialLayoutBuilderModuleSyntaxRewriter(ctx.Compilation);
+
+           foreach (var syntaxTree in ctx.Compilation.SyntaxTrees)
+           {
+               var root = await syntaxTree.GetRootAsync();
+               var newRoot = moduleRewriter.Visit(root);
+               if (moduleRewriter.WasRewritten)
+               {
+                   newRoot = Formatter.Format(newRoot, ctx.Workspace!);
+
+                   var newSyntaxTree = syntaxTree.WithRootAndOptions(newRoot, syntaxTree.Options);
+
+                   ctx.Modifications[syntaxTree.FilePath] = (
+                       FileState.Modified,
+                       newSyntaxTree
+                   );
+
+                   ctx.ReplaceCurrentCompilation(ctx.Compilation.ReplaceSyntaxTree(syntaxTree, newSyntaxTree));
+               }
+           }
+
+           ////Sanity-Check. We compare again so we don't touch mulitple files
+           foreach (var oldItem in ctx.OriginalSyntaxTrees)
+           {
+               if (ctx.Modifications.TryGetValue(oldItem.Key, out var modification))
+               {
+                   if (modification.syntaxTree.IsEquivalentTo(oldItem.Value))
+                   {
+                       ctx.Modifications.Remove(oldItem.Key);
+                   }
+               }
+           }
+
+           await next();
+
+       }).Use(async (ctx, next) =>
+       {
+           var xafmlSyntaxRewriter = new XafmlSyntaxRewriter(await ctx.ModelEditor.GetModelFileName(), ctx.RemovedViews);
+
+           var (hasXamlModifications, xafmlFilePath) = await xafmlSyntaxRewriter.RewriteAsync();
+
+           var csProjSyntaxRewriter = new CsProjSyntaxRewriter(ctx.ProjectAnalyzer!, ctx.BuildResult!, ctx.Modifications);
+
+           var (hasCsProjModifications, csprojFilePath) = await csProjSyntaxRewriter.RewriteAsync();
+
+           static string StateToString(FileState state) => state switch
+           {
+               FileState.Modified => "[[Modified]]",
+               FileState.Added => "[[Added]]   ",
+               _ => "Unknown"
+           };
+
+           static string StateToColor(FileState state) => state switch
+           {
+               FileState.Modified => "yellow",
+               FileState.Added => "green",
+               _ => "white"
+           };
+
+           if (ctx.Modifications.Count > 0 || hasXamlModifications)
+           {
+               AnsiConsole.WriteLine();
+               AnsiConsole.MarkupLine($"[grey]There are [yellow]{ctx.Modifications.Count + (hasXamlModifications ? 1 : 0)}[/] pending modifications for project [silver]{ctx.ProjectAnalyzer.ProjectFile.Name}[/][/]");
+               AnsiConsole.WriteLine();
+
+               HorizontalDashed("Changed Files");
+
+               var folder = Path.GetDirectoryName(ctx.BuildResult!.ProjectFilePath)!;
+
+               AnsiConsole.WriteLine($"{folder.EllipsisPath()} ...");
+
+               static void WritePath(string path, string color)
+               {
+
+                   var p = new TextPath(path)
+                       .RootColor(Color.Grey)
+                       .SeparatorColor(Color.Grey)
+                       .StemColor(Color.Grey)
+                       .LeafColor(color switch
+                       {
+                           "silver" => Color.Silver,
+                           "red" => Color.Red,
+                           "yellow" => Color.Yellow,
+                           "green" => Color.Green,
+                           _ => Color.Grey,
+                       });
+
+                   AnsiConsole.Write(p);
+               }
+
+               if (hasXamlModifications)
+               {
+                   var stateString = "[[Modified]]";
+                   var stateColor = "yellow";
+
+                   if (xafmlFilePath!.StartsWith(folder, StringComparison.OrdinalIgnoreCase))
+                   {
+                       xafmlFilePath = xafmlFilePath.Substring(folder.Length);
+                   }
+
+                   AnsiConsole.Markup($"[{stateColor}]{stateString.PadRight(10)}: [/]");
+                   WritePath($"...{xafmlFilePath!.EllipsisPath()}", stateColor);
+               }
+
+               if (hasCsProjModifications)
+               {
+                   var stateString = "[[Modified]]";
+                   var stateColor = "yellow";
+
+                   if (csprojFilePath!.StartsWith(folder, StringComparison.OrdinalIgnoreCase))
+                   {
+                       csprojFilePath = csprojFilePath.Substring(folder.Length);
+                   }
+
+                   AnsiConsole.Markup($"[{stateColor}]{stateString.PadRight(10)}: [/]");
+                   WritePath($"...{csprojFilePath!.EllipsisPath()}", stateColor);
+               }
+
+               foreach (var modification in ctx.Modifications.Where(m => m.Value.state != FileState.Unchanged))
+               {
+                   var (state, syntaxTree) = modification.Value;
+                   var path = modification.Key;
+
+                   if (path.StartsWith(folder, StringComparison.OrdinalIgnoreCase))
+                   {
+                       path = path.Substring(folder.Length);
+                   }
+
+                   var stateString = StateToString(state);
+                   var stateColor = StateToColor(state);
+
+                   AnsiConsole.Markup($"[{stateColor}]{stateString.PadRight(10)}: [/]");
+                   WritePath($"...{path!.EllipsisPath()}", stateColor);
+               }
+
+               var adds = ctx.Modifications.Where(m => m.Value.state == FileState.Added).ToList();
+               var modified = ctx.Modifications.Where(m => m.Value.state == FileState.Modified).ToList();
+
+               AnsiConsole.WriteLine();
+
+               var table = new Table()
+                   .RoundedBorder()
+                   .BorderColor(Color.Red)
+                   .Centered()
+                   .Expand()
+                   .AddColumn("WARNING", c => c.Centered())
+                   .AddRow("Make sure to backup your project before proceeding!")
+                   .AddRow("This is an irreversible operation!")
+               ;
+
+               AnsiConsole.Write(table);
+
+               AnsiConsole.WriteLine();
+               if (AnsiConsole.Confirm($"[silver]Do you want to proceed? [yellow][[Modified]] {modified.Count}[/] [green][[Added]] {adds.Count}[/][/]"))
+               {
+                   if (hasXamlModifications)
+                   {
+                       var stateString = "[[Modified]]";
+                       var stateColor = "yellow";
+                       await xafmlSyntaxRewriter.CommitAsync();
+                       AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{xafmlFilePath}[/][/]");
+                   }
+                   if (hasCsProjModifications)
+                   {
+                       var stateString = "[[Modified]]";
+                       var stateColor = "yellow";
+                       await csProjSyntaxRewriter.CommitAsync();
+                       AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{csprojFilePath}[/][/]");
+                   }
+                   foreach (var modification in ctx.Modifications.Where(m => m.Value.state != FileState.Unchanged))
+                   {
+                       var (state, syntaxTree) = modification.Value;
+                       var path = modification.Key;
+
+                       var stateString = StateToString(state);
+
+                       var stateColor = StateToColor(state);
+
+                       AnsiConsole.MarkupLine($"[{stateColor}]{stateString.PadRight(10)}: [silver]{path}[/][/]");
+                       await File.WriteAllTextAsync(syntaxTree.FilePath, syntaxTree.ToString());
+                   }
+               }
+           }
+           await next();
+       });
     }
 
-    private static async Task ReplaceSyntaxTree(TPipelineContext ctx, Dictionary<string, (ModelCommand<TSettings, TPipeline, TPipelineContext>.FileState state, SyntaxTree syntaxTree)> modifications, Dictionary<string, SyntaxTree> originalSyntaxTrees, INamedTypeSymbol builderSymbol, string newFilePath, X2CCodeResult codeResult)
+    private static async Task ReplaceSyntaxTree(TPipelineContext ctx, Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications, Dictionary<string, SyntaxTree> originalSyntaxTrees, INamedTypeSymbol builderSymbol, string newFilePath, X2CCodeResult codeResult)
     {
         var (fileState, existingSyntaxTree) = modifications.TryGetValue(newFilePath, out var r) switch
         {
@@ -757,7 +903,7 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
 
     private static Task<string> FindProcessPath(string launcher, TPipelineContext ctx)
     {
-        if (ctx.Settings.LaunchFromNuget)
+        if (ctx.Settings.DesignerLaunchFromNuget)
         {
             if (ctx.ModelEditorTools is not null && ctx.ModelEditorTools.Count > 0)
             {
@@ -830,53 +976,4 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
         }
         return null;
     }
-
-    private static async Task<DownloadResourceResult?> FindPackage(
-                          PackageSource source,
-                          FindPackageByIdResource resource,
-                          string globalPackagesFolder,
-                          SourceCacheContext cache,
-                          NuGet.Common.ILogger logger,
-                          ISettings? settings,
-                          string packageId,
-                          NuGetVersion version,
-                          CancellationToken cancellationToken)
-    {
-        var package = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(packageId, version), globalPackagesFolder);
-        if (package is null)
-        {
-            if (await resource.DoesPackageExistAsync(packageId, version, cache, logger, cancellationToken))
-            {
-                // Download the package
-                using var packageStream = new MemoryStream();
-                await resource.CopyNupkgToStreamAsync(
-                    packageId,
-                    version,
-                    packageStream,
-                    cache,
-                    logger,
-                    cancellationToken);
-
-                packageStream.Seek(0, SeekOrigin.Begin);
-
-                // Add it to the global package folder
-                var downloadResult = await GlobalPackagesFolderUtility.AddPackageAsync(
-                    source.Source,
-                    new PackageIdentity(packageId, version),
-                    packageStream,
-                    globalPackagesFolder,
-                    parentId: Guid.Empty,
-                    ClientPolicyContext.GetClientPolicy(settings, logger),
-                    logger,
-                    cancellationToken);
-
-                if (downloadResult.Status == DownloadResourceResultStatus.Available)
-                {
-                    return downloadResult;
-                }
-            }
-        }
-        return package;
-    }
-
 }

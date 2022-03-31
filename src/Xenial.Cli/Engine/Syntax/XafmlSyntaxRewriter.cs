@@ -14,12 +14,12 @@ namespace Xenial.Cli.Engine.Syntax;
 
 public class XafmlSyntaxRewriter
 {
-    public FileModelStore? ModelStore { get; }
+    public string? FileName { get; }
     public IList<string> RemovedViews { get; }
 
-    public XafmlSyntaxRewriter(FileModelStore? modelStore, IList<string> removedViews!!)
+    public XafmlSyntaxRewriter(string? fileName, IList<string> removedViews!!)
     {
-        ModelStore = modelStore;
+        FileName = fileName;
         RemovedViews = removedViews;
     }
 
@@ -27,12 +27,12 @@ public class XafmlSyntaxRewriter
 
     public async Task<(bool hasModifications, string? modelFilePath)> RewriteAsync()
     {
-        if (ModelStore is null)
+        if (FileName is null || !File.Exists(FileName))
         {
             return (false, null);
         }
 
-        var content = await File.ReadAllTextAsync(ModelStore.Name);
+        var content = await File.ReadAllTextAsync(FileName);
         doc = new XmlDocument() { XmlResolver = null! };
 
         var sreader = new System.IO.StringReader(content);
@@ -56,12 +56,12 @@ public class XafmlSyntaxRewriter
             }
         }
 
-        return (modified, ModelStore.Name);
+        return (modified, FileName);
     }
 
     public Task CommitAsync()
     {
-        if (ModelStore is null)
+        if (FileName is null || !File.Exists(FileName))
         {
             return Task.CompletedTask;
         }
@@ -69,7 +69,7 @@ public class XafmlSyntaxRewriter
         if (doc is not null)
         {
             var settings = new XmlWriterSettings { Indent = true };
-            using var writer = XmlWriter.Create(ModelStore.Name, settings);
+            using var writer = XmlWriter.Create(FileName, settings);
             doc.Save(writer);
         }
 

@@ -23,8 +23,7 @@ public class ModelEditorServer : IModelEditorServer
     public JsonRpc? JsonRpc { get; set; }
     public StandaloneModelEditorModelLoader? ModelLoader { get; set; }
 
-    public async Task<string> Ping() => $"Ping from Server PID: {Process.GetCurrentProcess().Id}";
-    public async Task<string> Pong() => $"Pong from Server PID: {Process.GetCurrentProcess().Id}";
+    public async Task<string> Ping() => $"Hello from Xenial.Design PID: {Process.GetCurrentProcess().Id}";
 
     public async Task<int> LoadModel(
         string targetFileName,
@@ -150,4 +149,6 @@ public class ModelEditorServer : IModelEditorServer
             Environment.Exit(0);
         }
     }
+
+    public async Task<string?> GetModelFileName() => ModelLoader?.FileModelStore?.Name;
 }

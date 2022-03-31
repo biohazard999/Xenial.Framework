@@ -45,9 +45,6 @@ public class ModelEditorRpcClient : IDisposable, IModelEditorServer
     public Task<string> Ping()
         => server.InvokeAsync<string>(nameof(Ping));
 
-    public Task<string> Pong()
-        => server.InvokeAsync<string>(nameof(Pong));
-
     public Task Shutdown()
         => server.InvokeAsync(nameof(Shutdown));
 
@@ -68,4 +65,7 @@ public class ModelEditorRpcClient : IDisposable, IModelEditorServer
 
     public Task LaunchDebugger()
         => server.InvokeAsync(nameof(LaunchDebugger));
+
+    public Task<string?> GetModelFileName()
+        => server.InvokeAsync<string?>(nameof(GetModelFileName));
 }

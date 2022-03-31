@@ -20,26 +20,48 @@ namespace Xenial.Cli.Utils;
 
 public static class ConsoleHelper
 {
-    public static void Success(this Stopwatch sw!!, string caption)
+    internal const int DefaultColumnSize = 20;
+    internal const int MaxWidth = 119;
+
+    public static void PrintInfo(string caption, string info, string? color = null, int columnSize = DefaultColumnSize)
+    {
+        var colorMarkup = string.IsNullOrEmpty(color) ? "" : $"[{color}]";
+        var colorMarkupClose = string.IsNullOrEmpty(color) ? "" : $"[/]";
+        AnsiConsole.MarkupLine($"[gray bold]{caption?.PadRight(columnSize).EscapeMarkup()}: [/]{colorMarkup}{info.EscapeMarkup()}{colorMarkupClose}");
+    }
+
+    public static void PrintInfo(string caption, TextPath path, int columnSize = DefaultColumnSize)
+    {
+        AnsiConsole.Markup($"[gray bold]{caption?.PadRight(columnSize).EscapeMarkup()}: [/]");
+        AnsiConsole.Write(path);
+    }
+
+    public static void Success(this Stopwatch sw, string caption)
+        => WriteBadge(sw, "SUCCESS", "green", caption);
+
+    private static void WriteBadge(Stopwatch sw, string badge, string color, string caption)
     {
         sw.Stop();
-        AnsiConsole.MarkupLine($"[green][[SUCCESS]]        [/][grey]: [/][silver]{caption}[/] [grey][[{sw.Elapsed}]][/]");
+        AnsiConsole.Markup($"[{color}]{$"[{badge}]".PadRight(DefaultColumnSize).EscapeMarkup()}[/][grey]: [/]");
+
+        var table = new Table()
+            .NoBorder()
+            .Width(MaxWidth - DefaultColumnSize)
+            .HideHeaders()
+            .AddColumn("Caption")
+            .AddColumn("Elapsed", c => c.RightAligned());
+
+        table.AddRow($"[silver]{caption.EscapeMarkup()}[/]", $"[grey][[{sw.Elapsed}]][/]");
+        AnsiConsole.Write(table);
+
         sw.Restart();
     }
 
     public static void Warn(this Stopwatch sw!!, string caption)
-    {
-        sw.Stop();
-        AnsiConsole.MarkupLine($"[red][[WARNING]]        [/][grey]: [/][red]{caption}[/] [silver][[{sw.Elapsed}]][/]");
-        sw.Restart();
-    }
+        => WriteBadge(sw, "WARNING", "yellow", caption);
 
     public static void Fail(this Stopwatch sw!!, string caption)
-    {
-        sw.Stop();
-        AnsiConsole.MarkupLine($"[red][[FAILURE]]        [/][grey]: [/][red]{caption}[/] [silver][[{sw.Elapsed}]][/]");
-        sw.Restart();
-    }
+        => WriteBadge(sw, "FAILURE", "red", caption);
 
     public static void HorizontalRule(string title)
     {
@@ -54,16 +76,26 @@ public static class ConsoleHelper
     }
 
     public static void WritePath(string path)
-    {
-        path = EllipsisPath(path, 80);
+        => AnsiConsole.Write(ToPath(path));
 
-        AnsiConsole.Write(
-            new TextPath(path)
-                .RootColor(Color.White)
-                .SeparatorColor(Color.Grey)
-                .StemColor(Color.White)
-                .LeafColor(Color.Green)
-        );
+    public static void WriteLinePath(string path)
+    {
+        WritePath(path);
+        AnsiConsole.WriteLine();
+    }
+
+    public static TextPath ToPath(string path, bool skipEllipsis = false)
+    {
+        if (!skipEllipsis)
+        {
+            path = EllipsisPath(path, 80);
+        }
+
+        return new TextPath(path)
+            .RootColor(Color.White)
+            .SeparatorColor(Color.Grey)
+            .StemColor(Color.White)
+            .LeafColor(Color.Green);
     }
 
     public static string EllipsisPath(this string rawString!!, int maxLength = 80, char delimiter = '\\')
