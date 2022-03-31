@@ -44,6 +44,18 @@ public class InjectXenialLayoutBuilderModuleSyntaxRewriterTests
         await Verifier.Verify(root.ToFullString()).UseExtension("cs");
     }
 
+    [Fact]
+    public async Task ReplacesLayoutBuilderMethod()
+    {
+        var root = await RewriteCode(@"public class MyModule : DevExpress.ExpressApp.ModuleBase
+{
+    public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
+    {
+        base.AddGeneratorUpdaters(updaters);
+    }
+}");
+        await Verifier.Verify(root.ToFullString()).UseExtension("cs");
+    }
 
     private static async Task<SyntaxNode> RewriteCode(string classCode)
     {

@@ -29,6 +29,7 @@ public class InjectXenialLayoutBuilderModuleSyntaxRewriter : CSharpSyntaxRewrite
 
         public ClassDeclarationSyntax ClassToChange { get; set; }
         public INamedTypeSymbol SymbolToChange { get; set; }
+        public MethodDeclarationSyntax? AddGeneratorUpdatersMethod { get; set; }
 
         public override void VisitClassDeclaration(ClassDeclarationSyntax node)
         {
@@ -64,9 +65,9 @@ public class InjectXenialLayoutBuilderModuleSyntaxRewriter : CSharpSyntaxRewrite
 
         public override void VisitMethodDeclaration(MethodDeclarationSyntax node)
         {
-            if (node.Identifier.ToString() == "")
+            if (node.Identifier.ToString() == "AddGeneratorUpdaters")
             {
-
+                AddGeneratorUpdatersMethod = node;
             }
             base.VisitMethodDeclaration(node);
         }
@@ -82,12 +83,17 @@ public class InjectXenialLayoutBuilderModuleSyntaxRewriter : CSharpSyntaxRewrite
     {
         if (node is not null && node.IsEquivalentTo(walker.ClassToChange))
         {
+            if (walker.AddGeneratorUpdatersMethod is not null)
+            {
+                var newMethod = walker.AddGeneratorUpdatersMethod.AddBodyStatements(UseXenialStatements().ToArray());
+                return node.ReplaceNode(walker.AddGeneratorUpdatersMethod, newMethod);
+            }
             return node.AddMembers(CreateMethod());
         }
         return base.VisitClassDeclaration(node);
     }
 
-    private MemberDeclarationSyntax CreateMethod() => SyntaxFactory.MethodDeclaration
+    private static MemberDeclarationSyntax CreateMethod() => SyntaxFactory.MethodDeclaration
     (
         SyntaxFactory.PredefinedType
         (
@@ -127,79 +133,87 @@ public class InjectXenialLayoutBuilderModuleSyntaxRewriter : CSharpSyntaxRewrite
     (
         SyntaxFactory.Block
         (
-            SyntaxFactory.ExpressionStatement
-            (
-                SyntaxFactory.InvocationExpression
+            new SyntaxList<StatementSyntax>(new[]
+            {
+                SyntaxFactory.ExpressionStatement
                 (
-                    SyntaxFactory.MemberAccessExpression
+                    SyntaxFactory.InvocationExpression
                     (
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.BaseExpression(),
-                        SyntaxFactory.IdentifierName("AddGeneratorUpdaters")
-                    )
-                )
-                .WithArgumentList
-                (
-                    SyntaxFactory.ArgumentList
-                    (
-                        SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>
+                        SyntaxFactory.MemberAccessExpression
                         (
-                            SyntaxFactory.Argument
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.BaseExpression(),
+                            SyntaxFactory.IdentifierName("AddGeneratorUpdaters")
+                        )
+                    )
+                    .WithArgumentList
+                    (
+                        SyntaxFactory.ArgumentList
+                        (
+                            SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>
                             (
-                                SyntaxFactory.IdentifierName("updaters")
+                                SyntaxFactory.Argument
+                                (
+                                    SyntaxFactory.IdentifierName("updaters")
+                                )
                             )
                         )
                     )
-                )
-            ).WithTrailingTrivia(SyntaxFactory.CarriageReturn),
-            SyntaxFactory.ExpressionStatement
-            (
-                SyntaxFactory.InvocationExpression
-                (
-                    SyntaxFactory.MemberAccessExpression
-                    (
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName("updaters"),
-                        SyntaxFactory.IdentifierName("UseNoViewsGeneratorUpdater")
-                    )
-                )
-            ),
-            SyntaxFactory.ExpressionStatement
-            (
-                SyntaxFactory.InvocationExpression
-                (
-                    SyntaxFactory.MemberAccessExpression
-                    (
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName("updaters"),
-                        SyntaxFactory.IdentifierName("UseDeclareViewsGeneratorUpdater")
-                    )
-                )
-            ),
-            SyntaxFactory.ExpressionStatement
-            (
-                SyntaxFactory.InvocationExpression
-                (
-                    SyntaxFactory.MemberAccessExpression
-                    (
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName("updaters"),
-                        SyntaxFactory.IdentifierName("UseDetailViewLayoutBuilders")
-                    )
-                )
-            ),
-            SyntaxFactory.ExpressionStatement
-            (
-                SyntaxFactory.InvocationExpression
-                (
-                    SyntaxFactory.MemberAccessExpression
-                    (
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName("updaters"),
-                        SyntaxFactory.IdentifierName("UseListViewColumnBuilders")
-                    )
-                )
+                ).WithTrailingTrivia(SyntaxFactory.CarriageReturn)
+            }.Concat(UseXenialStatements())
             )
         )
     );
+
+    private static IEnumerable<ExpressionStatementSyntax> UseXenialStatements()
+    {
+        yield return SyntaxFactory.ExpressionStatement
+        (
+            SyntaxFactory.InvocationExpression
+            (
+                SyntaxFactory.MemberAccessExpression
+                (
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName("updaters"),
+                    SyntaxFactory.IdentifierName("UseNoViewsGeneratorUpdater")
+                )
+            )
+        );
+        yield return SyntaxFactory.ExpressionStatement
+        (
+            SyntaxFactory.InvocationExpression
+            (
+                SyntaxFactory.MemberAccessExpression
+                (
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName("updaters"),
+                    SyntaxFactory.IdentifierName("UseDeclareViewsGeneratorUpdater")
+                )
+            )
+        );
+        yield return SyntaxFactory.ExpressionStatement
+        (
+            SyntaxFactory.InvocationExpression
+            (
+                SyntaxFactory.MemberAccessExpression
+                (
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName("updaters"),
+                    SyntaxFactory.IdentifierName("UseDetailViewLayoutBuilders")
+                )
+            )
+        );
+        yield return SyntaxFactory.ExpressionStatement
+        (
+            SyntaxFactory.InvocationExpression
+            (
+                SyntaxFactory.MemberAccessExpression
+                (
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName("updaters"),
+                    SyntaxFactory.IdentifierName("UseListViewColumnBuilders")
+                )
+            )
+        );
+    }
 }
