@@ -194,14 +194,15 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
        }).UseStatus("Locating Designer...", async (ctx, next) =>
        {
            //TODO: use local designer
-           //ctx.DesignerPackage = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(ctx.DesignerPackageId, ctx.DesignerPackageVersion), ctx.NugetToolContext.GlobalPackagesFolder);
+           ctx.DesignerPackage = GlobalPackagesFolderUtility.GetPackage(new PackageIdentity(ctx.DesignerPackageId, ctx.DesignerPackageVersion), ctx.NugetToolContext.GlobalPackagesFolder);
 
            await next();
-       }).UseStatusWithProgress("Downloading Designer...", "Download Designer", _ => true, _ => false, async (ctx, progress, next) =>
+       }).UseStatusWithProgress("Downloading Designer...", "Download Designer", ctx => ctx.DesignerPackage is not null, _ => false, async (ctx, progress, next) =>
        {
            foreach (var source in ctx.NugetToolContext!.Sources)
            {
-               var task = progress.AddTask($"Fetching Nuget {source.Name.EscapeMarkup()}", autoStart: false);
+               var task = progress.AddTask($"Fetching Nuget {source.Name.EscapeMarkup()}")
+                    .IsIndeterminate(true);
 
                try
                {
@@ -237,6 +238,18 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                    // Download the package
                    using var packageStream = new MemoryStreamWithProgress(task);
 
+                   if (!await resource.CopyNupkgToStreamAsync(
+                       ctx.DesignerPackageId,
+                       ctx.DesignerPackageVersion,
+                       packageStream,
+                       ctx.NugetToolContext!.Cache,
+                       ctx.NugetToolContext!.Logger,
+                       ctx.NugetToolContext!.CancellationToken
+                   ))
+                   {
+                       continue;
+                   }
+
                    packageStream.Seek(0, SeekOrigin.Begin);
 
                    // Add it to the global package folder
@@ -249,10 +262,11 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                        ClientPolicyContext.GetClientPolicy(ctx.NugetToolContext.Settings, ctx.NugetToolContext.Logger),
                        ctx.NugetToolContext.Logger,
                        ctx.NugetToolContext.CancellationToken
-                    );
+                   );
 
                    if (downloadResult.Status == DownloadResourceResultStatus.Available)
                    {
+                       task.StopTask();
                        PrintInfo("", $"{source.Name} - fetched", "green");
                        ctx.DesignerPackage = downloadResult;
                        break;
@@ -294,9 +308,17 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
            }
 
            await next();
-           ////sw.Success($"Fetching Designer: {ctx.ModelEditorVersion}");
-           //await next();
+       }, skipWhen: ctx => ctx.DesignerPackage is not null)
+       .Use(async (ctx, next) =>
+       {
+           var tools = await ctx.DesignerPackage.PackageReader.GetToolItemsAsync(ctx.NugetToolContext.CancellationToken);
+           ctx.ModelEditorVersion = ctx.DesignerPackageVersion.ToString();
+           ctx.ModelEditorTools.AddRange(tools.OfType<FrameworkSpecificGroup>());
 
+           var versionStr = ctx.DesignerPackageVersion.ToString();
+           ctx.ModelEditorPackageDirectory = Path.Combine(ctx.NugetToolContext.GlobalPackagesFolder, ctx.DesignerPackageId, versionStr);
+
+           await next();
        })
        .UseStatus("Launching Designer...", async (ctx, next) =>
        {
