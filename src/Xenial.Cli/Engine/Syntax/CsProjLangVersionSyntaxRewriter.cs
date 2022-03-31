@@ -1,27 +1,26 @@
 ﻿using Buildalyzer;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 using Xenial.Cli.Engine;
 
 using CsprojEditor = CsProjEditor.Project;
 
-public class CsProjSyntaxRewriter
+public class CsProjLangVersionSyntaxRewriter
 {
     private readonly IProjectAnalyzer projectAnalyzer;
     private readonly IAnalyzerResult buildResult;
-    private readonly Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications;
+    private readonly LanguageVersion newLangVersion;
 
     private CsprojEditor? CsprojEditor { get; set; }
 
-    public CsProjSyntaxRewriter(IProjectAnalyzer projectAnalyzer, IAnalyzerResult buildResult, Dictionary<string, (FileState state, SyntaxTree syntaxTree)> modifications)
+    public CsProjLangVersionSyntaxRewriter(IProjectAnalyzer projectAnalyzer, IAnalyzerResult buildResult, LanguageVersion newLangVersion)
     {
         this.projectAnalyzer = projectAnalyzer;
         this.buildResult = buildResult;
-        this.modifications = modifications;
+        this.newLangVersion = newLangVersion;
     }
-
-
 
     public async Task<(bool shouldRewrite, string? csprojFileName)> RewriteAsync()
     {
@@ -29,40 +28,20 @@ public class CsProjSyntaxRewriter
         {
 
         }
-        static bool EnableDefaultItems(IAnalyzerResult buildResult)
-        {
-            //TODO: Old CS PROJ FORMAT
-            if (bool.TryParse(buildResult.GetProperty("EnableDefaultItems"), out var enableDefaultItems))
-            {
-                return enableDefaultItems;
-            }
-            return true;
-        }
-
-        var addedFiles = modifications.Where((m) => m.Value.state == FileState.Added).ToArray();
-
-        if (EnableDefaultItems(buildResult) || !addedFiles.Any())
-        {
-            return (false, null);
-        }
 
         CsprojEditor = CsprojEditor.Load(projectAnalyzer.ProjectFile.Path);
 
-        CsprojEditor.InsertGroup("ItemGroup");
-
-        var folder = Path.GetDirectoryName(projectAnalyzer.ProjectFile.Path)!;
-
-        foreach (var path in addedFiles)
+        var langVersionStr = newLangVersion switch
         {
-            var relativePath = path.Value.syntaxTree.FilePath;
-            if (relativePath.StartsWith(folder, StringComparison.OrdinalIgnoreCase))
-            {
-                relativePath = relativePath.Substring(folder.Length);
-                relativePath = relativePath.TrimStart('\\');
-            }
-            CsprojEditor.InsertAttribute("ItemGroup", "Compile", new CsProjEditor.CsProjAttribute("Include", relativePath), e => !e.HasAttributes);
-        }
+            LanguageVersion.CSharp10 => "10",
+            LanguageVersion.CSharp9 => "9",
+            LanguageVersion.Preview => "preview",
+            var x => throw new ArgumentOutOfRangeException(nameof(newLangVersion), x, "Can't translate version to LangVersion"),
+        };
 
+        var oldValue = buildResult.GetProperty("LangVersion");
+
+        CsprojEditor.ReplaceNodeValue("PropertyGroup", "LangVersion", oldValue, langVersionStr);
 
         return (true, projectAnalyzer.ProjectFile.Path);
     }
