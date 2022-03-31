@@ -18,6 +18,8 @@ public class InjectXenialLayoutBuilderModuleSyntaxRewriter : CSharpSyntaxRewrite
 
     public bool WasRewritten { get; private set; }
 
+    public IList<ISymbol> RewrittenSymbols { get; } = new List<ISymbol>();
+
     private readonly Walker walker;
 
     public InjectXenialLayoutBuilderModuleSyntaxRewriter(Compilation compilation)
@@ -86,13 +88,17 @@ public class InjectXenialLayoutBuilderModuleSyntaxRewriter : CSharpSyntaxRewrite
     {
         if (node is not null && node.IsEquivalentTo(walker.ClassToChange))
         {
-            WasRewritten = true;
-            if (walker.AddGeneratorUpdatersMethod is not null)
+            if (!RewrittenSymbols.Contains(walker.SymbolToChange, SymbolEqualityComparer.Default))
             {
-                var newMethod = walker.AddGeneratorUpdatersMethod.AddBodyStatements(UseXenialStatements().ToArray());
-                return node.ReplaceNode(walker.AddGeneratorUpdatersMethod, newMethod);
+                RewrittenSymbols.Add(walker.SymbolToChange);
+                WasRewritten = true;
+                if (walker.AddGeneratorUpdatersMethod is not null)
+                {
+                    var newMethod = walker.AddGeneratorUpdatersMethod.AddBodyStatements(UseXenialStatements().ToArray());
+                    return node.ReplaceNode(walker.AddGeneratorUpdatersMethod, newMethod);
+                }
+                return node.AddMembers(CreateMethod());
             }
-            return node.AddMembers(CreateMethod());
         }
         return base.VisitClassDeclaration(node);
     }
