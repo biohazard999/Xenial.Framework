@@ -21,10 +21,6 @@ using Xunit;
 
 namespace Xenial.Cli.Tests.Engine.Syntax;
 
-public class MyModule : DevExpress.ExpressApp.ModuleBase
-{
-}
-
 [UsesVerify]
 public class InjectXenialLayoutBuilderModuleSyntaxRewriterTests
 {

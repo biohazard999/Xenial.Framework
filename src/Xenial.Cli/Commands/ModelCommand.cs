@@ -602,6 +602,27 @@ public abstract class ModelCommand<TSettings, TPipeline, TPipelineContext> : Bui
                ctx.RemovedViews.Add(viewId);
            }
 
+           var moduleRewriter = new InjectXenialLayoutBuilderModuleSyntaxRewriter(ctx.Compilation);
+
+           foreach (var syntaxTree in ctx.Compilation.SyntaxTrees)
+           {
+               var root = await syntaxTree.GetRootAsync();
+               var newRoot = moduleRewriter.Visit(root);
+               if (moduleRewriter.WasRewritten)
+               {
+                   newRoot = Formatter.Format(newRoot, ctx.Workspace!);
+
+                   var newSyntaxTree = syntaxTree.WithRootAndOptions(newRoot, syntaxTree.Options);
+
+                   ctx.Modifications[syntaxTree.FilePath] = (
+                       FileState.Modified,
+                       newSyntaxTree
+                   );
+
+                   ctx.ReplaceCurrentCompilation(ctx.Compilation.ReplaceSyntaxTree(syntaxTree, newSyntaxTree));
+               }
+           }
+
            ////Sanity-Check. We compare again so we don't touch mulitple files
            foreach (var oldItem in ctx.OriginalSyntaxTrees)
            {

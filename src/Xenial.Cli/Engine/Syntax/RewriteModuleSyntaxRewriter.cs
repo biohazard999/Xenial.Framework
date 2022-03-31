@@ -14,17 +14,19 @@ namespace Xenial.Cli.Engine.Syntax;
 
 public class InjectXenialLayoutBuilderModuleSyntaxRewriter : CSharpSyntaxRewriter
 {
-    public CSharpCompilation Compilation { get; }
+    public Compilation Compilation { get; }
+
+    public bool WasRewritten { get; private set; }
 
     private readonly Walker walker;
 
-    public InjectXenialLayoutBuilderModuleSyntaxRewriter(CSharpCompilation compilation)
+    public InjectXenialLayoutBuilderModuleSyntaxRewriter(Compilation compilation)
         => (Compilation, walker) = (compilation, new(compilation));
 
     private class Walker : CSharpSyntaxWalker
     {
-        public CSharpCompilation Compilation { get; }
-        public Walker(CSharpCompilation compilation)
+        public Compilation Compilation { get; }
+        public Walker(Compilation compilation)
             => Compilation = compilation;
 
         public ClassDeclarationSyntax ClassToChange { get; set; }
@@ -75,6 +77,7 @@ public class InjectXenialLayoutBuilderModuleSyntaxRewriter : CSharpSyntaxRewrite
 
     public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node)
     {
+        WasRewritten = false;
         walker.Visit(node);
         return base.VisitCompilationUnit(node);
     }
@@ -83,6 +86,7 @@ public class InjectXenialLayoutBuilderModuleSyntaxRewriter : CSharpSyntaxRewrite
     {
         if (node is not null && node.IsEquivalentTo(walker.ClassToChange))
         {
+            WasRewritten = true;
             if (walker.AddGeneratorUpdatersMethod is not null)
             {
                 var newMethod = walker.AddGeneratorUpdatersMethod.AddBodyStatements(UseXenialStatements().ToArray());
