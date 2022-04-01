@@ -13,6 +13,7 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Remove="Packaging.Targets" />
     <PackageReference Include="Humanizer.Core" Version="2.14.1" />
     <PackageReference Include="StreamJsonRpc" Version="2.10.44" />
     <PackageReference Include="NuGet.Protocol" Version="6.1.0" />
