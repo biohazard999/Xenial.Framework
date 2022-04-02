@@ -137,7 +137,7 @@ public abstract class BuildCommand<TSettings, TPipeline, TPipelineContext> : Asy
         {
             if (!ctx.BuildResults!.OverallSuccess)
             {
-                AnsiConsole.MarkupLine("[red]It seams the design time build failed.[/]");
+                AnsiConsole.MarkupLine("[red]It seems the design time build failed.[/]");
                 AnsiConsole.MarkupLine("[yellow]We will clean the following directories[/]");
                 AnsiConsole.MarkupLine("[red]and run the Restore target.[/]");
                 AnsiConsole.WriteLine();
