@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(NetStandardVersion);$(Net6Version);$(FullFrameworkVersion)</TargetFrameworks>
+    <TargetFramework>$(Net6Version)</TargetFramework>
+    <TargetFrameworks>$(Net6Version)</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(XenialDebug)' == 'false'">

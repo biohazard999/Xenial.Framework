@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
-    <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
+  <PropertyGroup>    
+    <TargetFramework>$(Net6Version)</TargetFramework>
+    <TargetFrameworks>$(Net6Version)</TargetFrameworks>
     <DxExtendStartupHost>false</DxExtendStartupHost>
     <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
   </PropertyGroup>

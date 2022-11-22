@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>$(WindowsFrameworkVersion6);$(FullFrameworkVersion)</TargetFrameworks>
+    <TargetFrameworks>$(WindowsFrameworkVersion6)</TargetFrameworks>
+    <TargetFramework>$(WindowsFrameworkVersion6)</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <OutputType>WinExe</OutputType>
     <CheckXenialLicense>true</CheckXenialLicense>

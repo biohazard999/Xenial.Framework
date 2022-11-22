@@ -379,7 +379,7 @@ Target("publish:Xenial.FeatureCenter.Win", DependsOn("pack"), async () =>
     }
 
 
-    foreach (var (tfm, rid) in new[] { ("net462", ""), ("net6.0-windows", "win-x64"), ("net6.0-windows", "win-x86") })
+    foreach (var (tfm, rid) in new[] { ("net6.0-windows", "win-x64"), ("net6.0-windows", "win-x86") })
     {
         //TODO: remove /p:ErrorOnDuplicatePublishOutputFiles=false
         //TODO: and investigate https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/duplicate-files-in-output
