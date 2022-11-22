@@ -78,8 +78,8 @@ public sealed class BindingFactory : IBindingFactory
         /// 
         /// </summary>
         /// <param name="bindingFactory"></param>
-        public CachedBindingFactory(IBindingFactory bindingFactory!!)
-            => this.bindingFactory = bindingFactory;
+        public CachedBindingFactory(IBindingFactory bindingFactory)
+            => this.bindingFactory = bindingFactory ?? throw new ArgumentNullException(nameof(bindingFactory));
 
         private record struct InstanceDelegate(object Provider, object TargetInstance);
         private record struct TypedDelegate(object Provider, Type TargetType);
@@ -138,10 +138,14 @@ public sealed class BindingFactory : IBindingFactory
     /// <param name="targetInstance"></param>
     /// <returns></returns>
     public TDelegate ResolveDelegate<TDelegate>(
-        IBindableFunctorProvider<TDelegate> provider!!,
-        object targetInstance!!
+        IBindableFunctorProvider<TDelegate> provider,
+        object targetInstance
     ) where TDelegate : Delegate
-        => CreateDelegate(provider, targetInstance.GetType(), targetInstance);
+        => CreateDelegate(
+                provider ?? throw new ArgumentNullException(nameof(provider)),
+                (targetInstance ?? throw new ArgumentNullException(nameof(targetInstance))).GetType(),
+                targetInstance
+        );
 
     /// <summary>
     /// 
@@ -151,10 +155,13 @@ public sealed class BindingFactory : IBindingFactory
     /// <param name="targetType"></param>
     /// <returns></returns>
     public TDelegate ResolveDelegate<TDelegate>(
-        IBindableFunctorProvider<TDelegate> provider!!,
-        Type targetType!!
+        IBindableFunctorProvider<TDelegate> provider,
+        Type targetType
     ) where TDelegate : Delegate
-        => CreateDelegate(provider, targetType);
+        => CreateDelegate(
+            provider ?? throw new ArgumentNullException(nameof(provider)),
+            targetType ?? throw new ArgumentNullException(nameof(targetType))
+        );
 
     private static TDelegate CreateDelegate<TDelegate>(
         IBindableFunctorProvider<TDelegate> provider,

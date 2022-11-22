@@ -57,7 +57,7 @@ public sealed class HyperlinkHandlerComplexAttribute : Attribute, IBindableFunct
     ///
     /// <param name="handleHyperlinkType">    Type of the handler. </param>
 
-    public HyperlinkHandlerComplexAttribute(Type handleHyperlinkType!!)
+    public HyperlinkHandlerComplexAttribute(Type handleHyperlinkType)
         => HandleHyperlinkType = handleHyperlinkType;
 
     /// <summary>
@@ -66,7 +66,7 @@ public sealed class HyperlinkHandlerComplexAttribute : Attribute, IBindableFunct
     ///
     /// <param name="handleHyperlinkType">                  Type of the hanlder. </param>
     /// <param name="handleHyperlinkMethodName">    Name of the hanlder method. </param>
-    public HyperlinkHandlerComplexAttribute(Type handleHyperlinkType!!, string handleHyperlinkMethodName!!)
+    public HyperlinkHandlerComplexAttribute(Type handleHyperlinkType, string handleHyperlinkMethodName)
         => (HandleHyperlinkType, HandleHyperlinkMethodName)
         = (handleHyperlinkType, handleHyperlinkMethodName);
 

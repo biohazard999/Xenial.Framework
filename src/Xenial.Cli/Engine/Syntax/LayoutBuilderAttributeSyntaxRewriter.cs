@@ -14,7 +14,7 @@ using Xenial.Framework.Layouts;
 
 namespace Xenial.Cli.Engine.Syntax;
 
-public record LayoutAttributeInfo(string LayoutBuilderClass!!)
+public record LayoutAttributeInfo(string LayoutBuilderClass)
 {
     public string? LayoutBuilderMethod { get; set; }
     public string? ViewId { get; set; }
@@ -27,7 +27,7 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
     {
         private readonly SemanticModel model;
         private readonly LayoutAttributeInfo builderInfo;
-        public LayoutBuilderAttributeSyntaxWalker(SemanticModel model!!, LayoutAttributeInfo builderInfo!!)
+        public LayoutBuilderAttributeSyntaxWalker(SemanticModel model, LayoutAttributeInfo builderInfo)
             => (this.model, this.builderInfo) = (model, builderInfo);
 
         public bool HasLayoutsUsing { get; private set; }
@@ -137,10 +137,10 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
     public string AttributeName { get; set; } = "DetailViewLayoutBuilder";
 
 
-    public LayoutBuilderAttributeSyntaxRewriter(SemanticModel model!!, LayoutAttributeInfo builderInfo!!)
+    public LayoutBuilderAttributeSyntaxRewriter(SemanticModel model, LayoutAttributeInfo builderInfo)
         => (this.model, this.builderInfo, walker) = (model, builderInfo, new(model, builderInfo));
 
-    public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node!!)
+    public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node)
     {
         walker.Visit(node);
 
@@ -156,7 +156,7 @@ public class LayoutBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
         return base.VisitCompilationUnit(node);
     }
 
-    public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node!!)
+    public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
     {
         if (walker.ShouldAddAttribute)
         {

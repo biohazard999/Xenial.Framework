@@ -5,6 +5,7 @@ using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
 using DevExpress.Persistent.Base;
 
+using System;
 using System.ComponentModel;
 
 namespace Xenial.Framework.Deeplinks.Model;
@@ -80,13 +81,19 @@ public static class ModelJumplistItemViewDomainLogic
     /// <param name="modelView"></param>
     /// <returns></returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
-    public static string Get_LaunchUri(IModelJumplistItemView modelView!!) =>
-        modelView.CreateObject
-        ? $"{GetLaunchUri(modelView)}?createObject=true"
-        : $"{GetLaunchUri(modelView)}{PrefixString('/', modelView.ObjectKey)}";
+    public static string Get_LaunchUri(IModelJumplistItemView modelView) => modelView switch
+    {
+        null => throw new ArgumentNullException(nameof(modelView)),
+        _ => modelView.CreateObject
+            ? $"{GetLaunchUri(modelView)}?createObject=true"
+            : $"{GetLaunchUri(modelView)}{PrefixString('/', modelView.ObjectKey)}"
+    };
 
-    private static string GetLaunchUri(IModelJumplistItemView modelView!!) =>
-        $"{modelView.Protocol?.ProtocolName}://{DefaultDeeplinkVerbs.View}{PrefixString('/', modelView.View?.Id)}";
+    private static string GetLaunchUri(IModelJumplistItemView modelView) => modelView switch
+    {
+        null => throw new ArgumentNullException(nameof(modelView)),
+        _ => $"{modelView.Protocol?.ProtocolName}://{DefaultDeeplinkVerbs.View}{PrefixString('/', modelView.View?.Id)}"
+    };
 
     private static string PrefixString(char prefix, string? str)
     {
@@ -102,8 +109,8 @@ public static class ModelJumplistItemViewDomainLogic
     /// </summary>
     /// <param name="modelView"></param>
     /// <returns></returns>
-    public static string Get_Arguments(IModelJumplistItemView modelView!!)
-        => modelView.View is null
+    public static string Get_Arguments(IModelJumplistItemView modelView)
+        => modelView?.View is null
         ? $"verb={DefaultDeeplinkVerbs.View}"
         : $"verb={DefaultDeeplinkVerbs.View}&{new ViewShortcut(modelView.View.Id, modelView.ObjectKey)}";
 

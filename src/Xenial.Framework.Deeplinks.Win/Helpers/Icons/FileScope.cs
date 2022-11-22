@@ -14,7 +14,7 @@ public sealed class FileScope : IDisposable
     /// 
     /// </summary>
     /// <param name="fileName"></param>
-    public FileScope(string fileName!!)
+    public FileScope(string fileName)
         => this.fileName = fileName;
 
     /// <summary>

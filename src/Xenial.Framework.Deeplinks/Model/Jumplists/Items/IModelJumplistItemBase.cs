@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
@@ -122,8 +123,9 @@ public static class ModelJumplistItemBaseDomainLogic
     /// </summary>
     /// <param name="modelProtocol"></param>
     /// <returns></returns>
-    public static IModelDeeplinkProtocol Get_Protocol(IModelJumplistItemBase modelProtocol!!)
+    public static IModelDeeplinkProtocol Get_Protocol(IModelJumplistItemBase modelProtocol)
     {
+        _ = modelProtocol ?? throw new ArgumentNullException(nameof(modelProtocol));
         if (modelProtocol.Application.Options is IModelOptionsDeeplinkProtocols prot)
         {
             return prot.DeeplinkProtocols.DefaultProtocol;

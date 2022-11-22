@@ -32,7 +32,7 @@ public sealed class IconFileWriter
     /// 
     /// </summary>
     /// <param name="image"></param>
-    public void AddImage(Image image!!)
+    public void AddImage(Image image)
         => images.Add(image);
 
     /// <summary>

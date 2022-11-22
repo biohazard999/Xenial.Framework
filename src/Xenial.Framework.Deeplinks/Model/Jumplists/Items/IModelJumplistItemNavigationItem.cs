@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
@@ -36,8 +37,11 @@ public static class ModelJumplistItemNavigationItemDomainLogic
     /// <param name="modelView"></param>
     /// <returns></returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
-    public static string Get_LaunchUri(IModelJumplistItemNavigationItem modelView!!) =>
-        $"{modelView.Protocol?.ProtocolName}://{DefaultDeeplinkVerbs.View}{PrefixString('/', modelView.NavigationItem?.View?.Id)}{PrefixString('/', modelView.NavigationItem?.ObjectKey)}";
+    public static string Get_LaunchUri(IModelJumplistItemNavigationItem modelView) => modelView switch
+    {
+        null => throw new ArgumentNullException(nameof(modelView)),
+        _ => $"{modelView.Protocol?.ProtocolName}://{DefaultDeeplinkVerbs.View}{PrefixString('/', modelView.NavigationItem?.View?.Id)}{PrefixString('/', modelView.NavigationItem?.ObjectKey)}"
+    };
 
     private static string PrefixString(char prefix, string? str)
     {
@@ -53,8 +57,8 @@ public static class ModelJumplistItemNavigationItemDomainLogic
     /// </summary>
     /// <param name="modelView"></param>
     /// <returns></returns>
-    public static string Get_Arguments(IModelJumplistItemNavigationItem modelView!!)
-        => modelView.NavigationItem?.View is null
+    public static string Get_Arguments(IModelJumplistItemNavigationItem modelView)
+        => modelView?.NavigationItem?.View is null
         ? $"verb={DefaultDeeplinkVerbs.View}"
         : $"verb={DefaultDeeplinkVerbs.View}&{new ViewShortcut(modelView.NavigationItem.View.Id, modelView.NavigationItem.ObjectKey)}";
 

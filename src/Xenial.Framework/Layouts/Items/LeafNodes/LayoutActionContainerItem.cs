@@ -31,13 +31,17 @@ public partial record LayoutActionContainerItem : LayoutViewItem
     /// 
     /// </summary>
     /// <param name="actionContainerId"></param>
-    public LayoutActionContainerItem(string actionContainerId!!) : this(actionContainerId, actionContainerId) { }
+    public LayoutActionContainerItem(string actionContainerId) : this(
+        actionContainerId ?? throw new ArgumentNullException(nameof(actionContainerId)),
+        actionContainerId
+    )
+    { }
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="actionContainerId"></param>
     /// <param name="id"></param>
-    public LayoutActionContainerItem(string actionContainerId!!, string id) : base(id)
-        => ActionContainerId = actionContainerId;
+    public LayoutActionContainerItem(string actionContainerId, string id) : base(id)
+        => ActionContainerId = actionContainerId ?? throw new ArgumentNullException(nameof(actionContainerId));
 }

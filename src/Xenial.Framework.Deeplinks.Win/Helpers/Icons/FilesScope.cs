@@ -16,7 +16,7 @@ public sealed class FilesScope : IDisposable
     /// 
     /// </summary>
     /// <param name="files"></param>
-    public FilesScope(IEnumerable<string> files!!)
+    public FilesScope(IEnumerable<string> files)
     {
         foreach (var file in files)
         {

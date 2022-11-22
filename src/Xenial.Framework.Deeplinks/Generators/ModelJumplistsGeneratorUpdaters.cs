@@ -45,7 +45,7 @@ public partial record ModelJumplistOptions
     nameof(IModelJumplistCustomCategory.Index),
     nameof(IModelJumplistCustomCategory.Caption),
 })]
-public sealed partial record ModelJumplistCustomCategory(string Caption!!) : IEnumerable<ModelJumplistItem>
+public sealed partial record ModelJumplistCustomCategory(string Caption) : IEnumerable<ModelJumplistItem>
 {
     /// <summary>
     /// 
@@ -58,7 +58,7 @@ public sealed partial record ModelJumplistCustomCategory(string Caption!!) : IEn
     /// 
     /// </summary>
     /// <param name="item"></param>
-    public void Add(ModelJumplistItem item!!) => Items.Add(item);
+    public void Add(ModelJumplistItem item) => Items.Add(item ?? throw new ArgumentNullException(nameof(item)));
 
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Items).GetEnumerator();
 
@@ -104,7 +104,7 @@ public abstract partial record ModelJumplistItemBase : ModelJumplistItem
     nameof(IModelJumplistItemAction.Action),
     nameof(IModelJumplistItemAction.Protocol),
 })]
-public partial record ModelJumplistActionItem(string ActionId!!) : ModelJumplistItemBase
+public partial record ModelJumplistActionItem(string ActionId) : ModelJumplistItemBase
 {
 }
 
@@ -132,7 +132,7 @@ public partial record ModelJumplistLaunchItem(string ProcessPath) : ModelJumplis
     nameof(IModelJumplistItemNavigationItem.NavigationItem),
     nameof(IModelJumplistItemNavigationItem.Protocol),
 })]
-public partial record ModelJumplistNavigationItem(string NavigationItemId!!) : ModelJumplistItemBase
+public partial record ModelJumplistNavigationItem(string NavigationItemId) : ModelJumplistItemBase
 {
 }
 
@@ -146,7 +146,7 @@ public partial record ModelJumplistNavigationItem(string NavigationItemId!!) : M
     nameof(IModelJumplistItemProtocol.Verb),
     nameof(IModelJumplistItemProtocol.Protocol),
 })]
-public partial record ModelJumplistProtocolItem(string Verb!!) : ModelJumplistItemBase
+public partial record ModelJumplistProtocolItem(string Verb) : ModelJumplistItemBase
 {
 }
 
@@ -171,7 +171,7 @@ public partial record ModelJumplistSeperatorItem : ModelJumplistItem
     nameof(IModelJumplistItemView.View),
     nameof(IModelJumplistItemView.Protocol),
 })]
-public partial record ModelJumplistViewItem(string ViewId!!) : ModelJumplistItemBase
+public partial record ModelJumplistViewItem(string ViewId) : ModelJumplistItemBase
 {
 }
 
@@ -218,14 +218,14 @@ public sealed partial class ModelJumplistTasksCategoryGeneratorUpdater : ModelNo
     /// 
     /// </summary>
     /// <param name="options"></param>
-    public ModelJumplistTasksCategoryGeneratorUpdater(ModelJumplistOptions options!!)
-        => this.options = options;
+    public ModelJumplistTasksCategoryGeneratorUpdater(ModelJumplistOptions options)
+        => this.options = options ?? throw new ArgumentNullException(nameof(options));
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="node"></param>
-    public override void UpdateNode(ModelNode node!!)
+    public override void UpdateNode(ModelNode node)
     {
         if (node is IModelJumplistTaskCategory taskCategoryNode)
         {
@@ -290,14 +290,14 @@ public sealed partial class ModelJumplistCustomCategoriesGeneratorUpdater : Mode
     /// 
     /// </summary>
     /// <param name="options"></param>
-    public ModelJumplistCustomCategoriesGeneratorUpdater(ModelJumplistOptions options!!)
+    public ModelJumplistCustomCategoriesGeneratorUpdater(ModelJumplistOptions options)
         => this.options = options;
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="node"></param>
-    public override void UpdateNode(ModelNode node!!)
+    public override void UpdateNode(ModelNode node)
     {
         if (node is IModelJumplistCustomCategories modelJumpListCollection)
         {
@@ -328,7 +328,7 @@ public sealed partial class ModelJumplistOptionsGeneratorUpdaters : ModelNodesGe
     /// 
     /// </summary>
     /// <param name="options"></param>
-    public ModelJumplistOptionsGeneratorUpdaters(ModelJumplistOptions options!!)
+    public ModelJumplistOptionsGeneratorUpdaters(ModelJumplistOptions options)
         => this.options = options;
 
     /// <summary>

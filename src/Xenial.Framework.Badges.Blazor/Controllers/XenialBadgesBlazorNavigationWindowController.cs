@@ -108,16 +108,16 @@ namespace Xenial.Framework.Badges.Blazor
                     {
                         if (blazorApplication.ServiceProvider.GetService(typeof(IJSRuntime)) is IJSRuntime jSRuntime)
                         {
-#if NET5_0
+#if NET6_0
                             jSRuntime.InvokeAsync<IJSObjectReference>("import", $"./_content/{GetType().Assembly.GetName().Name}/Xenial.Framework.Badges.Blazor.js").AsTask().ContinueWith(autoImportTask =>
                             {
                                 if (autoImportTask.IsCompletedSuccessfully && autoImportTask.Result is IJSObjectReference jsObjectReference)
                                 {
-                                    jsObjectReference.InvokeVoidAsync("xenialAttachBadges", navItems).AsTask().Await(false);
+                                    jsObjectReference.InvokeVoidAsync("xenialAttachBadges", navItems).AsTask().Await();
                                 }
                             }, TaskScheduler.Default);
 #else
-                            jSRuntime.InvokeVoidAsync("xenialAttachBadges", navItems).AsTask().Await(false);
+                            jSRuntime.InvokeVoidAsync("xenialAttachBadges", navItems).AsTask().Await();
 #endif
                         }
                     }
@@ -139,11 +139,11 @@ namespace Xenial.Framework.Badges.Blazor
                     {
                         if (autoImportTask.IsCompletedSuccessfully && autoImportTask.Result is IJSObjectReference jsObjectReference)
                         {
-                            jsObjectReference.InvokeVoidAsync("xenialDeattachBadges").AsTask().Await(false);
+                            jsObjectReference.InvokeVoidAsync("xenialDeattachBadges").AsTask().Await();
                         }
                     }, TaskScheduler.Default);
 #else
-                    jSRuntime.InvokeVoidAsync("xenialDeattachBadges").AsTask().Await(false);
+                    jSRuntime.InvokeVoidAsync("xenialDeattachBadges").AsTask().Await();
 #endif
                 }
             }

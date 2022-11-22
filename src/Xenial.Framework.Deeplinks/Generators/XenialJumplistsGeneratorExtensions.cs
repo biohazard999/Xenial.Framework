@@ -17,8 +17,8 @@ public static class XenialJumplistsGeneratorExtensions
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     public static ModelNodesGeneratorUpdaters UseXenialJumplists(
-        this ModelNodesGeneratorUpdaters updaters!!,
-        ModelJumplistOptions options!!)
+        this ModelNodesGeneratorUpdaters updaters,
+        ModelJumplistOptions options)
     {
         //Add the protocols before the options so we can have a default protocol
         updaters.Add(new ModelJumplistOptionsGeneratorUpdaters(options));

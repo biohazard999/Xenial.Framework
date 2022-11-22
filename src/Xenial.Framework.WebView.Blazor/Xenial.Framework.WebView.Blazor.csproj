@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Editors\WebViewUriComponent.razor.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Xenial.Framework.Blazor\Xenial.Framework.Blazor.csproj" />
     <ProjectReference Include="..\Xenial.Framework.WebView\Xenial.Framework.WebView.csproj" />
   </ItemGroup>

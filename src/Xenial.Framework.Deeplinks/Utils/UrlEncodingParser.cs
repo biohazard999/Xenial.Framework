@@ -56,7 +56,7 @@ public sealed class UrlEncodingParser : NameValueCollection
     /// </summary>
     /// <param name="key"></param>
     /// <param name="values"></param>
-    public void SetValues(string key, IEnumerable<string> values!!)
+    public void SetValues(string key, IEnumerable<string> values)
     {
         foreach (var val in values)
         {

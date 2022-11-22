@@ -96,8 +96,11 @@ public sealed class MappedFromModelNodeAttribute : Attribute
     /// </summary>
     /// <param name="toNode"></param>
     /// <param name="fromCollection"></param>
-    public MappedFromModelNodeAttribute(string toNode!!, string fromCollection!!)
-        => (ToNode, FromCollection) = (toNode, fromCollection);
+    public MappedFromModelNodeAttribute(string toNode, string fromCollection)
+        => (ToNode, FromCollection) = (
+            toNode ?? throw new ArgumentNullException(nameof(toNode)),
+            fromCollection ?? throw new ArgumentNullException(nameof(fromCollection))
+    );
 
     /// <summary>
     /// 

@@ -52,7 +52,7 @@ public sealed class X2CEngine
     /// </summary>
     /// <param name="view"></param>
     /// <returns></returns>
-    public static X2CCodeResult ConvertToCode(IModelView view!!)
+    public static X2CCodeResult ConvertToCode(IModelView view)
     {
         var node = LoadXml(view);
         return ConvertToCode(node);
@@ -64,7 +64,7 @@ public sealed class X2CEngine
     /// <param name="view"></param>
     /// <param name="prettyPrint"></param>
     /// <returns></returns>
-    public static string ConvertToXml(IModelView view!!, bool prettyPrint = true)
+    public static string ConvertToXml(IModelView view, bool prettyPrint = true)
     {
         var node = LoadXml(view);
         return VisualizeNodeHelper.PrettyPrint(node.OuterXml, prettyPrint);
@@ -75,7 +75,7 @@ public sealed class X2CEngine
     /// </summary>
     /// <param name="xml"></param>
     /// <returns></returns>
-    public static X2CCodeResult ConvertToCode(string xml!!)
+    public static X2CCodeResult ConvertToCode(string xml)
     {
         var root = LoadXml(xml);
 
@@ -95,7 +95,7 @@ public sealed class X2CEngine
     /// <param name="root"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public static X2CCodeResult ConvertToCode(XmlNode root!!)
+    public static X2CCodeResult ConvertToCode(XmlNode root)
     {
         CleanNodes(root);
 
@@ -112,7 +112,7 @@ public sealed class X2CEngine
     /// </summary>
     /// <param name="xml"></param>
     /// <returns></returns>
-    public static XmlNode LoadXml(string xml!!)
+    public static XmlNode LoadXml(string xml)
     {
         var doc = new XmlDocument() { XmlResolver = null };
         var sreader = new System.IO.StringReader(xml);
@@ -127,7 +127,7 @@ public sealed class X2CEngine
     /// </summary>
     /// <param name="view"></param>
     /// <returns></returns>
-    public static XmlNode LoadXml(IModelView view!!)
+    public static XmlNode LoadXml(IModelView view)
     {
         var id = $"{view.Id}_{Guid.NewGuid()}";
         var modelViews = view.Application.Views;

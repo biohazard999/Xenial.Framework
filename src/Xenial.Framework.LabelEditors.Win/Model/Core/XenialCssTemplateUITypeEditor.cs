@@ -21,7 +21,7 @@ namespace Xenial.Framework.LabelEditors.Win.Model.Core
         /// <param name="provider"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public override object EditValue(ITypeDescriptorContext context!!, IServiceProvider provider, object value)
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
             var htmlText = (string)context.PropertyDescriptor.GetValue(context.Instance);
 
