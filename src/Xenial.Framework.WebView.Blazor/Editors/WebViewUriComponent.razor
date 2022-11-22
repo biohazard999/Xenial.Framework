@@ -52,7 +52,7 @@
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            var module = await JS.InvokeAsync<IJSObjectReference>("import", $"./_content/{GetType().Assembly.GetName().Name}/Editors/WebViewUriComponent.razor.js");
+            var module = await JS.InvokeAsync<IJSObjectReference>("import", $"./_content/{GetType().Assembly.GetName().Name}/Editors/WebViewUriComponent.js");
 
             await module.InvokeVoidAsync("loadWebViewUriComponent");
         }
