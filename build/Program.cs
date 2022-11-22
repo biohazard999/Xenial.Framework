@@ -224,12 +224,12 @@ Target("build:debug", DependsOn("restore"),
 
 Target("test:base", DependsOn("build"), async () =>
 {
-    var (fullFramework, netcore, net5, _, _) = FindTfms();
+    var (fullFramework, net6, _, _) = FindTfms();
 
     var tfms = RuntimeInformation
                 .IsOSPlatform(OSPlatform.Windows)
-                ? new[] { fullFramework, netcore, net5 }
-                : new[] { netcore, net5 };
+                ? new[] { fullFramework, net6 }
+                : new[] { net6 };
 
     var tests = tfms
         .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Framework.Tests/Xenial.Framework.Tests.csproj --no-build --no-restore --framework {tfm} -c {Configuration} {GetProperties()}"))
@@ -240,7 +240,7 @@ Target("test:base", DependsOn("build"), async () =>
 
 Target("test:win", DependsOn("build"), async () =>
 {
-    var (fullFramework, _, _, winVersion, _) = FindTfms();
+    var (fullFramework, _, winVersion, _) = FindTfms();
 
     var tfms = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                 ? new[] { fullFramework, winVersion }
@@ -322,9 +322,9 @@ Target("pack:zip", DependsOn("pack:nuget"),
             return;
         }
 
-        var (fullFramework, _, net5, _, netstandardVersion) = FindTfms();
+        var (fullFramework, net6, _, netstandardVersion) = FindTfms();
 
-        foreach (var tfm in new[] { fullFramework, net5, netstandardVersion })
+        foreach (var tfm in new[] { fullFramework, net6, netstandardVersion })
         {
             var basePath = Path.GetFullPath("./src");
             var targetDirectory = Path.Combine(artifactsDirectory, "bin", tfm);

@@ -6,7 +6,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <TargetFrameworks>$(Net6Version);$(Net5Version);$(NetCoreVersion);$(FullFrameworkVersion)</TargetFrameworks>
+    <TargetFrameworks>$(Net6Version);$(FullFrameworkVersion)</TargetFrameworks>
     <NoWarn>CA1014;VSTHRD200;$(NoWarn)</NoWarn>
     <CheckXenialLicense>false</CheckXenialLicense>
 
@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-    <TargetFrameworks>$(NetCoreVersion);$(Net5Version)</TargetFrameworks>
+    <TargetFrameworks>$(Net6Version)</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
