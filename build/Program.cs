@@ -384,7 +384,7 @@ Target("publish:Xenial.FeatureCenter.Win", DependsOn("pack"), async () =>
         //TODO: remove /p:ErrorOnDuplicatePublishOutputFiles=false
         //TODO: and investigate https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/duplicate-files-in-output
 
-        var r2r = false; //isTagged && !isPullRequest ? "/p:PublishReadyToRun=true" : "";
+        var r2r = ""; //isTagged && !isPullRequest ? "/p:PublishReadyToRun=true" : "";
 
         if (isTagged && !isPullRequest)
         {

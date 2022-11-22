@@ -17,7 +17,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.11" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework) == $(Net5Version)">
+  <ItemGroup Condition="$(TargetFramework) == $(Net6Version)">
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
   
