@@ -10,7 +10,7 @@
     <GenerateXenialLicense>false</GenerateXenialLicense>
     <SrcDirectory>$(MSBuildThisFileDirectory)..\src\</SrcDirectory>
     <XenialDemoPackageVersion Condition="'$(XenialDemoPackageVersion)' == ''">*-*</XenialDemoPackageVersion>
-    <DxVersionPart>v21.2</DxVersionPart>
+    <DxVersionPart>v22.1</DxVersionPart>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
