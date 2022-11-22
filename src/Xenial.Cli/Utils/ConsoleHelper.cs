@@ -57,10 +57,10 @@ public static class ConsoleHelper
         sw.Restart();
     }
 
-    public static void Warn(this Stopwatch sw!!, string caption)
+    public static void Warn(this Stopwatch sw, string caption)
         => WriteBadge(sw, "WARNING", "yellow", caption);
 
-    public static void Fail(this Stopwatch sw!!, string caption)
+    public static void Fail(this Stopwatch sw, string caption)
         => WriteBadge(sw, "FAILURE", "red", caption);
 
     public static void HorizontalRule(string title)
@@ -98,7 +98,7 @@ public static class ConsoleHelper
             .LeafColor(Color.Green);
     }
 
-    public static string EllipsisPath(this string rawString!!, int maxLength = 80, char delimiter = '\\')
+    public static string EllipsisPath(this string rawString, int maxLength = 80, char delimiter = '\\')
     {
         maxLength -= 3; //account for delimiter spacing
 

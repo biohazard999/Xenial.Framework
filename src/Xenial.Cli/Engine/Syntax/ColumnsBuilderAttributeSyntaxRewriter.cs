@@ -14,7 +14,7 @@ using Xenial.Framework.Layouts;
 
 namespace Xenial.Cli.Engine.Syntax;
 
-public record ColumnsAttributeInfo(string ColumnsBuilderClass!!)
+public record ColumnsAttributeInfo(string ColumnsBuilderClass)
 {
     public string? ColumnsBuilderMethod { get; set; }
     public string? ViewId { get; set; }
@@ -27,7 +27,7 @@ public class ColumnsBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
     {
         private readonly SemanticModel model;
         private readonly ColumnsAttributeInfo builderInfo;
-        public ColumnsBuilderAttributeSyntaxWalker(SemanticModel model!!, ColumnsAttributeInfo builderInfo!!)
+        public ColumnsBuilderAttributeSyntaxWalker(SemanticModel model, ColumnsAttributeInfo builderInfo)
             => (this.model, this.builderInfo) = (model, builderInfo);
 
         public bool HasLayoutsUsing { get; private set; }
@@ -137,10 +137,10 @@ public class ColumnsBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
 
     public string AttributeName { get; set; } = "ListViewColumnsBuilder";
 
-    public ColumnsBuilderAttributeSyntaxRewriter(SemanticModel model!!, ColumnsAttributeInfo builderInfo!!)
+    public ColumnsBuilderAttributeSyntaxRewriter(SemanticModel model, ColumnsAttributeInfo builderInfo)
         => (this.model, this.builderInfo, walker) = (model, builderInfo, new(model, builderInfo));
 
-    public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node!!)
+    public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node)
     {
         walker.Visit(node);
 
@@ -156,7 +156,7 @@ public class ColumnsBuilderAttributeSyntaxRewriter : CSharpSyntaxRewriter
         return base.VisitCompilationUnit(node);
     }
 
-    public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node!!)
+    public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
     {
         if (walker.ShouldAddAttribute)
         {

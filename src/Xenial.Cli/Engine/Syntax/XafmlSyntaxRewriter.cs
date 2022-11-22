@@ -17,7 +17,7 @@ public class XafmlSyntaxRewriter
     public string? FileName { get; }
     public IList<string> RemovedViews { get; }
 
-    public XafmlSyntaxRewriter(string? fileName, IList<string> removedViews!!)
+    public XafmlSyntaxRewriter(string? fileName, IList<string> removedViews)
     {
         FileName = fileName;
         RemovedViews = removedViews;

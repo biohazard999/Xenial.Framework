@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
@@ -50,8 +51,11 @@ public static class ModelJumplistItemProtocolDomainLogic
     /// <param name="modelProtocol"></param>
     /// <returns></returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
-    public static string Get_LaunchUri(IModelJumplistItemProtocol modelProtocol!!) =>
-        $"{modelProtocol.Protocol?.ProtocolName}://{modelProtocol.Verb?.Trim('/')}{PrefixString('/', modelProtocol.Route)}{PrefixString('?', modelProtocol.Query)}";
+    public static string Get_LaunchUri(IModelJumplistItemProtocol modelProtocol) => modelProtocol switch
+    {
+        null => throw new ArgumentNullException(nameof(modelProtocol)),
+        _ => $"{modelProtocol.Protocol?.ProtocolName}://{modelProtocol.Verb?.Trim('/')}{PrefixString('/', modelProtocol.Route)}{PrefixString('?', modelProtocol.Query)}"
+    };
 
     private static string PrefixString(char prefix, string? str)
     {

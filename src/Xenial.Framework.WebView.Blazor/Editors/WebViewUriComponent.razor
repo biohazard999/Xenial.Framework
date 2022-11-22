@@ -39,7 +39,7 @@
         }
     }
 
-#if NET5_0
+#if NET6_0_OR_GREATER
 
     /// <summary>	Executes the 'after render asynchronous' action. </summary>
     ///
@@ -52,7 +52,7 @@
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            var module = await JS.InvokeAsync<IJSObjectReference>("import", $"./_content/{GetType().Assembly.GetName().Name}/WebViewUriComponent.razor.js");
+            var module = await JS.InvokeAsync<IJSObjectReference>("import", $"./_content/{GetType().Assembly.GetName().Name}/Editors/WebViewUriComponent.razor.js");
 
             await module.InvokeVoidAsync("loadWebViewUriComponent");
         }

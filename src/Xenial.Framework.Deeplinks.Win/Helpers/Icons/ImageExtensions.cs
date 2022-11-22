@@ -23,7 +23,7 @@ public static class ImageExtensions
     /// <summary>Creates a copy of the source image with the specified pixel format.</summary><remarks>
     /// This can also be achieved with the <see cref="System.Drawing.Bitmap.Clone(Rectangle, PixelFormat)"/>
     /// overload, but I have had issues with that method.</remarks>
-    public static Image CopyImage(this Image image!!, PixelFormat format)
+    public static Image CopyImage(this Image image, PixelFormat format)
     {
         // Don't try to draw a new Bitmap with an indexed pixel format.
         if (image is Bitmap bitmap &&
@@ -57,7 +57,7 @@ public static class ImageExtensions
     /// <param name="maintainAspectRatio"><b>True</b> to maintain aspect ratio,
     /// otherwise <b>false</b>. This defaults to <b>true</b>.</param>
     /// <returns>The resulting resized <see cref="Image"/> object.</returns>
-    public static Image Resize(this Image image!!, int width, int height, bool maintainAspectRatio = true)
+    public static Image Resize(this Image image, int width, int height, bool maintainAspectRatio = true)
     {
         if (maintainAspectRatio)
         {
@@ -86,7 +86,7 @@ public static class ImageExtensions
     }
 
     /// <summary>Convert an image to a byte array in png format.</summary>
-    public static byte[] ToArray(this Image image!!)
+    public static byte[] ToArray(this Image image)
     {
         using var stream = new MemoryStream();
 

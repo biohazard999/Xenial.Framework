@@ -88,7 +88,7 @@ public class Ticker : IDisposable
     private readonly Action<Stopwatch> stop;
     private bool disposedValue;
 
-    public Ticker(Action<Stopwatch> start!!, Action<Stopwatch> stop!!)
+    public Ticker(Action<Stopwatch> start, Action<Stopwatch> stop)
     {
         this.stop = stop;
         Watch = new Stopwatch();

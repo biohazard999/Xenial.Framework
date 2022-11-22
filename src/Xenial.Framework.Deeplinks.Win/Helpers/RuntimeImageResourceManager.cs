@@ -40,7 +40,7 @@ public sealed class RuntimeImageResourceManager
     /// </summary>
     /// <param name="imageNames"></param>
     /// <returns></returns>
-    public IDictionary<string, string> GenerateIcons(IEnumerable<string> imageNames!!)
+    public IDictionary<string, string> GenerateIcons(IEnumerable<string> imageNames)
         => new ReadOnlyDictionary<string, string>(GenerateIcons(imageNames, basePath));
 
     private static Dictionary<string, string> GenerateIcons(IEnumerable<string> imageNames, string basePath)

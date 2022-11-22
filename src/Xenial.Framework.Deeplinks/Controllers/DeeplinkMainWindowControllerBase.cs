@@ -153,8 +153,9 @@ public abstract class DeeplinkMainWindowControllerBase : WindowController
     /// <param name="modelView"></param>
     /// <param name="objectKey"></param>
     /// <returns></returns>
-    protected virtual bool HandleViewCore(DeeplinkUriInfo info!!, IModelView modelView, string? objectKey)
+    protected virtual bool HandleViewCore(DeeplinkUriInfo info, IModelView modelView, string? objectKey)
     {
+        _ = info ?? throw new ArgumentNullException(nameof(info));
         if (modelView is IModelDetailView modelDetailView && string.IsNullOrEmpty(objectKey))
         {
             if (info.QueryCollection.TryGetBoolean("createObject", out var createObject) && createObject)

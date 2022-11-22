@@ -54,8 +54,9 @@ public sealed class ImageNamesEditorVisibilityCalculator : IModelIsVisible
     /// <param name="node"></param>
     /// <param name="propertyName"></param>
     /// <returns></returns>
-    public bool IsVisible(IModelNode node!!, string propertyName)
+    public bool IsVisible(IModelNode node, string propertyName)
     {
+        _ = node ?? throw new ArgumentNullException(nameof(node));
         var visible = !node.GetValue<bool>(nameof(IHtmlContentViewItem.LoadAllImages));
         return visible;
     }

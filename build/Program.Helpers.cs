@@ -9,16 +9,16 @@ namespace Xenial.Build;
 
 internal static partial class Helpers
 {
-    public static (string fullFramework, string netcore, string net5, string winVersion, string netstandardVersion) FindTfms()
+    public static (string fullFramework, string netcore, string net6, string winVersion, string netstandardVersion) FindTfms()
     {
         var dirProps = XElement.Load("Directory.Build.props");
         var props = dirProps.Descendants("PropertyGroup");
         var fullFramework = props.Descendants("FullFrameworkVersion").First().Value;
         var netcore = props.Descendants("NetCoreVersion").First().Value;
-        var net5 = props.Descendants("Net5Version").First().Value;
+        var net6 = props.Descendants("Net6Version").First().Value;
         var netstandardVersion = props.Descendants("NetStandardVersion").First().Value;
         var winVersion = props.Descendants("WindowsFrameworkVersion6").First().Value;
-        return (fullFramework, netcore, net5, winVersion, netstandardVersion);
+        return (fullFramework, netcore, net6, winVersion, netstandardVersion);
     }
 
     public static async Task EnsureTools()

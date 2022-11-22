@@ -8,7 +8,7 @@ namespace Xenial.Cli.Utils;
 
 public static class SettingsDumper
 {
-    public static void Dump(CommandSettings settings!!)
+    public static void Dump(CommandSettings settings)
     {
         var table = new Table().RoundedBorder();
         table.AddColumn("[grey]Name[/]");

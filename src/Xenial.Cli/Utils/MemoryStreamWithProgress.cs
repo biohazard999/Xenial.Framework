@@ -12,14 +12,14 @@ public class MemoryStreamWithProgress : MemoryStream
 {
     private readonly ProgressTask progress;
 
-    public MemoryStreamWithProgress(ProgressTask progress!!)
+    public MemoryStreamWithProgress(ProgressTask progress)
         => this.progress = progress.IsIndeterminate(true);
 
     /// <summary>Initializes a new non-resizable instance of the <see cref="MemoryStreamWithProgress" /> class based on the specified byte array.</summary>
     /// <param name="buffer">The array of unsigned bytes from which to create the current stream.</param>
     /// <exception cref="System.ArgumentNullException">
     /// <paramref name="buffer" /> is <see langword="null" />.</exception>
-    public MemoryStreamWithProgress(ProgressTask progress!!, byte[] buffer) : base(buffer)
+    public MemoryStreamWithProgress(ProgressTask progress, byte[] buffer) : base(buffer)
         => this.progress = progress.IsIndeterminate(true);
 
     /// <summary>Initializes a new non-resizable instance of the <see cref="MemoryStreamWithProgress" /> class based on the specified byte array with the <see cref="System.IO.MemoryStream.CanWrite" /> property set as specified.</summary>
@@ -27,7 +27,7 @@ public class MemoryStreamWithProgress : MemoryStream
     /// <param name="writable">The setting of the <see cref="System.IO.MemoryStream.CanWrite" /> property, which determines whether the stream supports writing.</param>
     /// <exception cref="System.ArgumentNullException">
     /// <paramref name="buffer" /> is <see langword="null" />.</exception>
-    public MemoryStreamWithProgress(ProgressTask progress!!, byte[] buffer, bool writable) : base(buffer, writable)
+    public MemoryStreamWithProgress(ProgressTask progress, byte[] buffer, bool writable) : base(buffer, writable)
         => this.progress = progress.IsIndeterminate(true);
 
     /// <summary>Initializes a new non-resizable instance of the <see cref="MemoryStreamWithProgress" /> class based on the specified region (index) of a byte array.</summary>
@@ -39,7 +39,7 @@ public class MemoryStreamWithProgress : MemoryStream
     /// <exception cref="System.ArgumentOutOfRangeException">
     /// <paramref name="index" /> or <paramref name="count" /> is less than zero.</exception>
     /// <exception cref="System.ArgumentException">The buffer length minus <paramref name="index" /> is less than <paramref name="count" />.</exception>
-    public MemoryStreamWithProgress(ProgressTask progress!!, byte[] buffer, int index, int count) : base(buffer, index, count)
+    public MemoryStreamWithProgress(ProgressTask progress, byte[] buffer, int index, int count) : base(buffer, index, count)
     {
         this.progress = progress;
         StartProgress(count);

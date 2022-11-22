@@ -51,8 +51,8 @@ public sealed class HyperlinkHandlerAttribute : Attribute, IBindableFunctorProvi
     ///
     /// <param name="handleHyperlinkType">    Type of the handler. </param>
 
-    public HyperlinkHandlerAttribute(Type handleHyperlinkType!!)
-        => HandleHyperlinkType = handleHyperlinkType;
+    public HyperlinkHandlerAttribute(Type handleHyperlinkType)
+        => HandleHyperlinkType = handleHyperlinkType ?? throw new ArgumentNullException(nameof(handleHyperlinkType));
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HyperlinkHandlerAttribute" /> class.
@@ -60,9 +60,12 @@ public sealed class HyperlinkHandlerAttribute : Attribute, IBindableFunctorProvi
     ///
     /// <param name="handleHyperlinkType">                  Type of the hanlder. </param>
     /// <param name="handleHyperlinkMethodName">    Name of the hanlder method. </param>
-    public HyperlinkHandlerAttribute(Type handleHyperlinkType!!, string handleHyperlinkMethodName!!)
+    public HyperlinkHandlerAttribute(Type handleHyperlinkType, string handleHyperlinkMethodName)
         => (HandleHyperlinkType, HandleHyperlinkMethodName)
-        = (handleHyperlinkType, handleHyperlinkMethodName);
+        = (
+            handleHyperlinkType ?? throw new ArgumentNullException(nameof(handleHyperlinkType)),
+            handleHyperlinkMethodName ?? throw new ArgumentNullException(nameof(handleHyperlinkMethodName))
+        );
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HyperlinkHandlerAttribute" /> class.

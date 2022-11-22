@@ -85,7 +85,7 @@ public class MergeClassesSyntaxRewriter : CSharpSyntaxRewriter
         }
     }
 
-    public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node!!)
+    public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node)
     {
         var newSyntaxTree = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)semanticModel.SyntaxTree.Options);
         var newWalker = new MethodWalker();
@@ -99,7 +99,7 @@ public class MergeClassesSyntaxRewriter : CSharpSyntaxRewriter
         return base.VisitCompilationUnit(node);
     }
 
-    public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node!!)
+    public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
     {
         var newSyntaxTree = CSharpSyntaxTree.ParseText(codeResult.Code, (CSharpParseOptions)semanticModel.SyntaxTree.Options);
         var newWalker = new MethodWalker();

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
@@ -43,8 +44,11 @@ public static class ModelJumplistItemActionDomainLogic
     /// <param name="modelAction"></param>
     /// <returns></returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:URI-like return values should not be strings")]
-    public static string Get_LaunchUri(IModelJumplistItemAction modelAction!!) =>
-        $"{modelAction.Protocol?.ProtocolName}://{DefaultDeeplinkVerbs.Action}{PrefixString('/', modelAction.ActionId)}";
+    public static string Get_LaunchUri(IModelJumplistItemAction modelAction) => modelAction switch
+    {
+        null => throw new ArgumentNullException(nameof(modelAction)),
+        _ => $"{modelAction.Protocol?.ProtocolName}://{DefaultDeeplinkVerbs.Action}{PrefixString('/', modelAction.ActionId)}"
+    };
 
     private static string PrefixString(char prefix, string? str)
     {
@@ -60,8 +64,8 @@ public static class ModelJumplistItemActionDomainLogic
     /// </summary>
     /// <param name="modelAction"></param>
     /// <returns></returns>
-    public static string Get_Arguments(IModelJumplistItemAction modelAction!!)
-        => modelAction.Action is null
+    public static string Get_Arguments(IModelJumplistItemAction modelAction)
+        => modelAction?.Action is null
         ? $"verb={DefaultDeeplinkVerbs.Action}"
         : $"verb={DefaultDeeplinkVerbs.Action}&actionId={modelAction.ActionId}";
 
@@ -70,16 +74,22 @@ public static class ModelJumplistItemActionDomainLogic
     /// </summary>
     /// <param name="modelAction"></param>
     /// <returns></returns>
-    public static IModelAction Get_Action(IModelJumplistItemAction modelAction!!)
-        => modelAction.Application.ActionDesign.Actions[modelAction.ActionId];
+    public static IModelAction Get_Action(IModelJumplistItemAction modelAction) => modelAction switch
+    {
+        null => throw new ArgumentNullException(nameof(modelAction)),
+        _ => modelAction.Application.ActionDesign.Actions[modelAction.ActionId]
+    };
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="modelAction"></param>
     /// <param name="value"></param>
-    public static void Set_Action(IModelJumplistItemAction modelAction!!, IModelAction value)
-        => modelAction.ActionId = value?.Id ?? null!;
+    public static void Set_Action(IModelJumplistItemAction modelAction, IModelAction value)
+    {
+        _ = modelAction ?? throw new ArgumentNullException(nameof(modelAction));
+        modelAction.ActionId = value?.Id ?? null!;
+    }
 
     /// <summary>
     /// 
