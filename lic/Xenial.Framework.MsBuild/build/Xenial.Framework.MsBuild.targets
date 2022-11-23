@@ -1,6 +1,6 @@
 ﻿<Project>
 
-  <Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun">
+  <Target Name="_InjectAdditionalFiles" BeforeTargets="Publish;GenerateMSBuildEditorConfigFileShouldRun">
     
     <PropertyGroup>
       <_XenialIsNet5 Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0'))">true</_XenialIsNet5>
