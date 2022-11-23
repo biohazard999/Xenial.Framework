@@ -80,7 +80,6 @@ string GetProperties(string configuration = null) => string.Join(" ", new Dictio
     ["XenialPublicKey"] = PublicKey,
     ["XenialLicGenVersion"] = $"{version}",
     ["RepositoryBranch"] = $"{branch}",
-    ["XenialDebug"] = false.ToString()
 }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
 Target("ensure-tools:nuget", () => EnsureTools());
@@ -403,7 +402,7 @@ Target("publish:Xenial.FeatureCenter.Win", DependsOn("pack"), async () =>
         var suffix = string.IsNullOrEmpty(rid) ? "" : $".{rid.Substring("win-".Length)}";
         var package = string.IsNullOrEmpty(tfm) ? "" : tfm.Split('-')[0];
 
-        await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj --framework {tfm} {ridP} {r2r} /p:ErrorOnDuplicatePublishOutputFiles=false {logOptions($"publish:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false");
+        await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj --framework {tfm} {ridP} {r2r} /p:ErrorOnDuplicatePublishOutputFiles=false {logOptions($"publish:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version}");
 
         if (isTagged && !isPullRequest)
         {
@@ -411,7 +410,7 @@ Target("publish:Xenial.FeatureCenter.Win", DependsOn("pack"), async () =>
             Console.WriteLine($"This is a tagged commit {tagName}, zipping up Xenial.FeatureCenter.Win");
             Console.ResetColor();
 
-            await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions($"zip:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:ErrorOnDuplicatePublishOutputFiles=false /p:TargetFramework={tfm} {r2r} {ridP} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.{package}{suffix} /p:PackageDir={artifactsDirectory}");
+            await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions($"zip:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:ErrorOnDuplicatePublishOutputFiles=false /p:TargetFramework={tfm} {r2r} {ridP} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:PackageName=Xenial.FeatureCenter.Win.v{version}.{package}{suffix} /p:PackageDir={artifactsDirectory}");
         }
         else
         {
@@ -426,7 +425,7 @@ BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Serve
 {
     DotnetCore = true,
     PathToCsproj = featureCenterBlazor,
-    AssemblyProperties = $"/property:XenialDebug=false /property:XenialDemoPackageVersion={version}",
+    AssemblyProperties = $"/property:XenialDemoPackageVersion={version}",
     PrepareTask = async () =>
     {
         var settingsPath = Path.Combine(featureCenterBlazorDir, "appsettings.json");
