@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(NetStandardVersion);$(Net6Version);$(FullFrameworkVersion)</TargetFrameworks>
+    <TargetFramework>$(Net6Version)</TargetFramework>
+    <TargetFrameworks>$(Net6Version)</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
+  <ItemGroup Condition="'$(XenialDebug)' == ''">
     <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Images" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Xpo" Version="$(XenialDemoPackageVersion)" />
@@ -15,7 +16,7 @@
     <PackageReference Include="Xenial.Framework.DevTools" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(XenialDebug)">
+  <ItemGroup Condition="'$(XenialDebug)' != ''">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Images/Xenial.Framework.Images.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Xpo/Xenial.Framework.Xpo.csproj" />

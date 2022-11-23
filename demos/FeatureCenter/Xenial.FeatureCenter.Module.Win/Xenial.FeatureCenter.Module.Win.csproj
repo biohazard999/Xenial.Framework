@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>$(WindowsFrameworkVersion6);$(FullFrameworkVersion)</TargetFrameworks>
+    <TargetFrameworks>$(WindowsFrameworkVersion6)</TargetFrameworks>
+    <TargetFramework>$(WindowsFrameworkVersion6)</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
@@ -9,7 +10,7 @@
     <ProjectReference Include="..\Xenial.FeatureCenter.Module\Xenial.FeatureCenter.Module.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
+  <ItemGroup Condition="'$(XenialDebug)' == ''">
     <PackageReference Include="Xenial.Framework.Win" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.WebView.Win" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.TokenEditors.Win" Version="$(XenialDemoPackageVersion)" />
@@ -18,7 +19,7 @@
     <PackageReference Include="Xenial.Framework.DevTools.Win" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(XenialDebug)">
+  <ItemGroup Condition="'$(XenialDebug)' != ''">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Win/Xenial.Framework.Win.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.WebView.Win/Xenial.Framework.WebView.Win.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors.Win/Xenial.Framework.TokenEditors.Win.csproj" />

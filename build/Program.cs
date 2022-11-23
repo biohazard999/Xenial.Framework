@@ -80,7 +80,6 @@ string GetProperties(string configuration = null) => string.Join(" ", new Dictio
     ["XenialPublicKey"] = PublicKey,
     ["XenialLicGenVersion"] = $"{version}",
     ["RepositoryBranch"] = $"{branch}",
-    ["XenialDebug"] = false.ToString()
 }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
 Target("ensure-tools:nuget", () => EnsureTools());
@@ -378,47 +377,21 @@ Target("publish:Xenial.FeatureCenter.Win", DependsOn("pack"), async () =>
         Console.ResetColor();
     }
 
+    await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /p:Platform=\"Any CPU\" /p:PublishProtocol=FileSystem /p:TargetFramework=net6.0-windows /p:SelfContained=false /p:ErrorOnDuplicatePublishOutputFiles=false {logOptions($"publish:Xenial.FeatureCenter.Win")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:GenerateXenialVersionInfo=true");
 
-    foreach (var (tfm, rid) in new[] { ("net462", ""), ("net6.0-windows", "win-x64"), ("net6.0-windows", "win-x86") })
+    if (true || isTagged && !isPullRequest)
     {
-        //TODO: remove /p:ErrorOnDuplicatePublishOutputFiles=false
-        //TODO: and investigate https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/duplicate-files-in-output
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"This is a tagged commit {tagName}, zipping up Xenial.FeatureCenter.Win");
+        Console.ResetColor();
 
-        var r2r = ""; //isTagged && !isPullRequest ? "/p:PublishReadyToRun=true" : "";
-
-        if (isTagged && !isPullRequest)
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"This is a tagged commit {tagName}, will increase performance by using R2R");
-            Console.ResetColor();
-        }
-        else
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("This is not a tagged commit, skip R2R");
-            Console.ResetColor();
-        }
-
-        var ridP = string.IsNullOrEmpty(rid) ? "" : $"/p:RuntimeIdentifier={rid}";
-        var suffix = string.IsNullOrEmpty(rid) ? "" : $".{rid.Substring("win-".Length)}";
-        var package = string.IsNullOrEmpty(tfm) ? "" : tfm.Split('-')[0];
-
-        await RunAsync("dotnet", $"publish demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj --framework {tfm} {ridP} {r2r} /p:ErrorOnDuplicatePublishOutputFiles=false {logOptions($"publish:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false");
-
-        if (isTagged && !isPullRequest)
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"This is a tagged commit {tagName}, zipping up Xenial.FeatureCenter.Win");
-            Console.ResetColor();
-
-            await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions($"zip:Xenial.FeatureCenter.Win.{tfm}{suffix}")} {GetProperties()} /p:ErrorOnDuplicatePublishOutputFiles=false /p:TargetFramework={tfm} {r2r} {ridP} /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:XenialDebug=false /p:PackageName=Xenial.FeatureCenter.Win.v{version}.{package}{suffix} /p:PackageDir={artifactsDirectory}");
-        }
-        else
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("This is not a tagged commit, skip zipping up Xenial.FeatureCenter.Win");
-            Console.ResetColor();
-        }
+        await RunAsync("dotnet", $"msbuild demos/FeatureCenter/Xenial.FeatureCenter.Win/Xenial.FeatureCenter.Win.csproj /t:Restore;Build;Publish;CreateZip {logOptions($"zip:Xenial.FeatureCenter.Win")} {GetProperties()} /p:ErrorOnDuplicatePublishOutputFiles=false /p:PackageVersion={version} /p:XenialDemoPackageVersion={version} /p:PackageName=Xenial.FeatureCenter.Win.v{version} /p:PackageDir={artifactsDirectory} /p:GenerateXenialVersionInfo=true");
+    }
+    else
+    {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("This is not a tagged commit, skip zipping up Xenial.FeatureCenter.Win");
+        Console.ResetColor();
     }
 });
 
@@ -426,7 +399,7 @@ BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Serve
 {
     DotnetCore = true,
     PathToCsproj = featureCenterBlazor,
-    AssemblyProperties = $"/property:XenialDebug=false /property:XenialDemoPackageVersion={version}",
+    AssemblyProperties = $"/property:XenialDemoPackageVersion={version}",
     PrepareTask = async () =>
     {
         var settingsPath = Path.Combine(featureCenterBlazorDir, "appsettings.json");

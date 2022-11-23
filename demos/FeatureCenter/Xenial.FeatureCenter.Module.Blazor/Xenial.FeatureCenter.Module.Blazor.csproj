@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
-    <TargetFrameworks>$(NetBlazorLibVersion)</TargetFrameworks>
+  <PropertyGroup>    
+    <TargetFramework>$(Net6Version)</TargetFramework>
+    <TargetFrameworks>$(Net6Version)</TargetFrameworks>
     <DxExtendStartupHost>false</DxExtendStartupHost>
     <RazorLangVersion>$(RazorLangVersion)</RazorLangVersion>
   </PropertyGroup>
@@ -10,13 +11,13 @@
     <ProjectReference Include="..\Xenial.FeatureCenter.Module\Xenial.FeatureCenter.Module.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
+  <ItemGroup Condition="'$(XenialDebug)' == ''">
     <PackageReference Include="Xenial.Framework.TokenEditors.Blazor" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.WebView.Blazor" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Badges.Blazor" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(XenialDebug)">
+  <ItemGroup Condition="'$(XenialDebug)' != ''">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Blazor/Xenial.Framework.Blazor.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors.Blazor/Xenial.Framework.TokenEditors.Blazor.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.WebView.Blazor/Xenial.Framework.WebView.Blazor.csproj" />

@@ -16,6 +16,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
+    <XenialDebug></XenialDebug>
   </PropertyGroup>
 
 </Project>
