@@ -80,6 +80,7 @@ string GetProperties(string configuration = null) => string.Join(" ", new Dictio
     ["XenialPublicKey"] = PublicKey,
     ["XenialLicGenVersion"] = $"{version}",
     ["RepositoryBranch"] = $"{branch}",
+    ["GenerateXenialVersionInfo"] = "true"
 }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
 Target("ensure-tools:nuget", () => EnsureTools());
@@ -399,7 +400,7 @@ BuildAndDeployIISProject(new IISDeployOptions("Xenial.FeatureCenter.Blazor.Serve
 {
     DotnetCore = true,
     PathToCsproj = featureCenterBlazor,
-    AssemblyProperties = $"/property:XenialDemoPackageVersion={version}",
+    AssemblyProperties = $"/property:XenialDemoPackageVersion={version} /p:GenerateXenialVersionInfo=true",
     PrepareTask = async () =>
     {
         var settingsPath = Path.Combine(featureCenterBlazorDir, "appsettings.json");
