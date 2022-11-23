@@ -7,14 +7,4 @@
     <GenerateXenialModuleInitializer Condition="'$(GenerateXenialModuleInitializer)' == ''">true</GenerateXenialModuleInitializer>
   </PropertyGroup>
   
-  <ItemGroup>
-    <CompilerVisibleProperty Include="_XenialIsNet5" />
-    <CompilerVisibleProperty Include="_XenialIsNet5Compatible" />
-    <CompilerVisibleProperty Include="GenerateXenialVersionInfo" />
-    <CompilerVisibleProperty Include="CheckXenialLicense" />
-    <CompilerVisibleProperty Include="GenerateXenialLicense" />
-    <CompilerVisibleProperty Include="GenerateXenialModuleInitializer" />
-    <CompilerVisibleProperty Include="GenerateXenialModuleInitializerPolyfill" />
-  </ItemGroup>
-  
 </Project>
