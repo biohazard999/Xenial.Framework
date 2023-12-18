@@ -17,7 +17,7 @@
   
   <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="$(DxPackageVersion)" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <None Include="obj/$(Configuration)/$(TargetFramework)/generated/Xenial.Framework.Generators/Xenial.Framework.Generators.XenialGenerator/Person.Person.Builder.g.cs" Link="BusinessObjects/Person.Person.Builder.g.cs" />
     <None Include="obj/$(Configuration)/$(TargetFramework)/generated/Xenial.Framework.Generators/Xenial.Framework.Generators.XenialGenerator/Task.Task.Builder.g.cs" Link="BusinessObjects/Task.Task.Builder.g.cs" />
   </ItemGroup>

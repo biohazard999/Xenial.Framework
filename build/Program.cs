@@ -40,7 +40,7 @@ const string PleaseSet = "PLEASE SET BEFORE USE";
 var PublicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3VFauRJrFzuZveL+J/naEs+CrNLBrc/sSDihdkUTo3Np/o4IoM8fxR6kYHIdH/7LXfXltFRREkv2ceTN8gyZuw==";
 
 static string logOptions(string target)
-    => $"/maxcpucount /nologo /verbosity:minimal /bl:./artifacts/logs/xenial.framework.{target}.binlog";
+    => $"/maxcpucount /nologo /verbosity:minimal /bl:./artifacts/logs/xenial.framework.{target.Replace(":", "--")}.binlog";
 
 const string Configuration = "Release";
 const string ConfigurationDebug = "Debug";
