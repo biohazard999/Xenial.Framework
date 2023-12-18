@@ -39,9 +39,9 @@
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeFormatting.ruleset</CodeAnalysisRuleSet>
 
-    <DxVersion>22.1.6</DxVersion>
+    <DxVersion>23.1.5</DxVersion>
     <DxVersionPostFix>v22.1</DxVersionPostFix>
-    <DxPackageVersion>[$(DxVersion)]</DxPackageVersion>
+    <DxPackageVersion>[$(DxVersion),)</DxPackageVersion>
     <!-- <DxPackageVersion>[21.1.3-beta]</DxPackageVersion> -->
 
     <XenialVersion>$(PackageVersion)</XenialVersion>
@@ -141,6 +141,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(DxVersion) &gt; 22.1.6">
     <DefineConstants>$(DefineConstants);DX_GT_22_1_6</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 23.1.5">
+    <DefineConstants>$(DefineConstants);DX_GT_23_1_5</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
