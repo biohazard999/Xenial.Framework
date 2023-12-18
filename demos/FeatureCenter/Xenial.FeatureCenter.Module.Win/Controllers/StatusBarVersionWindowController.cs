@@ -53,6 +53,8 @@ namespace Xenial.FeatureCenter.Module.Win
             {
                 e.StatusMessages.Add(versionInfo);
             }
+
+            e.StatusMessages.Add(FeatureCenterModule.TargetFramework);
         }
     }
 }

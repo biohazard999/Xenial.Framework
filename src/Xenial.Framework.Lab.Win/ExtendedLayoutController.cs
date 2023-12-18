@@ -8,72 +8,71 @@ using DevExpress.ExpressApp.Win.Layout;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraLayout;
 
-namespace Xenial.Framework.Lab.Win
+namespace Xenial.Framework.Lab.Win;
+
+/// <summary>   A controller for handling extended layouts. </summary>
+///
+/// <seealso cref="ViewController{DetailView}"/>
+
+public class ExtendedLayoutController : ViewController<DetailView>
 {
-    /// <summary>   A controller for handling extended layouts. </summary>
-    ///
-    /// <seealso cref="ViewController{DetailView}"/>
+    private readonly List<System.Windows.Forms.Control> controls = new();
 
-    public class ExtendedLayoutController : ViewController<DetailView>
+    /// <summary>   Executes the 'activated' action. </summary>
+    protected override void OnActivated()
     {
-        private readonly List<System.Windows.Forms.Control> controls = new();
+        base.OnActivated();
 
-        /// <summary>   Executes the 'activated' action. </summary>
-        protected override void OnActivated()
+        View.CustomizeViewItemControl<DXPropertyEditor>(this, viewItem =>
         {
-            base.OnActivated();
-
-            View.CustomizeViewItemControl<DXPropertyEditor>(this, viewItem =>
+            if (viewItem.Control.Properties is RepositoryItemTextEdit r)
             {
-                if (viewItem.Control.Properties is RepositoryItemTextEdit r)
+                r.UseAdvancedMode = DevExpress.Utils.DefaultBoolean.True;
+                r.AdvancedModeOptions.Label = viewItem.Caption;
+                if (View.IsControlCreated && View.Control is XafLayoutControl xafLayoutControl)
                 {
-                    r.UseAdvancedMode = DevExpress.Utils.DefaultBoolean.True;
-                    r.AdvancedModeOptions.Label = viewItem.Caption;
-                    if (View.IsControlCreated && View.Control is XafLayoutControl xafLayoutControl)
-                    {
-                        CustomizeView(xafLayoutControl, viewItem.Control);
-                    }
-                    else
-                    {
-                        controls.Add(viewItem.Control);
-                    }
+                    CustomizeView(xafLayoutControl, viewItem.Control);
                 }
-            });
-
-            if (View.IsControlCreated && View.Control is XafLayoutControl xafLayoutControl)
-            {
-                CustomizeView(xafLayoutControl);
+                else
+                {
+                    controls.Add(viewItem.Control);
+                }
             }
-            else if (!View.IsControlCreated)
+        });
+
+        if (View.IsControlCreated && View.Control is XafLayoutControl xafLayoutControl)
+        {
+            CustomizeView(xafLayoutControl);
+        }
+        else if (!View.IsControlCreated)
+        {
+            View.ControlsCreated -= View_ControlsCreated;
+            View.ControlsCreated += View_ControlsCreated;
+            void View_ControlsCreated(object? sender, EventArgs? e)
             {
                 View.ControlsCreated -= View_ControlsCreated;
-                View.ControlsCreated += View_ControlsCreated;
-                void View_ControlsCreated(object sender, EventArgs e)
+                if (View.IsControlCreated && View.Control is XafLayoutControl xafLayoutControl)
                 {
-                    View.ControlsCreated -= View_ControlsCreated;
-                    if (View.IsControlCreated && View.Control is XafLayoutControl xafLayoutControl)
-                    {
-                        CustomizeView(xafLayoutControl);
-                    }
+                    CustomizeView(xafLayoutControl);
                 }
             }
         }
+    }
 
-        private void CustomizeView(XafLayoutControl xafLayoutControl)
+    private void CustomizeView(XafLayoutControl xafLayoutControl)
+    {
+        foreach (var control in controls)
         {
-            foreach (var control in controls)
-            {
-                CustomizeView(xafLayoutControl, control);
-            }
+            CustomizeView(xafLayoutControl, control);
         }
+    }
 
-        private static void CustomizeView(XafLayoutControl xafLayoutControl, System.Windows.Forms.Control control)
+    private static void CustomizeView(XafLayoutControl xafLayoutControl, System.Windows.Forms.Control control)
+    {
+        var item = xafLayoutControl.Items.OfType<LayoutControlItem>().FirstOrDefault(m => m.Control == control);
+        if (item is not null)
         {
-            var item = xafLayoutControl.Items.OfType<LayoutControlItem>().FirstOrDefault(m => m.Control == control);
-            if (item is not null)
-            {
-                item.TextVisible = false;
-            }
+            item.TextVisible = false;
         }
     }
 }

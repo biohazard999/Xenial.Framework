@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using DevExpress.ExpressApp;
-using DevExpress.ExpressApp.Blazor.Templates;
+using DevExpress.ExpressApp.SystemModule;
 
 using Xenial.FeatureCenter.Module.BusinessObjects;
 using Xenial.Framework;
@@ -43,9 +43,9 @@ namespace Xenial.FeatureCenter.Module.Blazor
 
         private void Application_CustomizeTemplate(object? sender, CustomizeTemplateEventArgs e)
         {
-            if (e.Context == TemplateContext.ApplicationWindow && e.Template is WindowTemplate windowTemplate)
+            if (e.Context == TemplateContext.ApplicationWindow)
             {
-                windowTemplate.AboutInfoString = string.Join("<br>", FeatureCenterModule.VersionInformation);
+                AboutInfo.Instance.AboutInfoString = string.Join("<br>", FeatureCenterModule.VersionInformation);
             }
         }
     }

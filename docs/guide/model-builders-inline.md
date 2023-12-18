@@ -12,8 +12,8 @@ The following code samples illustrate the use of inline ModelBuilders to replace
 
 <<< @/guide/samples/DemoTaskBeforeModelBuilder.cs{11-12}
 
-In order to replace the two class level attributes it is necessary to override the 'CustomTypesInfo' method (from within the Module.cs class located in the <application>Module agnostic project) utilising the 'ModelBuilder.Create<T>()' method to create an inline 'ModelBuilder'.
-    
+In order to replace the two class level attributes it is necessary to override the 'CustomTypesInfo' method (from within the Module.cs class located in the {application}Module agnostic project) utilizing the `ModelBuilder.Create<T>()` method to create an inline 'ModelBuilder'.
+
 ::: tip
  The 'ModelBuilder' has a 'Build' method which must be called at the end in order to refresh the 'ITypesInfo' instance.
 :::

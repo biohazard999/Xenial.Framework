@@ -1,0 +1,15 @@
+<svg x="0" y="0" width="1024" height="1024" version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>contrast low icon</title>
+    <desc>contrast low icon from the IconExperience.com O-Collection. Copyright by INCORS GmbH (www.incors.com).</desc>
+    <g fill="#808080" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" stroke-dasharray="" stroke-dashoffset="0" font-family="serif" font-weight="400" font-size="16" text-anchor="start" mix-blend-mode="normal">
+        <g>
+            <g>
+                <g>
+                    <path d="M512,128c212.1,0 384,171.9 384,384c0,212.1 -171.9,384 -384,384c-212.1,0 -384,-171.9 -384,-384c0,-212.1 171.9,-384 384,-384z M576,320l64,0l0,-64l-64,0z M640,218.7l0,37.3l64,0l0,64l64,0l0,0c-33,-43.9 -77,-79.1 -128,-101.3z M768,320l0,64l-64,0l0,64l64,0l0,-64l37.3,0c-9.9,-22.8 -22.5,-44.3 -37.3,-64z M640,805.3l0,-37.3l-64,0l0,-64l-64,0l0,-64l64,0l0,-64l-64,0l0,-64l64,0l0,64l64,0l0,-64l64,0l0,64l64,0l0,-64l64,0c0,-21.5 -2.1,-42.9 -6.4,-64l-57.6,0l0,64l-64,0l0,-64l-64,0l0,64l-64,0l0,-64l-64,0l0,-64l64,0l0,-64l-64,0l0,-64l64,0l0,-57.6c-21.6,-4.4 -42,-6.1 -64,-6.4c-176.7,0 -320,143.3 -320,320c0,176.7 143.3,320 320,320l0,-64l64,0l0,57.6c22.3,-4.5 43.7,-11.4 64,-20.3z M704,768l0,-64l-64,0l0,64z M768,704l0,-64l-64,0l0,64z M768,640l37.3,0c8.9,-20.3 15.8,-41.7 20.3,-64l-57.6,0z M640,704l0,-64l-64,0l0,64z M640,640l64,0l0,-64l-64,0z M640,320l0,64l64,0l0,-64z M640,384l-64,0l0,64l64,0z" id="curve0"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

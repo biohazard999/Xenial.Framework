@@ -11,8 +11,10 @@
 *.sln.docstates
 THIRD-PARTY-NOTICES.TXT
 licenses.licx
+**/*.received.*
 
 .cr/
+.idea/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -352,3 +354,4 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+*.zip

@@ -1,12 +1,8 @@
 ﻿<Project>
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
-  <PropertyGroup>
-    <XenialDebug>true</XenialDebug>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <XenialDebug>false</XenialDebug>
+    <XenialDebug></XenialDebug>
   </PropertyGroup>
 
 </Project>

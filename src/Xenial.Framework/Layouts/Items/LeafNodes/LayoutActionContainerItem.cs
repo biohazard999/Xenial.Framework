@@ -3,37 +3,45 @@
 #pragma warning disable IDE1006 // Naming Styles
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 using DevExpress.ExpressApp.Model;
-using DevExpress.ExpressApp.Templates;
 
 using Xenial.Framework.Layouts.Items.Base;
 
-namespace Xenial.Framework.Layouts.Items.LeafNodes
-{
-    /// <summary>   (Immutable) a layout action container item. </summary>
-    [XenialCheckLicence]
-    public partial record LayoutActionContainerItem(string ActionContainerId) : LayoutViewItem(ActionContainerId)
+namespace Xenial.Framework.Layouts.Items.LeafNodes;
+
+/// <summary>   (Immutable) a layout action container item. </summary>
+[XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelActionContainerViewItem), IgnoredMembers = new[]
     {
-        /// <summary>   Gets or sets the paint style. </summary>
-        ///
-        /// <value> The paint style. </value>
-
-        public ActionItemPaintStyle? PaintStyle { get; set; }
-
-        /// <summary>   Gets or sets the orientation. </summary>
-        ///
-        /// <value> The orientation. </value>
-
-        public ActionContainerOrientation? Orientation { get; set; }
-
-        /// <summary>   Gets or sets the action container options. </summary>
-        ///
-        /// <value> The action container options. </value>
-
-        public Action<IModelActionContainerViewItem>? ActionContainerOptions { get; set; }
-
+        nameof(IModelActionContainerViewItem.Id),
+        nameof(IModelActionContainerViewItem.Index),
+        nameof(IModelActionContainerViewItem.ActionContainer)
     }
+)]
+public partial record LayoutActionContainerItem : LayoutViewItem
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public string ActionContainerId { get; init; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="actionContainerId"></param>
+    public LayoutActionContainerItem(string actionContainerId) : this(
+        actionContainerId ?? throw new ArgumentNullException(nameof(actionContainerId)),
+        actionContainerId
+    )
+    { }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="actionContainerId"></param>
+    /// <param name="id"></param>
+    public LayoutActionContainerItem(string actionContainerId, string id) : base(id)
+        => ActionContainerId = actionContainerId ?? throw new ArgumentNullException(nameof(actionContainerId));
 }

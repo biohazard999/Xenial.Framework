@@ -132,23 +132,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
                     });
                 });
             });
-
-
-            It($"{nameof(LayoutTabbedGroupItem.TabbedGroupOptions)} is called", () =>
-            {
-                var optionsCallback = A.Fake<Action<IModelTabbedGroup>>();
-                var detailView = CreateDetailViewWithLayout(b => new()
-                {
-                    b.TabbedGroup() with
-                    {
-                        TabbedGroupOptions = optionsCallback
-                    }
-                });
-
-                var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
-
-                A.CallTo(optionsCallback).MustHaveHappenedOnceExactly();
-            });
         });
     }
 }

@@ -1,25 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
+    <TargetFramework>$(Net6Version)</TargetFramework>
+    <TargetFrameworks>$(Net6Version)</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
+  <ItemGroup Condition="'$(XenialDebug)' == ''">
     <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.Images" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Xpo" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.WebView" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.TokenEditors" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.StepProgressEditors" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Badges" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.DevTools" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(XenialDebug)">
+  <ItemGroup Condition="'$(XenialDebug)' != ''">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Images/Xenial.Framework.Images.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Xpo/Xenial.Framework.Xpo.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.WebView/Xenial.Framework.WebView.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors/Xenial.Framework.TokenEditors.csproj" />
-    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.StepProgressEditors\Xenial.Framework.StepProgressEditors.csproj" />
-    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Badges\Xenial.Framework.Badges.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.StepProgressEditors/Xenial.Framework.StepProgressEditors.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Badges/Xenial.Framework.Badges.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.DevTools/Xenial.Framework.DevTools.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,7 +39,6 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="32.0.2" />
-    <PackageReference Include="Markdig" Version="0.22.1" />
     <PackageReference Include="DevExpress.ExpressApp.ConditionalAppearance" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
@@ -53,5 +57,13 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
+    <ItemGroup>
+      <AssemblyAttribute Include="Xenial.FeatureCenter.Module.TargetFrameworkAttribute">
+        <_Parameter1>$(TargetFramework)</_Parameter1>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
   
 </Project>

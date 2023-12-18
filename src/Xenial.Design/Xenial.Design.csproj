@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>exe</OutputType>
+    <TargetFrameworks>$(XenialWinTFMs);net47;net471;net472;net48</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <PackageTags>$(PackageTags) Design</PackageTags>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
+    <BuildOutputTargetFolder>tools/$(TargetFramework)</BuildOutputTargetFolder>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <NoWarn>NU5128;CA2007;CA1303;CA2007;CA1031;CS1998;$(NoWarn)</NoWarn>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AppConfig>app.config</AppConfig>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.config</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5-windows'">
+    <PackageReference Include="System.Private.ServiceModel" Version="4.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+    <PackageReference Include="StreamJsonRpc" Version="2.10.44" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Remove="Xenial.Framework.Generators" />
+    <PackageReference Remove="Xenial.Framework.Generators.Internal" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Design.Contracts\Xenial.Design.Contracts.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);ToolDependenciesTarget</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="ToolDependenciesTarget">
+    <Message Text="Including dependencies from $(OutputPath)" Importance="high" />
+    <ItemGroup>
+      <BuildOutputInPackage Include="$(OutputPath)\*.*" Exclude="$(OutputPath)\$(TargetName)$(TargetExt);$(OutputPath)\$(TargetName).pdb;$(OutputPath)\*.xml">
+        <PackagePath>tools\$(TargetFramework)</PackagePath>
+      </BuildOutputInPackage>
+    </ItemGroup>
+  </Target>
+
+</Project>

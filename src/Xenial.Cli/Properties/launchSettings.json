@@ -1,0 +1,52 @@
+﻿{
+  "profiles": {
+    "wizard": {
+      "commandName": "Project",
+      "commandLineArgs": "--designer-force-nuget=true",
+      //"workingDirectory": "C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\FeatureCenter\\CS\\FeatureCenter.Module"
+      "workingDirectory": "C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\MainDemo\\CS\\MainDemo.Module"
+    },
+    "build": {
+      "commandName": "Project",
+      "commandLineArgs": "build C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module\\Xenial.FeatureCenter.Module.csproj"
+    },
+    "build.cwd": {
+      "commandName": "Project",
+      "commandLineArgs": "build Xenial.FeatureCenter.Module.csproj",
+      "workingDirectory": "C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module"
+    },
+    "build.win": {
+      "commandName": "Project",
+      "commandLineArgs": "build C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module.Win\\Xenial.FeatureCenter.Module.Win.csproj"
+    },
+    "model": {
+      "commandName": "Project",
+      "commandLineArgs": "model C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module\\Xenial.FeatureCenter.Module.csproj -f=net462 --log-file=true --designer-debug=true --launch-from-nuget=false"
+    },
+    "model.cwd": {
+      "commandName": "Project",
+      "commandLineArgs": "model FeatureCenter.Module.NetCore.Desktop.csproj",
+      "workingDirectory": "C:\\Users\\Public\\Documents\\DevExpress Demos 21.2\\Components\\eXpressApp Framework\\FeatureCenter\\CS\\FeatureCenter.Module"
+    },
+    "model.win": {
+      "commandName": "Project",
+      "commandLineArgs": "model C:\\f\\git\\Xenial.Framework\\demos\\FeatureCenter\\Xenial.FeatureCenter.Module.Win\\Xenial.FeatureCenter.Module.Win.csproj -f=net462"
+    },
+    "model.maindemo.core": {
+      "commandName": "Project",
+      "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module\\MainDemo.Module.NetCore.Desktop.csproj\" --launch-from-nuget=false"
+    },
+    "model.maindemo.net46": {
+      "commandName": "Project",
+      "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module\\MainDemo.Module.csproj\" --launch-from-nuget=false"
+    },
+    "model.maindemo.core.win": {
+      "commandName": "Project",
+      "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module.Win\\MainDemo.Module.Win.NetCore.Desktop.csproj\" -v=debug -n=MainDemo.Module"
+    },
+    "model.maindemo.net46.win": {
+      "commandName": "Project",
+      "commandLineArgs": "model \"C:\\f\\tmp\\CS\\MainDemo.Module.Win\\MainDemo.Module.Win.csproj\" -v=debug -n=MainDemo.Module"
+    }
+  }
+}

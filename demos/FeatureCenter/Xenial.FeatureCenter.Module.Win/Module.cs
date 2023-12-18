@@ -10,14 +10,19 @@ using DevExpress.ExpressApp.Model.Core;
 using Xenial.FeatureCenter.Module.BusinessObjects;
 using Xenial.Framework;
 using Xenial.Framework.Badges.Win;
+using Xenial.Framework.DevTools.Win;
 using Xenial.Framework.StepProgressEditors.Win;
 using Xenial.Framework.TokenEditors.Win;
 using Xenial.Framework.WebView.Win;
+using Xenial.Framework.Win;
 
 namespace Xenial.FeatureCenter.Module.Win
 {
     public sealed class FeatureCenterWindowsFormsModule : XenialModuleBase
     {
+        static FeatureCenterWindowsFormsModule() =>
+            XenialWindowsFormsModuleInitializer.Initialize();
+
         public FeatureCenterWindowsFormsModule() => FeatureCenterModule.CurrentPlatform = AvailablePlatform.Win;
 
         protected override ModuleTypeList GetRequiredModuleTypesCore()
@@ -28,7 +33,9 @@ namespace Xenial.FeatureCenter.Module.Win
 
                 typeof(XenialTokenEditorsWindowsFormsModule),
                 typeof(XenialStepProgressEditorsWindowsFormsModule),
-                typeof(XenialBadgesWindowsFormsModule)
+                typeof(XenialBadgesWindowsFormsModule),
+
+                typeof(XenialDevToolsWindowsFormsModule)
             );
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
@@ -39,7 +46,7 @@ namespace Xenial.FeatureCenter.Module.Win
                 typeof(StatusBarVersionWindowController),
                 typeof(BadgesWindowsFormsFeatureController)
             })
-                .UseXenialAdvancedModelEditorActionsControllers();
+                .UseXenialWindowsFormsControllers();
 
         public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
         {

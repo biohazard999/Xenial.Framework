@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <DeepLinkTags>LaunchUri Deeplinks Jumplist</DeepLinkTags>
+    <PackageTags>$(PackageTags) $(DeepLinkTags) Agnostic</PackageTags>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.Images\Xenial.Framework.Images.csproj" />
+  </ItemGroup>
+    
+</Project>

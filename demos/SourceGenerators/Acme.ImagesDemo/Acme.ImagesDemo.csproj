@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <XenialImageNames Include="Images/*.png" />
+  </ItemGroup>
+
+  <!-- BEGIN: This is internal debug code, you don't need this in your project -->
+  
+  <ItemGroup>
+    <None Include="obj/$(Configuration)/$(TargetFramework)/generated/Xenial.Framework.Generators/Xenial.Framework.Generators.XenialGenerator/ImageNames.g.cs"
+          Link="ImageNames.g.cs"/>
+  </ItemGroup>
+
+  <!-- END: This is internal debug code, you don't need this in your project -->
+
+</Project>

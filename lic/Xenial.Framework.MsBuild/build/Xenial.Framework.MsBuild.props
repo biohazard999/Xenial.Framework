@@ -6,5 +6,5 @@
     <GenerateXenialLicense Condition="'$(GenerateXenialLicense)' == ''">true</GenerateXenialLicense>
     <GenerateXenialModuleInitializer Condition="'$(GenerateXenialModuleInitializer)' == ''">true</GenerateXenialModuleInitializer>
   </PropertyGroup>
-    
+  
 </Project>

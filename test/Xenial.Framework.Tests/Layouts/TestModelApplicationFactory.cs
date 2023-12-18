@@ -6,7 +6,7 @@ using DevExpress.ExpressApp.DC;
 using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 
-using DXSystemModele = DevExpress.ExpressApp.SystemModule.SystemModule;
+using DXSystemModule = DevExpress.ExpressApp.SystemModule.SystemModule;
 
 namespace Xenial.Framework.Tests.Layouts
 {
@@ -40,7 +40,7 @@ namespace Xenial.Framework.Tests.Layouts
 
             var modules = new ModuleBase[]
             {
-                new DXSystemModele(),
+                new DXSystemModule(),
                 new TestModule(options.BoModelTypes, options.CustomizeTypesInfo)
                 {
                     CustomizeGeneratorUpdaters = options.CustomizeGeneratorUpdaters

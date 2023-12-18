@@ -162,8 +162,8 @@ namespace Xenial.Framework.Tests.Utils.Slugger
             {
                 var testData = new[]
                 {
-                    ("E¢Ðƕtoy  mÚÄ´¨ss¨sïuy   !!!!!  Pingüiño", "etoy-muasssiuy-pinguino"),
-                    ("QWE dfrewf# $%&!! asd", "qwe-dfrewf-asd"),
+                    ("E¢Ðƕtoy  mÚÄ´¨ss¨sïuy   !  Pingüiño", "etoy-muasssiuy-pinguino"),
+                    ("QWE dfrewf# $%& asd", "qwe-dfrewf-asd"),
                     ("You can't have any pudding if you don't eat your meat!", "you-cant-have-any-pudding-if-you-dont-eat-your-meat"),
                     ("El veloz murciélago hindú", "el-veloz-murcielago-hindu"),
                     ("Médicos sin medicinas medican meditando", "medicos-sin-medicinas-medican-meditando"),

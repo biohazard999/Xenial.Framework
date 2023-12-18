@@ -4,11 +4,11 @@ title: 'DetailViewLayoutBuilders - Record Syntax'
 
 # DetailViewLayoutBuilders - `Record` Syntax
 
-C#9 [introduced a new record syntax](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/records#:~:text=C%23%209%20introduces%20records%2C%20a,types%20use%20value%2Dbased%20equality.) which has been implemented within Xenial.Framework LayoutBuilders ensuring that layouts can be built using `with` expressions. Although not very different from initalizers they make it possible to create a copy of a given record, which is particularly beneficial to a clean fluent syntax in combination with a **functional style** API.
+C#9 [introduced a new record syntax](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/records#:~:text=C%23%209%20introduces%20records%2C%20a,types%20use%20value%2Dbased%20equality.) which has been implemented within Xenial.Framework LayoutBuilders ensuring that layouts can be built using `with` expressions. Although not very different from initializers they make it possible to create a copy of a given record, which is particularly beneficial to a clean fluent syntax in combination with a **functional style** API.
 
 ## Setting the compiler options
 
-Using this feature requires the compiler version to be set in the project. By default the framework will choose the compiler level based on the .NET version being used but it can be overriden  by setting the [`LangVersion`](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/configure-language-version) property in the`*.csproj` files.
+Using this feature requires the compiler version to be set in the project. By default the framework will choose the compiler level based on the .NET version being used but it can be overridden  by setting the [`LangVersion`](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/configure-language-version) property in the`*.csproj` files.
 
 By far the best way to use this feature is to create a `Directory.Build.props` file in the same location as the application `*.sln` file:
 
@@ -23,11 +23,7 @@ By far the best way to use this feature is to create a `Directory.Build.props` f
 
 For more information on this topic [please look at the Microsoft Documentation](https://docs.microsoft.com/de-de/dotnet/csharp/language-reference/configure-language-version#configure-multiple-projects)
 
-<!--Can't help but think that it should be solution folder NOT file -->
-
 ::: tip
-After adding the `Directory.Build.props` it may be necessary to add the file to the solution file. 
-
 To ensure that the compiler is picked up correctly close VisualStudio, delete all `bin` and `obj` folders and then restart `VisualStudio`.
 :::
 
@@ -52,6 +48,7 @@ namespace System.Runtime.CompilerServices
 }
 #endif
 ```
+
 :::
 
 ::: danger

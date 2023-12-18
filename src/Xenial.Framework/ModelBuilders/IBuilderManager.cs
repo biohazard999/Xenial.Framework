@@ -2,28 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xenial.Framework.ModelBuilders
+namespace Xenial.Framework.ModelBuilders;
+
+/// <summary>   Interface for builder manager. </summary>
+///
+/// <seealso cref="IBuilder"/>
+
+public interface IBuilderManager : IBuilder
 {
-    /// <summary>   Interface for builder manager. </summary>
+    /// <summary>   Adds the builder. </summary>
     ///
-    /// <seealso cref="IBuilder"/>
+    /// <param name="builder">  The builder. </param>
+    ///
+    /// <returns>   An IBuilderManager. </returns>
 
-    public interface IBuilderManager : IBuilder
-    {
-        /// <summary>   Adds the builder. </summary>
-        ///
-        /// <param name="builder">  The builder. </param>
-        ///
-        /// <returns>   An IBuilderManager. </returns>
+    IBuilderManager Add(IBuilder builder);
 
-        IBuilderManager Add(IBuilder builder);
+    /// <summary>   Adds multiple builders. </summary>
+    ///
+    /// <param name="builders"> The builder. </param>
+    ///
+    /// <returns>   An IBuilderManager. </returns>
 
-        /// <summary>   Adds multiple builders. </summary>
-        ///
-        /// <param name="builders"> The builder. </param>
-        ///
-        /// <returns>   An IBuilderManager. </returns>
-
-        IBuilderManager Add(IEnumerable<IBuilder> builders);
-    }
+    IBuilderManager Add(IEnumerable<IBuilder> builders);
 }

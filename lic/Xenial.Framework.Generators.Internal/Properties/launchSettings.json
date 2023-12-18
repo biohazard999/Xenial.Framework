@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Xenial.Framework": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\..\\src\\Xenial.Framework\\Xenial.Framework.csproj"
+    }
+  }
+}

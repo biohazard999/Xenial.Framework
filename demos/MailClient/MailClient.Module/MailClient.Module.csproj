@@ -18,6 +18,13 @@
     <PackageReference Include="MimeKit" Version="2.10.1" />
     <PackageReference Include="DevExpress.ExpressApp.Validation" Version="$(DxPackageVersion)" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(XenialDemoPackageVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == '$(NetStandardVersion)' OR '$(TargetFramework)' == '$(NetStandard2_1Version)' OR '$(TargetFramework)' == '$(FullFrameworkVersion)'">
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
@@ -25,14 +32,35 @@
 
   <ItemGroup Condition="'$(XenialDebug)' == 'false'">
     <PackageReference Include="Xenial.Framework" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.Images" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.Xpo" Version="$(XenialDemoPackageVersion)" />
     <PackageReference Include="Xenial.Framework.TokenEditors" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.LabelEditors" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.DevTools" Version="$(XenialDemoPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="$(XenialDebug)">
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework/Xenial.Framework.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Images/Xenial.Framework.Images.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Xpo/Xenial.Framework.Xpo.csproj" />
     <ProjectReference Include="$(SrcDirectory)Xenial.Framework.TokenEditors/Xenial.Framework.TokenEditors.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.LabelEditors/Xenial.Framework.LabelEditors.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="**\*.LayoutBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.LayoutBuilder', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.ModelBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ModelBuilder', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.ColumnsBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ColumnsBuilder', '.cs'))</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
 </Project>

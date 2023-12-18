@@ -20,7 +20,7 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
     /// <seealso cref="DXPropertyEditor"/>
     /// <seealso cref="DevExpress.ExpressApp.Win.Editors.DXPropertyEditor"/>
 
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial class TokenStringPropertyEditor : DXPropertyEditor
     {
         /// <summary>
@@ -186,7 +186,7 @@ namespace Xenial.Framework.TokenEditors.Win.Editors
             }
         }
 
-        private void InitTokensEditValue(RepositoryItemTokenEdit tokenEdit, string value)
+        private static void InitTokensEditValue(RepositoryItemTokenEdit tokenEdit, string value)
         {
             tokenEdit.Tokens.BeginUpdate();
             try

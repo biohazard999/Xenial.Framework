@@ -18,6 +18,7 @@ using Xenial.FeatureCenter.Module.Updaters;
 
 using Xenial.Framework;
 using Xenial.Framework.Badges;
+using Xenial.Framework.DevTools;
 using Xenial.Framework.StepProgressEditors;
 using Xenial.Framework.TokenEditors;
 using Xenial.Framework.WebView;
@@ -35,7 +36,8 @@ namespace Xenial.FeatureCenter.Module
                     typeof(XenialWebViewModule),
                     typeof(XenialTokenEditorsModule),
                     typeof(XenialStepProgressEditorsModule),
-                    typeof(XenialBadgesModule)
+                    typeof(XenialBadgesModule),
+                    typeof(XenialDevToolsModule)
                 );
 
         protected override IEnumerable<Type> GetDeclaredExportedTypes()
@@ -59,11 +61,14 @@ namespace Xenial.FeatureCenter.Module
 
         public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters)
         {
+            _ = updaters ?? throw new ArgumentNullException(nameof(updaters));
+
             base.AddGeneratorUpdaters(updaters);
 
             updaters.Add(new FeatureCenterNavigationItemNodesUpdater());
 
             updaters
+                .UseXenialImages()
                 .UseSingletonNavigationItems()
                 .UseNoViewsGeneratorUpdater()
                 .UseDetailViewLayoutBuilders()
@@ -152,7 +157,6 @@ namespace Xenial.FeatureCenter.Module
 
             #endregion
 
-
             #region Badges
 
             typesInfo
@@ -166,11 +170,17 @@ namespace Xenial.FeatureCenter.Module
             #endregion
         }
 
-        public static string[] VersionInformation = new[]
+        public static IEnumerable<string> VersionInformation { get; } = new[]
         {
             $"Xenial: {XenialVersion.Version}/{XenialVersion.Branch}",
             $"Demo: {XenialVersion.Version}/{XenialVersion.Branch}",
             $"DxVersion: {XenialVersion.DxVersion}"
         };
+
+        public static string TargetFramework
+            => typeof(FeatureCenterModule).Assembly
+                .GetCustomAttributes(false)
+                .OfType<TargetFrameworkAttribute>()
+                .First().TargetFramework;
     }
 }

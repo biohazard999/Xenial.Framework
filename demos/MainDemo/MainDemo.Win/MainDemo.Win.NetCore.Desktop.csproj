@@ -1,0 +1,81 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(WindowsFrameworkVersion6);$(FullFrameworkVersion)</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <OutputType>WinExe</OutputType>
+    <CheckXenialLicense>false</CheckXenialLicense>
+    <GenerateXenialLicense>false</GenerateXenialLicense>
+    <ApplicationIcon>$(MSBuildThisFileDirectory)..\..\..\img\appicon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyName>MainDemo.Win</AssemblyName>
+    <RootNamespace>MainDemo.Win</RootNamespace>
+    <DefineConstants>DXCORE3</DefineConstants>
+    <Configurations>Debug;Release;EasyTest</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <AppConfig>App.config</AppConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == '$(WindowsFrameworkVersion6)'">
+    <AppConfig>App.NetCore.Desktop.config</AppConfig>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>DEBUG;TRACE;DXCORE3</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>TRACE;DXCORE3</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'EasyTest|AnyCPU' ">
+    <OutputPath>bin\EasyTest\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;EASYTEST;DXCORE3</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == '$(WindowsFrameworkVersion6)'">
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp.Notifications.Win" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.Office.Win" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.Security.Xpo" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.PivotChart.Win" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.ScriptRecorder.Win" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.FileAttachment.Win" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.Validation.Win" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.Blazor.All" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.ReportsV2.Win" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp.Scheduler.Win" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="App.NetCore.Desktop.config" />
+    <Content Include="ExpressApp.ico" />
+    <EmbeddedResource Include="Images\SplashScreenImage.svg" />
+    <Content Include="Model.xafml">
+      <Subtype>Designer</Subtype>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MainDemo.Module.Win\MainDemo.Module.Win.NetCore.Desktop.csproj" />
+    <ProjectReference Include="..\MainDemo.Module\MainDemo.Module.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.3.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="4.6.0" />
+  </ItemGroup>
+
+</Project>

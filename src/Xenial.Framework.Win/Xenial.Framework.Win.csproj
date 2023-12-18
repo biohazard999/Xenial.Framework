@@ -3,7 +3,14 @@
   <PropertyGroup>
     <TargetFrameworks>$(XenialWinTFMs)</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
+    <PackageTags>$(PackageTags) Win</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Layouts\LayoutLabelItem.cs" />
+    <Compile Remove="Layouts\LayoutSeparatorItem.cs" />
+    <Compile Remove="Layouts\LayoutSplitterItem.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp.Win" Version="$(DxPackageVersion)" />
@@ -11,6 +18,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
+    <ProjectReference Include="..\Xenial.Framework.Images\Xenial.Framework.Images.csproj" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>

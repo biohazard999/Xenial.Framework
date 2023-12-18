@@ -7,13 +7,14 @@
     <Copyright>Copyright $([System.Char]::ConvertFromUtf32(169)) Xenial, Manuel Grundner 2019-$([System.DateTime]::Today.ToString('yyyy'))</Copyright>
     <Authors>Xenial, Manuel Grundner</Authors>
     <FullFrameworkVersion>net462</FullFrameworkVersion>
-    <WindowsFrameworkVersion>net5.0-windows</WindowsFrameworkVersion>
+    <WindowsFrameworkVersion6>net6.0-windows</WindowsFrameworkVersion6>
     <NetStandardVersion>netstandard2.0</NetStandardVersion>
     <NetStandard2_1Version>netstandard2.1</NetStandard2_1Version>
     <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
-    <Net5Version>net5.0</Net5Version>
-    <NetBlazorLibVersion>$(Net5Version)</NetBlazorLibVersion>
-    <NetBlazorAppVersion>$(Net5Version)</NetBlazorAppVersion>
+    <Net6Version>net6.0</Net6Version>
+    <NetBlazorLibVersions>$(Net6Version)</NetBlazorLibVersions>
+    <NetBlazorLibVersion>$(Net6Version)</NetBlazorLibVersion>
+    <NetBlazorAppVersion>$(Net6Version)</NetBlazorAppVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -32,38 +33,54 @@
     <Publish>false</Publish>
     <IsPackTarget>false</IsPackTarget>
     <!-- TODO: Fix signiture -->
-    <NoWarn>$(NoWarn);NU5105;NU3018</NoWarn>
+    <NoWarn>$(NoWarn);NU5105;NU3018;BLAZOR106</NoWarn>
     <!-- <NoWarn>$(NoWarn);NU5105</NoWarn> -->
     <Nullable>enable</Nullable>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeFormatting.ruleset</CodeAnalysisRuleSet>
-    <DxVersion>21.1.6</DxVersion>
-    <XenialVersion>$(PackageVersion)</XenialVersion>
-    <AspNetCoreVersion>5.0.2</AspNetCoreVersion>
+
+    <DxVersion>23.1.5</DxVersion>
+    <DxVersionPostFix>v22.1</DxVersionPostFix>
+    <DxPackageVersion>[$(DxVersion),)</DxPackageVersion>
     <!-- <DxPackageVersion>[21.1.3-beta]</DxPackageVersion> -->
-    <DxPackageVersion>[$(DxVersion)]</DxPackageVersion>
+
+    <XenialVersion>$(PackageVersion)</XenialVersion>
     <XenialPackageVersion>$(XenialVersion)</XenialPackageVersion>
-    <XenialDemoPackageVersion>
-    </XenialDemoPackageVersion>
+    <XenialDemoPackageVersion></XenialDemoPackageVersion>
+
+    <AspNetCoreVersion>6.0.10</AspNetCoreVersion>
+    <NetCorePrimaryVersion>6.0.0</NetCorePrimaryVersion>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <RazorLangVersion>3.0</RazorLangVersion>
+
     <!-- Xenial Default Package Version -->
-    <XenialTFMs>$(NetStandardVersion);$(FullFrameworkVersion);$(Net5Version)</XenialTFMs>
-    <XenialWinTFMs>$(FullFrameworkVersion);$(WindowsFrameworkVersion)</XenialWinTFMs>
+    <XenialTFMs>$(NetStandardVersion);$(FullFrameworkVersion);$(Net6Version)</XenialTFMs>
+    <XenialTFMsExecutable>$(Net6Version);$(FullFrameworkVersion)</XenialTFMsExecutable>
+    <WindowsFrameworkVersion>$(WindowsFrameworkVersion6)</WindowsFrameworkVersion>
+    <XenialWinTFMs>$(FullFrameworkVersion);$(WindowsFrameworkVersion6)</XenialWinTFMs>
     <XenialBlazorTFMs>$(NetBlazorLibVersion)</XenialBlazorTFMs>
 
     <TargetFrameworks>$(XenialTFMs)</TargetFrameworks>
 
+    <!-- Enable Deterministic build -->
+    <!-- https://newbedev.com/is-it-possible-to-remove-the-full-paths-from-net-assemblies-created-with-dotnet-build -->
+    <Deterministic>true</Deterministic>
+    <DeterministicSourcePaths>true</DeterministicSourcePaths>
+
+
+    <!-- Building a 5.0 app with 6.0 SDK in VS 2019 causes analyzers to fail to load #36552 -->
+    <!-- https://github.com/dotnet/aspnetcore/issues/36552 -->
+   <DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-    <TargetFrameworks>$(NetStandardVersion);$(Net5Version)</TargetFrameworks>
+    <TargetFrameworks>$(NetStandardVersion);$(Net6Version)</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
     <DefineConstants>$(DefineConstants);FULL_FRAMEWORK</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == '$(Net5Version)'">
-    <DefineConstants>$(DefineConstants);NET5</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == '$(Net6Version)'">
+    <DefineConstants>$(DefineConstants);NET6</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="$(DxVersion) &lt;= 20.2.4">
     <DefineConstants>$(DefineConstants);DX_LTE_20_2_4</DefineConstants>
@@ -95,6 +112,39 @@
   <PropertyGroup Condition="$(DxVersion) &gt; 21.1.6">
     <DefineConstants>$(DefineConstants);DX_GT_21_1_6</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.2">
+    <DefineConstants>$(DefineConstants);DX_GT_21_2</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.1.7">
+    <DefineConstants>$(DefineConstants);DX_GT_21_1_7</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.2.2">
+    <DefineConstants>$(DefineConstants);DX_GT_21_2_2</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.2.3">
+    <DefineConstants>$(DefineConstants);DX_GT_21_2_3</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.2.4">
+    <DefineConstants>$(DefineConstants);DX_GT_21_2_4</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.2.4">
+    <DefineConstants>$(DefineConstants);DX_GT_21_2_4</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 21.2.5">
+    <DefineConstants>$(DefineConstants);DX_GT_21_2_5</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 22.1">
+    <DefineConstants>$(DefineConstants);DX_GT_22_1</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 22.1.3">
+    <DefineConstants>$(DefineConstants);DX_GT_22_1_3</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 22.1.6">
+    <DefineConstants>$(DefineConstants);DX_GT_22_1_6</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(DxVersion) &gt; 23.1.5">
+    <DefineConstants>$(DefineConstants);DX_GT_23_1_5</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
     <None Include="$(MSBuildThisFileDirectory)\LICENSE.md" Pack="true" PackagePath="\" Visible="false" />
@@ -108,8 +158,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Packaging.Targets">
-      <Version>0.1.189-*</Version>
+      <Version>0.1.220</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+
+  <ItemGroup Condition="'$(GITHUB_ACTIONS)' == ''">
+    <SourceRoot Include="$(MSBuildThisFileDirectory)/"/>
+  </ItemGroup>
+
 </Project>

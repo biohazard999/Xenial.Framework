@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <GenerateXenialLicense>false</GenerateXenialLicense>
+    <GenerateXenialModuleInitializer>false</GenerateXenialModuleInitializer>
+    <GenerateXenialModuleInitializerPolyfill>false</GenerateXenialModuleInitializerPolyfill>
+    <XenialAttributesVisibility>public</XenialAttributesVisibility>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- TODO: Generate XML-docs for generated attributes -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="build\Xenial.Framework.CompilerServices.props" />
+    <None Remove="build\Xenial.Framework.CompilerServices.targets" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="build\Xenial.Framework.CompilerServices.props">
+      <PackagePath>build\</PackagePath>
+    </Content>
+    <Content Include="build\Xenial.Framework.CompilerServices.targets">
+      <PackagePath>build\</PackagePath>
+    </Content>
+  </ItemGroup>
+
+</Project>

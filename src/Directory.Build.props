@@ -5,13 +5,20 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <IsPackable>true</IsPackable>
-    <NoWarn>VSTHRD200;CA1014;CA5392;CA1200;CS1658;CS1584;CA1200;IDE0079;$(NoWarn)</NoWarn>
-    <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
+    <NoWarn>VSTHRD200;CA1014;CA5392;CA1200;CS1658;CS1584;CA1200;CA2237;IDE0079;XENLIC0001;$(NoWarn)</NoWarn>
+    <PackageTags>Xenial Framework eXpressApp DevExpress XAF</PackageTags>
     <XenialPublicKey Condition="$(XenialPublicKey) == ''"></XenialPublicKey>
     <CheckXenialLicense>false</CheckXenialLicense>
     <_XenialLicGenVersion Condition="$(XenialLicGenVersion) != ''">[$(XenialLicGenVersion)]</_XenialLicGenVersion>
     <XenialLicGenVersion Condition="$(XenialLicGenVersion) == ''">*-*</XenialLicGenVersion>
     <_XenialLicGenVersion Condition="$(XenialLicGenVersion) == '*-*'">*-*</_XenialLicGenVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+    <!-- https://docs.microsoft.com/en-us/dotnet/standard/assembly/create-signed-friend -->
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>../../Xenial.Framework.snk</AssemblyOriginatorKeyFile>
+    <XenialPublicSignKey>0024000004800000940000000602000000240000525341310004000001000100894b3cc31d0bf0dba805268f422fb15c24304d68324d0bcad708a5b779e0e95ba128e1c3fc35525af4843682e2996c303fd1c6a2d25cf3326335b1aa1e6c3ff6ec99a992405d6963db9cdf6908467aace5b4d839ff5e929217be06df86bd9f9ffbbc5bb4ab46340882904bd4b53688105bdc6d375acb0a1535867f66bf08b6af</XenialPublicSignKey>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,16 +27,39 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MinVer" Version="2.3.1">
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
-    <PackageReference Include="Standard.Licensing" Version="1.1.5" />
+    <PackageReference Include="MinVer" Version="2.5.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <!-- TODO: CodeStyle Analyzer -->
+    <!-- <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference> -->
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(GITHUB_ACTIONS)' != ''">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Xenial.Licensing" Version="$(_XenialLicGenVersion)" />
+
     <PackageReference Include="Xenial.Framework.LicGen" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
+    <PackageReference Include="Xenial.Framework.Generators.Internal" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

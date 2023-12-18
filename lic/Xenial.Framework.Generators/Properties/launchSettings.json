@@ -1,0 +1,24 @@
+﻿{
+  "profiles": {
+    "Acme.Module": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\..\\demos\\SourceGenerators\\Acme.Module\\Acme.Module.csproj"
+    },
+    "Acme.LayoutBuilderDemo": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\..\\demos\\SourceGenerators\\Acme.LayoutBuilderDemo\\Acme.LayoutBuilderDemo.csproj"
+    },
+    "MainDemo.Module": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\..\\demos\\MainDemo\\MainDemo.Module\\MainDemo.Module.csproj"
+    },
+    "Xenial.Framework.Generators.Images": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Xenial.Framework.Images\\Xenial.Framework.Images.csproj"
+    },
+    "Xenial.Framework": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Xenial.Framework\\Xenial.Framework.csproj"
+    }
+  }
+}

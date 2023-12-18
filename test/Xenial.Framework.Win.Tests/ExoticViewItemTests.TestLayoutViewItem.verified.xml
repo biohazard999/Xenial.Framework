@@ -1,0 +1,30 @@
+﻿<DetailView Id="ExoticViewItemBusinessObject_DetailView"
+            ClassName="Xenial.Framework.Tests.xUnit.Layouts.ExoticViewItemBusinessObject">
+  <Items>
+    <PropertyEditor Id="MyString"
+                    PropertyName="MyString" />
+    <PropertyEditor Id="MyString1"
+                    PropertyName="MyString"
+                    Caption="My Caption 2" />
+    <PropertyEditor Id="MyString2"
+                    PropertyName="MyString"
+                    Caption="My Caption 3" />
+  </Items>
+  <Layout>
+    <LayoutGroup Id="Main">
+      <LayoutItem Id="MyString"
+                  ViewItem="MyString"
+                  Index="0" />
+      <SplitterItem Id="Splitter-1"
+                    Index="1" />
+      <LayoutItem Id="MyString1"
+                  ViewItem="MyString1"
+                  Index="2" />
+      <SeparatorItem Id="Separator-3"
+                     Index="3" />
+      <LayoutItem Id="MyString2"
+                  ViewItem="MyString2"
+                  Index="4" />
+    </LayoutGroup>
+  </Layout>
+</DetailView>

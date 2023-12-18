@@ -2,7 +2,7 @@
 
 namespace Xenial.Framework.Lab
 {
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial class XenialLabModule : XenialModuleBase
     {
     }

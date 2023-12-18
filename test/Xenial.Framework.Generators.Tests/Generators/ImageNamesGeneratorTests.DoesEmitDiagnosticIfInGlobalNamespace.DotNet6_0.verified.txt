@@ -1,0 +1,17 @@
+﻿{
+  Diagnostics: [
+    {
+      Id: XENGEN0101,
+      Title: The class using the [XenialImageNamesAttribute] needs to be in a namespace,
+      Severity: Error,
+      WarningLevel: 0,
+      Location: MyNonPartialClass.cs: (1,0)-(4,1),
+      Description: The class using the [XenialImageNamesAttribute] needs to be namespace,
+      HelpLink: ,
+      MessageFormat: The class using the [XenialImageNamesAttribute] needs to be in a namespace,
+      Message: The class using the [XenialImageNamesAttribute] needs to be in a namespace,
+      Category: Usage,
+      CustomTags: []
+    }
+  ]
+}

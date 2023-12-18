@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Validation.Win;
 
 using Xenial.Framework;
+using Xenial.Framework.DevTools.Win;
 
 namespace MailClient.Module.Win
 {
@@ -16,13 +19,24 @@ namespace MailClient.Module.Win
             => base.GetRequiredModuleTypesCore().AndModuleTypes(new[]
             {
                 typeof(ValidationWindowsFormsModule),
+                typeof(XenialDevToolsWindowsFormsModule),
                 typeof(MailClientModule)
             });
+
+        protected override IEnumerable<Type> GetDeclaredControllerTypes()
+            => base.GetDeclaredControllerTypes()
+                .UseXenialWindowsFormsControllers()
+                .Concat(new[]
+                {
+                    typeof(CustomHRController)
+                });
 
         protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
-            editorDescriptorsFactory.UseTokenStringPropertyEditorsWin();
+            editorDescriptorsFactory
+                .UseTokenStringPropertyEditorsWin()
+                .UseLabelStringPropertyEditorsWin();
         }
     }
 }

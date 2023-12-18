@@ -25,7 +25,7 @@ namespace MailClient.Win
             Tracing.Initialize();
 
 
-            var winApplication = new MailClientWindowsFormsApplication();
+            using var winApplication = new MailClientWindowsFormsApplication();
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached && winApplication.CheckCompatibilityType == CheckCompatibilityType.DatabaseSchema)
             {

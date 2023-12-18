@@ -4,7 +4,7 @@ title: 'DetailViewLayoutBuilders - ModelBuilder Syntax'
 
 # DetailViewLayoutBuilders - `ModelBuilder` Syntax
 
-`DetailViewLayoutBuilders` are fully integrated into [ModelBuilders](/guide/modelbuilders.md).
+`DetailViewLayoutBuilders` are fully integrated into [ModelBuilders](/guide/model-builders.md).
 
 ## Registration
 
@@ -14,7 +14,7 @@ Registration is exactly the same as before, override the `AddGeneratorUpdaters` 
 
 ## Build the Layout
 
-As with [ModelBuilders](/guide/modelbuilders.md) this example will use fluent syntax combined with the `WithDetailViewLayout`.
+As with [ModelBuilders](/guide/model-builders.md) this example will use fluent syntax combined with the `WithDetailViewLayout`.
 
 <!--Once again the font size of this detail tip seems out of kilter -->
 

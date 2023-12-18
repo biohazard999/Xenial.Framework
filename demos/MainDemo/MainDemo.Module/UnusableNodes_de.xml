@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application>
+  <Views Id="Views">
+    <DetailView Id="DemoTask_DetailView">
+      <Layout Id="Layout">
+        <LayoutGroup Id="Main">
+          <LayoutGroup Id="SimpleEditors">
+            <LayoutGroup Id="DemoTask">
+              <LayoutGroup Id="Task" Caption="Details" />
+              <LayoutGroup Id="AdditionalInformation" Caption="Zusätzliche Informationen" />
+            </LayoutGroup>
+          </LayoutGroup>
+          <LayoutGroup Id="Employees_Group" Caption="Mitarbeiter" />
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <DetailView Id="Employee_DetailView">
+      <Layout Id="Layout">
+        <LayoutGroup Id="Main">
+          <LayoutGroup Id="SimpleEditors">
+            <LayoutGroup Id="Person" Caption="Details" />
+            <LayoutGroup Id="Employee" Caption="Zusätzliche Informationen" />
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+    <ListView Id="Employee_ListView">
+      <Filters Id="Filters">
+        <Filter Id="AllEmployees" Caption="Alle Mitarbeiter" />
+        <Filter Id="Developers" Caption="Entwickler" />
+        <Filter Id="Managers" Caption="Führungskräfte" />
+        <Filter Id="TopExecutives" Caption="Geschäftsleitung" />
+      </Filters>
+    </ListView>
+    <DetailView Id="Paycheck_DetailView">
+      <Layout Id="Layout">
+        <LayoutGroup Id="Main">
+          <LayoutGroup Id="Autoc7781f53-9294-4695-b3a5-f47400c12e7a">
+            <LayoutGroup Id="Employee_Group" Caption="Mitarbeiterdetails" />
+            <LayoutGroup Id="Period_Group" Caption="Periode" />
+          </LayoutGroup>
+          <LayoutGroup Id="Autoc465db88-4795-44dc-a2a0-cbf0c4c1eaca">
+            <LayoutGroup Id="Totals_Group" Caption="Gesamt" />
+            <LayoutGroup Id="Payment_Group" Caption="Zahlungsdetails" />
+          </LayoutGroup>
+          <LayoutGroup Id="Overtime_Pay" Caption="Überstundenbezahlung" />
+          <LayoutGroup Id="SizeableEditors" Caption="Anmerkungen" />
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
+  </Views>
+</Application>

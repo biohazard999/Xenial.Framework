@@ -7,7 +7,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Utils\TestResources\TestEmbeddedResource.txt" />
   </ItemGroup>
+    
+  <ItemGroup>
+    <PackageReference Include="Verify.AngleSharp" Version="2.7.3" />
+  </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Xenial.Framework.Generators" Version="$(_XenialLicGenVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\Xenial.Framework\Xenial.Framework.csproj" />
   </ItemGroup>

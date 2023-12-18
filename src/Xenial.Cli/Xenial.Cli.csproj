@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(Net6Version)</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <IsPackable>true</IsPackable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>xenial</ToolCommandName>
+    <NoWarn>CA2007;$(NoWarn)</NoWarn>
+    <SignAssembly>False</SignAssembly>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Remove="Packaging.Targets" />
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+    <PackageReference Include="StreamJsonRpc" Version="2.10.44" />
+    <PackageReference Include="NuGet.Protocol" Version="6.1.0" />
+    <PackageReference Include="NuGet.LibraryModel" Version="6.1.0" />
+    <PackageReference Include="NuGet.Commands" Version="6.1.0" />
+    <PackageReference Include="CsProjEditor" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xenial.Design.Contracts\Xenial.Design.Contracts.csproj" />
+    <ProjectReference Include="..\Xenial.Design\Xenial.Design.csproj">
+      <ExcludeAssets>All</ExcludeAssets>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>Content</OutputItemType>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="..\Xenial.Framework.DevTools\Xenial.Framework.DevTools.csproj" />
+    <ProjectReference Include="..\Xenial.Framework\Xenial.Framework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Buildalyzer" Version="4.1.2" />
+    <PackageReference Include="Buildalyzer.Workspaces" Version="4.1.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.1.0" />
+    <PackageReference Include="SimpleExec" Version="9.1.0" />
+    <PackageReference Include="Karambolo.Extensions.Logging.File" Version="3.2.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageReference Include="Spectre.Console" Version="0.43.1-preview.0.45" />
+    <PackageReference Include="Spectre.Console.Analyzer" Version="0.43.1-preview.0.45" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta3.22114.1" />
+    <PackageReference Include="TextMateSharp" Version="1.0.31" />
+    <PackageReference Include="TextMateSharp.Grammars" Version="1.0.31" />
+  </ItemGroup>
+
+</Project>

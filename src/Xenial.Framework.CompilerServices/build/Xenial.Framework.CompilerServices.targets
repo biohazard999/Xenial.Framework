@@ -1,0 +1,16 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="InjectXenialGeneratorAttributesCompilerServices" BeforeTargets="InjectXenialGeneratorAttributes">
+
+    <PropertyGroup>
+      <GenerateXenialXpoBuilderAttribute Condition="'$(GenerateXenialXpoBuilderAttribute)' == ''">false</GenerateXenialXpoBuilderAttribute>
+      <GenerateXenialImageNamesAttribute Condition="'$(GenerateXenialImageNamesAttribute)' == ''">false</GenerateXenialImageNamesAttribute>
+      <GenerateXenialActionAttribute Condition="'$(GenerateXenialActionAttribute)' == ''">false</GenerateXenialActionAttribute>
+      <GenerateXenialTypeForwardedTypes Condition="'$(GenerateXenialTypeForwardedTypes)' == ''">false</GenerateXenialTypeForwardedTypes>
+      <GenerateXenialViewIdsAttribute Condition="'$(GenerateXenialViewIdsAttribute)' == ''">false</GenerateXenialViewIdsAttribute>
+      <GenerateXenialLayoutBuilderAttribute Condition="'$(GenerateXenialLayoutBuilderAttribute)' == ''">false</GenerateXenialLayoutBuilderAttribute>
+    </PropertyGroup>
+
+  </Target>
+
+</Project>

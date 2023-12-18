@@ -8,16 +8,15 @@
     <NoWarn>CA1014;CA1303;CA1716;$(NoWarn)</NoWarn>
     <CheckXenialLicense>false</CheckXenialLicense>
     <GenerateXenialLicense>false</GenerateXenialLicense>
-    <XenialDebug>true</XenialDebug>
     <SrcDirectory>$(MSBuildThisFileDirectory)..\src\</SrcDirectory>
     <XenialDemoPackageVersion Condition="'$(XenialDemoPackageVersion)' == ''">*-*</XenialDemoPackageVersion>
-    <DxVersionPart>v21.1</DxVersionPart>
+    <DxVersionPart>v22.1</DxVersionPart>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <XenialDebug>false</XenialDebug>
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
+    <XenialDebug></XenialDebug>
   </PropertyGroup>
 
 </Project>

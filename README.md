@@ -1,8 +1,9 @@
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) [![Join the chat at https://gitter.im/Xenial-Framework/community](https://badges.gitter.im/Xenial-Framework/community.svg)](https://gitter.im/Xenial-Framework/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Xenial.Framework](https://github.com/xenial-io/Xenial.Framework/workflows/Xenial.Framework/badge.svg) ![Nuget](https://img.shields.io/nuget/v/Xenial.Framework)
+﻿[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) [![Join the chat at https://gitter.im/Xenial-Framework/community](https://badges.gitter.im/Xenial-Framework/community.svg)](https://gitter.im/Xenial-Framework/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Xenial.Framework](https://github.com/xenial-io/Xenial.Framework/workflows/Xenial.Framework/badge.svg) ![Nuget](https://img.shields.io/nuget/v/Xenial.Framework)
 
 <img src="img/logo.svg" width="100px" />
 
 # Xenial.Framework
+
 Extensions for the DevExpress ExpressApp Framework - Easy. Flexible. Focused.
 
 Platform support: [.NET Standard 2.0 and upwards, including net462](https://docs.microsoft.com/en-us/dotnet/standard/net-standard).  
@@ -55,6 +56,8 @@ b.bat
 #Linux & MacOS
 . build.sh
 ```
+
+> To prepare the project for local builds (remove potential warnings from VS) run `build local`
 
 The project uses [bullseye](https://github.com/adamralph/bullseye) to list individual targets use `build -l`.
 

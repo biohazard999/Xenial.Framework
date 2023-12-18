@@ -9,11 +9,13 @@ using DevExpress.ExpressApp.Model;
 using DevExpress.ExpressApp.Model.Core;
 using DevExpress.ExpressApp.Updating;
 using DevExpress.ExpressApp.Validation;
+using DevExpress.Persistent.Base;
 
 using MailClient.Module.BusinessObjects;
 using MailClient.Module.Updaters;
 
 using Xenial.Framework;
+using Xenial.Framework.DevTools;
 using Xenial.Framework.ModelBuilders;
 
 namespace MailClient.Module
@@ -24,20 +26,21 @@ namespace MailClient.Module
 
         protected override ModuleTypeList GetRequiredModuleTypesCore() => base.GetRequiredModuleTypesCore().AndModuleTypes(new[]
         {
-            typeof(ValidationModule)
+            typeof(ValidationModule),
+            typeof(XenialDevToolsModule)
         });
 
         protected override IEnumerable<Type> GetRegularTypes() => base.GetRegularTypes()
-            .UseTokenStringEditorRegularTypes();
+            .UseXenialTokenStringEditorRegularTypes();
 
-        protected override IEnumerable<Type> GetDeclaredExportedTypes() => ModelTypeList.PersistentTypes;
+        protected override IEnumerable<Type> GetDeclaredExportedTypes()
+            => TypeList.ExportedTypes;
 
         protected override IEnumerable<Type> GetDeclaredControllerTypes()
             => new[]
             {
-                typeof(Xenial.Framework.SystemModule.SingletonController), //TODO: Extension method for feature slice
-                typeof(ReceiveMailsViewController)
-            };
+                typeof(Xenial.Framework.SystemModule.XenialSingletonViewController), //TODO: Extension method for feature slice
+            }.UseBaseControllerTypes();
 
         public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB) => base.GetModuleUpdaters(objectSpace, versionFromDB).Concat(new ModuleUpdater[]
         {
@@ -47,7 +50,9 @@ namespace MailClient.Module
         protected override void RegisterEditorDescriptors(EditorDescriptorsFactory editorDescriptorsFactory)
         {
             base.RegisterEditorDescriptors(editorDescriptorsFactory);
-            editorDescriptorsFactory.UseTokenStringPropertyEditors();
+            editorDescriptorsFactory
+                .UseTokenStringPropertyEditors()
+                .UseLabelStringPropertyEditors();
         }
 
         public override void ExtendModelInterfaces(ModelInterfaceExtenders extenders)
@@ -84,16 +89,18 @@ namespace MailClient.Module
         {
             base.AddGeneratorUpdaters(updaters);
 
-            updaters.UseApplicationOptions(new Xenial.Framework.Model.GeneratorUpdaters.ApplicationOptions
+            updaters.UseApplicationOptions(new()
             {
                 Layout =
                 {
-                    CaptionLocation = DevExpress.Persistent.Base.Locations.Top
+                    CaptionLocation = Locations.Top
                 }
             });
 
+            updaters.UseXenialImages();
             updaters.UseSingletonNavigationItems();
             updaters.UseNoViewsGeneratorUpdater();
+            updaters.UseDeclareViewsGeneratorUpdater();
             updaters.UseDetailViewLayoutBuilders();
             updaters.UseListViewColumnBuilders();
         }

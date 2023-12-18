@@ -1,11 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <NoWarn>CA1716;$(NoWarn)</NoWarn>
+    <NoWarn>CA1716;CA2220;CA1040;CA1710;CA2229;$(NoWarn)</NoWarn>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <PackageTags>$(PackageTags) Agnostic</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="**\*.Extension.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.Extension', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.Extensions.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.Extensions', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.Mappers.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.Mappers', '.cs'))</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.ColumnsBuilder.cs">
+      <DependentUpon>$([System.String]::Copy(%(Filename)).Replace('.ColumnsBuilder', '.cs'))</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
 </Project>

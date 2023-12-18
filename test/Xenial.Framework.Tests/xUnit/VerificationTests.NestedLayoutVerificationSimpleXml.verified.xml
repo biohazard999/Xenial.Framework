@@ -1,0 +1,24 @@
+﻿<DetailView Id="ComplexBusinessObject_DetailView"
+            ClassName="Xenial.Framework.Tests.Layouts.Items.ComplexBusinessObject">
+  <Items>
+    <PropertyEditor Id="NestedObject"
+                    PropertyName="NestedObject" />
+    <PropertyEditor Id="NestedObject.StringProperty"
+                    PropertyName="NestedObject.StringProperty" />
+    <PropertyEditor Id="OwnString"
+                    PropertyName="OwnString" />
+  </Items>
+  <Layout>
+    <LayoutGroup Id="Main">
+      <LayoutItem Id="OwnString"
+                  ViewItem="OwnString"
+                  Index="0" />
+      <LayoutItem Id="NestedObject"
+                  ViewItem="NestedObject"
+                  Index="1" />
+      <LayoutItem Id="NestedObject.StringProperty"
+                  ViewItem="NestedObject.StringProperty"
+                  Index="2" />
+    </LayoutGroup>
+  </Layout>
+</DetailView>

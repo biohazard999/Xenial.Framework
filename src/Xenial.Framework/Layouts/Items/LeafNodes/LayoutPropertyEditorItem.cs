@@ -3,94 +3,112 @@
 #pragma warning disable IDE1006 // Naming Styles
 
 using System;
-using System.Linq.Expressions;
 
 using DevExpress.ExpressApp.Model;
 
-using Xenial.Data;
 using Xenial.Framework.Layouts.Items.Base;
 
-namespace Xenial.Framework.Layouts.Items.LeafNodes
-{
-    /// <summary>   (Immutable) a layout property editor item. </summary>
-    [XenialCheckLicence]
-    public partial record LayoutPropertyEditorItem(string PropertyEditorId) : LayoutViewItem(PropertyEditorId)
+namespace Xenial.Framework.Layouts.Items.LeafNodes;
+
+/// <summary>   (Immutable) a layout property editor item. </summary>
+[XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelPropertyEditor), IgnoredMembers = new[]
     {
-        /// <summary>   Creates the specified property editor identifier. </summary>
-        ///
-        /// <param name="propertyEditorId"> The property editor identifier. </param>
-        ///
-        /// <returns>   Xenial.Framework.Layouts.Items.LeafNodes.LayoutPropertyEditorItem. </returns>
-
-        public static new LayoutPropertyEditorItem Create(string propertyEditorId)
-            => new(propertyEditorId);
-
-        /// <summary>   Creates the specified property editor identifier. </summary>
-        ///
-        /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
-        ///                                             null. </exception>
-        ///
-        /// <param name="propertyEditorId">         The property editor identifier. </param>
-        /// <param name="configurePropertyEditor">  The configure property editor. </param>
-        ///
-        /// <returns>   Xenial.Framework.Layouts.Items.LeafNodes.LayoutPropertyEditorItem. </returns>
-
-        public static LayoutPropertyEditorItem Create(string propertyEditorId, Action<LayoutPropertyEditorItem> configurePropertyEditor)
-        {
-            _ = configurePropertyEditor ?? throw new ArgumentNullException(nameof(configurePropertyEditor));
-            var editor = new LayoutPropertyEditorItem(propertyEditorId);
-            configurePropertyEditor(editor);
-            return editor;
-        }
-
-        /// <summary>   Gets or sets the property editor options. </summary>
-        ///
-        /// <value> The property editor options. </value>
-
-        public Action<IModelPropertyEditor>? PropertyEditorOptions { get; set; }
+        "Id",
+        nameof(IModelViewItem.Caption),
+        nameof(IModelPropertyEditor.Index),
+        nameof(IModelPropertyEditor.ToolTip),
+        nameof(IModelPropertyEditor.View),
     }
+)]
+public partial record LayoutPropertyEditorItem(string PropertyEditorId)
+    : LayoutMemberViewItem(PropertyEditorId)
+{
+    /// <summary>   Creates the specified property editor identifier. </summary>
+    ///
+    /// <param name="propertyEditorId"> The property editor identifier. </param>
+    ///
+    /// <returns>   Xenial.Framework.Layouts.Items.LeafNodes.LayoutPropertyEditorItem. </returns>
+
+    public static LayoutPropertyEditorItem Create(string propertyEditorId)
+        => new(propertyEditorId);
+
+    /// <summary>   Creates the specified property editor identifier. </summary>
+    ///
+    /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
+    ///                                             null. </exception>
+    ///
+    /// <param name="propertyEditorId">         The property editor identifier. </param>
+    /// <param name="configurePropertyEditor">  The configure property editor. </param>
+    ///
+    /// <returns>   Xenial.Framework.Layouts.Items.LeafNodes.LayoutPropertyEditorItem. </returns>
+
+    public static LayoutPropertyEditorItem Create(string propertyEditorId, Action<LayoutPropertyEditorItem> configurePropertyEditor)
+    {
+        _ = configurePropertyEditor ?? throw new ArgumentNullException(nameof(configurePropertyEditor));
+        var editor = new LayoutPropertyEditorItem(propertyEditorId);
+        configurePropertyEditor(editor);
+        return editor;
+    }
+
+    private string? editorAlias;
+    internal bool WasEditorAliasSet { get; set; }
+    /// <summary>
+    /// Specifies an editor alias.
+    /// </summary>
+    public string? EditorAlias
+    {
+        get => editorAlias;
+        set
+        {
+            WasEditorAliasSet = true;
+            editorAlias = value;
+        }
+    }
+
+    private string? viewId;
+    internal bool WasViewIdSet { get; set; }
+
+    /// <summary>
+    /// Specifies a view id
+    /// </summary>
+    [MappedFromModelNode(nameof(IModelPropertyEditor.View), "Application.Views")]
+    public string? ViewId
+    {
+        get => viewId;
+        set
+        {
+            WasViewIdSet = true;
+            viewId = value;
+        }
+    }
+}
+
+/// <summary>
+/// 
+/// </summary>
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+public sealed class MappedFromModelNodeAttribute : Attribute
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="toNode"></param>
+    /// <param name="fromCollection"></param>
+    public MappedFromModelNodeAttribute(string toNode, string fromCollection)
+        => (ToNode, FromCollection) = (
+            toNode ?? throw new ArgumentNullException(nameof(toNode)),
+            fromCollection ?? throw new ArgumentNullException(nameof(fromCollection))
+    );
 
     /// <summary>
     /// 
     /// </summary>
-    [XenialCheckLicence]
-    public partial record LayoutPropertyEditorItem<TModelClass>(string ViewItemId) : LayoutPropertyEditorItem(ViewItemId)
-        where TModelClass : class
-    {
-        /// <summary>   Gets the expression helper. </summary>
-        ///
-        /// <value> The expression helper. </value>
+    public string ToNode { get; }
 
-        protected static ExpressionHelper<TModelClass> ExpressionHelper { get; } = Xenial.Utils.ExpressionHelper.Create<TModelClass>();
-
-        /// <summary>   Creates the specified expression. </summary>
-        ///
-        /// <typeparam name="TProperty">    The type of the t property. </typeparam>
-        /// <param name="expression">   The expression. </param>
-        ///
-        /// <returns>
-        /// Xenial.Framework.Layouts.Items.LeafNodes.LayoutPropertyEditorItem&lt;TModelClass&gt;.
-        /// </returns>
-
-        public static LayoutPropertyEditorItem<TModelClass> Create<TProperty>(Expression<Func<TModelClass, TProperty>> expression)
-            => new(ExpressionHelper.Property(expression));
-
-        /// <summary>   Creates the specified expression. </summary>
-        ///
-        /// <typeparam name="TProperty">    The type of the t property. </typeparam>
-        /// <param name="expression">               The expression. </param>
-        /// <param name="configurePropertyEditor">  The configure property editor. </param>
-        ///
-        /// <returns>
-        /// Xenial.Framework.Layouts.Items.LeafNodes.LayoutPropertyEditorItem&lt;TModelClass&gt;.
-        /// </returns>
-
-        public static LayoutPropertyEditorItem<TModelClass> Create<TProperty>(Expression<Func<TModelClass, TProperty>> expression, Action<LayoutPropertyEditorItem<TModelClass>> configurePropertyEditor)
-        {
-            _ = configurePropertyEditor ?? throw new ArgumentNullException(nameof(configurePropertyEditor));
-            var editor = new LayoutPropertyEditorItem<TModelClass>(ExpressionHelper.Property(expression));
-            configurePropertyEditor(editor);
-            return editor;
-        }
-    }
+    /// <summary>
+    /// 
+    /// </summary>
+    public string FromCollection { get; }
 }

@@ -5,7 +5,7 @@ using DevExpress.ExpressApp.Blazor.SystemModule;
 
 namespace Xenial.Framework.Lab.Blazor
 {
-    [XenialCheckLicence]
+    [XenialCheckLicense]
     public sealed partial class XenialLabBlazorModule : XenialModuleBase
     {
         /// <summary>   Gets required module types core. </summary>

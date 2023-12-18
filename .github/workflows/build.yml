@@ -7,7 +7,10 @@ on:
     branches: [ main ]
     tags: [v*]
     paths-ignore: [docs/**]
-  pull_request:
+#  pull_request:
+#    branches: [ main ]
+#    paths-ignore: [docs/**]
+  pull_request_target:
     branches: [ main ]
     paths-ignore: [docs/**]
 
@@ -29,7 +32,14 @@ jobs:
     - name: Echo TagName
       if: startsWith(github.ref, 'refs/tags/v')
       run: echo ${{ steps.get_version.outputs.VERSION }}
-
+      
+    - name: Use PullRequest Git Base
+      if: github.event_name == 'pull_request_target'
+      uses: actions/checkout@v2
+      with:
+        ref: ${{github.event.pull_request.head.ref}}
+        repository: ${{github.event.pull_request.head.repo.full_name}}
+        
     - uses: actions/checkout@v2
     - name: Fetch all history for all tags and branches
       run: |
@@ -45,18 +55,31 @@ jobs:
       with:
         dotnet-version: 5.0.x
 
+    - name: Setup .NET6
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Setup .NET7
+      uses: actions/setup-dotnet@v1
+      with:
+        #dotnet-version: 7.0.x
+        dotnet-version: '7.0.100-preview.1.22110.4'
+        include-prerelease: true
+        
     - name: Build
       run: dotnet run --project build/build.csproj pack
       env:
           DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
+          GITHUB_EVENT_NAME: ${{github.event_name}}
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v2.2.4
       if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
       with:
         name: nuget
         path: artifacts/nuget/*
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v2.2.4
       if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
       with:
         name: nuget
@@ -68,6 +91,7 @@ jobs:
       env:
           DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
           XENIAL_FEATURECENTER_DEFAULTCONNECTIONSTRING: ${{secrets.XENIAL_FEATURECENTER_DEFAULTCONNECTIONSTRING}}
+          GITHUB_EVENT_NAME: ${{github.event_name}}
 
     - name: publish:publish:Xenial.FeatureCenter.Win
       if: runner.os == 'Windows'
@@ -75,6 +99,7 @@ jobs:
       env:
           DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
           XENIAL_FEATURECENTER_DEFAULTCONNECTIONSTRING: ${{secrets.XENIAL_FEATURECENTER_DEFAULTCONNECTIONSTRING}}
+          GITHUB_EVENT_NAME: ${{github.event_name}}
 
     - name: deploy:publish:framework.featurecenter.xenial.io
       if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
@@ -84,6 +109,7 @@ jobs:
           WEBDEPLOY_IP: ${{secrets.WEBDEPLOY_IP}}
           WEBDEPLOY_USER: ${{secrets.WEBDEPLOY_USER}}
           WEBDEPLOY_PASS: ${{secrets.WEBDEPLOY_PASS}}
+          GITHUB_EVENT_NAME: ${{github.event_name}}
 
     - name: Create Release
       id: create_release
@@ -99,15 +125,15 @@ jobs:
         prerelease: false
 
     - name: Upload Release Asset
-      id: upload-release-asset
+      id: upload-release-asset-net462
       if: runner.os == 'Windows' && startsWith(github.ref, 'refs/tags/v')
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: ./artifacts/Xenial.FeatureCenter.Win.${{ steps.get_version.outputs.VERSION }}.AnyCPU.zip
-        asset_name: Xenial.FeatureCenter.Win.${{ steps.get_version.outputs.VERSION }}.AnyCPU.zip
+        asset_path: ./artifacts/Xenial.FeatureCenter.Win.${{ steps.get_version.outputs.VERSION }}.zip
+        asset_name: Xenial.FeatureCenter.Win.${{ steps.get_version.outputs.VERSION }}.zip
         asset_content_type: application/zip
 
   deploy-packages:
@@ -125,13 +151,21 @@ jobs:
           name: nuget
           path: artifacts/nuget/
 
-      - name: Setup .NET5
+      - name: Setup .NET6
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 6.0.x
 
+      #- name: Setup .NET7
+      #  uses: actions/setup-dotnet@v1
+      #  with:
+      #    #dotnet-version: 7.0.x
+      #    dotnet-version: '7.0.100-preview.1.22110.4'
+      #    include-prerelease: true
+        
       - name: Publish to nuget.org
         run: dotnet run --project build/build.csproj deploy.nuget
         env:
           NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
           DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
+          GITHUB_EVENT_NAME: ${{github.event_name}}

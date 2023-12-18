@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Xenial.Framework.LicGen
@@ -80,9 +76,9 @@ namespace Xenial.Framework.LicGen
             syntaxWriter.OpenBrace();
             syntaxWriter.WriteLine("[AttributeUsage(AttributeTargets.Class)]");
             syntaxWriter.WriteLine("[CompilerGenerated]");
-            syntaxWriter.WriteLine("internal class XenialCheckLicenceAttribute : Attribute");
+            syntaxWriter.WriteLine("internal sealed class XenialCheckLicenseAttribute : Attribute");
             syntaxWriter.OpenBrace();
-            syntaxWriter.WriteLine("public XenialCheckLicenceAttribute() { }");
+            syntaxWriter.WriteLine("public XenialCheckLicenseAttribute() { }");
 
             syntaxWriter.CloseBrace();
             syntaxWriter.CloseBrace();
@@ -104,7 +100,7 @@ namespace Xenial.Framework.LicGen
             var syntax = checkTemplate
                 .Replace("__NAMESPACE__", context.Compilation.AssemblyName)
                 .Replace("%ProductName%", xenialProduct)
-                .Replace("%PulicKeyToken%", xenialPublicKey);
+                .Replace("%PublicKeyToken%", xenialPublicKey);
 
             var source = SourceText.From(syntax, Encoding.UTF8);
             context.AddSource("XenialLicenseCheck.g.cs", source);

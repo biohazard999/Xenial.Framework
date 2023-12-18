@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <NoWarn>CA1034;$(NoWarn)</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Basic.Reference.Assemblies" Version="1.2.4" />
+    <PackageReference Include="Basic.Reference.Assemblies.NetStandard20" Version="1.2.4" />
+    <PackageReference Include="Verify.SourceGenerators" Version="1.3.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="All" />
+    <PackageReference Include="DevExpress.Xpo" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\lic\Xenial.Framework.Generators\Xenial.Framework.Generators.csproj" />
+    <ProjectReference Include="..\..\stubs\Xenial.Framework.Stubs\Xenial.Framework.Stubs.csproj" />
+  </ItemGroup>
+
+</Project>

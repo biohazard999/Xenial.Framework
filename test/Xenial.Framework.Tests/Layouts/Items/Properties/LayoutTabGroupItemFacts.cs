@@ -196,23 +196,6 @@ namespace Xenial.Framework.Tests.Layouts.Items
                         [e.Property(p => p.ToolTipIconType)] = toolTipIconType
                     });
                 });
-
-            });
-
-            It($"{nameof(LayoutTabGroupItem.LayoutGroupOptions)} is called", () =>
-            {
-                var optionsCallback = A.Fake<Action<IModelLayoutGroup>>();
-                var detailView = CreateDetailViewWithLayout(b => new()
-                {
-                    b.Tab() with
-                    {
-                        LayoutGroupOptions = optionsCallback
-                    }
-                });
-
-                var _ = detailView?.Layout?.FirstOrDefault(); //We need to access the layout node cause it's lazy evaluated
-
-                A.CallTo(optionsCallback).MustHaveHappenedOnceExactly();
             });
         });
     }

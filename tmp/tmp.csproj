@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <XenialDebugSourceGenerators>true</XenialDebugSourceGenerators>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--<PackageReference Include="Xenial.Framework.CompilerServices" Version="0.2.6-alpha.0.99" />-->
+    <PackageReference Include="DevExpress.ExpressApp" Version="$(DxVersion)" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="Xenial.Framework.Generators" Version="0.2.6-alpha.0.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!--<XenialAttributesModifier>public</XenialAttributesModifier>-->
+
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <XenialImageNames Include="Images/*.png" />
+  </ItemGroup>
+
+</Project>

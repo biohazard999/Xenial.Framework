@@ -1,63 +1,62 @@
 ﻿using System;
 using System.IO;
 
-namespace Xenial.Framework.Utils
+namespace Xenial.Framework.Utils;
+
+/// <summary>   Class ResourceUtil. </summary>
+public static class ResourceUtil
 {
-    /// <summary>   Class ResourceUtil. </summary>
-    public static class ResourceUtil
+    /// <summary>   Gets the resource stream. </summary>
+    ///
+    /// <exception cref="ArgumentNullException">        Thrown when one or more required arguments
+    ///                                                 are null. </exception>
+    /// <exception cref="ResourceNotFoundException">    . </exception>
+    ///
+    /// <param name="type"> The type. </param>
+    /// <param name="path"> The path. </param>
+    ///
+    /// <returns>   Stream. </returns>
+
+    public static Stream GetResourceStream(Type type, string path)
     {
-        /// <summary>   Gets the resource stream. </summary>
-        ///
-        /// <exception cref="ArgumentNullException">        Thrown when one or more required arguments
-        ///                                                 are null. </exception>
-        /// <exception cref="ResourceNotFoundException">    . </exception>
-        ///
-        /// <param name="type"> The type. </param>
-        /// <param name="path"> The path. </param>
-        ///
-        /// <returns>   Stream. </returns>
+        _ = type ?? throw new ArgumentNullException(nameof(type));
 
-        public static Stream GetResourceStream(Type type, string path)
+        if (string.IsNullOrEmpty(path))
         {
-            _ = type ?? throw new ArgumentNullException(nameof(type));
+            throw new ArgumentNullException(nameof(path));
+        }
 
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
+        var assembly = type.Assembly;
+        var name = type.Assembly.GetName().Name;
 
-            var assembly = type.Assembly;
-            var name = type.Assembly.GetName().Name;
-
-#if NET5
+#if NET5_0_OR_GREATER
             path = path
                 .Replace("/", ".", StringComparison.InvariantCultureIgnoreCase)
                 .Replace("\\", ".", StringComparison.InvariantCultureIgnoreCase);
 #else
-            path = path.Replace("/", ".").Replace("\\", ".");
+        path = path.Replace("/", ".").Replace("\\", ".");
 #endif
 
-            var fullPath = $"{name}.{path}";
-            var stream = assembly.GetManifestResourceStream(fullPath);
+        var fullPath = $"{name}.{path}";
+        var stream = assembly.GetManifestResourceStream(fullPath);
 
-            _ = stream ?? throw new ResourceNotFoundException(assembly, path);
+        _ = stream ?? throw new ResourceNotFoundException(assembly, path);
 
-            return stream;
-        }
+        return stream;
+    }
 
-        /// <summary>   Gets the resource string. </summary>
-        ///
-        /// <param name="type"> The type. </param>
-        /// <param name="path"> The path. </param>
-        ///
-        /// <returns>   System.String. </returns>
+    /// <summary>   Gets the resource string. </summary>
+    ///
+    /// <param name="type"> The type. </param>
+    /// <param name="path"> The path. </param>
+    ///
+    /// <returns>   System.String. </returns>
 
-        public static string GetResourceString(Type type, string path)
-        {
-            using var resourceStream = GetResourceStream(type, path);
-            using var reader = new StreamReader(resourceStream);
-            var resourceString = reader.ReadToEnd();
-            return resourceString;
-        }
+    public static string GetResourceString(Type type, string path)
+    {
+        using var resourceStream = GetResourceStream(type, path);
+        using var reader = new StreamReader(resourceStream);
+        var resourceString = reader.ReadToEnd();
+        return resourceString;
     }
 }

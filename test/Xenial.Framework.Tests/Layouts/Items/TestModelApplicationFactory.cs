@@ -51,6 +51,25 @@ namespace Xenial.Framework.Tests.Layouts
             return detailView;
         }
 
+        internal static IModelDetailView? CreateComplexDetailViewWithLayout<T>(Func<LayoutBuilder<T>, Layout> layoutFunctor)
+            where T : class
+        {
+            var model = CreateApplication(new(new[]
+            {
+                typeof(T)
+            },
+            typesInfo =>
+            {
+                ModelBuilder.Create<T>(typesInfo)
+                    .RemoveAttribute(typeof(DetailViewLayoutBuilderAttribute))
+                    .WithDetailViewLayout(layoutFunctor)
+                .Build();
+            }));
+
+            var detailView = model.FindDetailView<T>();
+            return detailView;
+        }
+
         internal static IModelDetailView? CreateComplexDetailViewWithLayout(Func<LayoutBuilder<SimpleBusinessObject>, Layout> layoutFunctor)
         {
             var model = CreateApplication(new(new[]
@@ -66,6 +85,29 @@ namespace Xenial.Framework.Tests.Layouts
             }));
 
             var detailView = model.FindDetailView<SimpleBusinessObject>();
+            return detailView;
+        }
+
+        internal static IModelDetailView? CreateNestedDetailViewWithLayout(Func<LayoutBuilder<ComplexBusinessObject>, Layout>? layoutFunctor = null)
+        {
+            var model = CreateApplication(new(new[]
+            {
+                typeof(ComplexBusinessObject),
+                typeof(SimpleBusinessObject),
+            },
+            typesInfo =>
+            {
+                ModelBuilder.Create<ComplexBusinessObject>(typesInfo)
+                    .RemoveAttribute(typeof(DetailViewLayoutBuilderAttribute))
+                    .WithDetailViewLayout(() =>
+                        layoutFunctor is null
+                            ? ComplexBusinessObjectLayoutBuilder.BuildLayout()
+                            : layoutFunctor.Invoke(new LayoutBuilder<ComplexBusinessObject>())
+                    )
+                .Build();
+            }));
+
+            var detailView = model.FindDetailView<ComplexBusinessObject>();
             return detailView;
         }
 

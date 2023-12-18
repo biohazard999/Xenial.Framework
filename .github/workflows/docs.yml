@@ -19,18 +19,25 @@ jobs:
       uses: actions/setup-node@v2.1.5
       with:
         node-version: 14.x
-      
-    - name: Setup .NET5
+
+    - name: Setup .NET6
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
 
+    - name: Setup .NET7
+      uses: actions/setup-dotnet@v1
+      with:
+        #dotnet-version: 7.0.x
+        dotnet-version: '7.0.100-preview.1.22110.4'
+        include-prerelease: true
+    
     - name: Build
       run: dotnet run --project build/build.csproj docs
       env:
           DEVEXPRESS_NUGET_FEED: ${{secrets.DEVEXPRESS_NUGET_FEED}}
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v2.2.4
       with:
         name: docs
         path: artifacts/docs.xenial.io/

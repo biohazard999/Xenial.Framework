@@ -9,28 +9,41 @@ using DevExpress.ExpressApp.Templates;
 
 using Xenial.Framework.Layouts.Items.Base;
 
-namespace Xenial.Framework.Layouts.Items.LeafNodes
-{
-    /// <summary>   (Immutable) a layout dashboard view item. </summary>
-    [XenialCheckLicence]
-    public partial record LayoutDashboardViewItem(string DashboardViewId) : LayoutViewItem(DashboardViewId)
+namespace Xenial.Framework.Layouts.Items.LeafNodes;
+
+/// <summary>   (Immutable) a layout dashboard view item. </summary>
+[XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelDashboardViewItem), IgnoredMembers = new[]
     {
-        /// <summary>   Gets or sets the criteria operator. </summary>
-        ///
-        /// <value> The criteria operator. </value>
-
-        public string? Criteria { get; set; }
-
-        /// <summary>   Gets or sets the actions toolbar visibility. </summary>
-        ///
-        /// <value> The actions toolbar visibility. </value>
-
-        public ActionsToolbarVisibility? ActionsToolbarVisibility { get; set; }
-
-        /// <summary>   Gets or sets the dashboard options. </summary>
-        ///
-        /// <value> The dashboard options. </value>
-
-        public Action<IModelDashboardViewItem>? DashboardViewOptions { get; set; }
+        nameof(IModelDashboardViewItem.Id),
+        nameof(IModelDashboardViewItem.Index),
+        nameof(IModelDashboardViewItem.View),
+        nameof(IModelViewItem.Caption),
     }
+)]
+public partial record LayoutDashboardViewItem : LayoutViewItem
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public string DashboardViewId { get; init; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dashboardViewId"></param>
+    public LayoutDashboardViewItem(string dashboardViewId) : this(
+        dashboardViewId ?? throw new ArgumentNullException(nameof(dashboardViewId)),
+        dashboardViewId
+    )
+    { }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dashboardViewId"></param>
+    /// <param name="id"></param>
+    public LayoutDashboardViewItem(string dashboardViewId, string id) : base(id)
+        => DashboardViewId = dashboardViewId ?? throw new ArgumentNullException(nameof(dashboardViewId));
 }

@@ -17,6 +17,14 @@ using static Xenial.Tasty;
 
 namespace Xenial.Framework.Tests.Layouts.Items
 {
+    [DomainComponent]
+    [DetailViewLayoutBuilder(typeof(ComplexBusinessObjectLayoutBuilder))]
+    public sealed class ComplexBusinessObject
+    {
+        public SimpleBusinessObject NestedObject { get; set; } = new();
+        public string OwnString { get; set; } = "";
+    }
+
     /// <summary>   A simple business object. This class cannot be inherited. </summary>
     [DomainComponent]
     [DetailViewLayoutBuilder(typeof(SimpleBusinessObjectLayoutBuilder))]
@@ -124,6 +132,21 @@ namespace Xenial.Framework.Tests.Layouts.Items
             return new()
             {
                 layoutPropertyEditor
+            };
+        }
+    }
+
+    public static class ComplexBusinessObjectLayoutBuilder
+    {
+        public static Layout BuildLayout()
+        {
+            var l = new LayoutBuilder<ComplexBusinessObject>();
+
+            return new()
+            {
+                l.PropertyEditor(m => m.OwnString),
+                l.PropertyEditor(m => m.NestedObject),
+                l.PropertyEditor(m => m.NestedObject.StringProperty)
             };
         }
     }

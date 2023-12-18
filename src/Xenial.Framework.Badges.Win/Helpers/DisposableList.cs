@@ -2,73 +2,72 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xenial.Framework.Badges.Win.Helpers
+namespace Xenial.Framework.Badges.Win.Helpers;
+
+internal sealed class DisposableList : List<IDisposable>, IDisposable
 {
-    internal sealed class DisposableList : List<IDisposable>, IDisposable
+    private bool disposedValue;
+
+    /// <summary>   Gets the actions. </summary>
+    ///
+    /// <value> The actions. </value>
+
+    public DisposableActionList Actions { get; }
+
+    public DisposableList()
     {
-        private bool disposedValue;
+        Actions = new DisposableActionList();
+        Add(Actions);
+    }
 
-        /// <summary>   Gets the actions. </summary>
-        ///
-        /// <value> The actions. </value>
-
-        public DisposableActionList Actions { get; }
-
-        public DisposableList()
+    private void Dispose(bool disposing)
+    {
+        if (!disposedValue)
         {
-            Actions = new DisposableActionList();
-            Add(Actions);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (!disposedValue)
+            if (disposing)
             {
-                if (disposing)
+                foreach (var disposable in this)
                 {
-                    foreach (var disposable in this)
-                    {
-                        disposable.Dispose();
-                    }
+                    disposable.Dispose();
                 }
-
-                disposedValue = true;
-                Clear();
             }
-        }
 
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            disposedValue = true;
+            Clear();
         }
     }
 
-    internal sealed class DisposableActionList : List<Action>, IDisposable
+    public void Dispose()
     {
-        private bool disposedValue;
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+}
 
-        private void Dispose(bool disposing)
+internal sealed class DisposableActionList : List<Action>, IDisposable
+{
+    private bool disposedValue;
+
+    private void Dispose(bool disposing)
+    {
+        if (!disposedValue)
         {
-            if (!disposedValue)
+            if (disposing)
             {
-                if (disposing)
+                foreach (var action in this)
                 {
-                    foreach (var action in this)
-                    {
-                        action();
-                    }
+                    action();
                 }
-
-                disposedValue = true;
             }
-        }
 
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            disposedValue = true;
         }
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

@@ -6,32 +6,42 @@ using DevExpress.ExpressApp.Model;
 
 using Xenial.Framework.Layouts.Items.Base;
 
-namespace Xenial.Framework.Layouts.Items.LeafNodes
-{
-    /// <summary>   (Immutable) a layout static image item. </summary>
-    [XenialCheckLicence]
-    public partial record LayoutStaticImageItem : LayoutViewItem
+namespace Xenial.Framework.Layouts.Items.LeafNodes;
+
+/// <summary>   (Immutable) a layout static image item. </summary>
+[XenialCheckLicense]
+[XenialModelOptions(
+    typeof(IModelStaticImage), IgnoredMembers = new[]
     {
-        /// <summary>   Gets the name of the image. </summary>
-        ///
-        /// <value> The name of the image. </value>
-
-        public string ImageName { get; init; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LayoutStaticImageItem"/> class.
-        /// </summary>
-        ///
-        /// <param name="imageName">    Name of the image. </param>
-
-        public LayoutStaticImageItem(string imageName)
-            : base(imageName)
-                => ImageName = imageName;
-
-        /// <summary>   Gets or sets the image options. </summary>
-        ///
-        /// <value> The image options. </value>
-
-        public Action<IModelStaticImage>? ImageOptions { get; set; }
+        nameof(IModelStaticImage.Id),
+        nameof(IModelStaticImage.Index),
+        nameof(IModelStaticImage.ImageName),
+        nameof(IModelViewItem.Caption)
     }
+)]
+public partial record LayoutStaticImageItem : LayoutViewItem
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "By Convention")]
+    internal bool WasImageNameSet => true;
+    /// <summary>   Gets the name of the image. </summary>
+    ///
+    /// <value> The name of the image. </value>
+    [XenialAutoMapped]
+    public string ImageName { get; init; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LayoutStaticImageItem"/> class.
+    /// </summary>
+    ///
+    /// <param name="imageName">    Name of the image. </param>
+
+    public LayoutStaticImageItem(string imageName) : this(imageName, imageName) { }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="imageName"></param>
+    /// <param name="id"></param>
+    public LayoutStaticImageItem(string imageName, string id) : base(id)
+        => ImageName = imageName;
 }

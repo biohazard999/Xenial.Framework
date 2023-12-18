@@ -73,6 +73,7 @@ namespace MailClient.Module.BusinessObjects
         [Persistent("Subject")]
         [Size(TextSizeIndexable)]
         [Indexed]
+        [LabelStringEditor]
         public string? Subject { get; set; }
 
         [Persistent("Sent")]
@@ -89,12 +90,12 @@ namespace MailClient.Module.BusinessObjects
         [Persistent("MessageId")]
         [Size(255)]
         [Indexed]
-        public string MessageId { get; set; }
+        public string? MessageId { get; set; }
 
         [Persistent("MessageIdHash")]
         [Size(255)]
         [Indexed]
-        public string MessageIdHash { get; set; }
+        public string? MessageIdHash { get; set; }
 
         [Persistent("FileName")]
         [Size(TextSizeIndexable)]
@@ -129,6 +130,7 @@ namespace MailClient.Module.BusinessObjects
 
     public enum MailDirection
     {
+        None = 0,
         Outbound = 1,
         Inbound = 2,
     }
@@ -149,6 +151,7 @@ namespace MailClient.Module.BusinessObjects
 
     public enum MailPriorityX
     {
+        None = 0,
         Highest = 1,
         High = 2,
         Normal = 3,

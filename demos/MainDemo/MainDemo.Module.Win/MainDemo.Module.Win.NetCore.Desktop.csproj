@@ -1,0 +1,75 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  
+  <PropertyGroup>
+    <TargetFrameworks>$(WindowsFrameworkVersion6);$(FullFrameworkVersion)</TargetFrameworks>    
+    <UseWindowsForms>true</UseWindowsForms>
+    <CheckXenialLicense>false</CheckXenialLicense>
+    <GenerateXenialLicense>false</GenerateXenialLicense>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MainDemo.Module.Win</RootNamespace>
+    <AssemblyName>MainDemo.Module.Win</AssemblyName>
+    <DefineConstants>DXCORE3</DefineConstants>
+    <Configurations>Debug;Release;EasyTest</Configurations>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>DEBUG;TRACE;DXCORE3</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>TRACE;DXCORE3</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'EasyTest|AnyCPU' ">
+    <DefineConstants>TRACE;DEBUG;EASYTEST;DXCORE3</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == '$(WindowsFrameworkVersion6)'">
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="*.xafml" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Model.DesignedDiffs.Localization.ru.xafml" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="DevExpress.ExpressApp.Win.All" Version="$(DxPackageVersion)" />
+    <PackageReference Include="DevExpress.Win.Demos" Version="$(DxPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(XenialDebug)' == 'false'">
+    <PackageReference Include="Xenial.Framework.Win" Version="$(XenialDemoPackageVersion)" />
+    <PackageReference Include="Xenial.Framework.LabelEditors.Win" Version="$(XenialDemoPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(XenialDebug)">
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.Win/Xenial.Framework.Win.csproj" />
+    <ProjectReference Include="$(SrcDirectory)Xenial.Framework.LabelEditors.Win/Xenial.Framework.LabelEditors.Win.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Xenial.Framework.DevTools.Win\Xenial.Framework.DevTools.Win.csproj" />
+    <ProjectReference Include="..\MainDemo.Module\MainDemo.Module.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Model.DesignedDiffs.Localization.ru.xafml">
+      <DependentUpon>Model.DesignedDiffs.xafml</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
